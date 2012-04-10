@@ -1,9 +1,1 @@
 Hello World!
-
-
-
-<<<<<<< HEAD
-IT WORKS :(
-=======
-IT WORKS )-()
->>>>>>> 4c980f906e08562d52714580eb28a5314382dd8f
