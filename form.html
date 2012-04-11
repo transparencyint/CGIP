@@ -153,6 +153,31 @@
           </select>
           <input type="text" id="typeOther" class="hidden" name="typeOther" />
         </div>
+        
+        <!-- @TODO: Put Question 2-5 here ;) -->
+        
+        <div>
+          <label for="receivedMoney">6. How much money the actor receives for financing climate projects?</label>
+          <input type="text" id="receivedMoney" name="actor[receivedMoney]" />
+        </div>
+        
+        <div>
+          <label for="modalityType">7. What is the type of finance modality of the money received? (mulitiple choices possible)</label>
+          <select id="modalityType" name="actor[modalityType]" multiple>
+            <option value="grant">grant</option>
+            <option value="loan">loan</option>
+            <option value="concessional">concessional loan</option>
+            <option value="etc">etc.</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="providedMoney">8. How much money the actor provides for financing climate projects?</label>
+          <input type="text" id="providedMoney" name="actor[providedMoney]" />
+        </div>
+        
+        <!-- @TODO: Put Question 9-11 here ;) -->
+        
       </div>
     </form>
   <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
