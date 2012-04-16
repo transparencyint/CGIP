@@ -207,6 +207,24 @@
           <input type="text" id="providedMoney" name="actor[providedMoney]" />
         </div>
         
+        <div>
+          <label for="purposeOfProject">9. What is the purpose of the climate projects that the actor is financing or implementing?</label>
+          <select id="purposeOfProject" name="actor[purposeOfProject]" size="5" class="hasOther" multiple>
+            <option value="adaption">Adaption</option>
+            <option value="mitigation">Mitigation</option>
+            <option value="research">Research</option>
+            <option value="capacity_building">Capacity Building</option>
+            <option value="other" data-additionalField="#purposeOther">other</option>
+          </select>
+          <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />                                                         
+        <div class="hidden" id="mitigationType">
+          <label for="typeOfMitigation">What type of mitigation?</label>
+          <select id="typeOfMitigation" name="mitigation[]" class="hasOther" multiple>
+            <option value="redd">Forests/REDD</option>
+            <option value="cdm">CDM (Clean Development Mechanisms)</option>
+          </select>
+        </div>
+        </div>
         <!-- @TODO: Put Question 9-11 here ;) -->
 		<div>
           <label for="corruptionRisk">10. Are there indications that there is the risk of corruption in the organization?</label>
@@ -218,6 +236,9 @@
         </div>
 				
       </div>
+      
+      <input type="submit" />
+      
     </form>
   <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
   <script>
@@ -243,6 +264,18 @@
       } else {
         hiddenBrother.addClass('hidden').val("");
       }
+    });
+    
+    /* ###########################################
+      Show or hide the mitigation type
+    */
+    $('#purposeOfProject').change(function(event){
+      $this = $(this);
+      var el = $('#mitigationType');
+      if($this.val() == 'mitigation')
+        el.removeClass('hidden');
+      else
+        el.addClass('hidden');      
     });
   </script>
   </body>
