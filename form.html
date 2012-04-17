@@ -154,7 +154,92 @@
           </select>
           <input type="text" id="typeOther" class="hidden" name="typeOther" />
         </div>
+        
+        <!-- @TODO: Put Question 2-5 here ;) -->
+        <div>
+          <label for="moneyFrom">3. Where does the actor get the money from?</label>
+          <select id="moneyFrom" name="actor[moneyFrom]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        <div>
+          <label for="accountable">4. To whom is the actor accountable to?</label>
+          <select id="accountable" name="actor[accountable]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        <div>
+          <label for="inCharge">5. Who is in charge for evaluation of the organization's work?</label>
+          <select id="inCharge" name="actor[inCharge]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="receivedMoney">6. How much money the actor receives for financing climate projects?</label>
+          <input type="text" id="receivedMoney" name="actor[receivedMoney]" />
+        </div>
+        <div>
+          <label for="modalityType">7. What is the type of finance modality of the money received? (mulitiple choices possible)</label>
+          <select id="modalityType" name="actor[modalityType]" multiple>
+            <option value="grant">grant</option>
+            <option value="loan">loan</option>
+            <option value="concessional">concessional loan</option>
+            <option value="etc">etc.</option>
+          </select>
+        </div>
+        <div>
+          <label for="providedMoney">8. How much money the actor provides for financing climate projects?</label>
+          <input type="text" id="providedMoney" name="actor[providedMoney]" />
+        </div>
+        
+        <div>
+          <label for="purposeOfProject">9. What is the purpose of the climate projects that the actor is financing or implementing?</label>
+          <select id="purposeOfProject" name="actor[purposeOfProject]" size="5" class="hasOther" multiple>
+            <option value="adaption">Adaption</option>
+            <option value="mitigation">Mitigation</option>
+            <option value="research">Research</option>
+            <option value="capacity_building">Capacity Building</option>
+            <option value="other" data-additionalField="#purposeOther">other</option>
+          </select>
+          <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />                                                         
+        <div class="hidden" id="mitigationType">
+          <label for="typeOfMitigation">What type of mitigation?</label>
+          <select id="typeOfMitigation" name="mitigation[]" class="hasOther" multiple>
+            <option value="redd">Forests/REDD</option>
+            <option value="cdm">CDM (Clean Development Mechanisms)</option>
+          </select>
+        </div>
+        </div>
+        <!-- @TODO: Put Question 9-11 here ;) -->
+		<div>
+          <label for="corruptionRisk">10. Are there indications that there is the risk of corruption in the organization?</label>
+		  <textarea rows="4" cols="70" id="corruptionRisk" name="actor[corruptionRisk]"> </textarea> 
+        </div>
+		<div>
+          <label for="description">11. Additional information can be included in the description (optional):</label>
+		  <textarea rows="3" cols="70" id="description" name="actor[description]"> </textarea> 
+        </div>
+				
       </div>
+      
+      <input type="submit" />
+      
     </form>
   <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
   <script>
