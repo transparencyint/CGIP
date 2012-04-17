@@ -57,6 +57,7 @@
         float: left;
         font-size: 11px;
         text-align: center;
+        cursor: pointer;
       }
       .countrys .flag {
         height: 40px;
@@ -104,28 +105,28 @@
   <body>
     <h1>Climate Governance Integrity Program</h1>
     <form>
-      <div class="countrys selected clearfix">
-        <div class="bangladesh">
+      <div class="countrys clearfix">
+        <div class="bangladesh" data-country="bangladesh">
           <div class="flag" style="background-image: url(img/flags/bd.png);"></div>
           <span>Bangladesh</span>
         </div>
-        <div class="dominicanRepublic selected">
+        <div class="dominicanRepublic" data-country="dominicanRepublic">
           <div class="flag" style="background-image: url(img/flags/do.png);"></div>
           <span>Dominican Republic</span>
         </div>
-        <div class="kenya">
+        <div class="kenya" data-country="kenya">
           <div class="flag" style="background-image: url(img/flags/ke.png);"></div>
           <span>Kenya</span>
         </div>
-        <div class="maldives">
+        <div class="maldives" data-country="maldives">
           <div class="flag" style="background-image: url(img/flags/mv.png);"></div>
           <span>Maldives</span>
         </div>
-        <div class="mexico">
+        <div class="mexico" data-country="mx">
           <div class="flag" style="background-image: url(img/flags/mx.png);"></div>
           <span>Mexico</span>
         </div>
-        <div class="peru">
+        <div class="peru" data-country="pe">
           <div class="flag" style="background-image: url(img/flags/pe.png);"></div>
           <span>Peru</span>
         </div>
@@ -146,7 +147,7 @@
             <option value="ministry">Government Ministry</option>
             <option value="agency">Government Agency</option>
             <option value="civil">Civil Society Organization</option>
-            <option value="multilateral">Multilateral Organization</option>
+            <option value="multilateralOrganization">Multilateral Organization</option>
             <option value="bank">Bank</option>
             <option value="company">Private Company</option>
             <option value="other">Other</option>
@@ -172,7 +173,7 @@
     
     ######################################### */
     
-    $('.hasOther').change(function(event){
+    $('.hasOther').change(function(){
       var hiddenBrother = $(this).next();
       if( this.value === "other" ){
         hiddenBrother.removeClass('hidden');
@@ -180,6 +181,61 @@
         hiddenBrother.addClass('hidden').val("");
       }
     });
+    
+    $('.countrys > div').click(function(){
+      loadCountry($(this).data('country'));
+    });
+    
+    var actor = $('#actor');
+    var name = $('#name');
+    var type = $('#type');
+    
+    function loadCountry(name){
+      $('.countrys')
+        .addClass('selected')
+        .find(' > div[data-country=' + name + ']')
+          .addClass('selected')
+          .siblings().removeClass('selected');
+          
+      
+    }
+    
+    var data = {
+      bangladesh : {
+        actors : [
+          {
+            name : "multilateral donors",
+            type : "multilateralOrganization",
+            role : "funding",
+          },
+          {
+            name : "World Bank",
+            type : "bank",
+            role : "funding",
+          },
+          {
+            name : "Bangladesh Government",
+            type : "multilateralOrganization",
+            role : "ministry",
+          },
+        ],
+      },
+      dominicanRepublic : {
+        
+      },
+      kenya : {
+        
+      },
+      maldives : {
+        
+      },
+      mexico : {
+        
+      },
+      peru : {
+        
+      }
+    };
   </script>
   </body>
 </html>
