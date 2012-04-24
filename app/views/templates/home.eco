@@ -3,3 +3,13 @@
   <p>There will be more!</p>
   <img src="http://placekitten.com/300/300" />
 </div>
+
+<div class="actor">
+  <div class="name">Actor A</div>
+  <div class="connectors">
+    <div class="connector top"></div>
+    <div class="connector right"></div>
+    <div class="connector bottom"></div>
+    <div class="connector left"></div>
+  </div>
+</div>
