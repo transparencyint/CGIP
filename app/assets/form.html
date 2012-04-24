@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CGIP Form</title>
+    <style>
+      html {
+        font: 16px/27px "Lucida Grande","Lucida Sans Unicode", Tahoma, sans-serif;
+        color: #222;
+        background: #eee;
+      }
+      body {
+        margin: 21px auto;
+        max-width: 600px;
+      }
+      h1 {
+        margin: 0 0 21px;
+        color: #222;
+        font-size: 34px;
+        line-height: 1;
+        font-weight: normal;
+        letter-spacing: -0.05em;
+      }
+      select, input {
+        margin: 0;
+        padding: 3px;
+        vertical-align: middle;
+      }
+      input[type=checkbox] {
+        margin: 5px;
+      }
+      .content > div {
+        margin: 21px 0;
+      }
+      select {
+        color: #333;
+      }
+      input[type=text] {
+        border-radius: 3px;
+        border: 1px solid rgba(0,0,0,.34);
+        box-shadow: 0 1px rgba(0,0,0,.05) inset, 0 1px white;
+      }
+      label {
+        margin: 13px 0 0;
+        padding: 0 0 5px 0;
+        font-size: 15px;
+        line-height: 150%;
+        color: #222;
+        display: block;
+      }
+        input[type=checkbox] + label {
+          margin: 0;
+          padding: 0;
+          font-size: 13px;
+          color: black;
+          display: inline;
+        }
+      .hint {
+        margin: -3px 0 5px;
+        font-size: 75%;
+        line-height: 1.5;
+        color: gray;
+        display: block;
+      }
+      .hidden {
+        display: none;
+      }
+      
+      .actors {
+        margin-top: 89px;
+        transition: 250ms;
+      }
+        .actors.selected {
+          margin-top: 0;
+        }
+      
+      .countrys {
+        margin: 89px 0 21px;
+        transition: 250ms;
+      }
+        .countrys.selected {
+          margin-top: 34px;
+        }
+      .countrys > div {
+        margin: 0 21px 0 0;
+        width: 60px;
+        float: left;
+        font-size: 11px;
+        text-align: center;
+        cursor: pointer;
+      }
+      .countrys .flag {
+        height: 40px;
+        background-position: -2px -12px;
+        border-radius: 3px;
+        box-shadow: 
+          0 0 0 1px rgba(0,0,0,.34) inset,
+          0 2px rgba(255,255,255,.34) inset,
+          0 1px rgba(0,0,0,.21),
+          0 3px 0 -1px rgba(0,0,0,.05),
+          0 3px 5px -1px rgba(0,0,0,.21);
+      }
+      .countrys .selected .flag {
+        box-shadow: 
+          0 0 0 3px hsl(204, 100%, 70%),
+          0 0 0 1px rgba(0,0,0,.34) inset,
+          0 2px rgba(255,255,255,.34) inset,
+          0 1px rgba(0,0,0,.21),
+          0 3px 0 -1px rgba(0,0,0,.05),
+          0 3px 5px -1px rgba(0,0,0,.21);
+      }
+      .countrys.selected > div {
+        opacity: 0.33;
+      }
+      .countrys.selected > div.selected {
+        opacity: 1;
+      }
+      .countrys span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+      }
+      
+      .clearfix:before,
+      .clearfix:after {
+        content: "";
+        display: table;
+      }
+      .clearfix:after {
+        clear: both;
+      }
+    </style>
+    <script type="text/javascript" src="js/prefixfree.min.js"></script>
+  </head>
+  <body>
+    <h1>Climate Governance Integrity Program</h1>
+    <form>
+      <div class="countrys clearfix">
+        <div class="bangladesh" data-country="bangladesh">
+          <div class="flag" style="background-image: url(img/flags/bd.png);"></div>
+          <span>Bangladesh</span>
+        </div>
+        <div class="dominicanRepublic" data-country="dominicanRepublic">
+          <div class="flag" style="background-image: url(img/flags/do.png);"></div>
+          <span>Dominican Republic</span>
+        </div>
+        <div class="kenya" data-country="kenya">
+          <div class="flag" style="background-image: url(img/flags/ke.png);"></div>
+          <span>Kenya</span>
+        </div>
+        <div class="maldives" data-country="maldives">
+          <div class="flag" style="background-image: url(img/flags/mv.png);"></div>
+          <span>Maldives</span>
+        </div>
+        <div class="mexico" data-country="mx">
+          <div class="flag" style="background-image: url(img/flags/mx.png);"></div>
+          <span>Mexico</span>
+        </div>
+        <div class="peru" data-country="pe">
+          <div class="flag" style="background-image: url(img/flags/pe.png);"></div>
+          <span>Peru</span>
+        </div>
+      </div>
+      <div class="actors hidden">
+        <label for="actor">Actor</label>
+        <select id="actor">
+          <option value="select">Select Actor</option>
+          <option value="new">Add New Actor</option>
+        </select>
+      </div>
+      <div class="content hidden">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" />
+        </div>
+        <div>
+          <label for="type">1. What is organization type of the actor?</label>
+          <select id="type" class="hasOther" name="type">
+            <option value="ministry">Government Ministry</option>
+            <option value="agency">Government Agency</option>
+            <option value="civil">Civil Society Organization</option>
+            <option value="multilateralOrganization">Multilateral Organization</option>
+            <option value="bank">Bank</option>
+            <option value="company">Private Company</option>
+            <option value="other">Other</option>
+          </select>
+          <input type="text" id="typeOther" class="hidden" name="typeOther" />
+        </div>
+        <div>
+          <label>2. What is the role of this actor in the climate sector in the country?</label>
+          <span class="hint">(mulitiple choices possible)</span>
+          <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label><br>
+          <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label><br>
+          <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label><br>
+          <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label><br>
+          <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label><br>
+          <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label><br>
+          <input type="checkbox" name="role" value="other" id="other"><label for="other">Other roles</label><br>
+          <input type="text" id="typeOther" class="hidden" name="roleOther" />
+        </div>
+        <!-- @TODO: Put Question 2-5 here ;) -->
+        <div>
+          <label for="moneyFrom">3. Where does the actor get the money from?</label>
+          <select id="moneyFrom" name="actor[moneyFrom]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        <div>
+          <label for="accountable">4. To whom is the actor accountable to?</label>
+          <select id="accountable" name="actor[accountable]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        <div>
+          <label for="inCharge">5. Who is in charge for evaluation of the organization's work?</label>
+          <select id="inCharge" name="actor[inCharge]" multiple>
+            <option value="government">Bangaldesh Government</option>
+            <option value="bccrf">BCCRF</option>
+            <option value="bcctf">BCCTF</option>
+            <option value="ccu">CCU</option>
+            <option value="ministry">Ministry of Environment</option>
+            <option value="ppcr">PPCR</option>
+          </select>
+        </div>
+        <div>
+          <label for="receivedMoney">6. How much money does the actor receive for financing climate projects?</label>
+          <input type="text" id="receivedMoney" name="actor[receivedMoney]" />
+        </div>
+        <div>
+          <label>7. What is the type of finance modality of the money received?</label>
+          <span class="hint">(mulitiple choices possible)</span>
+          <input type="checkbox" name="modalityType" value="grant" id="grant"><label for="grant">grant</label><br>
+          <input type="checkbox" name="modalityType" value="loan" id="loan"><label for="loan">loan</label><br>
+          <input type="checkbox" name="modalityType" value="concessional" id="concessional"><label for="concessional">concessional loan</label><br>
+          <input type="checkbox" name="modalityType" value="other" id="other"><label for="other">other</label><br>
+          <input type="text" id="typeOther" class="hidden" name="modalityTypeOther" />
+        </div>
+        <div>
+          <label for="providedMoney">8. How much money the actor provides for financing climate projects?</label>
+          <input type="text" id="providedMoney" name="actor[providedMoney]" />
+        </div>
+        <div>
+          <label for="purposeOfProject">9. What is the purpose of the climate projects that the actor is financing or implementing?</label>
+          <select id="purposeOfProject" name="actor[purposeOfProject]" size="5" class="hasOther" multiple>
+            <option value="adaption">Adaption</option>
+            <option value="mitigation">Mitigation</option>
+            <option value="research">Research</option>
+            <option value="capacity_building">Capacity Building</option>
+            <option value="other" data-additionalField="#purposeOther">other</option>
+          </select>
+          <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />                                                         
+        <div class="hidden" id="mitigationType">
+          <label for="typeOfMitigation">What type of mitigation?</label>
+          <select id="typeOfMitigation" name="mitigation[]" class="hasOther" multiple>
+            <option value="redd">Forests/REDD</option>
+            <option value="cdm">CDM (Clean Development Mechanisms)</option>
+          </select>
+        </div>
+		    <div>
+          <label for="corruptionRisk">10. Are there indications that there is the risk of corruption in the organization?</label>
+		      <textarea rows="4" cols="70" id="corruptionRisk" name="actor[corruptionRisk]"> </textarea> 
+        </div>
+		    <div>
+          <label for="description">11. Additional information can be included in the description (optional):</label>
+		      <textarea rows="3" cols="70" id="description" name="actor[description]"> </textarea> 
+        </div>
+        <input type="submit" value="Save Changes" />
+      </div>
+    </form>
+  <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+  <script>
+    /* #########################################
+    
+      Show 'Other' input field after selects
+      
+      Environment:
+        - the <select> element has the class 'hasOther'
+        - the <select> element has an element with the value 'other', which is not initialy selected
+        - there is a input field behind the <select> element containing a class 'hidden'
+        
+      Behaviour:
+        - when the user selects 'other', the input field behind the <select> element gets shown
+          by removing the 'hidden' class
+    
+    ######################################### */
+    
+    $('.hasOther').change(function(){
+      var hiddenBrother = $(this).next();
+      if( this.value === "other" ){
+        hiddenBrother.removeClass('hidden');
+      } else {
+        hiddenBrother.addClass('hidden').val("");
+      }
+    });
+    
+    $('.countrys > div').click(function(){
+      loadCountry($(this).data('country'));
+    });
+    
+    var actor = $('#actor');
+    var name = $('#name');
+    var type = $('#type');
+    var state = {
+      country : null,
+      actor : null
+    };
+    
+    function loadCountry(name){
+      $('.countrys')
+        .addClass('selected')
+        .find(' > div[data-country=' + name + ']')
+          .addClass('selected')
+          .siblings().removeClass('selected');
+      
+      loadActors(name);
+    }
+    
+    function loadActors(country){
+      var actorList = $('<select></select>').attr('id', 'actor');
+      var actors = data[country].actors;
+      state.country = country;
+      
+      actorList.append( createOption('Select Actor', 'select') );
+      
+      for(var i=0, l=actors.length; i<l; i++){
+        actorList.append( createOption( actors[i].name ) );
+      }
+      
+      actorList.append( createOption('Add New Actor', 'new') );
+      actorList.change( selectActor );
+      
+      $('#actor').replaceWith( actorList );
+      $('.actors').removeClass('hidden');
+    }
+    
+    function selectActor(){
+      $('.actors').addClass('selected');
+      $('.content').removeClass('hidden');
+      
+      var actorId = $(this).val();
+      if( actorId === "new" ){
+        $('#name').focus();
+        return;
+      }
+      var actors = data[state.country].actors;
+      var actor;
+      
+      for(i in actors){
+        if( actors[i].name.split(" ")[0] === actorId){
+          actor = actors[i];
+        }
+      }
+      
+      for(key in actor){
+        $('#'+key).val( actor[key] );
+      }
+    }
+    
+    function createOption(name, value){
+      var value = value || name.split(" ")[0];
+      return $('<option></option>').val(value).text(name);
+    };
+    
+    var data = {
+      bangladesh : {
+        actors : [
+          {
+            name : "multilateral donors",
+            type : "multilateralOrganization",
+            role : "funding",
+          },
+          {
+            name : "World Bank",
+            type : "bank",
+            role : "funding",
+          },
+          {
+            name : "Bangladesh Government",
+            type : "multilateralOrganization",
+            role : "ministry",
+          },
+        ],
+      },
+      dominicanRepublic : {
+        
+      },
+      kenya : {
+        
+      },
+      maldives : {
+        
+      },
+      mexico : {
+        
+      },
+      peru : {
+        
+      }
+    };
+  </script>
+  </body>
+</html>
