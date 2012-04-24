@@ -1,4 +1,5 @@
 var application = require('application');
+var ActorEditor = require('views/actor_editor');
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -6,6 +7,8 @@ module.exports = Backbone.Router.extend({
   },
 
   home: function() {
-    $('body').html(application.homeView.render().el);
+    var editor = new ActorEditor();
+    editor.render();
+    $('body').append( editor.el );
   }
 });

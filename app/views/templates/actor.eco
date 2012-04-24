@@ -1,4 +1,4 @@
-<div class="name"></div>
+<div class="name"><%= @name %></div>
 <div class="connectors">
   <div class="connector top"></div>
   <div class="connector right"></div>
