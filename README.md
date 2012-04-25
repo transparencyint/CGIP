@@ -8,13 +8,15 @@ The documentation can be found in the `documentation` folder.
 
 1. Install node.js from [http://nodejs.org](http://nodejs.org)
 2. Install brunch from command line via `npm install -g brunch@1.1.2`
-3. Run `npm install` from the command line
-4. Open `public/index.html`
+3. Navigate to the `CGIP/` folder in the command line
+4. Run `npm install` from the command line
+5. Open `public/index.html`
 
 ## Working on the project
 
-1. Run `brunch watch` from the command line
-2. Edit files in the `app/` folder and all your changes will automatically be recompiled
+1. Navigate to the `CGIP/` folder in the command line
+2. Run `brunch watch` from the command line
+3. Edit files in the `app/` folder and all your changes will automatically be recompiled
 
 ## Technologies
 
