@@ -72,16 +72,52 @@ To retrieve values from a model simply call `myModel.get('ATTRIBUTE')` on it. To
 		alert('model save problems');
 	}});
 	
-
+One of the most important things of Models is that they are able to trigger events when their values change so that elements are able to react to model changes. 
 
 ### Views
 
+Views contain all the logic that is needed for the behavior of a certain UI element e.g. a list element with a `delete` button. Each view has one part of the DOM associated to it (you can reference it via `this.el` or `this.$el` for the jQuery element). In normal JavaScript applications the jQuery code looks very messy and is hard to understand, but the Backbone.View does provide some nice ways to structure it.
+
+	var View = require('./view');
+	
+	module.exports = View.extend({
+  
+  	  template: require('./path/to/template'),
+  
+  	  className : 'myElementsCSSClass',
+  
+  	  events : {
+    	'click .delete' : 'deleteClicked',
+    	'click' : 'loadField'
+  	  },
+  
+	  initialize: function(){
+    	/* this method is like a constructor */
+      },
+      
+      render: function(){
+      	this.$el.html(this.template(this.model.toJSON()));
+      },
+      
+      deleteClicked: function(event){
+      	this.model.destroy();
+      	this.$el.destroy();
+      },
+      
+      loadField: function(event){
+      	/* do whatever you want to load data for this field */
+      }
+  	  
+	});		
+
 - events
-
-## Stylesheets
-
-### Stylus
+- model-events
+- afterRender, getTemplateData
 
 ## Templating
 
 ### Eco
+
+## Stylesheets
+
+### Stylus
