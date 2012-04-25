@@ -4,6 +4,8 @@ a student project
 
 ## Getting started
 
+The documentation can be found in the `documentation` folder.
+
 1. Install node.js from [http://nodejs.org](http://nodejs.org)
 2. Install brunch from command line via `npm install -g brunch@1.1.2`
 3. Run `npm install` from the command line
