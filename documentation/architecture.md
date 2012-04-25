@@ -48,9 +48,35 @@ The URL `mydomain.com/#user/23` would match the route above and the user method 
 
 In the router functions we would then trigger an AJAX-call to fetch certain data, e.g. the user model that has been requested. When the data arrives at the client we create a view from it to show it to the user.
 
+### Models
+
+Triggering AJAX requests is sth. we don't need to do manually because it's something that Backbone.js encapsulates in Models. Models take care of everything data- and logic-related in the appliaction to ensure a clean separation of presentation and logic.
+
+A model knows how to load it's data from the server from a url property we can specify, either a String or a function (to allow dynamic URLs). Depending on the action to be called on the Model (e.g. save or destroy) Backbone automatically calls the correct REST action on the server ([more info here](http://documentcloud.github.com/backbone/#Sync)).
+
+	module.exports = Backbone.Model.extend({
+  		url: function(){
+    		var id = this.get('id');
+    		if(id)
+      			return "/users/" + this.get('id');
+    		else
+      			return "/users"
+		}
+	});
+
+To retrieve values from a model simply call `myModel.get('ATTRIBUTE')` on it. To change a certain value on a model simply call `myModel.set({name: 'hans', age: 23})`. Setting values on a model does not persist them on the server, this has to be done manually vie the `save()` method. Since this operation is done asynchronously we have to pass a callback function to know when the request has been finished: 
+
+	myModel.save({success: function(){
+		alert('Success, yippie!!');
+	}, error: function(){
+		alert('model save problems');
+	}});
+	
+
+
 ### Views
 
-### Models
+- events
 
 ## Stylesheets
 
