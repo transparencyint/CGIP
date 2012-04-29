@@ -147,8 +147,13 @@ A very important part of Views is to react on model changes. This can be done ve
 
 ## Templating
 
+Templating is a way more structured way to write HTML to the DOM in JavaScript then including it in the source-code. It separates the presentation from the logic and also looks cleaner.
+
 ### Eco
+
+Our templating engine is called eco. It's very powerful and easy to learn because it looks very much like HTML. For examples check out the [README of their github repository](https://github.com/sstephenson/eco/blob/master/README.md). (skip the USAGE part, we used it in an easier way)
 
 ## Stylesheets
 
-### Stylus
+When dealing with large web applications, stylesheets are growing very big and they get harder to maintain because a lot of stuff is repeated over and over again. Because of that we use [Stylus](http://learnboost.github.com/stylus/) a CSS pre-compiler that supprts things like variables, mixins and calculations. It's not hard to write Stylus when you know CSS. You just have to leave out stuff like `{}:;` ;)
+They have a good documentation on their website.
