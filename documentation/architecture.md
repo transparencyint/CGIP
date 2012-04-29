@@ -110,9 +110,40 @@ Views contain all the logic that is needed for the behavior of a certain UI elem
   	  
 	});		
 
-- events
-- model-events
-- afterRender, getTemplateData
+`template` references this views template, which will be covered in more detail in the Templating section. `events` is a hash that provides easy and unobtrusive event-binding for the view. In this example a click on the sub DOM-element of this view with the class `.delete` will trigger the function `deleteClicked` to be called. There's no need to bind events manually.
+
+The method `render` takes care of rendering te template to the DOM and therefore uses the model and the template. Since this step is repeated very often, our base View class already implements this method and additionaly provides two methods to enhance the process: `afterRender` and `getTemplateData` ->
+
+	(…)
+	afterRender: function(){
+		/* this method is executed after the element has been rendered */
+	},
+	
+	getTemplateData: function(){
+		/* this method is used to prepare the data for the templat
+		We can do any sort of pre-calculation in here */
+		var data = this.model.toJSON();
+		data.currentDate = new Date().getTime();
+		return data; /* important: don't forget to return the data */
+	}
+	(…)
+
+A very important part of Views is to react on model changes. This can be done very easy in Backbone by subscribing to change-events.
+
+	(…)
+	initialize: function(){
+		/* subscribe to name-change */
+		this.model.on('change:name', this.nameChanged, this);
+		
+		/* subscribe to all change-events and simply re-render */
+		this.model.on('change', this.render, this);
+	},
+	
+	nameChanged: function(){
+		/* update the name field when it changes in the model */
+		this.$('.name').text(this.model.get('name));
+	}
+	(…)
 
 ## Templating
 
