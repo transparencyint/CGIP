@@ -1,0 +1,52 @@
+.home
+  background hsl(305,100%,8%)
+  display box
+  box-align center
+  box-pack center
+  #home
+    margin 34px
+  #actor_editor
+    top 0
+    left 0
+    width 100%
+    height 100%
+    position absolute
+    opacity 0
+    z-index -1
+    transition 250ms
+    &.bangladesh
+      background hsl(133,54%,76%)
+      .actor
+        background hsl(168,34%,55%)
+    &:target
+      opacity 1
+      z-index 1
+    h1
+      margin 0 21px
+      font-size 144px
+      color hsl(133,54%,80%)
+  h1
+    line-height 1
+    font-size 72px
+    font-weight 300
+    color white
+
+.countrys
+  margin 21px 0
+  transition 250ms
+  a
+    margin 0 21px 21px 0
+    width 200px
+    color white
+    font-size 14px
+    line-height 30px
+    text-decoration none
+    text-align center
+    float left
+    cursor pointer
+  .flag
+    height 120px
+  span
+    display block
+    text-overflow hidden
+  
