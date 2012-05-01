@@ -8,11 +8,8 @@ module.exports = Backbone.Router.extend({
   },
 
   home: function() {
-    $('body').append($('<canvas id="myCanvas" width="578" height="200"></canvas>'));
     var editor = new ActorEditor();
     editor.render();
     $('body').append( editor.el );
-    
-
   }
 });

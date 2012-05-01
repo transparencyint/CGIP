@@ -45,25 +45,6 @@ module.exports = View.extend({
       left : pos.x,
       top : pos.y,
     });
-
-    /*iterate through actor connections*/
-    var connections = this.model.get('connections');
-    
-    //$.each()
-    /*
-    this.$el.append($('<canvas id="connection' + this.model.get('id') + '"></canvas>'));
-
-    actorConnection = document.getElementById("myCanvas");  
-    ctx = $(actorConnection).get(0).getContext('2d');  
-    ctx.lineWidth = 6;  
-    ctx.strokeStyle = "#333";   
-    ctx.beginPath();  
-    //ctx.moveTo(pos.x, pos.y);  
-    //ctx.moveTo(pos.x, pos.y);  
-    ctx.bezierCurveTo(150, 100, 350, 100, 493, 389);  
-    ctx.stroke();   
-    */
-     
   },
 });
 
