@@ -4,7 +4,6 @@ module.exports = View.extend({
   
   template: require('./templates/connection'),
   
-  className : 'connection',
   tagName : 'canvas',
 
   events : {
