@@ -5,6 +5,6 @@ module.exports = Backbone.Collection.extend({
   model: Actor,
   
   initialize: function(){
-
+    
   }
 });

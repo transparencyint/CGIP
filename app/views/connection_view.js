@@ -2,16 +2,19 @@ var View = require('./view');
 
 module.exports = View.extend({
   
-  template: require('./templates/actor'),
+  template: require('./templates/connection'),
   
-  className : 'actor',
-  
+  className : 'connection',
+
   events : {
     mousedown : "startToDrag",
   },
-  
-  initialize: function(){
 
+  initialize: function(options){
+    if(arguments.length > 0){
+      this.from = options.from;
+      this.to = options.to;      
+    }
   },
   
   startToDrag : function(event){
@@ -36,21 +39,13 @@ module.exports = View.extend({
   },
   
   getRenderData : function(){
-    return this.model.toJSON();
+    return this.from.toJSON();
   },
   
   afterRender: function(){
-    var pos = this.model.get('pos');
-    this.$el.css({
-      left : pos.x,
-      top : pos.y,
-    });
-
-    /*iterate through actor connections*/
+    var pos = this.model.get('pos');    
     var connections = this.model.get('connections');
     
-    //$.each()
-    /*
     this.$el.append($('<canvas id="connection' + this.model.get('id') + '"></canvas>'));
 
     actorConnection = document.getElementById("myCanvas");  
@@ -59,33 +54,9 @@ module.exports = View.extend({
     ctx.strokeStyle = "#333";   
     ctx.beginPath();  
     //ctx.moveTo(pos.x, pos.y);  
-    //ctx.moveTo(pos.x, pos.y);  
     ctx.bezierCurveTo(150, 100, 350, 100, 493, 389);  
     ctx.stroke();   
-    */
-     
+     */
   },
 });
 
-var inputDown, inputMove, inputUp;
-
-if (window.Touch) {
-	inputDown = "touchstart";
-	inputMove = "touchmove";
-	inputUp = "touchend";
-}
-else {
-	inputDown = "mousedown";
-	inputMove = "mousemove";
-	inputUp = "mouseup";
-}
-
-$(document).bind(inputUp, function(){ $(this).unbind(inputMove); });
-
-function normalizedX(event){
-	return window.Touch ? event.originalEvent.touches[0].pageX : event.pageX;
-}	
-
-function normalizedY(event){
-	return window.Touch ? event.originalEvent.touches[0].pageY : event.pageY;
-}
