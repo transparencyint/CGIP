@@ -42,35 +42,50 @@ function couchDBRequest(inRequest, inResponse, uri) {
     uri = url.parse(uri);
     var outPort = (uri.port || 80);
     var path = uri.pathname + (uri.search || '');
+    
     var headers = inRequest.headers;
     headers['host'] = uri.hostname + ':' + outPort;
     headers['x-forwarded-for'] = inRequest.connection.remoteAddress;
     headers['referer'] = 'http://' + uri.hostname + ':' + outPort + '/';
 
-    var outRequest = http.request({
+    var reqOptions = {
       hostname: uri.hostname,
       path: path,
       port: outPort,
       method: inRequest.method,
       headers: headers
-    },function(res){
+    };
+    console.log(path);
+    var outRequest = http.request(reqOptions, function(res){
+      console.log(res.statusCode);
+      var data = '';
       res.on('data', function(chunk){
         inResponse.write(chunk);
+        data += chunk;
       });
 
       res.on('end', function(){
+        console.log(data);
+        console.log(res.headers);
         inResponse.end();
       });
     });
 
-    //var outRequest = out.request(inRequest.method, path, headers);
+    outRequest.on('response', function(){
+      console.log('onResponse');
+      
+    });
+
+    outRequest.on('error', function(){
+      console.log('error');
+      console.log(arguments);
+      unknownError(inResponse, e);
+    });
+
     if(inRequest.method == 'POST')
       outRequest.write(JSON.stringify(inRequest.body));
 
-    outRequest.on('error', function(e) {
-      console.log('outRequest#error');
-      unknownError(inResponse, e);
-    });
+    outRequest.end();
 };
 
 process.on('uncaughtException', function(e) {
