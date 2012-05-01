@@ -8,8 +8,7 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   initialize: function(){
-    this.collection = new Actors();
-    
+
   },
   
   render: function(){
