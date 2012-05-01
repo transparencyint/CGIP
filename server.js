@@ -55,25 +55,15 @@ function couchDBRequest(inRequest, inResponse, uri) {
       method: inRequest.method,
       headers: headers
     };
-    console.log(path);
+
     var outRequest = http.request(reqOptions, function(res){
-      console.log(res.statusCode);
-      var data = '';
       res.on('data', function(chunk){
         inResponse.write(chunk);
-        data += chunk;
       });
 
       res.on('end', function(){
-        console.log(data);
-        console.log(res.headers);
         inResponse.end();
       });
-    });
-
-    outRequest.on('response', function(){
-      console.log('onResponse');
-      
     });
 
     outRequest.on('error', function(){
