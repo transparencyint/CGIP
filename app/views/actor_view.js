@@ -2,12 +2,13 @@ var View = require('./view');
 
 module.exports = View.extend({
   
-  template: require('./templates/actor'),
+  template : require('./templates/actor'),
   
   className : 'actor',
   
   events : {
     mousedown : "startToDrag",
+    touchstart : "startToDrag"
   },
   
   initialize: function(){
@@ -21,8 +22,8 @@ module.exports = View.extend({
     
     var myOffset = this.$el.offset();
     startPos = { 
-      x : normalizedX(event) - myOffset.left,
-      y : normalizedY(event) - myOffset.top
+      x : normalizedX(event) - myOffset.left - this.$el.width()/2,
+      y : normalizedY(event) - myOffset.top - this.$el.height()/2
     };
     $(document).bind(inputMove, $.proxy( this, "moveElement"));
     this.moveElement(event);
@@ -41,10 +42,12 @@ module.exports = View.extend({
   
   afterRender: function(){
     var pos = this.model.get('pos');
+
     this.$el.css({
       left : pos.x,
       top : pos.y,
     });
+     console.log(this.$el.width());
   },
 });
 
