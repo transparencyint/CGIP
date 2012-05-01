@@ -72,7 +72,7 @@ function couchDBRequest(inRequest, inResponse, uri) {
       unknownError(inResponse, e);
     });
 
-    if(inRequest.method == 'POST')
+    if(inRequest.method == 'POST' || inRequest.method == 'PUT')
       outRequest.write(JSON.stringify(inRequest.body));
 
     outRequest.end();
