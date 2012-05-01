@@ -1,6 +1,8 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
+@import 'shim'
+@import 'home'
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -8,12 +10,13 @@
   box-sizing border-box
 
 html
-  font 16px/27px "Lucida Grande","Lucida Sans Unicode", Tahoma, sans-serif
-  color #222
+  height 100%
+  font 300 16px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  color white
   background url(../images/bluegrid.png) center top
   
 body
-  margin 0 21px
+  height 100%
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -22,58 +25,13 @@ body
   width 160px
   height 160px
   position absolute
-  line-height 158px
+  line-height 160px
   text-align center
   text-transform uppercase
   color white
   background black
-  border 3px solid #222
-  border-radius 166px
+  border-radius 160px
   cursor default
-  .selected,
-  .selected .connector:not(.selected):after
-    border-color hsl(195,100%,30%)
-  
-
-.connectors
-  top 0
-  width 100%
-  height 100%
-  position absolute
-  opacity 0
-
-.actor:hover .connectors,
-.actor.selected .connectors
-  opacity 1
- 
-.connector
-  top 0
-  left 50%
-  width 40px
-  height 40px
-  margin -20px 0 0 -20px
-  position absolute
-  &:after
-    content ""
-    width 20px
-    height 20px
-    margin 10px
-    background black
-    border 2px solid #222
-    border-radius 20px
-    box-sizing border-box
-    display block
-  &.right,
-  &.left
-    margin -20px -20px 0 0
-    top 50%
-    left auto
-    right 0
-  &.bottom
-    top auto
-    bottom 0
-    margin 0 0 -20px -20px
-  &.left
-    right auto
-    left 0
-    margin -20px 0 0 -20px
+#actor_editor
+  canvas
+    position absolute

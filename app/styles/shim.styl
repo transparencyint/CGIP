@@ -1,0 +1,64 @@
+// MIXINS
+
+vendor-prefixes = webkit moz ms o official
+support-for-ie = true // srsly?
+
+
+border-top-radius()
+  vendor('border-top-left-radius', arguments)
+  vendor('border-top-right-radius', arguments)
+
+border-bottom-radius()
+  vendor('border-bottom-left-radius', arguments)
+  vendor('border-bottom-right-radius', arguments)
+
+border-top-right-radius()
+  vendor('border-top-right-radius', arguments)
+
+border-bottom-left-radius()
+  vendor('border-bottom-left-radius', arguments)
+
+border-bottom-right-radius()
+  vendor('border-bottom-right-radius', arguments)
+
+radial-bg-gradient(shape, from, to)
+  background from
+  background -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 100%, from(from), to(to))
+  background -webkit-radial-gradient(center center, shape, from, to)
+  background -moz-radial-gradient(center center, circle shape, from, to)
+  background -o-radial-gradient(center center, shape, from, to)
+  background -ms-radial-gradient(center center, shape, from, to)
+  background radial-gradient(center center, shape, from, to)
+
+background-clip()
+  vendor('background-clip', arguments)
+
+box(orient, pack, align)
+  display -webkit-box
+  display -moz-box
+  display box
+  vendor('box-orient', orient)
+  vendor('box-pack', pack)
+  vendor('box-align', align)
+  vendor('box-lines', multiple)
+
+text-fill-color()
+  vendor('text-fill-color', arguments)
+
+transform-origin()
+  vendor('transform-origin', arguments)
+
+transform-style()
+  vendor('transform-style', arguments)
+
+perspective()
+  vendor('perspective', arguments)
+
+appearance()
+  vendor('appearance', arguments)
+
+.clearfix:after
+  content ""
+  clear both
+  display block
+  height 0
