@@ -6,7 +6,7 @@ module.exports = Backbone.Collection.extend({
   initialize: function(){
     this.reset([{
         id : 1,
-        name : 'Actor A',
+        name : 'Government',
         pos : {
           x : 342,
           y : 145
@@ -20,24 +20,38 @@ module.exports = Backbone.Collection.extend({
       },
       {
         id : 2,
-        name : 'Actor B',
+        name : 'CCU',
         pos : {
           x : 193,
           y : 389
         },
         connections : [
           {
-            to: 3,
+            to: 4,
             type: 'accountability'            
           }
         ],
       },
       {
         id : 3,
-        name : 'Actor C',
+        name : 'BCCRF',
         pos : {
-          x : 493,
-          y : 189
+          x : 633,
+          y : 129
+        },
+        connections : [
+          {
+            to: 1,
+            type: 'accountability'            
+          }
+        ],
+      },
+      {
+        id : 4,
+        name : 'PPCR',
+        pos : {
+          x : 763,
+          y : 349
         },
         connections : [
           {

@@ -42,11 +42,14 @@ module.exports = View.extend({
   
   afterRender: function(){
     var pos = this.model.get('pos');
-
+    var name = this.model.get('name');
+    
     this.$el.css({
       left : pos.x,
       top : pos.y,
     });
+
+    this.$el.find('.name').text(name);
   },
 });
 
