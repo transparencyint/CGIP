@@ -35,11 +35,22 @@ body
   border-radius 160px
   cursor default
   z-index 1
-#actor_editor  
-    top 0
-    left 0
-    width 100%
-    height 100%
-    position absolute
+#actor_editor
+  top 0
+  left 0
+  width 100%
+  height 100%
+  position absolute
   canvas, svg
     position absolute
+    
+.breadcrumb
+  margin 21px
+  span
+    margin 0 5px
+    vertical-align text-bottom
+  a, span
+    color rgba(255,255,255,.34)
+    text-decoration none
+    &.selected
+      color white

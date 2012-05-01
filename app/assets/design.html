@@ -12,36 +12,20 @@
 </head>
 <body class="home">
   <div id="home">
-    <h1>CGIP Form</h1>
+    <h1>Select a country</h1>
     <nav class="countrys">
-      <a href="#actor_editor" class="bangladesh" data-country="bangladesh">
-        <div class="flag" style="background-image: url(images/flags/bd.png);"></div>
-        <span>Bangladesh</span>
-      </a>
-      <a class="dominicanRepublic" data-country="dominicanRepublic">
-        <div class="flag" style="background-image: url(images/flags/do.png);"></div>
-        <span>Dominican Republic</span>
-      </a>
-      <a class="kenya" data-country="kenya">
-        <div class="flag" style="background-image: url(images/flags/ke.png);"></div>
-        <span>Kenya</span>
-      </a>
-      <a class="maldives" data-country="maldives">
-        <div class="flag" style="background-image: url(images/flags/mv.png);"></div>
-        <span>Maldives</span>
-      </a>
-      <a class="mexico" data-country="mx">
-        <div class="flag" style="background-image: url(images/flags/mx.png);"></div>
-        <span>Mexico</span>
-      </a>
-      <a class="peru" data-country="pe">
-        <div class="flag" style="background-image: url(images/flags/pe.png);"></div>
-        <span>Peru</span>
-      </a>
+      <a href="#bangladesh" class="bangladesh" title="Bangladesh" style="background-image: url(images/flags/bd.png);"></a>
+      <a href="#dominicanRepublic" class="dominicanRepublic" title="Dominican Republic" style="background-image: url(images/flags/do.png);"></a>
+      <a href="#kenya" class="kenya" title="Kenya" style="background-image: url(images/flags/ke.png);"></a>
+      <a href="#maldives" class="maldives" title="Maldives" style="background-image: url(images/flags/mv.png);"></a>
+      <a href="#mexico" class="mexico" title="Mexico" style="background-image: url(images/flags/mx.png);"></a>
+      <a href="#peru" class="peru" title="Peru" style="background-image: url(images/flags/pe.png);"></a>
     </nav>
   </div>
-  <div id="actor_editor" class="bangladesh">
-    <h1>Bangladesh</h1>
+  <div id="actor_editor">
+    <nav class="breadcrumb">
+      <a href="#">Countrys</a><span>&gt;</span><a class="selected">Bangladesh</a>
+    <nav>
     <div class="actor" style="left: 342px; top: 145px; ">
       <div class="name">Actor A</div>
     </div>
@@ -51,6 +35,19 @@
   </div>
 <script type="text/javascript" src="../vendor/scripts/jquery-1.7.2.js"></script>
 <script>
+$('.countrys a').click(function(event){
+  event.preventDefault();
+  router('actor_editor', this.className);
+  $('#actor_editor .breadcrumb .selected').text(this.title);
+});
+
+function router(hash, className){
+  $('#actor_editor').removeClass().addClass(className);
+  location.hash = hash;
+}
+
+router('actor_editor', 'dominicanRepublic');
+
 var connection = function(x0, y0, x1, y1, size, color){
   this.update = function(x0, y0, x1, y1, size, color){
     this.size = size || this.size;
@@ -108,7 +105,7 @@ var connection = function(x0, y0, x1, y1, size, color){
   return this.update(x0, y0, x1, y1, size, color);
 };
 
-var bd = new connection(422, 225, 273, 469, 5, 'white');
+var bd = new connection(342, 145, 193, 389, 5, 'white');
 $('#actor_editor').append(bd);
 </script>
 </body>
