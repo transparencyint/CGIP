@@ -13,9 +13,9 @@ module.exports = Backbone.Collection.extend({
         },
         connections : [
           {
-            to : 2,
-            direction : 'left'
-          },
+            to: 2,
+            type: 'accountability'            
+          }
         ],
       },
       {
@@ -24,7 +24,13 @@ module.exports = Backbone.Collection.extend({
         pos : {
           x : 193,
           y : 389
-        }
+        },
+        connections : [
+          {
+            to: 3,
+            type: 'accountability'            
+          }
+        ],
       },
       {
         id : 3,
@@ -32,7 +38,13 @@ module.exports = Backbone.Collection.extend({
         pos : {
           x : 493,
           y : 189
-        }
+        },
+        connections : [
+          {
+            to: 1,
+            type: 'accountability'            
+          }
+        ],
       }]);
   }
 });

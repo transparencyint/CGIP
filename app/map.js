@@ -173,4 +173,4 @@ var connection = function(x0, y0, x1, y1, size, color){
   }
 };
 
-//$('body').append( new connection(0, 0, 500, 500, 3, 'black'); );
+$('body').append( new connection(0, 0, 500, 500, 3, 'black') );
