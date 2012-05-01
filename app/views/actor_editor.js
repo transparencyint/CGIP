@@ -21,7 +21,6 @@ module.exports = View.extend({
       actor.render();
       editor.$el.append(actor.el);
     });
-    //console.log(this.collection.length);
 
     this.collection.forEach(function(model){
       var connections = model.get('connections');
