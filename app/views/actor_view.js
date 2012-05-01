@@ -12,7 +12,9 @@ module.exports = View.extend({
   },
   
   initialize: function(){
+    _.bindAll(this, 'render');
 
+    this.model.on('change', this.render);
   },
   
   startToDrag : function(event){
