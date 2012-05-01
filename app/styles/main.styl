@@ -14,9 +14,11 @@ html
   font 300 16px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
   color white
   background url(../images/bluegrid.png) center top
+  overflow hidden
   
 body
   height 100%
+  overflow hidden
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -25,13 +27,16 @@ body
   width 160px
   height 160px
   position absolute
-  line-height 160px
-  text-align center
   text-transform uppercase
   color white
   background black
   border-radius 160px
+  display table
   cursor default
+  .name
+    display table-cell
+    vertical-align middle
+    text-align center
 #actor_editor
   canvas
     position absolute
