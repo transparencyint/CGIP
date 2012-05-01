@@ -8,24 +8,23 @@
   #actor_editor
     opacity 0
     z-index -1
-    transition 250ms
+    background #222
     &.bangladesh
-      background hsl(133,54%,76%)
+      background hsl(205,100%,8%)
       .actor
-        background hsl(168,34%,55%)
+        background hsl(205,100%,34%)
     &:target
       opacity 1
       z-index 1
     h1
       margin 0 21px
       font-size 144px
-      color hsl(133,54%,80%)
   h1
-    margin 0
+    margin 0 0 21px
+    font-size 144px
     line-height 1
-    font-size 72px
+    color rgba(255,255,255,.05)
     font-weight 300
-    color white
 
 .countrys
   margin 21px 0
@@ -33,16 +32,6 @@
   a
     margin 0 21px 21px 0
     width 200px
-    color white
-    font-size 14px
-    line-height 30px
-    text-decoration none
-    text-align center
-    float left
-    cursor pointer
-  .flag
     height 120px
-  span
+    float left
     display block
-    text-overflow hidden
-  
