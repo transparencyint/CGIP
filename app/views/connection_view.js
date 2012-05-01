@@ -5,6 +5,7 @@ module.exports = View.extend({
   template: require('./templates/connection'),
   
   className : 'connection',
+  tagName : 'canvas',
 
   events : {
     mousedown : "startToDrag",
@@ -45,9 +46,8 @@ module.exports = View.extend({
   afterRender: function(){
     var posFrom = this.from.get('pos');    
     var posTo = this.to.get('pos');
-    var connections = this.from.get('connections');
 
-    $('body').append(this.update(posFrom.x, posFrom.y, posTo.x, posTo.y, '3', 'white'));
+    this.update(posFrom.x, posFrom.y, posTo.x, posTo.y, '3', 'white');
   },
 
   update: function(x0, y0, x1, y1, size, color){
@@ -78,17 +78,20 @@ module.exports = View.extend({
       y : this.start.y,
     };
     
-    return this.renderCanvas();
+    this.renderCanvas();
   },
   
   renderCanvas: function(){
-    this.canvas = document.createElement('canvas');
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.$el.get(0).getContext('2d');
     
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-    this.canvas.style.left = this.pos.x + "px";
-    this.canvas.style.top = this.pos.y + "px";
+    this.$el.attr({
+      'width': this.width,
+      'height': this.height
+    });
+    this.$el.css({
+      'left': this.pos.x + "px",
+      'top': this.pos.y + "px"
+    });
     
     this.ctx.lineWidth = this.size;
     this.ctx.strokeStyle = this.color;
@@ -99,8 +102,7 @@ module.exports = View.extend({
     this.ctx.moveTo(this.start.x, this.start.y);
     this.ctx.bezierCurveTo(this.cp1.x, this.cp1.y, this.cp2.x, this.cp2.y, this.end.x, this.end.y);
     this.ctx.stroke();
-    
-    return this.canvas;
+
   },
 
 });

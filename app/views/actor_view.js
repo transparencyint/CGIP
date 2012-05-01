@@ -47,7 +47,6 @@ module.exports = View.extend({
       left : pos.x,
       top : pos.y,
     });
-     console.log(this.$el.width());
   },
 });
 
