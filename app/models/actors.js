@@ -25,6 +25,14 @@ module.exports = Backbone.Collection.extend({
           x : 193,
           y : 389
         }
+      },
+      {
+        id : 3,
+        name : 'Actor C',
+        pos : {
+          x : 493,
+          y : 189
+        }
       }]);
   }
 });
