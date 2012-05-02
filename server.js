@@ -10,6 +10,11 @@ var PREFIX = '/db/';
 var TARGET = 'http://cgip.iriscouch.com';
 var PORT = 80;
 
+// set up a username and a password
+// set to null if not needed
+var USERNAME = null;
+var PASSWORD = null;
+
 // This app's port
 var appPort = process.env['app_port'] || 3000;
 
@@ -20,7 +25,7 @@ function couchDBForward(req, res, next){
   if(u.pathname.substring(0, PREFIX.length) != PREFIX)
     next(); // this may be a static page request or whatever
   else{
-    u = TARGET + u.pathname.substring(PREFIX.length-1) + (u.search||'');
+    u = TARGET + ':' + PORT + u.pathname.substring(PREFIX.length-1) + (u.search||'');
     couchDBRequest(req, res, u);
   }
 };
@@ -56,7 +61,12 @@ function couchDBRequest(inRequest, inResponse, uri) {
       headers: headers
     };
 
+    if(USERNAME && PASSWORD)
+      reqOptions.auth = USERNAME + ':' + PASSWORD;
+
     var outRequest = http.request(reqOptions, function(res){
+      inResponse.statusCode = res.statusCode;
+
       res.on('data', function(chunk){
         inResponse.write(chunk);
       });
