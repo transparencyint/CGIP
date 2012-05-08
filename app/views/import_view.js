@@ -1,5 +1,7 @@
 var View = require('./view');
 var Import = require('models/import');
+var ImportTableView = require('views/import_table_view');
+
 
 module.exports = View.extend({
   
@@ -16,8 +18,9 @@ module.exports = View.extend({
   },
   
   uploadFile: function(data) {
-    console.log(data);
     var files = data.target.files;
+
+    var importView = this;
 
     for (var i = 0, f; f = files[i]; i++) {
       console.log(f.fileName);
@@ -28,17 +31,16 @@ module.exports = View.extend({
         return function(e) {
           var filecontent = e.target.result;
 
-          this.renderFileData($.csv2Array(filecontent));
+          var importTableView = new ImportTableView({model: $.csv2Array(filecontent)});
+          importTableView.render();
+
+          importView.$el.append(importTableView.el);
         }
       })(f);
 
       reader.readAsText(f);
     }
   },
-  
-  renderFileData: function(){
-    
-  };
 
   getRenderData : function(){
     return this.model.toJSON();
