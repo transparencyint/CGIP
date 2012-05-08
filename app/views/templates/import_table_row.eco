@@ -1,3 +1,5 @@
-<% for value, i in @: %>
-    <td><%= i%></td> 
+<% for value in @: %>
+	<% if @.length: %>
+    	<td><%= value%></td> 
+    <% end %>
 <% end %>
