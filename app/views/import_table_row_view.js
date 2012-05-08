@@ -9,15 +9,13 @@ module.exports = View.extend({
   tagName : 'tr',
   
   initialize: function(){
-
   },
   
   getRenderData : function(){
-    
+    return this.model;
   },
   
   afterRender: function(){
-   console.log(this.model);
   },
 });
 
