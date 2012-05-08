@@ -8,34 +8,38 @@ module.exports = View.extend({
   className : 'import',
   
   events : {
-    mousedown : "startToDrag",
+    "change #importfile" : "uploadFile"
   },
   
   initialize: function(){
     this.model = new Import();
   },
   
-  startToDrag : function(event){
-    event.preventDefault();
-    
-    if(event.button === 2) return true; // right-click
-    
-    var myOffset = this.$el.offset();
-    startPos = { 
-      x : normalizedX(event) - myOffset.left,
-      y : normalizedY(event) - myOffset.top
-    };
-    $(document).bind(inputMove, $.proxy( this, "moveElement"));
-    this.moveElement(event);
-  },
+  uploadFile: function(data) {
+    console.log(data);
+    var files = data.target.files;
 
-  moveElement : function(event){
-      this.$el.css({ 
-        top : normalizedY(event) - startPos.y,
-        left : normalizedX(event) - startPos.x
-      });
+    for (var i = 0, f; f = files[i]; i++) {
+      console.log(f.fileName);
+
+      var reader = new FileReader();
+
+      reader.onload = (function(f){
+        return function(e) {
+          var filecontent = e.target.result;
+
+          this.renderFileData($.csv2Array(filecontent));
+        }
+      })(f);
+
+      reader.readAsText(f);
+    }
   },
   
+  renderFileData: function(){
+    
+  };
+
   getRenderData : function(){
     return this.model.toJSON();
   },
