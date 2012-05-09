@@ -16,28 +16,5 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-  },
+  }
 });
-
-var inputDown, inputMove, inputUp;
-
-if (window.Touch) {
-  inputDown = "touchstart";
-  inputMove = "touchmove";
-  inputUp = "touchend";
-}
-else {
-  inputDown = "mousedown";
-  inputMove = "mousemove";
-  inputUp = "mouseup";
-}
-
-$(document).bind(inputUp, function(){ $(this).unbind(inputMove); });
-
-function normalizedX(event){
-  return window.Touch ? event.originalEvent.touches[0].pageX : event.pageX;
-} 
-
-function normalizedY(event){
-  return window.Touch ? event.originalEvent.touches[0].pageY : event.pageY;
-}
