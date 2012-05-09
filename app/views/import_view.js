@@ -31,8 +31,9 @@ module.exports = View.extend({
     reader.onload = (function(f){
       return function(e) {
         var filecontent = e.target.result;
+        var model = $.csv2Array(filecontent);
 
-        var importTableView = new ImportTableView({model: $.csv2Array(filecontent)});
+        var importTableView = new ImportTableView({model: model});
         importTableView.render();
 
         importView.$el.append(importTableView.el);
@@ -48,21 +49,24 @@ module.exports = View.extend({
   
   afterRender: function(){
     // Give visual Feedback on drag event
+    this.$('#csv-upload-target').on('dragstart', function(event){event.preventDefault();});
+
     this.$('#csv-upload-target').on('dragover', function(event){
-      console.log('dragover', event, event.target);
+      event.preventDefault();
       $(event.target).addClass('active-file');
     });
 
     this.$('#csv-upload-target').on('dragleave', function(event){
+      event.preventDefault();
       $(event.target).removeClass('active-file');
     });
 
     // process file on drop event
     var importView = this;
     this.$('#csv-upload-target').on('drop', function(event){
-      event.preventDefault();
       event.stopPropagation();
-
+      event.preventDefault();
+      
       var files = event.originalEvent.dataTransfer.files;
       importView.processFile(files[0])
 
