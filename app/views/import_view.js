@@ -17,7 +17,7 @@ module.exports = View.extend({
   },
   
   preProcessFile: function(event){
-    var files = data.target.files;
+    var files = event.target.files;
     this.processFile(files[0]);
   },
 
