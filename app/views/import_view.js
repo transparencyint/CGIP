@@ -1,7 +1,6 @@
 var View = require('./view');
 var Import = require('models/import');
-var ImportTableView = require('views/import_table_view');
-
+var ImportTableView = require('./import_table_view');
 
 module.exports = View.extend({
   
@@ -10,36 +9,37 @@ module.exports = View.extend({
   className : 'import',
   
   events : {
-    "change #importfile" : "uploadFile"
+    "change #importfile" : "preProcessFile"
   },
   
   initialize: function(){
     this.model = new Import();
   },
   
-  uploadFile: function(data) {
+  preProcessFile: function(event){
     var files = data.target.files;
+    this.processFile(files[0]);
+  },
 
+  /**
+  Reads in the CSV File, parses it and creates an ImportTableView
+  **/
+  processFile: function(f) {
     var importView = this;
+    var reader = new FileReader();
 
-    for (var i = 0, f; f = files[i]; i++) {
-      console.log(f.fileName);
+    reader.onload = (function(f){
+      return function(e) {
+        var filecontent = e.target.result;
 
-      var reader = new FileReader();
+        var importTableView = new ImportTableView({model: $.csv2Array(filecontent)});
+        importTableView.render();
 
-      reader.onload = (function(f){
-        return function(e) {
-          var filecontent = e.target.result;
+        importView.$el.append(importTableView.el);
+      }
+    })(f);
 
-          var importTableView = new ImportTableView({model: $.csv2Array(filecontent)});
-          importTableView.render();
-
-          importView.$el.append(importTableView.el);
-        }
-      })(f);
-
-      reader.readAsText(f);
-    }
+    reader.readAsText(f);
   },
 
   getRenderData : function(){
@@ -47,31 +47,26 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    this.model.forEach(function(model){
-      var name = model.get('name');
+    // Give visual Feedback on drag event
+    this.$('#csv-upload-target').on('dragover', function(event){
+      console.log('dragover', event, event.target);
+      $(event.target).addClass('active-file');
     });
-  },
+
+    this.$('#csv-upload-target').on('dragleave', function(event){
+      $(event.target).removeClass('active-file');
+    });
+
+    // process file on drop event
+    var importView = this;
+    this.$('#csv-upload-target').on('drop', function(event){
+      event.preventDefault();
+      event.stopPropagation();
+
+      var files = event.originalEvent.dataTransfer.files;
+      importView.processFile(files[0])
+
+      return false;
+    });
+  }
 });
-
-var inputDown, inputMove, inputUp;
-
-if (window.Touch) {
-	inputDown = "touchstart";
-	inputMove = "touchmove";
-	inputUp = "touchend";
-}
-else {
-	inputDown = "mousedown";
-	inputMove = "mousemove";
-	inputUp = "mouseup";
-}
-
-$(document).bind(inputUp, function(){ $(this).unbind(inputMove); });
-
-function normalizedX(event){
-	return window.Touch ? event.originalEvent.touches[0].pageX : event.pageX;
-}	
-
-function normalizedY(event){
-	return window.Touch ? event.originalEvent.touches[0].pageY : event.pageY;
-}
