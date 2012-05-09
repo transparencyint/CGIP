@@ -15,14 +15,9 @@ module.exports = Backbone.Router.extend({
   },
 
   import: function(country) {
-  	switch(country)
-  	{
-  		case 'bd':
-  			var editor = new ImportView();
-    		editor.render();
-    		$('body').append( editor.el );
-  		break;
-  	}
-    
+    options = {country: country};
+    var importView = new ImportView(options);
+    importView.render();
+    $('body').append( importView.el );
   }
 });
