@@ -1,3 +1,4 @@
+
 /*
 (c) 2011 Jan Monschke
 v1.1
@@ -54,8 +55,7 @@ backbone-couchdb.js is licensed under the MIT license.
       }
     },
     read_collection: function(coll, opts) {
-      console.log('read_collection', coll, opts);
-      var keys, _opts, _view, _ddoc, _list
+      var keys, _ddoc, _list, _opts, _view,
         _this = this;
       _view = this.config.view_name;
       _ddoc = this.config.ddoc_name;
@@ -68,6 +68,9 @@ backbone-couchdb.js is licensed under the MIT license.
         if (coll.db.view != null) _view = coll.db.view;
         if (coll.db.ddoc != null) _ddoc = coll.db.ddoc;
         if (coll.db.keys != null) keys = coll.db.keys;
+        if (coll.db.key != null) opts.key = coll.db.key;
+        if (coll.db.startkey != null) opts.startkey = coll.db.startkey;
+        if (coll.db.endkey != null) opts.endkey = coll.db.endkey;
         if (coll.db.list != null) _list = coll.db.list;
       }
       _opts = {
@@ -78,14 +81,24 @@ backbone-couchdb.js is licensed under the MIT license.
           _ref = data.rows;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             doc = _ref[_i];
-            (doc.value) ? _temp.push(doc.value) : _temp.push(doc.doc);
+            if (doc.value) {
+              _temp.push(doc.value);
+            } else {
+              _temp.push(doc.doc);
+            }
           }
           opts.success(_temp);
           return opts.complete();
         },
-        error: function() {
-          opts.error();
-          return opts.complete();
+        error: function(status, error, reason) {
+          var res;
+          res = {
+            status: status,
+            error: error,
+            reason: reason
+          };
+          opts.error(res);
+          return opts.complete(res);
         }
       };
       if (opts.limit != null) _opts.limit = opts.limit;
@@ -93,20 +106,19 @@ backbone-couchdb.js is licensed under the MIT license.
       if (opts.include_docs != null) _opts.include_docs = opts.include_docs;
       if (opts.startkey != null) _opts.startkey = opts.startkey;
       if (opts.endkey != null) _opts.endkey = opts.endkey;
+      if (opts.key != null) _opts.key = opts.key;
       if (opts.startkey_docid != null) _opts.startkey_docid = opts.startkey_docid;
       if (opts.endkey_docid != null) _opts.endkey_docid = opts.endkey_docid;
       if ((coll.db != null) && (coll.db.view != null) && !(coll.db.keys != null)) {
         delete _opts.keys;
       }
-      if (_list != null) {
+      if (_list) {
         return this.helpers.make_db().list("" + _ddoc + "/" + _list, "" + _view, _opts);
       } else {
-        console.log("" + _ddoc + "/" + _view);
         return this.helpers.make_db().view("" + _ddoc + "/" + _view, _opts);
       }
     },
     read_model: function(model, opts) {
-      console.log('read_model');
       if (!model.id) {
         throw new Error("The model has no id property, so it can't get fetched from the database");
       }
@@ -115,9 +127,15 @@ backbone-couchdb.js is licensed under the MIT license.
           opts.success(doc);
           return opts.complete();
         },
-        error: function() {
-          opts.error();
-          return opts.complete();
+        error: function(status, error, reason) {
+          var res;
+          res = {
+            status: status,
+            error: error,
+            reason: reason
+          };
+          opts.error(res);
+          return opts.complete(res);
         }
       });
     },
@@ -134,9 +152,15 @@ backbone-couchdb.js is licensed under the MIT license.
           });
           return opts.complete();
         },
-        error: function() {
-          opts.error();
-          return opts.complete();
+        error: function(status, error, reason) {
+          var res;
+          res = {
+            status: status,
+            error: error,
+            reason: reason
+          };
+          opts.error(res);
+          return opts.complete(res);
         }
       });
     },
@@ -149,12 +173,18 @@ backbone-couchdb.js is licensed under the MIT license.
           return opts.success();
         },
         error: function(nr, req, e) {
+          var res;
           if (e === "deleted") {
             opts.success();
             return opts.complete();
           } else {
-            opts.error();
-            return opts.complete();
+            res = {
+              status: status,
+              error: error,
+              reason: reason
+            };
+            opts.error(res);
+            return opts.complete(res);
           }
         }
       });
