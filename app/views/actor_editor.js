@@ -17,14 +17,15 @@ module.exports = View.extend({
   createActor: function(event){
     var editor = this;
     
-    var actor = new Actor({
+    var actor = new Actor();
+    actor.save({
       pos : {
         x : event.clientX,
         y : event.clientY
       }
-    });
-    actor.save(null, { success : function(){
-      editor.collection.add(actor)
+    },{
+      success : function(){
+        editor.collection.add(actor);
     }});
   },
   

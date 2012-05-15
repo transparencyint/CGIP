@@ -6,3 +6,4 @@
   <% end %>
 </div>
 <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+<span class="delete">X</span>

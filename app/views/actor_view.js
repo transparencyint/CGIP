@@ -10,12 +10,14 @@ module.exports = View.extend({
     'click .name': 'startEditName',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
-    'keydown .nameInput': 'preventEnter'
+    'keydown .nameInput': 'preventEnter',
+    'click .delete': 'deleteClicked'
   },
   
   initialize: function(){
     _.bindAll(this, 'stopMoving', 'drag');
-    this.model.on('change', this.render, this);
+    this.model.on('change:name', this.render, this);
+    this.model.on('destroy', this.modelDestroyed, this);
   },
 
   startEditName: function(event){
@@ -27,7 +29,7 @@ module.exports = View.extend({
   stopEditName: function(event){
     this.$el.removeClass('editingName');
     var newValue = this.$('.nameInput').val()
-    this.model.save('name', newValue);
+    this.model.save({name: newValue});
     this.$el.draggable('enable');
   },
   
@@ -36,6 +38,14 @@ module.exports = View.extend({
       event.preventDefault();
       this.stopEditName(event);
     }
+  },
+
+  deleteClicked: function(){
+    this.model.destroy();
+  },
+
+  modelDestroyed: function(){
+    this.$el.remove();
   },
   
   stopMoving : function(){

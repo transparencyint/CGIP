@@ -1,6 +1,7 @@
 module.exports = Backbone.Model.extend({
-  url: '/actor',
+  url: '/actors',
   defaults : {
-    name : ""
+    name : '',
+    connections: []
   }
 });
