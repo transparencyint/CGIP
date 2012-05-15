@@ -53,12 +53,12 @@ module.exports = View.extend({
     this.collection.forEach(this.appendActor);
 
     this.collection.forEach(function(model){
-      var connections = model.get('connections');
+      var connections = model.get('accountable_to');
       var to = editor.collection.find(function(searchedModel){
         var found = false;
 
         for(var i = 0; i<connections.length; i++){
-          if(searchedModel.id == connections[i].to){
+          if(searchedModel.id == connections[i].id){
             found = true;
             break;
           }
