@@ -28,7 +28,7 @@ body
   height 160px
   margin -80px 0 0 -80px
   box-sizing border-box
-  position relative
+  position absolute
   text-transform uppercase
   color black
   background #E6E6E6
@@ -43,6 +43,16 @@ body
     min-width 100px
     text-align center
     cursor text
+  input
+    width 100px
+    font-size 100%
+    text-align center
+    display none
+  &.editingName
+    input
+      display block
+    .name
+      display none
 
 #actor_editor
   top 0
