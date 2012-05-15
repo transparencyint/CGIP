@@ -1,7 +1,7 @@
 var View = require('./view');
 var Import = require('models/import');
 var ImportTableView = require('./import_table_view');
-
+var ImportHeadlineView = require('./import_headline_view');
 module.exports = View.extend({
   
   template: require('./templates/import'),
@@ -33,6 +33,10 @@ module.exports = View.extend({
         var filecontent = e.target.result;
         var model = $.csv2Array(filecontent);
 
+        var importHeadlineView = new ImportHeadlineView({model: model});
+        importHeadlineView.render();
+        importView.$el.empty().append(importHeadlineView.el);
+        
         var importTableView = new ImportTableView({model: model});
         importTableView.render();
 
@@ -69,7 +73,7 @@ module.exports = View.extend({
       
       var files = event.originalEvent.dataTransfer.files;
       importView.processFile(files[0])
-
+     
       return false;
     });
   }
