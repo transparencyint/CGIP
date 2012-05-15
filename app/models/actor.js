@@ -2,6 +2,7 @@ module.exports = Backbone.Model.extend({
   url: '/actors',
   defaults : {
     name : '',
-    connections: []
+    money_flow: [],
+    accountable_to: []
   }
 });
