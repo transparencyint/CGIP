@@ -1,25 +1,47 @@
 var View = require('./view');
+var Actor = require('models/actor');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
 var ConnectionView = require('./connection_view');
 
 module.exports = View.extend({
-  id: 'actor_editor',
+  id: 'actorEditor',
   
   template: require('./templates/actor_editor'),
   
   initialize: function(){
-
+    _.bindAll(this, 'appendActor', 'createActor');
+    this.collection.on('add', this.appendActor, this);
+  },
+  
+  createActor: function(event){
+    var editor = this;
+    
+    var actor = new Actor({
+      pos : {
+        x : event.clientX,
+        y : event.clientY
+      }
+    });
+    actor.save(null, { success : function(){
+      editor.collection.add(actor)
+    }});
+  },
+  
+  appendActor: function(model){
+    var actor = new ActorView({ model : model });
+    actor.render();
+    this.workspace.append(actor.el);
   },
   
   render: function(){
     var editor = this;
     
-    this.collection.forEach(function(model){
-      var actor = new ActorView({ model : model });
-      actor.render();
-      editor.$el.append(actor.el);
-    });
+    this.$el.html( this.template() );
+    this.workspace = this.$el.find('.workspace');
+    this.newActor = this.$el.find('.newActor .actor');
+    
+    this.collection.forEach(this.appendActor);
 
     this.collection.forEach(function(model){
       var connections = model.get('connections');
@@ -39,10 +61,20 @@ module.exports = View.extend({
       if(to){
         var connection = new ConnectionView({ from : model, to: to });
         connection.render();  
-        editor.$el.append(connection.el);
+        editor.workspace.append(connection.el);
       }
         
     });
-
+    
+    this.afterRender();
   },
+  
+  afterRender: function(){
+    this.newActor.draggable({
+      start : function(){ $(this).addClass('dragging') }
+    });
+    this.workspace.droppable({
+      drop : this.createActor
+    });
+  }
 });
