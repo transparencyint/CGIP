@@ -42,10 +42,11 @@ module.exports = View.extend({
       top : pos.y
     });
 
-    this.$el.draggable('disable');
-    this.$el.draggable({
-      stop: this.stopMoving
-    });
+    // only add the draggable if it's not already set
+    if(!this.$el.hasClass('ui-draggable'))
+      this.$el.draggable({
+        stop: this.stopMoving
+      });
 
     this.$el.find('.name').text(name);
   },
