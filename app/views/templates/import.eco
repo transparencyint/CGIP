@@ -7,11 +7,4 @@
 
 <div id="csv-upload-target">Drag & Drop file here</div>
 
-<ul id="headlines">
-	<li id="provider">Provider</li>
-	<li id="recipient">Recipient</li>
-	<li id="disbursed">Disbursed</li>
-	<li id="pledged">Pledged</li>
-</ul>
 
-<div id="upload-preview"></div>
