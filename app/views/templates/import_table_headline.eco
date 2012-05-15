@@ -1,0 +1,5 @@
+<% for value in @: %>
+	<% if @.length: %>
+    	<th>Drag here</th> 
+    <% end %>
+<% end %>

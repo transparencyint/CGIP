@@ -1,10 +1,17 @@
-<div id="importform">
+
+<div id="import-form">
 	<form action="" method="post" enctype="multipart/form-data">
 		<input type="file" id="importfile" name="importfile"/>
-		<input type="submit" id="importsubmit" name="importsubmit"/>
 	</form>
 </div>
 
-<div id="csv-upload-target"></div>
+<div id="csv-upload-target">Drag & Drop file here</div>
 
-<div id="uploadPreview"></div>
+<ul id="headlines">
+	<li id="provider">Provider</li>
+	<li id="recipient">Recipient</li>
+	<li id="disbursed">Disbursed</li>
+	<li id="pledged">Pledged</li>
+</ul>
+
+<div id="upload-preview"></div>

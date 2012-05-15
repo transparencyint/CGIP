@@ -15,6 +15,7 @@ module.exports = Backbone.Router.extend({
   },
 
   import: function(country) {
+    console.log(country);
     options = {country: country};
     var importView = new ImportView(options);
     importView.render();
