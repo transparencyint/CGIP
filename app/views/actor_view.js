@@ -7,8 +7,9 @@ module.exports = View.extend({
   className : 'actor',
 
   events: {
-    'mousedown .name': 'dontDrag',
-    'touchstart .name': 'dontDrag'
+    'dblclick .name': 'startEditName',
+    'blur .name': 'stopEditName',
+    'keydown .name': 'preventEnter',
   },
   
   initialize: function(){
@@ -16,15 +17,29 @@ module.exports = View.extend({
     this.model.on('change', this.render, this);
   },
 
-  dontDrag: function(event){
-    event.stopPropagation();
+  startEditName: function(event){
+    this.nameElement.prop('contentEditable', true).focus();
+    this.$el.draggable('disable');
+  },
+  
+  stopEditName: function(event){
+    this.nameElement.prop('contentEditable', false);
+    this.model.save('name', this.nameElement.text());
+    this.$el.draggable('enable');
+  },
+  
+  preventEnter: function(event){
+    if(event.keyCode === 13){
+      event.preventDefault();
+      this.stopEditName();
+    }
   },
   
   stopMoving : function(){
     this.model.save({ 
       'pos' : {
         x : this.$el.offset().left + this.$el.width()/2,
-        y : this.$el.offset().top + this.$el.height()/2
+        y : this.$el.offset().top + this.$el.width()/2
       }
     });
   },
@@ -48,6 +63,6 @@ module.exports = View.extend({
         stop: this.stopMoving
       });
 
-    this.$el.find('.name').text(name);
+    if(!this.nameElement) this.nameElement = this.$el.find('.name');
   },
 });
