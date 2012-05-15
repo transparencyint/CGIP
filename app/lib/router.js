@@ -1,6 +1,7 @@
-var application = require('application');
+var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
 var ImportView = require('views/import_view');
+
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -9,13 +10,17 @@ module.exports = Backbone.Router.extend({
   },
 
   home: function() {
-    var editor = new ActorEditor();
-    editor.render();
-    $('body').append( editor.el );
+    var collection = new Actors();
+    collection.fetch({
+      success: function(){
+        var editor = new ActorEditor({collection: collection});
+        editor.render();
+        $('body').append( editor.el );
+      }
+    });
   },
 
   import: function(country) {
-    console.log(country);
     options = {country: country};
     var importView = new ImportView(options);
     importView.render();

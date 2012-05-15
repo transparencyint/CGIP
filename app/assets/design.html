@@ -1,0 +1,112 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CGIP</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="stylesheets/app.css">
+</head>
+<body class="home">
+  <div id="home">
+    <h1>Select a country</h1>
+    <nav class="countrys">
+      <a href="#bangladesh" class="bangladesh" title="Bangladesh" style="background-image: url(images/flags/bd.png);"></a>
+      <a href="#dominicanRepublic" class="dominicanRepublic" title="Dominican Republic" style="background-image: url(images/flags/do.png);"></a>
+      <a href="#kenya" class="kenya" title="Kenya" style="background-image: url(images/flags/ke.png);"></a>
+      <a href="#maldives" class="maldives" title="Maldives" style="background-image: url(images/flags/mv.png);"></a>
+      <a href="#mexico" class="mexico" title="Mexico" style="background-image: url(images/flags/mx.png);"></a>
+      <a href="#peru" class="peru" title="Peru" style="background-image: url(images/flags/pe.png);"></a>
+    </nav>
+  </div>
+  <div id="actor_editor">
+    <nav class="breadcrumb">
+      <a href="#">Countrys</a><span>&gt;</span><a class="selected">Bangladesh</a>
+    <nav>
+    <div class="actor" style="left: 342px; top: 145px; ">
+      <div class="name" contenteditable>Actor A</div>
+    </div>
+    <div class="actor" style="left: 193px; top: 389px; ">
+      <div class="name" contenteditable>Actor B</div>
+    </div>
+  </div>
+<script type="text/javascript" src="../vendor/scripts/jquery-1.7.2.js"></script>
+<script>
+$('.countrys a').click(function(event){
+  event.preventDefault();
+  router('actor_editor', this.className);
+  $('#actor_editor .breadcrumb .selected').text(this.title);
+});
+
+function router(hash, className){
+  $('#actor_editor').removeClass().addClass(className);
+  location.hash = hash;
+}
+
+//router('actor_editor', 'dominicanRepublic');
+
+var connection = function(x0, y0, x1, y1, size, color){
+  this.update = function(x0, y0, x1, y1, size, color){
+    this.size = size || this.size;
+    this.color = color || this.color;
+    this.pos = {
+      x : Math.min(x0, x1),
+      y : Math.min(y0, y1)
+    }
+    this.start = {
+      x : x0 - this.pos.x,
+      y : y0 - this.pos.y,
+    };
+    this.end = {
+      x : x1 - this.pos.x,
+      y : y1 - this.pos.y,
+    };
+    
+    this.width = Math.abs(this.end.x - this.start.x);
+    this.height = Math.abs(this.end.y - this.start.y);
+     
+    this.cp1 = {
+      x : this.start.x,
+      y : this.end.y,
+    };
+    this.cp2 = {
+      x : this.end.x,
+      y : this.start.y,
+    };
+    
+    return this.renderCanvas();
+  };
+  
+  this.renderCanvas = function(){
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+    this.canvas.style.left = this.pos.x + "px";
+    this.canvas.style.top = this.pos.y + "px";
+    
+    this.ctx.lineWidth = this.size;
+    this.ctx.strokeStyle = this.color;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.start.x, this.start.y);
+    this.ctx.bezierCurveTo(this.cp1.x, this.cp1.y, this.cp2.x, this.cp2.y, this.end.x, this.end.y);
+    this.ctx.stroke();
+    
+    return this.canvas;
+  }
+  
+  return this.update(x0, y0, x1, y1, size, color);
+};
+
+var bd = new connection(342, 145, 193, 389, 5, 'white');
+$('#actor_editor').append(bd);
+</script>
+</body>
+</html>
