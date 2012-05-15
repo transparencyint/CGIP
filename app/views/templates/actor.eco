@@ -1,3 +1,3 @@
-<div class="name" contenteditable>
+<div class="name" contenteditable="false">
   <%= @name %>
 </div>
