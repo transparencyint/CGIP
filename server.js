@@ -7,8 +7,13 @@ var app = express.createServer();
 
 // The remote database information
 var PREFIX = '/db/';
-var TARGET = 'http://localhost';
-var PORT = 5984;
+var TARGET = 'http://cgip.iriscouch.com';
+var PORT = 80;
+
+// set up a username and a password
+// set to null if not needed
+var USERNAME = null;
+var PASSWORD = null;
 
 // This app's port
 var appPort = process.env['app_port'] || 3000;
@@ -40,36 +45,47 @@ function unknownError(response, e) {
 function couchDBRequest(inRequest, inResponse, uri) {
     util.log(inRequest.method + ' ' + uri);
     uri = url.parse(uri);
-    var out = http.createClient(uri.port, uri.hostname);
+    var outPort = (uri.port || 80);
     var path = uri.pathname + (uri.search || '');
+    
     var headers = inRequest.headers;
-    headers['host'] = uri.hostname + ':' + uri.port;
+    headers['host'] = uri.hostname + ':' + outPort;
     headers['x-forwarded-for'] = inRequest.connection.remoteAddress;
-    headers['referer'] = 'http://' + uri.hostname + ':' + uri.port + '/';
+    headers['referer'] = 'http://' + uri.hostname + ':' + outPort + '/';
 
-    var outRequest = out.request(inRequest.method, path, headers);
+    var reqOptions = {
+      hostname: uri.hostname,
+      path: path,
+      port: outPort,
+      method: inRequest.method,
+      headers: headers
+    };
 
-    out.on('error', function(e) {
+    if(USERNAME && PASSWORD)
+      reqOptions.auth = USERNAME + ':' + PASSWORD;
+
+    var outRequest = http.request(reqOptions, function(res){
+      inResponse.statusCode = res.statusCode;
+
+      res.on('data', function(chunk){
+        inResponse.write(chunk);
+      });
+
+      res.on('end', function(){
+        inResponse.end();
+      });
+    });
+
+    outRequest.on('error', function(){
+      console.log('error');
+      console.log(arguments);
       unknownError(inResponse, e);
     });
-    outRequest.on('error', function(e) {
-      unknownError(inResponse, e)
-    });
 
-    inRequest.on('data', function(chunk) {
-      outRequest.write(chunk);
-    });
-    inRequest.on('end', function() {
-      outRequest.on('response', function(outResponse) {
-        if (outResponse.statusCode == 503) {
-          return error(inResponse, 'db_unavailable', 'Database server not available.', 502);
-        }
-        inResponse.writeHead(outResponse.statusCode, outResponse.headers);
-        outResponse.on('data', function(chunk) { inResponse.write(chunk); });
-        outResponse.on('end', function() { inResponse.end(); });
-      });
-      outRequest.end();
-    });
+    if(inRequest.method == 'POST' || inRequest.method == 'PUT')
+      outRequest.write(JSON.stringify(inRequest.body));
+
+    outRequest.end();
 };
 
 process.on('uncaughtException', function(e) {

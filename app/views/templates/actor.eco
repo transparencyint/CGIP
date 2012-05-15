@@ -1,7 +1,3 @@
-<div class="name"><%= @name %></div>
-<div class="connectors">
-  <div class="connector top"></div>
-  <div class="connector right"></div>
-  <div class="connector bottom"></div>
-  <div class="connector left"></div>
+<div class="name" contenteditable>
+  <%= @name %>
 </div>
