@@ -15,9 +15,6 @@ module.exports = View.extend({
         revert: true,
         revertDuration: 100,
         stop: function(event,ui){
-
-          // console.log(event);
-          //console.log(event);
           //console.log(event.target);
         }
       });
