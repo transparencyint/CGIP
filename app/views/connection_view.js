@@ -32,37 +32,37 @@ module.exports = View.extend({
     var from = this.from.get('pos');    
     var to = this.to.get('pos');
     
-    this.pos = {
+    var pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
     }
-    this.start = {
-      x : from.x - this.pos.x,
-      y : from.y - this.pos.y,
+    var start = {
+      x : from.x - pos.x,
+      y : from.y - pos.y,
     };
-    this.end = {
-      x : to.x - this.pos.x,
-      y : to.y - this.pos.y,
+    var end = {
+      x : to.x - pos.x,
+      y : to.y - pos.y,
     };
     
-    this.width = Math.abs(this.end.x - this.start.x);
-    this.height = Math.abs(this.end.y - this.start.y);
+    this.width = Math.abs(end.x - start.x);
+    this.height = Math.abs(end.y - start.y);
      
-    this.cp1 = {
-      x : this.start.x,
-      y : this.end.y,
+    var cp1 = {
+      x : start.x,
+      y : end.y,
     };
-    this.cp2 = {
-      x : this.end.x,
-      y : this.start.y,
+    var cp2 = {
+      x : end.x,
+      y : start.y,
     };
       
     this.$el.attr({
       'width': this.width,
       'height': this.height
     }).css({
-      'left': this.pos.x + "px",
-      'top': this.pos.y + "px"
+      'left': pos.x + "px",
+      'top': pos.y + "px"
     });
     
     this.ctx.lineWidth = 2;
@@ -71,8 +71,8 @@ module.exports = View.extend({
     this.ctx.lineJoin = 'round';
     
     this.ctx.beginPath();
-    this.ctx.moveTo(this.start.x, this.start.y);
-    this.ctx.bezierCurveTo(this.cp1.x, this.cp1.y, this.cp2.x, this.cp2.y, this.end.x, this.end.y);
+    this.ctx.moveTo(start.x, start.y);
+    this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
     this.ctx.stroke();
   }
 
