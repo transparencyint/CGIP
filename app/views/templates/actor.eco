@@ -1,3 +1,8 @@
-<div class="name" contenteditable="false">
-  <%= @name %>
+<div class="name">
+  <% if @name.length == 0: %>
+    Name
+  <% else: %>
+    <%= @name %>
+  <% end %>
 </div>
+<input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />

@@ -7,8 +7,8 @@ var app = express.createServer();
 
 // The remote database information
 var PREFIX = '/db/';
-var TARGET = 'http://cgip.iriscouch.com';
-var PORT = 80;
+var TARGET = 'http://127.0.0.1';
+var PORT = 5984;
 
 // set up a username and a password
 // set to null if not needed
