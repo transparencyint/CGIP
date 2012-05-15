@@ -45,8 +45,8 @@ module.exports = View.extend({
       y : to.y - pos.y,
     };
     
-    this.width = Math.abs(end.x - start.x);
-    this.height = Math.abs(end.y - start.y);
+    var witdh = Math.abs(end.x - start.x);
+    var height = Math.abs(end.y - start.y);
      
     var cp1 = {
       x : start.x,
@@ -58,8 +58,8 @@ module.exports = View.extend({
     };
       
     this.$el.attr({
-      'width': this.width,
-      'height': this.height
+      'width': witdh,
+      'height': height
     }).css({
       'left': pos.x + "px",
       'top': pos.y + "px"
