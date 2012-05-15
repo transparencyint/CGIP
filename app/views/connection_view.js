@@ -11,6 +11,13 @@ module.exports = View.extend({
       this.from = options.from;
       this.to = options.to;      
     }
+
+    if(this.from)
+      this.from.on('change', this.render, this);
+      
+
+    if(this.to)
+      this.to.on('change', this.render, this);
   },
 
   getRenderData : function(){

@@ -14,13 +14,14 @@ module.exports = View.extend({
   },
   
   initialize: function(){
-    _.bindAll(this, 'stopMoving');
+    _.bindAll(this, 'stopMoving', 'drag');
     this.model.on('change', this.render, this);
   },
 
   startEditName: function(event){
     this.$el.addClass('editingName');
     this.$el.draggable('disable');
+    this.$('.nameInput').focus();
   },
   
   stopEditName: function(event){
@@ -38,12 +39,20 @@ module.exports = View.extend({
   },
   
   stopMoving : function(){
-    this.model.save({ 
+    this.model.save(this.getPosition());
+  },
+
+  drag: function(event){
+    this.model.set(this.getPosition());
+  },
+
+  getPosition : function(event){
+    return { 
       'pos' : {
         x : this.$el.offset().left + this.$el.width()/2,
         y : this.$el.offset().top + this.$el.width()/2
       }
-    });
+    };
   },
   
   getRenderData : function(){
@@ -62,7 +71,8 @@ module.exports = View.extend({
     // only add the draggable if it's not already set
     if(!this.$el.hasClass('ui-draggable'))
       this.$el.draggable({
-        stop: this.stopMoving
+        stop: this.stopMoving,
+        drag: this.drag
       });
 
     this.nameElement = this.$el.find('.name');
