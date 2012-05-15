@@ -27,10 +27,10 @@
       <a href="#">Countrys</a><span>&gt;</span><a class="selected">Bangladesh</a>
     <nav>
     <div class="actor" style="left: 342px; top: 145px; ">
-      <div class="name">Actor A</div>
+      <div class="name" contenteditable>Actor A</div>
     </div>
     <div class="actor" style="left: 193px; top: 389px; ">
-      <div class="name">Actor B</div>
+      <div class="name" contenteditable>Actor B</div>
     </div>
   </div>
 <script type="text/javascript" src="../vendor/scripts/jquery-1.7.2.js"></script>
@@ -46,7 +46,7 @@ function router(hash, className){
   location.hash = hash;
 }
 
-router('actor_editor', 'dominicanRepublic');
+//router('actor_editor', 'dominicanRepublic');
 
 var connection = function(x0, y0, x1, y1, size, color){
   this.update = function(x0, y0, x1, y1, size, color){
