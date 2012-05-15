@@ -49,6 +49,7 @@ module.exports = View.extend({
     this.$el.html( this.template() );
     this.workspace = this.$el.find('.workspace');
     this.newActor = this.$el.find('.controls .actor');
+    this.cancel = this.$el.find('.controls .cancel');
     
     this.collection.forEach(this.appendActor);
 
@@ -79,17 +80,31 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+    var editor = this;
+
     this.newActor.draggable({
-      start : function(){ $(this).addClass('dragging') },
-      stop : function(){ $(this).removeClass('dragging') },
+      start : function(){
+        editor.cancel.css({'left' : 0});
+      },
+      stop : function(){
+        editor.cancel.css({'left' : -120});
+        $(this).data('stopped', null);
+      },
       revert : true,
       revertDuration : 1
     });
-    var editor = this;
+
+    this.cancel.droppable({
+      greedy: true,
+      drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
+    });
+
     this.workspace.droppable({
       drop : function(event, ui){
-        if($(ui.draggable).hasClass('new'))
+        var draggable = $(ui.draggable);
+        if(draggable.hasClass('new') && !draggable.data('stopped')){
           editor.createActor(event);
+        }
       }
     });
   }

@@ -2,5 +2,8 @@
   <div class="actor new">
     <div class="name">New Actor</div>
   </div>
+  <div class="cancel">
+    Drop to cancel
+  </div>
 </div>
 <div class="workspace"></div>
