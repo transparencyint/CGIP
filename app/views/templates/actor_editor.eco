@@ -1,0 +1,8 @@
+<div class="controls">
+  <div class="newActor">
+    <div class="actor">
+      <div class="name">New Actor</div>
+    </div>
+  </div>
+</div>
+<div class="workspace"></div>
