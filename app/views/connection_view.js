@@ -6,38 +6,13 @@ module.exports = View.extend({
   
   tagName : 'canvas',
 
-  events : {
-    mousedown : "startToDrag",
-  },
-
   initialize: function(options){
     if(arguments.length > 0){
       this.from = options.from;
       this.to = options.to;      
     }
   },
-  
-  startToDrag : function(event){
-    event.preventDefault();
-    
-    if(event.button === 2) return true; // right-click
-    
-    var myOffset = this.$el.offset();
-    startPos = { 
-      x : normalizedX(event) - myOffset.left,
-      y : normalizedY(event) - myOffset.top
-    };
-    $(document).bind(inputMove, $.proxy( this, "moveElement"));
-    this.moveElement(event);
-  },
 
-  moveElement : function(event){
-      this.$el.css({ 
-        top : normalizedY(event) - startPos.y,
-        left : normalizedX(event) - startPos.x
-      });
-  },
-  
   getRenderData : function(){
     return this.from.toJSON();
   },
@@ -102,7 +77,6 @@ module.exports = View.extend({
     this.ctx.bezierCurveTo(this.cp1.x, this.cp1.y, this.cp2.x, this.cp2.y, this.end.x, this.end.y);
     this.ctx.stroke();
 
-  },
+  }
 
 });
-
