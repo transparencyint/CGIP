@@ -1,6 +1,6 @@
 <div class="name">
   <% if @name.length == 0: %>
-    Name
+    New Actor
   <% else: %>
     <%= @name %>
   <% end %>
