@@ -1,9 +1,15 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
+<<<<<<< HEAD
 @import '_shim'
 @import '_home'
 @import '_actorEditor'
+=======
+@import 'shim'
+@import 'home'
+@import '_import'
+>>>>>>> add some style
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -24,6 +30,9 @@ body
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
+
+h1
+  text-shadow 0 1px 5px rgba(0,0,0,.55)
 
 .actor
   width 160px
@@ -103,6 +112,7 @@ body
 #actor_editor
   canvas
     position absolute
+<<<<<<< HEAD
 
 #headlines
   list-style none
@@ -141,6 +151,8 @@ body
 
   canvas, svg
     position absolute
+=======
+>>>>>>> add some style
     
 .breadcrumb
   margin 21px
@@ -156,6 +168,7 @@ body
 >>>>>>> merged with master
 =======
 
+<<<<<<< HEAD
 .import-table
   clear both
   border 5px solid #555
@@ -165,3 +178,7 @@ body
 
   
 >>>>>>> draggable and droppable headlines
+=======
+.clear
+  clear both
+>>>>>>> add some style
