@@ -24,9 +24,10 @@ body
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
 .actor
-  width 158px
-  height 158px
+  width 160px
+  height 160px
   margin -80px 0 0 -80px
+  box-sizing border-box
   position relative
   text-transform uppercase
   color black
@@ -36,10 +37,10 @@ body
   box-align center
   box-pack center
   cursor default
-  border 1px solid rgba(0,0,0,.55)
-  box-shadow 0 1px 1px 1px black, 0 0 0 1px rgba(255,255,255,.34) inset
+  box-shadow 0 1px 3px 1px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,0.34) inset
   z-index 1
   .name
+    min-width 100px
     text-align center
     cursor text
 
