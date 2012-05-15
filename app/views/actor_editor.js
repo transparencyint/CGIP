@@ -72,7 +72,10 @@ module.exports = View.extend({
   
   afterRender: function(){
     this.newActor.draggable({
-      start : function(){ $(this).addClass('dragging') }
+      start : function(){ $(this).addClass('dragging') },
+      stop : function(){ $(this).removeClass('dragging') },
+      revert : true,
+      revertDuration : 1
     });
     var editor = this;
     this.workspace.droppable({
