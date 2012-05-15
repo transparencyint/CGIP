@@ -6,7 +6,6 @@ module.exports = View.extend({
   id: 'import_headline',
   
   template: require('./templates/import_headline'),
-  tagName: 'p',
 
   initialize: function(){
   },
