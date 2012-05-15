@@ -1,0 +1,38 @@
+#actorEditor
+  top 0
+  left 0
+  right 0
+  bottom 0
+  position absolute
+
+  canvas, svg
+    position absolute
+
+.controls
+  left 0
+  top 50%
+  margin-top -48px
+  width 96px
+  height 96px
+  position fixed
+  background black
+  border-top-right-radius 48px
+  border-bottom-right-radius 48px
+  box-shadow 0 1px 5px rgba(0,0,0,0.89)
+  z-index 100
+  .newActor
+    top 0
+    left 0
+    padding 8px
+    cursor move
+  .actor:not(.dragging)
+    margin 0
+    width 80px
+    height 80px
+    font-size 10px
+    position static
+
+.workspace
+  width 100%
+  height 100%
+  position relative
