@@ -1,6 +1,6 @@
 <div class="controls">
   <div class="newActor">
-    <div class="actor">
+    <div class="actor new">
       <div class="name">New Actor</div>
     </div>
   </div>

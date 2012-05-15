@@ -73,8 +73,12 @@ module.exports = View.extend({
     this.newActor.draggable({
       start : function(){ $(this).addClass('dragging') }
     });
+    var editor = this;
     this.workspace.droppable({
-      drop : this.createActor
+      drop : function(event, ui){
+        if($(ui.draggable).hasClass('new'))
+          editor.createActor(event);
+      }
     });
   }
 });
