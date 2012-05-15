@@ -8,7 +8,7 @@ module.exports = View.extend({
   
   template: require('./templates/import_table'),
   tagName : 'table',
-  className : 'clear',
+  className : 'import-table',
 
   initialize: function(){
   },
