@@ -7,7 +7,6 @@ module.exports = View.extend({
   className : 'actor',
 
   events: {
-    'click .name': 'startEditName',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'preventEnter',
@@ -83,8 +82,8 @@ module.exports = View.extend({
       this.$el.draggable({
         stop: this.stopMoving,
         drag: this.drag
-      });
+      }).selectable();
 
     this.nameElement = this.$el.find('.name');
-  },
+  }
 });
