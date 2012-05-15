@@ -94,7 +94,9 @@ module.exports = View.extend({
     if(!this.$el.hasClass('ui-draggable'))
       this.$el.draggable({
         stop: this.stopMoving,
-        drag: this.drag
+        drag: this.drag,
+        grid: [11, 11],
+        zIndex: 2
       });
 
     this.nameElement = this.$el.find('.name');
