@@ -83,13 +83,7 @@ module.exports = View.extend({
     var editor = this;
 
     this.newActor.draggable({
-      start : function(){
-        editor.cancel.css({'left' : 0});
-      },
-      stop : function(){
-        editor.cancel.css({'left' : -120});
-        $(this).data('stopped', null);
-      },
+      stop : function(){ $(this).data('stopped', null); },
       revert : true,
       revertDuration : 1
     });

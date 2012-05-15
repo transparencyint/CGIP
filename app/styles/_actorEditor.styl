@@ -22,6 +22,7 @@
   border-left none
   box-shadow 0 1px 13px rgba(0,0,0,0.55), 0 0 3px rgba(0,0,0,.21) inset
   z-index 3
+  position relative
   .actor.new
     margin 8px
     width 80px
@@ -31,10 +32,19 @@
     box-shadow 0 1px 1px 1px rgba(0,0,0,.34), 0 1px #fbfbfb inset, 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
     transition width 250ms, height 250ms, margin 250ms
     cursor move
-
   .cancel
     position absolute
-    padding 20px 10px 20px 10px
-    background black
-    left -120px
-    -webkit-transition left 500ms ease-in
+    top 8px
+    left 8px
+    width 80px
+    height 80px
+    text-align center
+    color rgba(0,0,0,.34)
+    text-shadow 0 1px rgba(255,255,255,.13)
+    font-size 0.8em
+    font-weight bold
+    border-radius 100%
+    display box
+    box-align center
+    background rgba(0,0,0,.08)
+    box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
