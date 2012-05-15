@@ -23,17 +23,13 @@ module.exports = View.extend({
   
   showContextMenue: function(event){
     if(event.button === 2){
-      this.$el.addClass('selected');
+      this.$el.addClass('selected').siblings().removeClass('selected');
       this.$el.find('ul').css({
         left : event.pageX - this.$el.offset().left,
         top : event.pageY - this.$el.offset().top
       });
       return false;
     }
-  },
-  
-  hideContextMenue: function(){
-    this.$el.removeClass('selected');
   },
 
   startEditName: function(event){
