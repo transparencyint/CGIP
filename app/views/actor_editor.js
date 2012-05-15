@@ -9,9 +9,17 @@ module.exports = View.extend({
   
   template: require('./templates/actor_editor'),
   
+  events: {
+    'click .workspace': 'unselect'
+  },
+  
   initialize: function(){
     _.bindAll(this, 'appendActor', 'createActor');
     this.collection.on('add', this.appendActor, this);
+  },
+  
+  unselect: function(){
+    this.workspace.find('.actor').removeClass('selected');
   },
   
   createActor: function(event){

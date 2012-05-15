@@ -10,13 +10,30 @@ module.exports = View.extend({
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'preventEnter',
-    'click .delete': 'deleteClicked'
+    'click .delete': 'deleteClicked',
+    'contextmenu': 'showContextMenue',
+    'rightclick': 'showContextMenue'
   },
   
   initialize: function(){
     _.bindAll(this, 'stopMoving', 'drag');
     this.model.on('change:name', this.render, this);
     this.model.on('destroy', this.modelDestroyed, this);
+  },
+  
+  showContextMenue: function(event){
+    if(event.button === 2){
+      this.$el.addClass('selected');
+      this.$el.find('ul').css({
+        left : event.pageX - this.$el.offset().left,
+        top : event.pageY - this.$el.offset().top
+      });
+      return false;
+    }
+  },
+  
+  hideContextMenue: function(){
+    this.$el.removeClass('selected');
   },
 
   startEditName: function(event){
@@ -82,7 +99,7 @@ module.exports = View.extend({
       this.$el.draggable({
         stop: this.stopMoving,
         drag: this.drag
-      }).selectable();
+      });
 
     this.nameElement = this.$el.find('.name');
   }

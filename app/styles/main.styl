@@ -53,8 +53,7 @@ body
       display block
     .name
       display none
-  &.selected 
-    box-shadow 0 0 0 3px #fe57a1, 0 1px 3px 1px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,0.34) inset
+  &.selected
     ul
       display block
   ul
@@ -64,26 +63,30 @@ body
     left 100%
     list-style none
     position absolute
+    border 1px solid rgba(0,0,0,.13)
+    border-radius 5px
+    box-shadow 0 1px 5px rgba(0,0,0,.13)
     display none
     li
-      padding 5px 13px
+      padding 8px 21px
       display block
       cursor pointer
-      span
-        padding 3px 8px
-        font-size 0.8em
+      font-size 0.8em
+      color black
+      white-space nowrap
+      background white
+      border-bottom 1px solid rgba(0,0,0,.13)
+      &:first-child
+        border-radius 5px 5px 0 0
+      &:last-child
+        border-radius 0 0 5px 5px
+        border-bottom none
+      &:hover
         color white
-        white-space nowrap
-        background rgba(0,0,0,.89)
-        box-shadow 0 1px 5px rgba(0,0,0,.34)
-        border-radius 5px
-        &:hover
-          background black
-          box-shadow 0 1px 5px rgba(0,0,0,.89)
-        &:active
-          position relative
-          top 1px
-          box-shadow none
+        background black
+      &:active
+        padding-top 9px
+        padding-bottom 7px
     
 .breadcrumb
   margin 21px
