@@ -48,7 +48,7 @@ module.exports = View.extend({
     
     this.$el.html( this.template() );
     this.workspace = this.$el.find('.workspace');
-    this.newActor = this.$el.find('.newActor .actor');
+    this.newActor = this.$el.find('.controls .actor');
     
     this.collection.forEach(this.appendActor);
 
