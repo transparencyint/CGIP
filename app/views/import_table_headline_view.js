@@ -5,7 +5,6 @@ module.exports = View.extend({
   
   template: require('./templates/import_table_headline'),
   
-  className : '',
   tagName : 'tr',
   
   initialize: function(){
@@ -16,5 +15,10 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+    this.$('th').droppable({
+        drop: function(event,ui){
+          event.target.innerHTML = event.srcElement.innerHTML;
+        }
+      });
   }
 });
