@@ -95,7 +95,6 @@ module.exports = View.extend({
       this.$el.draggable({
         stop: this.stopMoving,
         drag: this.drag,
-        grid: [11, 11],
         zIndex: 2
       });
 
