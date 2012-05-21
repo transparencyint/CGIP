@@ -17,6 +17,20 @@ module.exports = View.extend({
   afterRender: function(){
     this.$('th').droppable({
         accept: "#headlines li",
+        hoverClass: "state-hover",
+        over: function(event,ui){
+          var idx = $(this).parent().children().index(this);
+
+          $("#import_table").find("td").each(function(){
+              if($(this).index() == idx)
+                $(this).addClass("state-hover");
+          });          
+        },
+        out: function(event,ui){
+          $("#import_table").find("td").each(function(){
+              $(this).removeClass("state-hover");
+          });
+        },
         drop: function(event,ui){
           event.target.innerHTML = ui.draggable.text();
           ui.draggable.hide(200);
