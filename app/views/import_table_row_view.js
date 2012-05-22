@@ -7,21 +7,15 @@ module.exports = View.extend({
   
   tagName : 'tr',
   
-  initialize: function(options){
-  	console.log(options);
+  initialize: function(){
   },
   
   getRenderData : function(){
-    return this.model;
-  },
-  
-  setActors: function(actors){
-  	this.actors = actors;
+		return this.model;
   },
 
   afterRender: function(){
-  	console.log(this.actors);
-  	//console.log("Model");
-  	//console.log(this.model);
+		//Get all available actors
+		console.log(this.model[0]);
   }
 });
