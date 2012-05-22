@@ -22,6 +22,7 @@ module.exports = View.extend({
     });
 
     this.collection.forEach(function(model){
+      /*
       var connections = model.get('connections');
       var to = editor.collection.find(function(searchedModel){
         var found = false;
@@ -41,7 +42,7 @@ module.exports = View.extend({
         connection.render();  
         editor.$el.append(connection.el);
       }
-        
+      */
     });
 
   },

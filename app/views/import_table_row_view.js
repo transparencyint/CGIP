@@ -7,13 +7,21 @@ module.exports = View.extend({
   
   tagName : 'tr',
   
-  initialize: function(){
+  initialize: function(options){
+  	console.log(options);
   },
   
   getRenderData : function(){
     return this.model;
   },
   
+  setActors: function(actors){
+  	this.actors = actors;
+  },
+
   afterRender: function(){
+  	console.log(this.actors);
+  	//console.log("Model");
+  	//console.log(this.model);
   }
 });
