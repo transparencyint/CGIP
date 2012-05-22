@@ -16,7 +16,6 @@ module.exports = View.extend({
   
   afterRender: function(){
     this.$('th').droppable({
-        accept: "#headlines li",
         hoverClass: "state-hover",
         over: function(event,ui){
           var idx = $(this).parent().children().index(this);
@@ -32,15 +31,30 @@ module.exports = View.extend({
           });
         },
         drop: function(event,ui){
-          event.target.innerHTML = $(ui.draggable).html();
-          $(this).addClass("state-dragged");
-          $(this).removeClass("ui-droppable");
-          $(".state-dragged").draggable({
+
+          //check if there is a div element already
+          var divID = $(event.target).find("div").attr('id');
+
+          if(divID)
+          {
+            console.log('found');
+            $('#headlines li').each(function(){
+              if($(this).attr('id') == divID)
+                $(this).fadeIn(200);
+            })
+          }
+
+          $(event.target).empty();
+
+          $(event.target).append("<div>" + $(ui.draggable).html() + "</div>");
+          $(this).find("div").attr("id", $(ui.draggable).attr("id"));
+          $(this).find("div").addClass("state-dragged");
+          $(this).find("div").removeClass("state-hover");
+          $(this).find("div").draggable({
             revert: true,
             revertDuration: 100
           });
           ui.draggable.hide(200);
-          //event.target.innerHTML = event.srcElement.innerHTML;
         }
       });
   }
