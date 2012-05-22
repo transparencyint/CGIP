@@ -32,7 +32,13 @@ module.exports = View.extend({
           });
         },
         drop: function(event,ui){
-          event.target.innerHTML = ui.draggable.text();
+          event.target.innerHTML = $(ui.draggable).html();
+          $(this).addClass("state-dragged");
+          $(this).removeClass("ui-droppable");
+          $(".state-dragged").draggable({
+            revert: true,
+            revertDuration: 100
+          });
           ui.draggable.hide(200);
           //event.target.innerHTML = event.srcElement.innerHTML;
         }
