@@ -19,30 +19,57 @@ module.exports = View.extend({
   },
 
   render: function(){
+
     var table = this;
     var headline = true;
 
-    this.model.forEach(function(model){
+    var dbActors = new Actors();
+    
+    var dbActorNames = new Array();
+
+    dbActors.fetch({
+        success: function(){
+          dbActors.forEach(function(dbActor){
+            dbActorNames.push(dbActor.get('name'));
+            //HIER SIND DIE NAMEN AUS DER DB NOCH VORHANDEN!!!
+            //console.log(dbActor.get('name'));
+          });
+        }
+    });
+
+//HIER SIND DIE NAMEN AUS DER DB NICHT MEHR VORHANDEN?!?!
+console.log(dbActorNames);
+
+    this.model.forEach(function(row){
       if(headline){
         headline=false;
-        var tableHeadline = new ImportTableHeadlineView({model:model});
+        var tableHeadline = new ImportTableHeadlineView({model:row});
         tableHeadline.render();
         table.$el.append(tableHeadline.el);
       }
 
-      var tableRow = new ImportTableRowView({ model : model });
+      var availableActor;
+      row.forEach(function(entry){
+          if(row[0] == entry){
+            console.log("E "+entry);
+            //console.log(dbActorNames);
+            for(var i = 0; i < dbActorNames.length; i++) {
+              if(entry == dbActorNames[i]){
+                
+                  availableActor = entry;
+              }
+            }
+          }
+      });
+
+      //console.log(availableActor);
+
+      var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
       tableRow.render();
       table.$el.append(tableRow.el);
 
     });
 
-    var collection = new Actors();
-      collection.fetch({
-        success: function(){
-          collection.forEach(function(actors){
-            table.$el.append(actors.get('name'));
-          });
-        }
-      });
+    
   },
 });

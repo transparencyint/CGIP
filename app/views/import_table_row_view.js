@@ -7,7 +7,10 @@ module.exports = View.extend({
   
   tagName : 'tr',
   
-  initialize: function(){
+  initialize: function(options){
+  	this.availableActor = options.availableActor;
+  	//console.log(options.availableActor);
+  	
   },
   
   getRenderData : function(){
@@ -15,5 +18,12 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
+  	var tableRow = this;
+
+  	
+	
+  	
   }
+
+  
 });

@@ -33,14 +33,16 @@ module.exports = View.extend({
         drop: function(event,ui){
 
           //check if there is a div element already
-          var divID = $(event.target).find("div").attr('id');
+          var targetDivID = $(event.target).find("div").attr('id');
+          var sourceDivID = $(ui.draggable).attr('id');
 
-          if(divID)
+          if(targetDivID && (targetDivID != sourceDivID))
           {
             console.log('found');
             $('#headlines li').each(function(){
-              if($(this).attr('id') == divID)
-                $(this).fadeIn(200);
+
+                if($(this).attr('id') == targetDivID)
+                  $(this).fadeIn(200);
             })
           }
 
