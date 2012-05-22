@@ -39,8 +39,8 @@ module.exports = View.extend({
     var collection = new Actors();
       collection.fetch({
         success: function(){
-          collection.forEach(function(model){
-            table.$el.append(model.get('name'));
+          collection.forEach(function(actors){
+            table.$el.append(actors.get('name'));
           });
         }
       });

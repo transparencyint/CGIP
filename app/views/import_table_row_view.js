@@ -15,7 +15,5 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-		//Get all available actors
-		console.log(this.model[0]);
   }
 });
