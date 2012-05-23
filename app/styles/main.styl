@@ -1,15 +1,9 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
-<<<<<<< HEAD
 @import '_shim'
 @import '_home'
 @import '_actorEditor'
-=======
-@import 'shim'
-@import 'home'
-@import '_import'
->>>>>>> add some style
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -31,9 +25,6 @@ body
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
-h1
-  text-shadow 0 1px 5px rgba(0,0,0,.55)
-
 .actor
   width 160px
   height 160px
@@ -42,7 +33,6 @@ h1
   color black
   background linear-gradient(top, #f5f5f5, #fbfbfb)
   border-radius 160px
-<<<<<<< HEAD
   display box
   box-align center
   box-pack center
@@ -107,78 +97,3 @@ h1
     text-decoration none
     &.selected
       color white
-=======
-  cursor default
-#actor_editor
-  canvas
-    position absolute
-<<<<<<< HEAD
-
-#headlines
-  list-style none
-  li
-    float left
-    margin-left 20px
-    margin-top 50px
-    margin-bottom 50px
-    background #555
-    -webkit-border-radius 5px
-    -khtml-border-radius 5px
-    -moz-border-radius 5px
-    border-radius 5px
-
-
-#import-form
-  margin-top 100px
-  margin-left 20px
-
-#csv-upload-target
-  width 50%
-  height 100px
-  border 3px dashed #999
-  background #EEE;
-  margin 20px
-  padding 30px
-  text-align center
-  vertical-align middle
-  color #555
-
-  &.active-file
-    background #fff
-<<<<<<< HEAD
->>>>>>> add D&D support and clean up structure
-=======
-
-  canvas, svg
-    position absolute
-=======
->>>>>>> add some style
-    
-.breadcrumb
-  margin 21px
-  span
-    margin 0 5px
-    vertical-align text-bottom
-  a, span
-    color rgba(255,255,255,.34)
-    text-decoration none
-    &.selected
-      color white
-<<<<<<< HEAD
->>>>>>> merged with master
-=======
-
-<<<<<<< HEAD
-.import-table
-  clear both
-  border 5px solid #555
-  background #AAA
-  margin-left 50px
-  
-
-  
->>>>>>> draggable and droppable headlines
-=======
-.clear
-  clear both
->>>>>>> add some style
