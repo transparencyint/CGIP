@@ -14,36 +14,76 @@
     position absolute
 
 .controls
+  top 50%
+  margin-top -200px
   background linear-gradient(top, #ececec, #f7f7f7)
-  border-top-right-radius 58px
-  border-bottom-right-radius 58px
-  border 5px solid #f5f5f5
-  border-bottom-color #ebebeb
-  border-left none
-  box-shadow 0 1px 13px rgba(0,0,0,0.55), 0 0 3px rgba(0,0,0,.21) inset
+  border-top-right-radius 5px
+  border-bottom-right-radius 5px
+  box-shadow 0 1px 13px rgba(0,0,0,0.55), 0 0 3px rgba(0,0,0,.21) inset, 0 -1px rgba(0,0,0,.13) inset
   z-index 3
-  position relative
-  .actor.new
+  display box
+  box-orient vertical
+  box-align center
+  position fixed
+  .newActor
     margin 8px
-    width 80px
-    height 80px
+    position relative
+    .actor.new
+      margin 0
+      width 80px
+      height 80px
+      font-size 13px
+      position relative !important
+      box-shadow 0 1px 1px 1px rgba(0,0,0,.13), 0 1px #fbfbfb inset, 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
+      transition width 250ms, height 250ms, margin 250ms
+      cursor move
+    .cancel
+      position absolute
+      top 0
+      left 0
+      width 80px
+      height 80px
+      text-align center
+      color rgba(0,0,0,.34)
+      text-shadow 0 1px rgba(255,255,255,.13)
+      font-size 13px
+      border-radius 100%
+      display box
+      box-align center
+      background rgba(0,0,0,.08)
+      box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
+  ul
+    margin 0
+    padding 0
     font-size 13px
-    position relative !important
-    box-shadow 0 1px 1px 1px rgba(0,0,0,.34), 0 1px #fbfbfb inset, 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
-    transition width 250ms, height 250ms, margin 250ms
-    cursor move
-  .cancel
-    position absolute
-    top 8px
-    left 8px
-    width 80px
-    height 80px
-    text-align center
-    color rgba(0,0,0,.34)
-    text-shadow 0 1px rgba(255,255,255,.13)
-    font-size 13px
-    border-radius 100%
-    display box
-    box-align center
-    background rgba(0,0,0,.08)
-    box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
+    color black
+    list-style none
+    li
+      padding 13px 13px 8px
+      vertical-align top
+      cursor pointer
+      &:last-child
+        border-bottom-right-radius 5px
+      &.active
+        background white
+        box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.08) inset, 0 -1px rgba(0,0,0,.08) inset, 0 -2px rgba(0,0,0,.08) inset
+      &.active:last-child
+        box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.08) inset
+      img
+        margin-bottom 3px
+        display block
+      .name
+        font-size 11px
+        text-shadow 0 1px white
+        text-align center
+        display block
+      .eye
+        width 20px
+        height 20px
+        margin-right 5px
+        background url(../images/glyphicons_051_eye_open.png) no-repeat center center
+        background-size 16px
+        border 1px solid gray
+        display none
+      &.invisible .eye
+        background none
