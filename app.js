@@ -19,6 +19,14 @@ ddoc.views.byCollection = {
   }
 };
 
+ddoc.views.connectionsByTpe = {
+  map: function(doc) {
+    if (doc.collection && doc.collection === "connection" && doc.connectionType) {
+      emit(doc.connectionType, doc);
+    }
+  }
+};
+
 ddoc.filters.by_collection = function(doc, req){
   if(doc.collection && req.query &&req.query.collection && doc.collection == req.query.collection)
     return true;
