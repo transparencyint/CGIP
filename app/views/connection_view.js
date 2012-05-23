@@ -1,26 +1,22 @@
 var View = require('./view');
 
 module.exports = View.extend({
-  
+
   template: require('./templates/connection'),
   
   tagName : 'canvas',
 
   initialize: function(options){
-    if(arguments.length > 0){
-      this.from = options.from;
-      this.to = options.to;      
-    }
 
-    if(this.from)
-      this.from.on('change:pos', this.update, this);
+    if(this.model.from)
+      this.model.from.on('change:pos', this.update, this);
       
-    if(this.to)
-      this.to.on('change:pos', this.update, this);
+    if(this.model.to)
+      this.model.to.on('change:pos', this.update, this);
   },
 
   getRenderData : function(){
-    return this.from.toJSON();
+    return this.model.from.toJSON();
   },
   
   afterRender: function(){
@@ -29,8 +25,8 @@ module.exports = View.extend({
   },
 
   update: function(){
-    var from = this.from.get('pos');    
-    var to = this.to.get('pos');
+    var from = this.model.from.get('pos');    
+    var to = this.model.to.get('pos');
     
     var pos = {
       x : Math.min(from.x, to.x),

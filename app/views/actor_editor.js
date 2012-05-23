@@ -2,6 +2,7 @@ var View = require('./view');
 var Actor = require('models/actor');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var Connection = require('models/connection');
 var ConnectionView = require('./connection_view');
 
 module.exports = View.extend({
@@ -13,9 +14,18 @@ module.exports = View.extend({
     'click .workspace': 'unselect'
   },
   
-  initialize: function(){
+  initialize: function(options){
+
+    // initialize the collections
+    this.actors = options.actors;
+    this.connections = options.connections;
+    var filteredConnections = this.connections.filterConnections();
+    this.moneyConnections = filteredConnections.money;
+    this.accountabilityConnections = filteredConnections.accountability;
+    
+    this.actors.on('add', this.appendActor, this);
+
     _.bindAll(this, 'appendActor', 'createActor');
-    this.collection.on('add', this.appendActor, this);
   },
   
   unselect: function(){
@@ -33,7 +43,7 @@ module.exports = View.extend({
       }
     },{
       success : function(){
-        editor.collection.add(actor);
+        editor.actors.add(actor);
     }});
   },
   
@@ -51,29 +61,13 @@ module.exports = View.extend({
     this.newActor = this.$el.find('.controls .actor');
     this.cancel = this.$el.find('.controls .cancel');
     
-    this.collection.forEach(this.appendActor);
+    this.actors.forEach(this.appendActor);
 
-    this.collection.forEach(function(model){
-      var connections = model.get('accountable_to');
-      var to = editor.collection.find(function(searchedModel){
-        var found = false;
-
-        for(var i = 0; i<connections.length; i++){
-          if(searchedModel.id == connections[i].id){
-            found = true;
-            break;
-          }
-        }
-
-        return found;
-      });
-
-      if(to){
-        var connection = new ConnectionView({ from : model, to: to });
-        connection.render();  
-        editor.workspace.append(connection.el);
-      }
-        
+    this.connections.each(function(connection){
+      connection.pickOutActors(editor.actors);
+      var connView = new ConnectionView({ model : connection });
+      connView.render();  
+      editor.workspace.append(connView.el);
     });
     
     this.afterRender();
