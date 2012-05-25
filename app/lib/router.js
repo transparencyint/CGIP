@@ -1,7 +1,7 @@
 var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
 var ActorConnection = require('views/connection_view');
-var Connections = require('models/connections')
+var Connections = require('models/connections/connections')
 var ImportView = require('views/import_view');
 
 module.exports = Backbone.Router.extend({

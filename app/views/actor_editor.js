@@ -2,7 +2,7 @@ var View = require('./view');
 var Actor = require('models/actor');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
-var Connection = require('models/connection');
+var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 
 module.exports = View.extend({
