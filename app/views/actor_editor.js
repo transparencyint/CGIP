@@ -4,6 +4,7 @@ var Actors = require('models/actors');
 var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
+var ConnectionMode = require('./editor_modes/connection_mode')
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -11,12 +12,11 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .workspace': 'unselect'
+    'click .workspace': 'unselect',
+    'click .connections .accountability': 'activateAccountabilityMode'
   },
   
   initialize: function(options){
-    this.selectedActors = [];
-
     // initialize the collections
     this.actors = options.actors;
     this.connections = options.connections;
@@ -24,9 +24,11 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     
+    // subscribe to add events
     this.actors.on('add', this.appendActor, this);
+    this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection');
   },
   
   unselect: function(){
@@ -48,31 +50,25 @@ module.exports = View.extend({
     }});
   },
   
-  appendActor: function(model){
-    var actor = new ActorView({ model : model, editor: this});
-    actor.render();
-    this.workspace.append(actor.el);
+  appendActor: function(actor){
+    var actorView = new ActorView({ model : actor, editor: this});
+    actorView.render();
+    this.workspace.append(actorView.el);
+  },
+
+  appendAccountabilityConnection: function(connection){
+    connection.pickOutActors(this.actors);
+    var connView = new ConnectionView({ model : connection });
+    connView.render();  
+    this.workspace.append(connView.el);
   },
 
   actorSelected: function(actorView){
-    this.selectedActors.push(actorView);
+    this.mode.actorSelected(actorView);
+  },
 
-    if(this.selectedActors.length == 2){
-      var newAccountabilityConnection = new this.accountabilityConnections.model({
-        from: this.selectedActors[0].model.id,
-        to: this.selectedActors[1].model.id
-      });
-
-      var editor = this;
-
-      newAccountabilityConnection.save(null, {
-        success: function(){
-          editor.accountabilityConnections.add(newAccountabilityConnection);
-        }
-      });
-      
-      this.selectedActors = []
-    }
+  activateAccountabilityMode: function(){
+    this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections);
   },
   
   render: function(){
@@ -83,14 +79,9 @@ module.exports = View.extend({
     this.newActor = this.$el.find('.controls .actor');
     this.cancel = this.$el.find('.controls .cancel');
     
-    this.actors.forEach(this.appendActor);
+    this.actors.each(this.appendActor);
 
-    this.connections.each(function(connection){
-      connection.pickOutActors(editor.actors);
-      var connView = new ConnectionView({ model : connection });
-      connView.render();  
-      editor.workspace.append(connView.el);
-    });
+    this.connections.each(this.appendAccountabilityConnection);
     
     this.afterRender();
   },
