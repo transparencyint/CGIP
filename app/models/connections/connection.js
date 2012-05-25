@@ -1,11 +1,14 @@
-module.exports = Backbone.Model.extend({
+var Model = require('models/model');
+
+module.exports = Model.extend({
   url: '/connections',
 
   defaults: function(){
     return {
       type: 'connection',
       from: null,
-      to: null
+      to: null,
+      source: null
     }
   },
 
