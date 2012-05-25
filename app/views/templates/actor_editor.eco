@@ -10,7 +10,7 @@
       <span class="eye"></span>
       <img src="images/moneyflow.png"><span class="name">Money</span>
     </li>
-    <li class="accountability active">
+    <li class="accountability">
       <span class="eye"></span>
       <img src="images/accountabilityflow.png"><span class="name">Accountability</span>
     </li>

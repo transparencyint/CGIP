@@ -64,11 +64,21 @@ module.exports = View.extend({
   },
 
   actorSelected: function(actorView){
-    this.mode.actorSelected(actorView);
+    if(this.mode)
+      this.mode.actorSelected(actorView);
   },
 
-  activateAccountabilityMode: function(){
-    this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections);
+  activateAccountabilityMode: function(event){
+    this.$('.connections li').removeClass('active');
+    var thisEl = this.$('.connections .accountability');
+    if(this.mode){
+      this.mode.cancel();
+      this.mode.abort()
+      this.mode = null;
+    }else{
+      thisEl.addClass('active');
+      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections);
+    }
   },
   
   render: function(){

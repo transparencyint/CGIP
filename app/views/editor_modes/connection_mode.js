@@ -14,6 +14,7 @@ ConnectionMode.prototype.reset = function(){
   this.connection.id = 1337;
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
+  this.isActive = true;
 
   $(document).unbind('mousemove', this._moveDummy);
 };
@@ -49,8 +50,13 @@ ConnectionMode.prototype.actorSelected = function(actor){
   }
 };
 
-ConnectionMode.prototype.abort = function(){
+ConnectionMode.prototype.cancel = function(){
   this.reset();
+};
+
+ConnectionMode.prototype.abort = function(){
+  this.cancel();
+  this.isActive = false;
 };
 
 ConnectionMode.prototype._moveDummy = function(event){
