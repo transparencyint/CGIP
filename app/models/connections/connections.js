@@ -1,7 +1,9 @@
+var Collection = require('models/collection');
 var Connection = require('./connection');
-var Collection = require('./collection');
 var AccountabilityConnection = require('./accountability_connection');
+var AccountabilityConnections = require('./accountability_connections');
 var MoneyConnection = require('./money_connection');
+var MoneyConnections = require('./money_connections');
 
 var types = {
   accountability: AccountabilityConnection,
@@ -20,8 +22,8 @@ module.exports = Collection.extend({
   // returns an object with different collections for each connection type
   filterConnections: function(){
     var connections = {
-      accountability: new Collection(),
-      money: new Collection
+      accountability: new AccountabilityConnections(),
+      money: new MoneyConnections()
     };
 
     var filtered;
