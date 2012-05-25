@@ -12,13 +12,20 @@ module.exports = View.extend({
     'keydown .nameInput': 'saveOnEnter',
     'click .delete': 'deleteClicked',
     'contextmenu': 'showContextMenue',
-    'rightclick': 'showContextMenue'
+    'rightclick': 'showContextMenue',
+    'click': 'selected'
   },
   
-  initialize: function(){
+  initialize: function(options){
     _.bindAll(this, 'stopMoving', 'drag');
+
+    this.editor = options.editor;
     this.model.on('change:name', this.render, this);
     this.model.on('destroy', this.modelDestroyed, this);
+  },
+
+  selected: function(){
+    this.editor.actorSelected(this);
   },
   
   showContextMenue: function(event){

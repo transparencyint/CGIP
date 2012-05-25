@@ -15,6 +15,7 @@ module.exports = View.extend({
   },
   
   initialize: function(options){
+    this.selectedActors = [];
 
     // initialize the collections
     this.actors = options.actors;
@@ -48,9 +49,30 @@ module.exports = View.extend({
   },
   
   appendActor: function(model){
-    var actor = new ActorView({ model : model });
+    var actor = new ActorView({ model : model, editor: this});
     actor.render();
     this.workspace.append(actor.el);
+  },
+
+  actorSelected: function(actorView){
+    this.selectedActors.push(actorView);
+
+    if(this.selectedActors.length == 2){
+      var newAccountabilityConnection = new this.accountabilityConnections.model({
+        from: this.selectedActors[0].model.id,
+        to: this.selectedActors[1].model.id
+      });
+
+      var editor = this;
+
+      newAccountabilityConnection.save(null, {
+        success: function(){
+          editor.accountabilityConnections.add(newAccountabilityConnection);
+        }
+      });
+      
+      this.selectedActors = []
+    }
   },
   
   render: function(){
