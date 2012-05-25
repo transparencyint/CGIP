@@ -4,6 +4,10 @@ module.exports = View.extend({
 
   template: require('./templates/connection'),
   
+  events: {
+    'click': 'deleteConnection'
+  },
+
   tagName : 'canvas',
 
   initialize: function(options){
@@ -13,6 +17,15 @@ module.exports = View.extend({
       
     if(this.model.to)
       this.model.to.on('change:pos', this.update, this);
+
+    this.model.on('destroy', this.destroy, this);
+  },
+
+  deleteConnection: function(){
+    var fromName = this.model.from.get('name');
+    var toName = this.model.to.get('name');
+    if(confirm('Do you really want to delete this connection (from: ' + fromName +' to: '+ toName + ')?'))
+      this.model.destroy();
   },
 
   getRenderData : function(){
