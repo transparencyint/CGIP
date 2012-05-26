@@ -24,8 +24,11 @@ module.exports = View.extend({
     this.model.on('destroy', this.modelDestroyed, this);
   },
 
-  selected: function(){
+  selected: function(event){
+    event.preventDefault();
+    event.stopPropagation();
     this.editor.actorSelected(this);
+    return false;
   },
   
   showContextMenue: function(event){
