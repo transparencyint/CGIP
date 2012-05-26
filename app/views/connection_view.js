@@ -12,6 +12,9 @@ module.exports = View.extend({
 
   initialize: function(options){
 
+    if(options.noClick)
+      delete this.events.click;
+
     if(this.model.from)
       this.model.from.on('change:pos', this.update, this);
       
