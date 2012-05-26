@@ -1,6 +1,12 @@
 var Actor = require('./actor');
+var Collection = require('./collection');
 
-module.exports = Backbone.Collection.extend({
+module.exports = Collection.extend({
   model: Actor,
-  url: '/actors'
+  url: '/actors',
+  initialize: function(){
+    // call super initialize
+    Collection.prototype.initialize.call(this);
+    
+  }
 });

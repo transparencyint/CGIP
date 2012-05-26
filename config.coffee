@@ -28,6 +28,7 @@ exports.config =
           'vendor/scripts/jquery.couch.js',
           'vendor/scripts/jquery.csv-0-6.js',
           'vendor/scripts/backbone-couchdb.js'
+          'vendor/scripts/jquery.csv-0-6.js'
         ]
 
     stylesheets:
@@ -35,7 +36,6 @@ exports.config =
       joinTo: 'stylesheets/app.css'
       order:
         before: ['vendor/styles/normalize.css']
-        after: ['vendor/styles/helpers.css']
 
     templates:
       defaultExtension: 'eco'
