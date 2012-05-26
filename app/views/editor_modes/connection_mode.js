@@ -5,7 +5,7 @@ var ConnectionMode = function(workspace, collection){
   this.collection = collection;
   this.reset();
 
-  _.bindAll(this, '_moveDummy');
+  _.bindAll(this, '_moveDummy', '_keyUp');
 };
 
 ConnectionMode.prototype.reset = function(){
@@ -17,6 +17,7 @@ ConnectionMode.prototype.reset = function(){
   this.isActive = true;
 
   $(document).unbind('mousemove', this._moveDummy);
+  $(document).unbind('keyup', this._keyUp);
 };
 
 ConnectionMode.prototype.actorSelected = function(actor){
@@ -25,10 +26,11 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', this.connection.from.get('pos'));
-    this.connectionView = new ConnectionView({model: this.connection});
+    this.connectionView = new ConnectionView({model: this.connection, noClick: true});
     this.connectionView.render();
     this.workspace.append(this.connectionView.el);
     $(document).bind('mousemove', this._moveDummy);
+    $(document).bind('keyup', this._keyUp);
   
   }else if(this.selectedActors.length === 2){
 
@@ -51,12 +53,18 @@ ConnectionMode.prototype.actorSelected = function(actor){
 };
 
 ConnectionMode.prototype.cancel = function(){
+  if(this.connectionView)
+    this.connectionView.destroy();
   this.reset();
 };
 
 ConnectionMode.prototype.abort = function(){
   this.cancel();
   this.isActive = false;
+};
+
+ConnectionMode.prototype.unselect = function(){
+  this.cancel();
 };
 
 ConnectionMode.prototype._moveDummy = function(event){
@@ -66,6 +74,10 @@ ConnectionMode.prototype._moveDummy = function(event){
       y: event.clientY
     }
   });
+};
+
+ConnectionMode.prototype._keyUp = function(event){
+  if(event.keyCode === 27) this.cancel(); // cancel on ESC
 };
 
 module.exports = ConnectionMode;

@@ -33,6 +33,7 @@ module.exports = View.extend({
   
   unselect: function(){
     this.workspace.find('.actor').removeClass('selected');
+    if(this.mode) this.mode.unselect();
   },
   
   createActor: function(event){
