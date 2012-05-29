@@ -58,7 +58,7 @@ module.exports = View.extend({
               {
                 matchedActors = true;
                 foundActor = entry;
-                matchedActorID = 0;
+                matchedActorID = i;
                 console.log('Found', entry, dbActor.get('name'));
               }
             });

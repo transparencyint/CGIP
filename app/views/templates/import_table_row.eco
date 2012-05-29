@@ -1,9 +1,5 @@
-<% i = 0 %>
 <% for value in @: %>
 	<% if @.length: %>
-    	<td <% if i == @matchedColumn: %> class="matched" <% end %>>
-    		<%= value%>
-    	</td> 
+    	<td><%= value%></td> 
     <% end %>
-    <% i++ %>
 <% end %>
