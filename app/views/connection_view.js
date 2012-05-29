@@ -32,7 +32,7 @@ module.exports = View.extend({
   },
 
   getRenderData : function(){
-    return this.model.from.toJSON();
+    return {};
   },
   
   afterRender: function(){
