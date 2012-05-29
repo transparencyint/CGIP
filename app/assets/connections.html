@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Connection Test</title>
+<link rel="stylesheet" href="stylesheets/app.css">
+<style>
+  body { margin: 13px; }
+</style>
+<input type="range" value="0" min="10" max="200">
+<?xml version="1.0"?>
+<svg style="display: block;" width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="moneyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop stop-color="#fbd54d" offset="0%"/>
+      <stop stop-color="#fae167" offset="25%"/>
+      <stop stop-color="#fcd852" offset="50%"/>
+      <stop stop-color="#f7eb7a" offset="100%"/>
+    </linearGradient>
+    <linearGradient id="whiteToTransparent" x1="100%" x2="0" y1="0" y2="100%">
+      <stop stop-color="white" offset="0%"/>
+      <stop stop-color="white" offset="50%" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="blackToWhite" x1="25%" y1="0%" x2="100%" y2="0%">
+      <stop stop-color="black" offset="0%"/>
+      <stop stop-color="white" offset="100%"/>
+    </linearGradient>
+    <pattern id="coinsOld" width="3.5" height="12" viewBox="0 0 3.5 12" preserveAspectRatio="xMinYMax slice" patternUnits="userSpaceOnUse" patternTransform="translate(0,6)">
+      <rect x="-1" y="0.5" rx="1.5" ry="1.5" width="7" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
+      <rect x="-3" y="1" rx="1" ry="1" width="7" height="11" style="fill:url(#whiteToTransparent);"/>
+      <rect x="-4.5" y="0.5" rx="1.5" ry="1.5" width="7" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
+      <rect x="-6.5" y="1" rx="1" ry="1" width="7" height="11" style="fill:url(#whiteToTransparent);"/>
+    </pattern>
+    <marker id="coin" viewBox="0 0 7 12" refX="3.5" refY="6" markerWidth="7" markerHeight="12" orient="auto">  
+      <rect x="0.5" y="0.5" rx="2" ry="2" width="6" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
+      <rect x="-1" y="1" rx="1.5" ry="1.5" width="6" height="11" style="fill:url(#whiteToTransparent);"/>
+    </marker>
+    <marker id="Triangle"  
+            viewBox="0 0 10 10"   
+            refX="1" refY="5"  
+            markerWidth="6"   
+            markerHeight="6"  
+            orient="auto">  
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="white"/>  
+    </marker>
+  </defs>
+  <polyline points="0,50 188,50" fill="none" stroke="white" stroke-width="2" marker-end="url(#Triangle)"/>
+
+  <path d="M 10 25 H 14 18 22 26 30 34 38 42 46 50" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
+</svg>
+<script>
+  var slider = document.querySelector('input[type="range"]');
+  var svg, width, heigth, factor = 10;
+  
+  function init(){
+    svg = document.querySelector('svg');
+    width = svg.width.baseVal.value;
+    height = svg.height.baseVal.value;
+    if(localStorage['zoomLevel']){
+      slider.value = localStorage['zoomLevel'];
+      setZoom(localStorage['zoomLevel']);
+    }
+  }
+  
+  function setZoom(level){
+    svg.setAttribute("height", height * level/factor);
+    svg.setAttribute("width", width * level/factor);
+  }
+  
+  slider.onchange = function(){
+    setZoom(this.value);
+    localStorage['zoomLevel'] = this.value;
+  }
+  
+  setTimeout(init, 0);
+</script>

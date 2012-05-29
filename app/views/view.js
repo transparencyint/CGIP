@@ -23,5 +23,12 @@ module.exports = Backbone.View.extend({
     return window.Touch ? event.originalEvent.touches[0].pageY : event.pageY;
   },
 
-  afterRender: function() {}
+  afterRender: function() {},
+
+  destroy: function(){
+    if(this.model)
+      this.model.off(null, null, this);
+
+    this.$el.remove();
+  }
 });

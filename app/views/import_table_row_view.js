@@ -22,9 +22,10 @@ module.exports = View.extend({
 
   },
 
-  setMarkedActor: function(){
+  setMarkedActor: function(matchedActorID){
+    console.log(matchedActorID);
     $(this.el).addClass('matchedRow');
-  }
+  },
 
   
 });

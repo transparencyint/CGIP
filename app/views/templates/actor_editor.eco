@@ -1,0 +1,19 @@
+<div class="controls">
+  <div class="newActor">
+    <div class="actor new">
+      <div class="name">New Actor</div>
+    </div>
+    <div class="cancel"><span>Drop to cancel</span></div>
+  </div>
+  <ul class="connections">
+    <li class="money">
+      <span class="eye"></span>
+      <img src="images/moneyflow.png"><span class="name">Money</span>
+    </li>
+    <li class="accountability">
+      <span class="eye"></span>
+      <img src="images/accountabilityflow.png"><span class="name">Accountability</span>
+    </li>
+  </ul>
+</div>
+<div class="workspace"></div>

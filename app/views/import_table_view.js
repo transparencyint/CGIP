@@ -48,7 +48,8 @@ module.exports = View.extend({
 
           var availableActor;
           var matchedActors = false;
-
+          var matchedActorID = 0;
+          var i = 0;
           row.forEach(function(entry){
             var foundActor = "";
 
@@ -57,15 +58,19 @@ module.exports = View.extend({
               {
                 matchedActors = true;
                 foundActor = entry;
+                matchedActorID = 0;
                 console.log('Found', entry, dbActor.get('name'));
               }
             });
+            i++;
           });
 
           var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
-          
+
           if(matchedActors)
-            tableRow.setMarkedActor();
+          {
+            tableRow.setMarkedActor(matchedActorID);
+          }
 
           tableRow.render();
           table.$el.append(tableRow.el);

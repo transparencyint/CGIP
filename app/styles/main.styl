@@ -1,8 +1,9 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
-@import 'shim'
-@import 'home'
+@import '_shim'
+@import '_home'
+@import '_actorEditor'
 @import '_import'
 
 // Apply a natural box layout model to all elements.
@@ -15,11 +16,10 @@ html
   font 300 16px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
   color white
   background url(../images/bluegrid.png) center top
-  overflow hidden
+  user-select none
   
 body
   height 100%
-  overflow hidden
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -31,26 +31,64 @@ h1
   width 160px
   height 160px
   margin -80px 0 0 -80px
-  box-sizing border-box
-  position relative
-  text-transform uppercase
+  position absolute !important
   color black
-  background #E6E6E6
+  background linear-gradient(top, #f5f5f5, #fbfbfb)
   border-radius 160px
   display box
   box-align center
   box-pack center
-  cursor default
-  border 1px solid rgba(0,0,0,.55)
-  box-shadow 0 1px 1px 1px black, 0 0 0 1px rgba(255,255,255,.34) inset
+  box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   z-index 1
+  cursor move
   .name
+    min-width 50%
     text-align center
-    cursor text
 
-#actor_editor
-  canvas
+  input
+    width 66%
+    font-size 100%
+    text-align center
+    display none
+  &.editingName
+    input
+      display block
+    .name
+      display none
+  &.selected
+    ul
+      display block
+  ul
+    margin -5px 0 0
+    padding 0
+    top 0
+    left 100%
+    list-style none
     position absolute
+    border 1px solid rgba(0,0,0,.13)
+    border-radius 5px
+    box-shadow 0 1px 5px rgba(0,0,0,.13)
+    display none
+    li
+      padding 8px 21px
+      display block
+      cursor pointer
+      font-size 0.8em
+      color black
+      white-space nowrap
+      background white
+      border-bottom 1px solid rgba(0,0,0,.13)
+      &:first-child
+        border-radius 5px 5px 0 0
+      &:last-child
+        border-radius 0 0 5px 5px
+        border-bottom none
+      &:hover
+        color white
+        background black
+      &:active
+        padding-top 9px
+        padding-bottom 7px
     
 .breadcrumb
   margin 21px

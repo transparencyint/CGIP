@@ -22,12 +22,13 @@ exports.config =
         before: [
           'vendor/scripts/console-helper.js',
           'vendor/scripts/jquery-1.7.2.js',
-          'vendor/scripts/jquery.ui.1.8.20.custom.js',
+          'vendor/scripts/jquery-ui-1.8.20.custom.js',
           'vendor/scripts/underscore-1.3.1.js',
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/jquery.couch.js',
           'vendor/scripts/jquery.csv-0-6.js',
           'vendor/scripts/backbone-couchdb.js'
+          'vendor/scripts/jquery.csv-0-6.js'
         ]
 
     stylesheets:
@@ -35,7 +36,6 @@ exports.config =
       joinTo: 'stylesheets/app.css'
       order:
         before: ['vendor/styles/normalize.css']
-        after: ['vendor/styles/helpers.css']
 
     templates:
       defaultExtension: 'eco'

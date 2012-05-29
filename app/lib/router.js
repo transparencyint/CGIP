@@ -1,7 +1,8 @@
 var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
+var ActorConnection = require('views/connection_view');
+var Connections = require('models/connections/connections')
 var ImportView = require('views/import_view');
-
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -10,12 +11,24 @@ module.exports = Backbone.Router.extend({
   },
 
   home: function() {
-    var collection = new Actors();
-    collection.fetch({
+    var actors = new Actors();
+
+    // fetch all actors
+    actors.fetch({
       success: function(){
-        var editor = new ActorEditor({collection: collection});
-        editor.render();
-        $('body').append( editor.el );
+
+        // fetch all connections
+        var connections = new Connections();
+        connections.fetch({
+          success: function(){
+
+            // instantiate the editor
+            var editor = new ActorEditor({connections: connections, actors: actors});
+            editor.render();
+            $('body').append( editor.el );    
+          }
+        });
+        
       }
     });
   },
