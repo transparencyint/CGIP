@@ -92,6 +92,8 @@ module.exports = View.extend({
     
     this.actors.each(this.appendActor);
 
+    this.connections.each(this.appendAccountabilityConnection);
+
   },
   
   afterRender: function(){
