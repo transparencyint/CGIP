@@ -36,7 +36,7 @@
       <rect x="0.5" y="0.5" rx="2" ry="2" width="6" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
       <rect x="-1" y="1" rx="1.5" ry="1.5" width="6" height="11" style="fill:url(#whiteToTransparent);" mask="url(#coinHighlightMask)"/>
     </marker>
-    <marker id="Triangle"  
+    <marker id="triangle"  
             viewBox="0 0 10 10"   
             refX="1" refY="5"  
             markerWidth="6"   
@@ -51,9 +51,9 @@
 
   <path d="M 10 25 H 14 18 22 26 30 34 38 42 46 50" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
 </svg>
-<svg width="1000" height="200" viewbox="0 0 100 100">
-  <defs><marker id="triangle" viewbox="0 0 10 10" refx="1" refy="5" markerwidth="6" markerheight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="white"></path></marker></defs><g>
-  <path d="M0,0 100,100" fill="none" stroke="white" stroke-width="2" marker-end="url(#triangle)"></path></g></svg>
+<svg width="200" height="200">
+  <path d="M0,0 100,100" fill="none" stroke="white" stroke-width="2" marker-end="url(#triangle)"></path>
+</svg>
 <script>
   var slider = document.querySelector('input[type="range"]');
   var svg, width, heigth, factor = 10;
