@@ -92,7 +92,6 @@ module.exports = View.extend({
     });
     
     var angle = Math.atan(height/width); // * 180/Math.PI
-    console.log(height, width, angle * 180/Math.PI);
     
     if(start.x < end.x){
       start.x += this.actorRadius*Math.cos(angle);
