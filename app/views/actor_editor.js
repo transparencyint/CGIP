@@ -86,6 +86,11 @@ module.exports = View.extend({
   actorSelected: function(actorView){
     if(this.selectedActors.length <= 1)
       this.selectedActors = [actorView.model];
+    else{
+      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
+      if(!found)
+        this.selectedActors = [actorView.model]
+    }
     if(this.mode)
       this.mode.actorSelected(actorView);
   },
