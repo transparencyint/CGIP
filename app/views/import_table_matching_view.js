@@ -60,6 +60,7 @@ module.exports = View.extend({
 
 
         console.log(matchedColumns);
+        var j = 0;
         //CSV data
         model.forEach(function(row){
 
@@ -77,27 +78,33 @@ module.exports = View.extend({
           var matchedActors = false;
           var matchedActorID = 0;
           var i = 0;
+          
 
           //for each row in the CSV document get the column
           row.forEach(function(column){
-            console.log(column);
+            
+            //console.log(column);
             var foundActor = "";
 
             //Check which type is column
             
             //go through each actor in the database
-            dbActors.forEach(function(dbActor){
-              if(column == dbActor.get('name'))
-              {
-                matchedActors = true;
-                foundActor = column;
-                matchedActorID = i;
-                console.log('Found', column, dbActor.get('name'));
-              }
-            });
+            if(i == matchedColumns[0] || i == matchedColumns[1]){
+              dbActors.forEach(function(dbActor){
+                if(column == dbActor.get('name'))
+                {
+                  matchedActors = true;
+                  foundActor = column;
+                  matchedActorID = j;
+                  //console.log('Found', column, dbActor.get('name'));
+                  console.log('Found ', dbActor.get('name'), 'in colum ', i, 'and line ', j);
+                }
+              });
+          }
             i++;
+            
           });
-
+          j++;
           var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
 
           if(matchedActors)
