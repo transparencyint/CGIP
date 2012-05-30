@@ -15,6 +15,8 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+    var headlineView = this;
+
     this.$('th').droppable({
         hoverClass: "state-hover",
         over: function(event,ui){
@@ -68,15 +70,25 @@ module.exports = View.extend({
           //ui.draggable.remove();
 
           //check if all elements are moved to headlines
-          var allHidden = true;
-          $('#headlines li').each(function(){
-            console.log($(this).is(':visible'));
-            if($(this).is(':visible'))
-              allHidden = false;
-          });
-          console.log(allHidden);
+          setTimeout(function(){
+            headlineView.checkHiddenstates();  
+          }, 250);
 
         }
       });
+  },
+
+  checkHiddenstates: function(){
+
+    var allHidden = true;
+    $('#headlines li').each(function(){
+      if($(this).is(':visible'))
+        allHidden = false;
+    });
+    if(allHidden)
+      $('#matchButton').css('display', 'block');
+    else
+      $('#matchButton').css('display', 'none');
+
   }
 });

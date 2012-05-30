@@ -34,12 +34,7 @@ module.exports = View.extend({
           }
           var availableActor;
 
-          
-
           var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
-
-          
-
           tableRow.render();
           table.$el.append(tableRow.el);
 

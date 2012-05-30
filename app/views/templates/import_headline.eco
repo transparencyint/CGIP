@@ -1,5 +1,6 @@
 <h1>Match Columns</h1>
 <p>These elements are draggable. Please drag them into the corresponding table headlines.</p>
+<input type="button" id="matchButton" value="Match Actors">
 <ul id="headlines">
 	<li id="provider">Provider</li>
 	<li id="recipient">Recipient</li>
