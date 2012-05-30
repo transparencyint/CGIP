@@ -46,9 +46,14 @@
     </marker>
   </defs>
   <polyline points="0,50 188,50" fill="none" stroke="white" stroke-width="2" marker-end="url(#Triangle)"/>
+  
+  <path d="M0,155 C0,0 232,155 232,0" fill="none" stroke="black" stroke-width="5"></path>
 
   <path d="M 10 25 H 14 18 22 26 30 34 38 42 46 50" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
 </svg>
+<svg width="1000" height="200" viewbox="0 0 100 100">
+  <defs><marker id="triangle" viewbox="0 0 10 10" refx="1" refy="5" markerwidth="6" markerheight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="white"></path></marker></defs><g>
+  <path d="M0,0 100,100" fill="none" stroke="white" stroke-width="2" marker-end="url(#triangle)"></path></g></svg>
 <script>
   var slider = document.querySelector('input[type="range"]');
   var svg, width, heigth, factor = 10;
