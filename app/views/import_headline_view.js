@@ -12,9 +12,10 @@ module.exports = View.extend({
     'click #matchButton': 'loadMatchView'
   },
 
-  initialize: function(){
+  initialize: function(options){
+    this.model = options;
   },
-  
+
   afterRender: function(){
       this.$('#headlines li').draggable({
         revert: true,
@@ -26,6 +27,7 @@ module.exports = View.extend({
   },
 
   loadMatchView: function(){
+    var model = this.model;
     console.log('loading match view');
     var tableMatchingView = new ImportTableMatchingView({model : model});
     tableMatchingView.render();

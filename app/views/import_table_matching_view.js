@@ -11,7 +11,8 @@ module.exports = View.extend({
   tagName : 'table',
   className : 'import-table',
 
-  initialize: function(){
+  initialize: function(options){
+    this.model = options.model.model;
     this.dbActors = new Actors();
     _.bindAll(this, 'setActors'); 
   },
