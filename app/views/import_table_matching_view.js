@@ -13,6 +13,8 @@ module.exports = View.extend({
 
   initialize: function(options){
     this.model = options.model.model;
+    this.tableColumns = options.tableColumns;
+
     this.dbActors = new Actors();
     _.bindAll(this, 'setActors'); 
   },
@@ -32,39 +34,65 @@ module.exports = View.extend({
   render: function(){
     var table = this;
     var model = this.model;
+    var tableColumns = this.tableColumns;
     var dbActors = this.dbActors;
     var headline = true;
 
-    console.log(model);
+    //console.log(model);
+    console.log(tableColumns);
+
     dbActors.fetch({
       success: function(dbActors){
 
+        var matchedColumns = new Array();
+        
+        for(i=0; i<tableColumns.length; i++)
+        {
+          if(tableColumns[i] == "provider")
+            matchedColumns[0] = i;
+          if(tableColumns[i] == "recipient")
+            matchedColumns[1] = i;
+          if(tableColumns[i] == "pledged")
+            matchedColumns[2] = i;
+          if(tableColumns[i] == "disbursed")
+            matchedColumns[3] = i;
+        }
+
+
+        console.log(matchedColumns);
         //CSV data
         model.forEach(function(row){
+
+          //Print out the 4 headlines
           if(headline){
-            headline=false;
-            var tableHeadline = new ImportTableHeadlineView({model:row});
-            tableHeadline.render();
-            table.$el.append(tableHeadline.el);
+            var headlines = "<tr><th>Provider</th><th>Receiver</th><th>Pledged</th><th>Disbursed</th></tr>";
+
+            table.$el.append(headlines);
+            headline = false;
           }
+
+          //Combine the columns and to the correct places
 
           var availableActor;
           var matchedActors = false;
           var matchedActorID = 0;
           var i = 0;
 
-          //for each row in the CSV document
-          row.forEach(function(entry){
+          //for each row in the CSV document get the column
+          row.forEach(function(column){
+            console.log(column);
             var foundActor = "";
 
+            //Check which type is column
+            
             //go through each actor in the database
             dbActors.forEach(function(dbActor){
-              if(entry == dbActor.get('name'))
+              if(column == dbActor.get('name'))
               {
                 matchedActors = true;
-                foundActor = entry;
+                foundActor = column;
                 matchedActorID = i;
-                console.log('Found', entry, dbActor.get('name'));
+                console.log('Found', column, dbActor.get('name'));
               }
             });
             i++;

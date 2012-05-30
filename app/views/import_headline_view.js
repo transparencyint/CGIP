@@ -27,9 +27,29 @@ module.exports = View.extend({
   },
 
   loadMatchView: function(){
+    var tableColumns = new Array();
+    var i = 0;
+
+    //Get the positions of the dragged buttons
+    $('#import_table th').each(function(){
+      var divID = $(this).find('div').attr('id');
+
+      if(divID)
+        tableColumns[i] = divID;
+      else
+        tableColumns[i] = null;
+      
+      i++;
+    });
+
+    //console.log(tableColumns);
+
+    //Make other view invisible
+    $('#import_table').hide();
+
     var model = this.model;
     console.log('loading match view');
-    var tableMatchingView = new ImportTableMatchingView({model : model});
+    var tableMatchingView = new ImportTableMatchingView({model : model, tableColumns : tableColumns});
     tableMatchingView.render();
     this.$el.append(tableMatchingView.el);
   }
