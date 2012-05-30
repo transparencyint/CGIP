@@ -32,7 +32,7 @@ module.exports = View.extend({
   },
   
   unselect: function(){
-    this.workspace.find('.actor').removeClass('selected');
+    this.workspace.find('.actor').removeClass('selected contextMenu');
     if(this.mode) this.mode.unselect();
     this.selectedActors = [];
   },
