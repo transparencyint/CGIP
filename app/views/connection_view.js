@@ -70,15 +70,6 @@ module.exports = View.extend({
     
     var width = Math.abs(from.x - to.x) + this.strokeWidth;
     var height = Math.abs(from.y - to.y) + this.strokeWidth;
-     
-    var cp1 = {
-      x : start.x,
-      y : end.y,
-    };
-    var cp2 = {
-      x : end.x,
-      y : start.y,
-    };
       
     this.svg.configure({
       'width' : width,
@@ -92,25 +83,36 @@ module.exports = View.extend({
     });
     
     var angle = Math.atan(height/width); // * 180/Math.PI
+    var endOffset = (this.actorRadius+(this.markerSize*this.strokeWidth/2));
     
     if(start.x < end.x){
       start.x += this.actorRadius*Math.cos(angle);
-      end.x -= (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.cos(angle);
+      end.x -= endOffset * Math.cos(angle);
     } else {
       start.x -= this.actorRadius*Math.cos(angle);
-      end.x += (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.cos(angle);
+      end.x += endOffset * Math.cos(angle);
     }
     if(start.y < end.y){
       start.y += this.actorRadius*Math.sin(angle);
-      end.y -= (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.sin(angle);
+      end.y -= endOffset*Math.sin(angle);
     } else {
       start.y -= this.actorRadius*Math.sin(angle);
-      end.y += (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.sin(angle);
+      end.y += endOffset*Math.sin(angle);
     }
+    
+    var cp1 = {
+      x : start.x,
+      y : end.y,
+    };
+    var cp2 = {
+      x : end.x,
+      y : start.y,
+    };
+    
     var path = 'M' + start.x +','+ start.y +' '+ end.x +','+ end.y;
+    //var path = 'M'+ start.x +','+start.y+' C'+cp1.x+','+cp1.y+' '+cp2.x+','+cp2.y+' '+end.x+','+end.y;
 
     if(this.path) this.svg.remove(this.path);
-    //var path = 'M'+ start.x +','+start.y+' C'+cp1.x+','+cp1.y+' '+cp2.x+','+cp2.y+' '+end.x+','+end.y;
     this.path = this.svg.path(this.g, path, {
       fill : 'none', 
       stroke : this.strokeStyle,
