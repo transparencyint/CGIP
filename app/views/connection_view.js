@@ -44,10 +44,8 @@ module.exports = View.extend({
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
     this.$el.svg();
     this.svg = this.$el.svg('get');
-    this.defs = this.svg.defs();
-    this.marker = this.svg.marker(this.defs, 'triangle', 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize });
-    this.svg.path(this.marker, 'M 0 0 L '+ this.markerSize +' '+ this.markerSize/2 +' L 0 '+ this.markerSize +' z', { fill: this.strokeStyle });
     this.g = this.svg.group();
+    createDefs(this.markerSize, this.strokeStyle);
     this.update();
   },
 
@@ -132,3 +130,13 @@ module.exports = View.extend({
   }
 
 });
+
+function createDefs(markerSize, strokeStyle){
+  if(this.svg === undefined){
+    $('body').svg().find('> svg').attr('id', 'svgDefinitions');
+    this.svg = $('body').svg('get');
+    var defs = this.svg.defs();
+    var marker = this.svg.marker(defs, 'triangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
+    this.svg.path(marker, 'M 0 0 L '+ markerSize +' '+ markerSize/2 +' L 0 '+ markerSize +' z', { fill: strokeStyle });
+  }
+}
