@@ -17,5 +17,9 @@
       <img src="images/accountabilityflow.png"><span class="name">Accountability</span>
     </li>
   </ul>
+  <div class="zoom">
+    <div class="in">+</div>
+    <div class="out">-</div>
+  </div>
 </div>
 <div class="workspace"></div>

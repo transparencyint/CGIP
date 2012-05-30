@@ -12,7 +12,9 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .connections .accountability': 'activateAccountabilityMode'
+    'click .connections .accountability': 'activateAccountabilityMode',
+    'click .zoom .in': 'zoomIn',
+    'click .zoom .out': 'zoomOut',
   },
   
   initialize: function(options){
@@ -23,12 +25,22 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.selectedActors = [];
+    this.zoom = 1;
+    this.maxZoom = 4;
     
     // subscribe to add events
     this.actors.on('add', this.appendActor, this);
     this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp', 'unselect');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+  },
+  
+  zoomIn: function(){
+    if(this.zoom - 1 > 0) this.workspace.removeClass('zoom-' + this.zoom).addClass('zoom-' + --this.zoom);
+  },
+  
+  zoomOut: function(){
+    if(this.zoom + 1 <= this.maxZoom) this.workspace.removeClass('zoom-' + this.zoom).addClass('zoom-' + ++this.zoom);
   },
   
   unselect: function(){

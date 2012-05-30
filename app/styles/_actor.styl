@@ -1,3 +1,28 @@
+.zoom-2 .actor
+  width 120px
+  height 120px
+  margin -60px 0 0 -60px
+  font-size 13px
+  box-shadow 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
+  &.ui-selected
+    box-shadow 0 0 0 4px hsl(205,100%,55%), 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
+.zoom-3 .actor
+  width 80px
+  height 80px
+  margin -40px 0 0 -40px
+  font-size 10px
+  box-shadow 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+  &.ui-selected
+    box-shadow 0 0 0 3px hsl(205,100%,55%), 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+.zoom-4 .actor
+  width 40px
+  height 40px
+  margin -20px 0 0 -20px
+  font-size 6px
+  box-shadow 0 1px 1px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -1px #f0f0f0 inset, 0 0 0 1px #f9f9f9 inset
+  &.ui-selected
+    box-shadow 0 0 0 2px hsl(205,100%,55%), 0 1px 1px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -1px #f0f0f0 inset, 0 0 0 1px #f9f9f9 inset
+
 .actor
   width 160px
   height 160px
@@ -10,24 +35,9 @@
   box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   z-index 1
   cursor move
+  transition margin 250ms, width 250ms, height 250ms, font-size 250ms, box-shadow 250ms
   &.ui-selected
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
-  &.zoom-2
-    width 120px
-    height 120px
-    margin -60px 0 0 -60px
-    font-size 13px
-    box-shadow 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
-    &.ui-selected
-      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
-  &.zoom-3
-    width 80px
-    height 80px
-    margin -40px 0 0 -40px
-    font-size 10px
-    box-shadow 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
-    &.ui-selected
-      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
   .inner
     height 100%
     width 100%

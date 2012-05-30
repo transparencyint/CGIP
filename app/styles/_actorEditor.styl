@@ -13,6 +13,16 @@
       cursor default
   .connection
     position absolute
+    
+.workspace
+  background url(../images/bluegrid.png) center top
+  transition 250ms
+  &.zoom-2
+    background-size 75px
+  &.zoom-3
+    background-size 50px
+  &.zoom-4
+    background-size 25px
 
 .controls
   top 50%
@@ -88,3 +98,25 @@
         display none
       &.invisible .eye
         background none
+  .zoom
+    margin 13px 0
+    > div
+      margin 13px 0
+      padding 7px 0
+      width 55px
+      height 55px
+      font-weight bold
+      color black
+      font-size 34px
+      line-height 1
+      text-align center
+      text-shadow 0 1px white
+      background white
+      border-radius 50%
+      border 1px solid rgba(0,0,0,.34)
+      box-shadow 0 1px white, 0 -1px rgba(0,0,0,.13) inset
+      cursor pointer
+      &:active
+        background rgba(0,0,0,.05)
+        box-shadow 0 1px white, 0 -1px rgba(0,0,0,.13) inset, 0 1px 1px rgba(0,0,0,.13) inset
+        
