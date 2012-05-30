@@ -8,10 +8,10 @@ module.exports = View.extend({
     'click': 'deleteConnection'
   },
 
-  tagName : 'canvas',
+  tagName : 'div',
+  className : 'connection',
 
   initialize: function(options){
-
     if(options.noClick)
       this.$el.unbind('click')
 
@@ -36,7 +36,18 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    this.ctx = this.$el.get(0).getContext('2d');
+    //this.ctx = this.$el.get(0).getContext('2d');
+    this.strokeStyle = 'white';
+    this.strokeWidth = 5;
+    this.actorRadius = 80;
+    this.markerSize = 5;
+    this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
+    this.$el.svg();
+    this.svg = this.$el.svg('get');
+    this.defs = this.svg.defs();
+    this.marker = this.svg.marker(this.defs, 'triangle', 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize });
+    this.svg.path(this.marker, 'M 0 0 L '+ this.markerSize +' '+ this.markerSize/2 +' L 0 '+ this.markerSize +' z', { fill: this.strokeStyle });
+    this.g = this.svg.group();
     this.update();
   },
 
@@ -47,18 +58,18 @@ module.exports = View.extend({
     var pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
-    }
+    }    
     var start = {
-      x : from.x - pos.x,
-      y : from.y - pos.y,
+      x : from.x - pos.x + this.strokeWidth/2,
+      y : from.y - pos.y + this.strokeWidth/2
     };
     var end = {
-      x : to.x - pos.x,
-      y : to.y - pos.y,
+      x : to.x - pos.x + this.strokeWidth/2,
+      y : to.y - pos.y + this.strokeWidth/2
     };
     
-    var witdh = Math.abs(end.x - start.x);
-    var height = Math.abs(end.y - start.y);
+    var width = Math.abs(from.x - to.x) + this.strokeWidth;
+    var height = Math.abs(from.y - to.y) + this.strokeWidth;
      
     var cp1 = {
       x : start.x,
@@ -69,23 +80,54 @@ module.exports = View.extend({
       y : start.y,
     };
       
-    this.$el.attr({
-      'width': witdh,
-      'height': height
-    }).css({
+    this.svg.configure({
+      'width' : width,
+      'height' : height
+    }, true);
+    this.$el.css({
       'left': pos.x + "px",
-      'top': pos.y + "px"
+      'top': pos.y + "px",
+      'width': width,
+      'height': height
     });
     
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = 'white';
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
+    var angle = Math.atan(height/width); // * 180/Math.PI
+    console.log(height, width, angle * 180/Math.PI);
     
-    this.ctx.beginPath();
-    this.ctx.moveTo(start.x, start.y);
-    this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
-    this.ctx.stroke();
+    if(start.x < end.x){
+      start.x += this.actorRadius*Math.cos(angle);
+      end.x -= (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.cos(angle);
+    } else {
+      start.x -= this.actorRadius*Math.cos(angle);
+      end.x += (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.cos(angle);
+    }
+    if(start.y < end.y){
+      start.y += this.actorRadius*Math.sin(angle);
+      end.y -= (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.sin(angle);
+    } else {
+      start.y -= this.actorRadius*Math.sin(angle);
+      end.y += (this.actorRadius+(this.markerSize*this.strokeWidth/2))*Math.sin(angle);
+    }
+    var path = 'M' + start.x +','+ start.y +' '+ end.x +','+ end.y;
+
+    if(this.path) this.svg.remove(this.path);
+    //var path = 'M'+ start.x +','+start.y+' C'+cp1.x+','+cp1.y+' '+cp2.x+','+cp2.y+' '+end.x+','+end.y;
+    this.path = this.svg.path(this.g, path, {
+      fill : 'none', 
+      stroke : this.strokeStyle,
+      'stroke-width' : this.strokeWidth, 
+      'marker-end' : 'url(#triangle)'
+    });
+    
+    //this.ctx.lineWidth = 2;
+    //this.ctx.strokeStyle = 'white';
+    //this.ctx.lineCap = 'round';
+    //this.ctx.lineJoin = 'round';
+    
+    //this.ctx.beginPath();
+    //this.ctx.moveTo(start.x, start.y);
+    //this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+    //this.ctx.stroke();
   }
 
 });
