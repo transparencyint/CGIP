@@ -11,9 +11,9 @@ module.exports = View.extend({
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
     'click .delete': 'deleteClicked',
-    'contextmenu': 'showContextMenue',
-    'rightclick': 'showContextMenue',
-    'click': 'selected'
+    'contextmenu': 'showContextMenu',
+    'rightclick': 'showContextMenu',
+    'mousedown': 'select'
   },
   
   initialize: function(options){
@@ -21,19 +21,20 @@ module.exports = View.extend({
 
     this.editor = options.editor;
     this.model.on('change:name', this.render, this);
+    this.model.on('change:pos', this.updatePosition, this);
     this.model.on('destroy', this.modelDestroyed, this);
   },
 
-  selected: function(event){
-    event.preventDefault();
-    event.stopPropagation();
+  select: function(event){
+    if(!this.$el.hasClass("ui-selected")){
+      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
+    }
     this.editor.actorSelected(this);
-    return false;
   },
   
-  showContextMenue: function(event){
+  showContextMenu: function(event){
     if(event.button === 2){
-      this.$el.addClass('selected').siblings().removeClass('selected');
+      this.$el.addClass('contextMenu').siblings().removeClass('contextMenu');
       this.$el.find('ul').css({
         left : event.pageX - this.$el.offset().left,
         top : event.pageY - this.$el.offset().top
@@ -83,7 +84,10 @@ module.exports = View.extend({
   },
 
   drag: function(event){
-    this.model.set(this.getPosition());
+    var pos = this.model.get('pos');
+    var newPos = this.getPosition();
+    var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
+    this.editor.dragGroup(delta);
   },
 
   getPosition : function(event){
@@ -94,19 +98,25 @@ module.exports = View.extend({
       }
     };
   },
+
+  updatePosition: function(){
+    var pos = this.model.get('pos');
+    this.$el.css({
+      left : pos.x,
+      top : pos.y
+    });
+  },
   
   getRenderData : function(){
     return this.model.toJSON();
   },
   
   afterRender: function(){
-    var pos = this.model.get('pos');
     var name = this.model.get('name');
     
-    this.$el.css({
-      left : pos.x,
-      top : pos.y
-    });
+    this.updatePosition();
+
+    this.$el.attr('id', this.model.id);
 
     // only add the draggable if it's not already set
     if(!this.$el.hasClass('ui-draggable'))

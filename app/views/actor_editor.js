@@ -12,7 +12,6 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .workspace': 'unselect',
     'click .connections .accountability': 'activateAccountabilityMode'
   },
   
@@ -23,17 +22,25 @@ module.exports = View.extend({
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
+    this.selectedActors = [];
     
     // subscribe to add events
     this.actors.on('add', this.appendActor, this);
     this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp', 'unselect');
   },
   
   unselect: function(){
     this.workspace.find('.actor').removeClass('selected');
     if(this.mode) this.mode.unselect();
+    this.selectedActors = [];
+  },
+
+  dragGroup: function(delta){
+    _.each(this.selectedActors, function(actor){
+      actor.moveByDelta(delta);
+    });
   },
   
   createActor: function(event){
@@ -65,6 +72,8 @@ module.exports = View.extend({
   },
 
   actorSelected: function(actorView){
+    if(this.selectedActors.length <= 1)
+      this.selectedActors = [actorView.model];
     if(this.mode)
       this.mode.actorSelected(actorView);
   },
@@ -131,6 +140,21 @@ module.exports = View.extend({
           editor.createActor(event);
         }
       }
+    });
+
+    this.workspace.selectable({
+      filter: '.actor',
+      selected: function(event, ui){
+        var selectedElements = $('.ui-selected');
+        var selectedActors = [];
+        selectedElements.each(function(index, el){
+          var actor = editor.actors.get(el.id);
+          if(actor)
+            selectedActors.push(actor);
+        });
+        editor.selectedActors = selectedActors;
+      },
+      unselected: editor.unselect
     });
   },
 
