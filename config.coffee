@@ -27,8 +27,8 @@ exports.config =
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/jquery.couch.js',
           'vendor/scripts/jquery.csv-0-6.js',
-          'vendor/scripts/backbone-couchdb.js'
-          'vendor/scripts/jquery.csv-0-6.js'
+          'vendor/scripts/backbone-couchdb.js',
+          'vendor/scripts/jquery.svg.min.js'
         ]
 
     stylesheets:
