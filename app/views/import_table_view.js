@@ -12,32 +12,19 @@ module.exports = View.extend({
   className : 'import-table',
 
   initialize: function(){
-    this.dbActors = new Actors();
-    _.bindAll(this, 'setActors'); 
+  
   },
   
   getRenderData : function(){
     return this.model.toJSON();
   },
 
-  setActors: function(model){
-    console.log("DB Entry:", model);
-    this.dbActors.forEach(function(model){
-      console.log("DB Actor");  
-      console.log("DB Actors:", model.get('name'));  
-    }); 
-  },
-
   render: function(){
     var table = this;
     var model = this.model;
-    var dbActors = this.dbActors;
     var headline = true;
 
-    dbActors.fetch({
-      async: false,
-      success: function(dbActors){
-
+        //CSV data
         model.forEach(function(row){
           if(headline){
             headline=false;
@@ -45,40 +32,21 @@ module.exports = View.extend({
             tableHeadline.render();
             table.$el.append(tableHeadline.el);
           }
-
           var availableActor;
-          var matchedActors = false;
-          var matchedActorID = 0;
-          var i = 0;
-          row.forEach(function(entry){
-            var foundActor = "";
 
-            table.dbActors.forEach(function(dbActor){
-              if(entry == dbActor.get('name'))
-              {
-                matchedActors = true;
-                foundActor = entry;
-                matchedActorID = i;
-                console.log('Found', entry, dbActor.get('name'));
-              }
-            });
-            i++;
-          });
+          
 
           var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
 
-          if(matchedActors)
-          {
-            tableRow.setMarkedActor(matchedActorID);
-          }
+          
 
           tableRow.render();
           table.$el.append(tableRow.el);
 
         });
 
-      }
-    });
+      
+    
 
   },
 });

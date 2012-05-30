@@ -66,6 +66,16 @@ module.exports = View.extend({
           });
           ui.draggable.hide(200);
           //ui.draggable.remove();
+
+          //check if all elements are moved to headlines
+          var allHidden = true;
+          $('#headlines li').each(function(){
+            console.log($(this).is(':visible'));
+            if($(this).is(':visible'))
+              allHidden = false;
+          });
+          console.log(allHidden);
+
         }
       });
   }
