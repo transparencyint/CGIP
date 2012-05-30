@@ -28,7 +28,7 @@ module.exports = View.extend({
     this.actors.on('add', this.appendActor, this);
     this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp');
   },
   
   unselect: function(){
@@ -87,6 +87,11 @@ module.exports = View.extend({
       this.mode = null;
     }
   },
+
+  _keyUp: function(){
+    if(this.mode)
+      this.deactivateAccountabilityMode();
+  },
   
   render: function(){
     var editor = this;
@@ -105,6 +110,8 @@ module.exports = View.extend({
   
   afterRender: function(){
     var editor = this;
+
+    $(document).bind('keyup', this._keyUp);
 
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
@@ -125,5 +132,11 @@ module.exports = View.extend({
         }
       }
     });
+  },
+
+  destroy: function(){
+    Collection.prototype.destroy.call(this);
+
+    $(document).unbind('keyup', this._keyUp);
   }
 });
