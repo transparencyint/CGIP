@@ -1,0 +1,65 @@
+.actor
+  width 160px
+  height 160px
+  margin -80px 0 0 -80px
+  position absolute !important
+  color black
+  background linear-gradient(top, #f5f5f5, #fbfbfb)
+  border-radius 160px
+  box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  z-index 1
+  cursor move
+  .inner
+    height 100%
+    width 100%
+    display box
+    box-align center
+    box-pack center
+  .name
+    min-width 50%
+    text-align center
+
+  input
+    width 66%
+    font-size 100%
+    text-align center
+    display none
+  &.editingName
+    input
+      display block
+    .name
+      display none
+  &.selected
+    ul
+      display block
+  ul
+    margin -5px 0 0
+    padding 0
+    top 0
+    left 100%
+    list-style none
+    position absolute
+    border 1px solid rgba(0,0,0,.13)
+    border-radius 5px
+    box-shadow 0 1px 5px rgba(0,0,0,.13)
+    display none
+    li
+      padding 8px 21px
+      display block
+      cursor pointer
+      font-size 0.8em
+      color black
+      white-space nowrap
+      background white
+      border-bottom 1px solid rgba(0,0,0,.13)
+      &:first-child
+        border-radius 5px 5px 0 0
+      &:last-child
+        border-radius 0 0 5px 5px
+        border-bottom none
+      &:hover
+        color white
+        background black
+      &:active
+        padding-top 9px
+        padding-bottom 7px
