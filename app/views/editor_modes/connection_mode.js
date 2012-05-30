@@ -1,8 +1,9 @@
 var ConnectionView = require('views/connection_view');
 
-var ConnectionMode = function(workspace, collection){
+var ConnectionMode = function(workspace, collection, editor){
   this.workspace = workspace;
   this.collection = collection;
+  this.editor = editor;
   this.reset();
 
   _.bindAll(this, '_moveDummy', '_keyUp');
@@ -47,6 +48,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
       }
     });
 
+    this.editor.deactivateAccountabilityMode();
     this.connectionView.destroy();
     this.reset();
   }

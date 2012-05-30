@@ -73,12 +73,18 @@ module.exports = View.extend({
     this.$('.connections li').removeClass('active');
     var thisEl = this.$('.connections .accountability');
     if(this.mode){
-      this.mode.cancel();
-      this.mode.abort()
-      this.mode = null;
+      this.deactivateAccountabilityMode();
     }else{
       thisEl.addClass('active');
-      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections);
+      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections, this);
+    }
+  },
+
+  deactivateAccountabilityMode: function(){
+    if(this.mode){
+      this.$('.connections li').removeClass('active');
+      this.mode.abort();
+      this.mode = null;
     }
   },
   
