@@ -4,11 +4,30 @@
   margin -80px 0 0 -80px
   position absolute !important
   color black
+  font-size 16px
   background linear-gradient(top, #f5f5f5, #fbfbfb)
   border-radius 160px
   box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   z-index 1
   cursor move
+  &.ui-selected
+    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  &.zoom-2
+    width 120px
+    height 120px
+    margin -60px 0 0 -60px
+    font-size 13px
+    box-shadow 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
+    &.ui-selected
+      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 4px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -4px #f0f0f0 inset, 0 0 0 4px #f9f9f9 inset
+  &.zoom-3
+    width 80px
+    height 80px
+    margin -40px 0 0 -40px
+    font-size 10px
+    box-shadow 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+    &.ui-selected
+      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 3px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
   .inner
     height 100%
     width 100%
@@ -32,8 +51,6 @@
   &.contextMenu
     ul
       display block
-  &.ui-selected
-    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   ul
     margin -5px 0 0
     padding 0
