@@ -13,8 +13,8 @@ module.exports = View.extend({
   
   events: {
     'click .connections .accountability': 'activateAccountabilityMode',
-    'click .zoom .in': 'zoomIn',
-    'click .zoom .out': 'zoomOut',
+    'mousedown .zoom .in': 'zoomIn',
+    'mousedown .zoom .out': 'zoomOut',
   },
   
   initialize: function(options){
@@ -26,7 +26,8 @@ module.exports = View.extend({
     this.accountabilityConnections = filteredConnections.accountability;
     this.selectedActors = [];
     this.zoom = 1;
-    this.maxZoom = 4;
+    this.maxZoom = 1.75;
+    this.zoomStep = 0.25;
     
     // subscribe to add events
     this.actors.on('add', this.appendActor, this);
@@ -36,11 +37,25 @@ module.exports = View.extend({
   },
   
   zoomIn: function(){
-    if(this.zoom - 1 > 0) this.workspace.removeClass('zoom-' + this.zoom).addClass('zoom-' + --this.zoom);
+    if ( (this.zoom + this.zoomStep) <= this.maxZoom ) {
+      this.$el.removeClass('zoom'+ (this.zoom*100));
+      
+      this.zoom += this.zoomStep;
+      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
+      
+      this.$el.addClass('zoom' + (this.zoom*100));
+    }
   },
   
   zoomOut: function(){
-    if(this.zoom + 1 <= this.maxZoom) this.workspace.removeClass('zoom-' + this.zoom).addClass('zoom-' + ++this.zoom);
+    if ( (this.zoom - this.zoomStep) >= this.zoomStep ) {
+      this.$el.removeClass('zoom'+ (this.zoom*100));
+      
+      this.zoom -= this.zoomStep;
+      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
+      
+      this.$el.addClass('zoom' + (this.zoom*100));
+    }
   },
   
   unselect: function(){
