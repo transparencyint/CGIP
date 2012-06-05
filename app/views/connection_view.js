@@ -1,15 +1,12 @@
 var View = require('./view');
+var ContextMenuView = require('./contextmenu_view');
 
 module.exports = View.extend({
 
   template: require('./templates/connection'),
-  
-  events: {
-    'click path': 'deleteConnection'
-  },
 
   tagName : 'div',
-  className : 'connection',
+  className : 'connection hasContextMenu',
 
   initialize: function(options){
     if(options.noClick)
@@ -24,29 +21,33 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
   },
 
-  deleteConnection: function(){
-    var fromName = this.model.from.get('name');
-    var toName = this.model.to.get('name');
-    if(confirm('Do you really want to delete this connection (from: ' + fromName +' to: '+ toName + ')?'))
-      this.model.destroy();
-  },
-
   getRenderData : function(){
     return {};
+  },
+
+  select: function(event){
+    if(!this.$el.hasClass("ui-selected")){
+      console.log(this.$el.siblings());
+      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
+    }
   },
   
   afterRender: function(){
     //this.ctx = this.$el.get(0).getContext('2d');
     this.strokeStyle = 'white';
-    this.strokeWidth = 5;
+    this.selectStyle = 'hsl(205,100%,55%)';
+    this.strokeWidth = 8;
     this.actorRadius = 80;
     this.markerSize = 5;
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
     this.$el.svg();
     this.svg = this.$el.svg('get');
     this.g = this.svg.group();
-    createDefs(this.markerSize, this.strokeStyle);
+    createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
+
+    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
+    this.$el.append(this.contextmenu.render().el);
   },
 
   update: function(){
@@ -131,12 +132,18 @@ module.exports = View.extend({
 
 });
 
-function createDefs(markerSize, strokeStyle){
+function createDefs(markerSize, strokeStyle, selectStyle){
   if(this.svg === undefined){
     $('body').svg().find('> svg').attr('id', 'svgDefinitions');
     this.svg = $('body').svg('get');
-    var defs = this.svg.defs();
+    var defs = this.svg.defs();    
+    var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, markerSize, markerSize);
+    this.svg.path(markerSymbol, 'M 0 0 L '+ markerSize +' '+ markerSize/2 +' L 0 '+ markerSize +' z');
+
     var marker = this.svg.marker(defs, 'triangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
-    this.svg.path(marker, 'M 0 0 L '+ markerSize +' '+ markerSize/2 +' L 0 '+ markerSize +' z', { fill: strokeStyle });
+    this.svg.use(marker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: strokeStyle });
+
+    var selectedMarker = this.svg.marker(defs, 'selectedTriangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
+    this.svg.use(selectedMarker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: selectStyle });
   }
 }
