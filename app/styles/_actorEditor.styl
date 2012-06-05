@@ -1,10 +1,27 @@
-#actorEditor,
-.workspace
+#actorEditor
   top 0
   left 0
   right 0
   bottom 0
   position absolute
+  overflow auto
+  background #2e5aaa
+  background url(../images/bluegrid.png) center top
+  background-size 99px
+  &.zoom200
+    background-size 200px
+  &.zoom175
+    background-size 175px
+  &.zoom150
+    background-size 150px
+  &.zoom125
+    background-size 125px
+  &.zoom75
+    background-size 75px
+  &.zoom50
+    background-size 50px
+  &.zoom25
+    background-size 25px
 #actorEditor
   display box
   box-align center
@@ -15,14 +32,9 @@
     position absolute
     
 .workspace
-  background url(../images/bluegrid.png) center top
-  transition 250ms
-  &.zoom-2
-    background-size 75px
-  &.zoom-3
-    background-size 50px
-  &.zoom-4
-    background-size 25px
+  position absolute
+  width 100%
+  min-height 100%
 
 .controls
   top 50%
@@ -100,15 +112,15 @@
         background none
   .zoom
     margin 13px 0
+    display box
     > div
-      margin 13px 0
-      padding 7px 0
-      width 55px
-      height 55px
+      margin 3px
+      width 34px
+      height 34px
       font-weight bold
       color black
-      font-size 34px
-      line-height 1
+      font-size 24px
+      line-height 25px
       text-align center
       text-shadow 0 1px white
       background white
