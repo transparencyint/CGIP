@@ -146,6 +146,7 @@ module.exports = View.extend({
 
     this.connections.each(this.appendAccountabilityConnection);
 
+    this.afterRender();
   },
   
   afterRender: function(){
