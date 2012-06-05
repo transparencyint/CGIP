@@ -161,6 +161,7 @@ module.exports = View.extend({
 
     this.workspace.selectable({
       filter: '.actor',
+      cancel: 'path',
       selected: function(event, ui){
         var selectedElements = $('.ui-selected');
         var selectedActors = [];
