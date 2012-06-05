@@ -27,7 +27,6 @@ module.exports = View.extend({
 
   select: function(event){
     if(!this.$el.hasClass("ui-selected")){
-      console.log(this.$el.siblings());
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
