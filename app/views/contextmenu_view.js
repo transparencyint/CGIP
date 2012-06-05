@@ -30,7 +30,6 @@ module.exports = View.extend({
   },
 
   deleteClicked: function(){  
-    debugger
     if(this.model) this.model.destroy();
   },
 
