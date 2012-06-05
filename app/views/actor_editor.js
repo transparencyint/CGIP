@@ -59,7 +59,7 @@ module.exports = View.extend({
   },
   
   unselect: function(){
-    this.workspace.find('.actor').removeClass('selected contextMenu');
+    this.workspace.find('.contextMenu').removeClass('visible');
     if(this.mode) this.mode.unselect();
     this.selectedActors = [];
   },
@@ -101,6 +101,11 @@ module.exports = View.extend({
   actorSelected: function(actorView){
     if(this.selectedActors.length <= 1)
       this.selectedActors = [actorView.model];
+    else{
+      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
+      if(!found)
+        this.selectedActors = [actorView.model]
+    }
     if(this.mode)
       this.mode.actorSelected(actorView);
   },
@@ -171,6 +176,7 @@ module.exports = View.extend({
 
     this.workspace.selectable({
       filter: '.actor',
+      cancel: 'path',
       selected: function(event, ui){
         var selectedElements = $('.ui-selected');
         var selectedActors = [];

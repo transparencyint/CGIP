@@ -1,18 +1,16 @@
 var View = require('./view');
+var ContextMenuView = require('./contextmenu_view');
 
 module.exports = View.extend({
   
   template : require('./templates/actor'),
   
-  className : 'actor',
+  className : 'actor hasContextMenu',
 
   events: {
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
-    'click .delete': 'deleteClicked',
-    'contextmenu': 'showContextMenu',
-    'rightclick': 'showContextMenu',
     'mousedown': 'select'
   },
   
@@ -22,7 +20,10 @@ module.exports = View.extend({
     this.editor = options.editor;
     this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
+    this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
+
+    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
   select: function(event){
@@ -30,17 +31,6 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
     this.editor.actorSelected(this);
-  },
-  
-  showContextMenu: function(event){
-    if(event.button === 2){
-      this.$el.addClass('contextMenu').siblings().removeClass('contextMenu');
-      this.$el.find('ul').css({
-        left : event.pageX - this.$el.offset().left,
-        top : event.pageY - this.$el.offset().top
-      });
-      return false;
-    }
   },
 
   startEditName: function(event){
@@ -65,14 +55,6 @@ module.exports = View.extend({
       event.preventDefault();
       this.stopEditName(event);
     }
-  },
-
-  saveName: function(name){
-
-  },
-
-  deleteClicked: function(){
-    this.model.destroy();
   },
 
   modelDestroyed: function(){
@@ -127,5 +109,6 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
+    this.$el.append(this.contextmenu.render().el);
   }
 });
