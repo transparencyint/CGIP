@@ -8,7 +8,3 @@
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
 </div>
-<ul>
-  <li class="delete"><span>Delete</span>
-  <li class="add content"><span>Add Content</span>
-</ul>
