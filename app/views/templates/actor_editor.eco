@@ -18,8 +18,8 @@
     </li>
   </ul>
   <div class="zoom">
-    <div class="in">+</div>
     <div class="out">-</div>
+    <div class="in">+</div>
   </div>
 </div>
 <div class="workspace"></div>
