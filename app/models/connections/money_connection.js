@@ -7,7 +7,7 @@ module.exports = Connection.extend({
     var data = Connection.prototype.defaults.call(this);
     data.connectionType = 'money';
     data.pledged = 0;
-    data.dispursed = 0;
+    data.disbursed = 0;
     return data;
   }
 

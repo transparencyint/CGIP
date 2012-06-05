@@ -32,7 +32,7 @@ module.exports = View.extend({
       return function(e) {
         var filecontent = e.target.result;
         var model = $.csv2Array(filecontent);
-
+        
         var importHeadlineView = new ImportHeadlineView({model: model});
         importHeadlineView.render();
         importView.$el.empty().append(importHeadlineView.el);

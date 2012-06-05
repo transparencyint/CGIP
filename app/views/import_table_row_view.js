@@ -6,14 +6,23 @@ module.exports = View.extend({
   template: require('./templates/import_table_row'),
   
   tagName : 'tr',
-  
-  initialize: function(){
+  className : '',
+
+  initialize: function(options){
+  	
   },
   
   getRenderData : function(){
-    return this.model;
+		return this.model;
   },
-  
+
   afterRender: function(){
-  }
+
+  },
+
+  setMarkedActor: function(){
+    $(this.el).addClass('matchedRow');
+  },
+
+  
 });
