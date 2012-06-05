@@ -13,7 +13,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    this.model = options;
+    this.model = options.model;
   },
 
   afterRender: function(){
@@ -46,6 +46,11 @@ module.exports = View.extend({
 
     //Make other view invisible
     $('#import_table').hide();
+    //Make button invisible
+    $('#matchButton').hide();
+    //Change into text
+    //console.log($('#infoText'));
+
 
     var model = this.model;
     console.log('loading match view');

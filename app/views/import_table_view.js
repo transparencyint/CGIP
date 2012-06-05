@@ -7,17 +7,13 @@ var ImportTableHeadlineView = require('./import_table_headline_view');
 module.exports = View.extend({
   id: 'import_table',
   
-  template: require('./templates/import_table'),
   tagName : 'table',
   className : 'import-table',
 
   initialize: function(){
   
   },
-  
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
+
 
   render: function(){
     var table = this;

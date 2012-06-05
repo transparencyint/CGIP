@@ -9,8 +9,6 @@ module.exports = View.extend({
   className : '',
 
   initialize: function(options){
-  	this.availableActor = options.availableActor;
-  	//console.log(options.availableActor);
   	
   },
   
@@ -22,7 +20,7 @@ module.exports = View.extend({
 
   },
 
-  setMarkedActor: function(matchedActorID){
+  setMarkedActor: function(){
     $(this.el).addClass('matchedRow');
   },
 

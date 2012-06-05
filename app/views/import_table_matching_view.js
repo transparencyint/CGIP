@@ -12,7 +12,7 @@ module.exports = View.extend({
   className : 'import-table',
 
   initialize: function(options){
-    this.model = options.model.model;
+    this.model = options.model;
     this.tableColumns = options.tableColumns;
 
     this.dbActors = new Actors();
@@ -61,6 +61,8 @@ module.exports = View.extend({
 
         console.log(matchedColumns);
         var j = 0;
+        var k = 0;
+        var matchingActors = new Array();
         //CSV data
         model.forEach(function(row){
 
@@ -74,48 +76,51 @@ module.exports = View.extend({
 
           //Combine the columns and to the correct places
 
-          var availableActor;
           var matchedActors = false;
-          var matchedActorID = 0;
           var i = 0;
           
 
           //for each row in the CSV document get the column
           row.forEach(function(column){
             
-            //console.log(column);
             var foundActor = "";
-
-            //Check which type is column
             
-            //go through each actor in the database
+            
+            //go through each actor in the database for the provider and receiver cell
             if(i == matchedColumns[0] || i == matchedColumns[1]){
               dbActors.forEach(function(dbActor){
                 if(column == dbActor.get('name'))
                 {
                   matchedActors = true;
                   foundActor = column;
-                  matchedActorID = j;
-                  //console.log('Found', column, dbActor.get('name'));
-                  console.log('Found ', dbActor.get('name'), 'in colum ', i, 'and line ', j);
+                  matchingActors[k] = new Array(i , j);
+                  k++;
+                  console.log('Found ', dbActor.get('name'), 'in column ', i, 'and line ', j);
                 }
               });
           }
             i++;
             
           });
-          j++;
-          var tableRow = new ImportTableRowView({ model : row, availableActor : availableActor});
+          
+          var tableRow = new ImportTableRowView({ model : row});
 
           if(matchedActors)
           {
-            tableRow.setMarkedActor(matchedActorID);
+            tableRow.setMarkedActor();
           }
 
           tableRow.render();
           table.$el.append(tableRow.el);
-
+          j++
         });
+        //end of the last row
+        console.log(matchingActors);
+
+        //mark the found actors
+        for (var k = 0; k < matchingActors.length; k++){
+
+        }
 
       }
     });
