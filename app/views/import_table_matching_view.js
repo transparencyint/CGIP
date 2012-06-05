@@ -61,9 +61,39 @@ module.exports = View.extend({
           if(tableColumns[i] == "pledged")
             matchedColumns[3] = i;
         }
-
-
         console.log(matchedColumns);
+
+        //creating the new table with only 4 columns
+        var newTable = new Array();
+        var y = 0;
+        model.forEach(function(row){
+          var x = 0;
+          var tempArray = new Array("" , "", "", "");
+          row.forEach(function(cell){
+            if (x == matchedColumns[0]){
+              tempArray[0] = cell;
+              newTable[y] = tempArray;
+            }
+            if (x == matchedColumns[1]){
+              tempArray[1] = cell;
+              newTable[y] = tempArray;
+            }
+            if (x == matchedColumns[2]){
+              tempArray[2] = cell;
+              newTable[y] = tempArray;
+            }
+            if (x == matchedColumns[3]){
+              tempArray[3] = cell;
+              newTable[y] = tempArray;
+            }
+            x++;
+          });
+          y++;
+        });
+        console.log(newTable);
+
+
+        //now create the table and find actors
         var j = 0;
         var k = 0;
         var l = 0;
