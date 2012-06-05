@@ -3,10 +3,6 @@ var View = require('./view');
 module.exports = View.extend({
 
   template: require('./templates/connection'),
-  
-  events: {
-    'click': 'deleteConnection'
-  },
 
   tagName : 'div',
   className : 'connection',
@@ -22,6 +18,7 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
+    _.bindAll(this, 'deleteConnection');
   },
 
   deleteConnection: function(){
@@ -47,6 +44,7 @@ module.exports = View.extend({
     this.g = this.svg.group();
     createDefs(this.markerSize, this.strokeStyle);
     this.update();
+    this.$('path').click(this.deleteConnection);
   },
 
   update: function(){
