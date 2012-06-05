@@ -67,10 +67,6 @@ module.exports = View.extend({
     }
   },
 
-  saveName: function(name){
-
-  },
-
   deleteClicked: function(){
     this.model.destroy();
   },
