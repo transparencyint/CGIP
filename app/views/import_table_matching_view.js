@@ -91,6 +91,9 @@ module.exports = View.extend({
           y++;
         });
         console.log(newTable);
+        console.log(model);
+
+        model = newTable;
 
 
         //now create the table and find actors
@@ -124,7 +127,7 @@ module.exports = View.extend({
             
 
             //go through each actor in the database for the provider and receiver cell
-            if(i == matchedColumns[0] || i == matchedColumns[1]){
+            if(i == 0 || i == 1){
               var addedColumn = false;
               dbActors.forEach(function(dbActor){
                 
@@ -133,16 +136,16 @@ module.exports = View.extend({
                   matchedActors = true;
                   foundActor = column;
                   
-                  if(i == matchedColumns[0])
+                  if(i == 0)
                   {
                     matchingActors[k] = new Array('provider', dbActor.id, dbActor.get('name'), j , i);
                     console.log('Found ', dbActor.get('name'), 'in row ', j, 'and row ', i, 'type: provider');
                   }
-                  else if(i == matchedColumns[1])
+                  else if(i == 1)
                   {
                     
                     matchingActors[k] = new Array('recipient', dbActor.id, dbActor.get('name'), j , i);
-                    console.log('Found ', dbActor.get('name'), 'in row ', j, 'and row ', i, 'type: recipient');
+                    console.log('Found ', dbActor.get('name'), 'in row ', j, 'and column ', i, 'type: recipient');
 
                     if(k>0 && (matchingActors[k][3] == matchingActors[k-1][3]))
                     {
@@ -191,7 +194,7 @@ module.exports = View.extend({
           j++
         });
         //end of the last row
-        //console.log(matchingActors);
+        console.log(connections);
         console.log(newMoneyConnections);
         
        
