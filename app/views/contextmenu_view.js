@@ -37,6 +37,7 @@ module.exports = View.extend({
 
   addClicked: function(){  
     var model = this.model;
+    $('#lightbox').empty();
     this.lightboxView = new LightboxView({model : model});
     $('#lightbox').append(this.lightboxView.render().el);
     this.lightboxView.show();
