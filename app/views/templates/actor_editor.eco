@@ -1,7 +1,5 @@
-<div id="lightbox">
-  <div id="closeButton">X</div>
-  <div id="lightbox-content"></div>
-</div>
+<div id="overlay"></div>
+<div id="lightbox"></div>
 
 <div class="controls">
   <div class="newActor">

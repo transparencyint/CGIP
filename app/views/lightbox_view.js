@@ -6,24 +6,29 @@ module.exports = View.extend({
   template: require('./templates/lightbox'),
 
   events: {
-    'click #closeButton': 'closeLightbox',
-    'click #lightbox': 'closeLightbox'
+    'click #overlay': 'closeLightbox'
   },
 
-  initialize: function(){    
-    $('#lightbox-content').append(this.render().el);
+  initialize: function(){ 
   },  
 
   show: function(event){
+    $('#overlay').show();
     $('#lightbox').show();
   },
 
   closeLightbox: function(){  
-    console.log('Closebutton clicked');
+    //console.log('Closebutton clicked');
     $('#lightbox').hide();
+    $('#overlay').hide();
   },
 
   afterRender: function(){
+
+    $('#overlay').click(function(){
+      $('#lightbox').hide();
+      $('#overlay').hide();
+    });    
     //$('#actorEditor').bind('lightbox', this.show);
   }
 
