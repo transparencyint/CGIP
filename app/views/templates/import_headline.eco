@@ -1,5 +1,6 @@
-<h1>Match Columns</h1>
-<p id="infoText">These elements are draggable. Please drag them into the corresponding table headlines.</p>
+<h1>Import CSV</h1>
+<div id="matchInfo"><p>Drag the 5 elements to the matching headline column.</p></div>
+<div id="confirmInfo"><p>All marked lines have two matching actors and will be added to the database. Please comfirm the import by pressing the button.</p></div>
 <input type="button" id="matchButton" value="Match Actors">
 <input type="button" id="confirmButton" value="Confirm Import">
 <ul id="headlines">
@@ -7,6 +8,7 @@
 	<li id="recipient">Recipient</li>
 	<li id="disbursed">Disbursed</li>
 	<li id="pledged">Pledged</li>
+	<li id="source">Source</li>
 </ul>
 
 

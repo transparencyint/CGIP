@@ -60,6 +60,8 @@ module.exports = View.extend({
             matchedColumns[2] = i;
           if(tableColumns[i] == "pledged")
             matchedColumns[3] = i;
+          if(tableColumns[i] == "source")
+            matchedColumns[4] = i;
         }
         console.log(matchedColumns);
 
@@ -68,7 +70,7 @@ module.exports = View.extend({
         var y = 0;
         model.forEach(function(row){
           var x = 0;
-          var tempArray = new Array("" , "", "", "");
+          var tempArray = new Array("" , "", "", "", "");
           row.forEach(function(cell){
             if (x == matchedColumns[0]){
               tempArray[0] = cell;
@@ -84,6 +86,10 @@ module.exports = View.extend({
             }
             if (x == matchedColumns[3]){
               tempArray[3] = cell;
+              newTable[y] = tempArray;
+            }
+            if(x == matchedColumns[4]){
+              tempArray[4] = cell;
               newTable[y] = tempArray;
             }
             x++;
@@ -108,7 +114,7 @@ module.exports = View.extend({
 
           //Print out the 4 headlines
           if(headline){
-            var headlines = "<tr><th>Provider</th><th>Recipient</th><th>Disbursed</th><th>Pledged</th></tr>";
+            var headlines = "<tr><th>Provider</th><th>Recipient</th><th>Disbursed</th><th>Pledged</th><th>Source</th></tr>";
 
             table.$el.append(headlines);
             headline = false;
@@ -147,7 +153,7 @@ module.exports = View.extend({
                     matchingActors[k] = new Array('recipient', dbActor.id, dbActor.get('name'), j , i);
                     console.log('Found ', dbActor.get('name'), 'in row ', j, 'and column ', i, 'type: recipient');
 
-                    if(k>0 && (matchingActors[k][3] == matchingActors[k-1][3]))
+                    if(k > 0 && (matchingActors[k][3] == matchingActors[k-1][3]))
                     {
                       bothMarked = true;
                       connections[l] = new Array(matchingActors[k-1][1], matchingActors[k][1]);
@@ -169,6 +175,10 @@ module.exports = View.extend({
             {
               connections[l-1][3] = column;
             }
+            if(i == matchedColumns[4] && bothMarked)
+            {
+              connections[l-1][4] = column;
+            }
 
             i++;
             
@@ -183,7 +193,8 @@ module.exports = View.extend({
               from: connections[l-1][0],
               to: connections[l-1][1],
               disbursed: connections[l-1][2],
-              pledged: connections[l-1][3]
+              pledged: connections[l-1][3],
+              source: connections[l-1][4]
             });
 
             newMoneyConnections.add(moneyConnection);
