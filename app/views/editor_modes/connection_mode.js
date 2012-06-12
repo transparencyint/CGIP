@@ -1,9 +1,10 @@
 var ConnectionView = require('views/connection_view');
 
-var ConnectionMode = function(workspace, collection, editor){
+var ConnectionMode = function(workspace, collection, connectionType, editor){
   this.workspace = workspace;
   this.collection = collection;
   this.editor = editor;
+  this.connectionType = connectionType;
   this.reset();
 
   _.bindAll(this, '_moveDummy', '_keyUp');
@@ -16,6 +17,7 @@ ConnectionMode.prototype.reset = function(){
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
   this.isActive = true;
+  this.connection.set('connectionType', this.connectionType);
 
   $(document).unbind('mousemove', this._moveDummy);
   $(document).unbind('keyup', this._keyUp);
@@ -48,7 +50,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
       }
     });
 
-    this.editor.deactivateAccountabilityMode();
+    this.editor.deactivateMode();
     this.connectionView.destroy();
     this.reset();
   }
