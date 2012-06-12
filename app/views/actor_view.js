@@ -75,8 +75,8 @@ module.exports = View.extend({
   getPosition : function(event){
     return { 
       'pos' : {
-        x : this.$el.offset().left + this.$el.width()/2,
-        y : this.$el.offset().top + this.$el.width()/2
+        x : this.$el.offset().left + this.$el.outerWidth()/2,
+        y : this.$el.offset().top + this.$el.outerWidth()/2
       }
     };
   },
