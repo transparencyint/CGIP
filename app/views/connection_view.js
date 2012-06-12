@@ -50,6 +50,8 @@ module.exports = View.extend({
 
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
     this.$el.append(this.contextmenu.render().el);
+    
+    this.$el.addClass( this.model.get("connectionType") );
   },
 
   update: function(){

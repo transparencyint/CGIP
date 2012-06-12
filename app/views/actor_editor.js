@@ -13,6 +13,7 @@ module.exports = View.extend({
   
   events: {
     'click .connections li': 'toggleMode',
+    'click .connections li .eye': 'toggleVisibility',
     'mousedown .zoom .in': 'zoomIn',
     'mousedown .zoom .out': 'zoomOut',
   },
@@ -114,16 +115,16 @@ module.exports = View.extend({
   toggleMode: function(event){
     this.$('.connections li').removeClass('active');
     var target = $(event.target);
-    var selectedElement = target.is('li') ? target : target.parent('li');
-    var collectionName = selectedElement.hasClass('money') ? 'money' : 'accountability';
-    var collection = this[ collectionName + "Connections" ];
+    var selectedElement = target.is('li') ? target : target.parents('li');
+    var connectionType = selectedElement.attr('data-connectionType');
+    var collection = this[ connectionType + "Connections" ];
     
     if(this.mode){
       this.deactivateMode();
     }
     
     selectedElement.addClass('active');
-    this.mode = new ConnectionMode(this.workspace, collection, collectionName, this);
+    this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
   },
 
   deactivateMode: function(){
@@ -135,6 +136,20 @@ module.exports = View.extend({
   _keyUp: function(){
     if(this.mode)
       this.deactivateMode();
+  },
+  
+  toggleVisibility: function(event){
+    event.stopPropagation();
+    var parent = $(event.target).parent().toggleClass('invisible');
+    var connectionType = parent.attr('data-connectionType');
+    var hideClass = 'hide-' + connectionType;
+    
+    if(parent.hasClass('invisible')){
+      // invisible
+      this.workspace.addClass( hideClass );
+    } else {
+      this.workspace.removeClass( hideClass );
+    };
   },
   
   render: function(){
