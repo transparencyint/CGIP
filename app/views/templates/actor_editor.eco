@@ -1,9 +1,11 @@
 <div class="controls">
   <div class="newActor">
     <div class="actor new">
-      <div class="name">New Actor</div>
+      <div class="inner">
+        <div class="name">New Actor</div>
+      </div>
     </div>
-    <div class="cancel"><span>Drop to cancel</span></div>
+    <div class="cancel"><span>Drop here to cancel</span></div>
   </div>
   <ul class="connections">
     <li class="money">
@@ -15,5 +17,9 @@
       <img src="images/accountabilityflow.png"><span class="name">Accountability</span>
     </li>
   </ul>
+  <div class="zoom">
+    <div class="out">-</div>
+    <div class="in">+</div>
+  </div>
 </div>
 <div class="workspace"></div>

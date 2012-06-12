@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Zoom Levels</title>
+<link rel="stylesheet" href="stylesheets/app.css">
+<style>
+  .workspace {
+    width: 215px;
+    height: 215px;
+    position: relative;
+    float: left;
+    display: -webkit-box;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    border-right: 1px solid rgba(0,0,0,.34);
+    box-shadow: 1px 0 rgba(255,255,255,.08) inset;
+  }
+  .workspace > div.actor {
+    margin: 0;
+    position: static !important;
+    cursor: default;
+  }
+</style>
+<div class="workspace zoom-1">
+  <div class="actor ui-draggable ui-selectee" id="7e0cb632204b3df83bb2d8c5141daedf"><div class="inner">
+    <div class="name">The Leader</div>
+    <input type="text" value="The Leader" placeholder="Name" class="nameInput">
+  </div>
+  <ul style="left: 92px; top: 95px; ">
+    <li class="delete"><span>Delete</span>
+    </li><li class="add content"><span>Add Content</span>
+  </li></ul></div>
+</div>
+<div class="workspace zoom-2">
+  <div class="actor ui-draggable ui-selectee" id="7e0cb632204b3df83bb2d8c5141daedf"><div class="inner">
+    <div class="name">The Leader</div>
+    <input type="text" value="The Leader" placeholder="Name" class="nameInput">
+  </div>
+  <ul style="left: 92px; top: 95px; ">
+    <li class="delete"><span>Delete</span>
+    </li><li class="add content"><span>Add Content</span>
+  </li></ul></div>
+</div>
+<div class="workspace zoom-3">
+  <div class="actor ui-draggable ui-selectee" id="7e0cb632204b3df83bb2d8c5141daedf"><div class="inner">
+    <div class="name">The Leader</div>
+    <input type="text" value="The Leader" placeholder="Name" class="nameInput">
+  </div>
+  <ul style="left: 92px; top: 95px; ">
+    <li class="delete"><span>Delete</span>
+    </li><li class="add content"><span>Add Content</span>
+  </li></ul></div>
+</div>
+<div class="workspace zoom-4">
+  <div class="actor ui-draggable ui-selectee" id="7e0cb632204b3df83bb2d8c5141daedf"><div class="inner">
+    <div class="name">The Leader</div>
+    <input type="text" value="The Leader" placeholder="Name" class="nameInput">
+  </div>
+  <ul style="left: 92px; top: 95px; ">
+    <li class="delete"><span>Delete</span>
+    </li><li class="add content"><span>Add Content</span>
+  </li></ul></div>
+</div>
+<script>
+  var actors = document.querySelectorAll('.actor');
+  for(var i=0; i<actors.length; i++) actors[i].onclick = function(){ this.classList.toggle('ui-selected'); };
+</script>

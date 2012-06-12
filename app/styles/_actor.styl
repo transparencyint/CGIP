@@ -1,0 +1,35 @@
+.actor
+  width 120px
+  height 120px
+  margin -60px 0 0 -60px
+  position absolute !important
+  color black
+  font-size 14px
+  background linear-gradient(top, #f5f5f5, #fbfbfb)
+  border-radius 160px
+  box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  z-index 1
+  cursor move
+  &.ui-selected
+    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  .inner
+    padding 0 8px
+    height 100%
+    display box
+    box-align center
+    box-pack center
+  .name
+    margin-top 4px
+    min-width 50%
+    text-align center
+
+  input
+    width 66%
+    font-size 100%
+    text-align center
+    display none
+  &.editingName
+    input
+      display block
+    .name
+      display none

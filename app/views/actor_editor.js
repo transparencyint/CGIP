@@ -12,8 +12,9 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .workspace': 'unselect',
-    'click .connections .accountability': 'activateAccountabilityMode'
+    'click .connections .accountability': 'activateAccountabilityMode',
+    'mousedown .zoom .in': 'zoomIn',
+    'mousedown .zoom .out': 'zoomOut',
   },
   
   initialize: function(options){
@@ -23,17 +24,50 @@ module.exports = View.extend({
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
+    this.selectedActors = [];
+    this.zoom = 1;
+    this.maxZoom = 1.75;
+    this.zoomStep = 0.25;
     
     // subscribe to add events
     this.actors.on('add', this.appendActor, this);
     this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+  },
+  
+  zoomIn: function(){
+    if ( (this.zoom + this.zoomStep) <= this.maxZoom ) {
+      this.$el.removeClass('zoom'+ (this.zoom*100));
+      
+      this.zoom += this.zoomStep;
+      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
+      
+      this.$el.addClass('zoom' + (this.zoom*100));
+    }
+  },
+  
+  zoomOut: function(){
+    if ( (this.zoom - this.zoomStep) >= this.zoomStep ) {
+      this.$el.removeClass('zoom'+ (this.zoom*100));
+      
+      this.zoom -= this.zoomStep;
+      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
+      
+      this.$el.addClass('zoom' + (this.zoom*100));
+    }
   },
   
   unselect: function(){
-    this.workspace.find('.actor').removeClass('selected');
+    this.workspace.find('.contextMenu').removeClass('visible');
     if(this.mode) this.mode.unselect();
+    this.selectedActors = [];
+  },
+
+  dragGroup: function(delta){
+    _.each(this.selectedActors, function(actor){
+      actor.moveByDelta(delta);
+    });
   },
   
   createActor: function(event){
@@ -65,6 +99,13 @@ module.exports = View.extend({
   },
 
   actorSelected: function(actorView){
+    if(this.selectedActors.length <= 1)
+      this.selectedActors = [actorView.model];
+    else{
+      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
+      if(!found)
+        this.selectedActors = [actorView.model]
+    }
     if(this.mode)
       this.mode.actorSelected(actorView);
   },
@@ -73,13 +114,24 @@ module.exports = View.extend({
     this.$('.connections li').removeClass('active');
     var thisEl = this.$('.connections .accountability');
     if(this.mode){
-      this.mode.cancel();
-      this.mode.abort()
-      this.mode = null;
+      this.deactivateAccountabilityMode();
     }else{
       thisEl.addClass('active');
-      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections);
+      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections, this);
     }
+  },
+
+  deactivateAccountabilityMode: function(){
+    if(this.mode){
+      this.$('.connections li').removeClass('active');
+      this.mode.abort();
+      this.mode = null;
+    }
+  },
+
+  _keyUp: function(){
+    if(this.mode)
+      this.deactivateAccountabilityMode();
   },
   
   render: function(){
@@ -94,10 +146,13 @@ module.exports = View.extend({
 
     this.connections.each(this.appendAccountabilityConnection);
 
+    this.afterRender();
   },
   
   afterRender: function(){
     var editor = this;
+
+    $(document).bind('keyup', this._keyUp);
 
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
@@ -118,5 +173,27 @@ module.exports = View.extend({
         }
       }
     });
+
+    this.workspace.selectable({
+      filter: '.actor',
+      cancel: 'path',
+      selected: function(event, ui){
+        var selectedElements = $('.ui-selected');
+        var selectedActors = [];
+        selectedElements.each(function(index, el){
+          var actor = editor.actors.get(el.id);
+          if(actor)
+            selectedActors.push(actor);
+        });
+        editor.selectedActors = selectedActors;
+      },
+      unselected: editor.unselect
+    });
+  },
+
+  destroy: function(){
+    Collection.prototype.destroy.call(this);
+
+    $(document).unbind('keyup', this._keyUp);
   }
 });

@@ -36,6 +36,7 @@ module.exports = Model.extend({
     
     this[field] = actor;
     this.set(field, actor.id);
+    this[field].on('destroy', this.destroy, this);
   },
 
   setFromActor: function(actor){

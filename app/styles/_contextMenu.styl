@@ -1,0 +1,33 @@
+.contextMenu
+  margin -5px 0 0
+  padding 0
+  top 100%
+  left 100%
+  list-style none
+  position absolute
+  border 1px solid rgba(0,0,0,.13)
+  border-radius 5px
+  box-shadow 0 1px 5px rgba(0,0,0,.13)
+  display none
+  &.visible
+    display block
+  li
+    padding 8px 21px
+    display block
+    cursor pointer
+    font-size 0.85em
+    color black
+    white-space nowrap
+    background white
+    border-bottom 1px solid rgba(0,0,0,.13)
+    &:first-child
+      border-radius 5px 5px 0 0
+    &:last-child
+      border-radius 0 0 5px 5px
+      border-bottom none
+    &:hover
+      color white
+      background black
+    &:active
+      padding-top 9px
+      padding-bottom 7px

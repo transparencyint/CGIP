@@ -25,7 +25,7 @@ module.exports = Backbone.Router.extend({
             // instantiate the editor
             var editor = new ActorEditor({connections: connections, actors: actors});
             editor.render();
-            $(document.body).empty().html( editor.el );    
+            $('#container').empty().html( editor.el );    
           }
         });
         
@@ -37,6 +37,6 @@ module.exports = Backbone.Router.extend({
     var options = {country: country};
     var importView = new ImportView(options);
     importView.render();
-    $(document.body).empty().html( importView.el );
+    $('#container').empty().html( importView.el );
   }
 });

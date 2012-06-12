@@ -1,19 +1,17 @@
 var View = require('./view');
+var ContextMenuView = require('./contextmenu_view');
 
 module.exports = View.extend({
   
   template : require('./templates/actor'),
   
-  className : 'actor',
+  className : 'actor hasContextMenu',
 
   events: {
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
-    'click .delete': 'deleteClicked',
-    'contextmenu': 'showContextMenue',
-    'rightclick': 'showContextMenue',
-    'click': 'selected'
+    'mousedown': 'select'
   },
   
   initialize: function(options){
@@ -21,25 +19,18 @@ module.exports = View.extend({
 
     this.editor = options.editor;
     this.model.on('change:name', this.render, this);
+    this.model.on('change:pos', this.updatePosition, this);
+    this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
+
+    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
-  selected: function(event){
-    event.preventDefault();
-    event.stopPropagation();
-    this.editor.actorSelected(this);
-    return false;
-  },
-  
-  showContextMenue: function(event){
-    if(event.button === 2){
-      this.$el.addClass('selected').siblings().removeClass('selected');
-      this.$el.find('ul').css({
-        left : event.pageX - this.$el.offset().left,
-        top : event.pageY - this.$el.offset().top
-      });
-      return false;
+  select: function(event){
+    if(!this.$el.hasClass("ui-selected")){
+      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
+    this.editor.actorSelected(this);
   },
 
   startEditName: function(event){
@@ -66,14 +57,6 @@ module.exports = View.extend({
     }
   },
 
-  saveName: function(name){
-
-  },
-
-  deleteClicked: function(){
-    this.model.destroy();
-  },
-
   modelDestroyed: function(){
     this.$el.remove();
   },
@@ -83,16 +66,27 @@ module.exports = View.extend({
   },
 
   drag: function(event){
-    this.model.set(this.getPosition());
+    var pos = this.model.get('pos');
+    var newPos = this.getPosition();
+    var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
+    this.editor.dragGroup(delta);
   },
 
   getPosition : function(event){
     return { 
       'pos' : {
-        x : this.$el.offset().left + this.$el.width()/2,
-        y : this.$el.offset().top + this.$el.width()/2
+        x : this.$el.offset().left + this.$el.outerWidth()/2,
+        y : this.$el.offset().top + this.$el.outerWidth()/2
       }
     };
+  },
+
+  updatePosition: function(){
+    var pos = this.model.get('pos');
+    this.$el.css({
+      left : pos.x,
+      top : pos.y
+    });
   },
   
   getRenderData : function(){
@@ -100,13 +94,11 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    var pos = this.model.get('pos');
     var name = this.model.get('name');
     
-    this.$el.css({
-      left : pos.x,
-      top : pos.y
-    });
+    this.updatePosition();
+
+    this.$el.attr('id', this.model.id);
 
     // only add the draggable if it's not already set
     if(!this.$el.hasClass('ui-draggable'))
@@ -117,5 +109,6 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
+    this.$el.append(this.contextmenu.render().el);
   }
 });

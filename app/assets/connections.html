@@ -29,11 +29,14 @@
       <rect x="-4.5" y="0.5" rx="1.5" ry="1.5" width="7" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
       <rect x="-6.5" y="1" rx="1" ry="1" width="7" height="11" style="fill:url(#whiteToTransparent);"/>
     </pattern>
+    <mask id="coinHighlightMask" width="6" height="11">
+      <rect x="1" y="1" rx="1.5" ry="1.5" width="6" height="11" fill="white"/>
+    </mask>
     <marker id="coin" viewBox="0 0 7 12" refX="3.5" refY="6" markerWidth="7" markerHeight="12" orient="auto">  
       <rect x="0.5" y="0.5" rx="2" ry="2" width="6" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
-      <rect x="-1" y="1" rx="1.5" ry="1.5" width="6" height="11" style="fill:url(#whiteToTransparent);"/>
+      <rect x="-1" y="1" rx="1.5" ry="1.5" width="6" height="11" style="fill:url(#whiteToTransparent);" mask="url(#coinHighlightMask)"/>
     </marker>
-    <marker id="Triangle"  
+    <marker id="triangle"  
             viewBox="0 0 10 10"   
             refX="1" refY="5"  
             markerWidth="6"   
@@ -43,8 +46,13 @@
     </marker>
   </defs>
   <polyline points="0,50 188,50" fill="none" stroke="white" stroke-width="2" marker-end="url(#Triangle)"/>
+  
+  <path d="M0,155 C0,0 232,155 232,0" fill="none" stroke="black" stroke-width="5"></path>
 
   <path d="M 10 25 H 14 18 22 26 30 34 38 42 46 50" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
+</svg>
+<svg width="200" height="200">
+  <path d="M0,0 100,100" fill="none" stroke="white" stroke-width="2" marker-end="url(#triangle)"></path>
 </svg>
 <script>
   var slider = document.querySelector('input[type="range"]');
