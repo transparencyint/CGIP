@@ -64,3 +64,16 @@ This is how a money connection looks like in the backend:
 			"dispersed": 0,
 			"pledged": 0
 		}
+
+## Databases
+
+Each chapter has its own database and they're identified by their [ISO 3166-1 Alpha2 country code](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes):
+
+- Dominican Republic -> DM
+- Bangladesh -> BD
+- Kenya -> KE
+- Maldives -> MD
+- Mexico -> MX
+- Peru -> PE
+
+These databases have to get created manually in the database for now. There will be a setup script in the future.
