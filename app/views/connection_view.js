@@ -35,9 +35,9 @@ module.exports = View.extend({
     //this.ctx = this.$el.get(0).getContext('2d');
     this.strokeStyle = 'white';
     this.selectStyle = 'hsl(205,100%,55%)';
-    this.strokeWidth = 8;
-    this.actorRadius = 80;
-    this.markerSize = 5;
+    this.strokeWidth = 6;
+    this.actorRadius = 60;
+    this.markerSize = 4;
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
     this.$el.svg();
     this.svg = this.$el.svg('get');
