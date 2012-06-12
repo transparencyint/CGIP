@@ -1,6 +1,6 @@
-<h1><%= @name %></h1>
-
 <div id="metadataClose">&times;</div>
+
+<h1><%= @name %></h1>
 
 <form>
 	<div>
