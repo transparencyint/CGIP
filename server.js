@@ -3,7 +3,7 @@ var http = require('http');
 var url = require('url');
 var express = require('express');
 var ConnectCouchdb = require('connect-couchdb')(express);
-var config = require('server/config').config;
+var config = require('./server/config').config;
 
 var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
@@ -141,6 +141,11 @@ app.configure(function(){
 app.post('/session', passport.authenticate('local'), function(req, res){
   console.log(req.user);
   res.json({'ok': true});
+});
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
 });
 
 app.get('/', function(req, res){
