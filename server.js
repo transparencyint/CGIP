@@ -2,8 +2,39 @@ var util = require('util');
 var http = require('http');
 var url = require('url');
 var express = require('express');
+var ConnectCouchdb = require('connect-couchdb')(express);
+var config = require('server/config').config;
+
+var sessionStore = new ConnectCouchdb({
+  name: 'user_sessions',
+  username: config.adminName,
+  password: config.adminPassword,
+  host: config.databaseHost
+});
+
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+var User = require('./server/models/user').User;
 
 var app = express.createServer();
+
+passport.use(new LocalStrategy(function(username, pw, callback){
+  console.log(1);
+  callback(null, User.findByName('Hans'));
+}));
+
+passport.serializeUser(function(user, done) {
+  console.log('serializeUser');
+  console.log(user);
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  console.log('deserializeUser');
+  console.log(User.get(id));
+  done(null, User.get(id));
+});
 
 // The remote database information
 var PREFIX = '/db/';
@@ -76,7 +107,7 @@ function couchDBRequest(inRequest, inResponse, uri) {
       });
     });
 
-    outRequest.on('error', function(){
+    outRequest.on('error', function(e){
       console.log('error');
       console.log(arguments);
       unknownError(inResponse, e);
@@ -96,10 +127,29 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
-  app.use(express.session({secret: 'aabdonie98gsdv79sdjsbv2624zihef'}));
+  app.use(express.session({
+    store: sessionStore,
+    secret: 'aabdonie98gsdv79sdjsbv2624zihef'
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(couchDBForward);
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+});
+
+app.post('/session', passport.authenticate('local'), function(req, res){
+  console.log(req.user);
+  res.json({'ok': true});
+});
+
+app.get('/', function(req, res){
+  console.log(req.user);
+  res.redirect('/index.html');
+});
+
+app.get('/test', function(req, res){
+  res.json(req.user);
 });
 
 app.listen(appPort);
