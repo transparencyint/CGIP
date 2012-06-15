@@ -6,7 +6,7 @@ var ConnectCouchdb = require('connect-couchdb')(express);
 var config = require('server/config').config;
 
 var sessionStore = new ConnectCouchdb({
-  name: 'user_sessions',
+  name: 'cgip_user_sessions',
   username: config.adminName,
   password: config.adminPassword,
   host: config.databaseHost
