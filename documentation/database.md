@@ -64,3 +64,20 @@ This is how a money connection looks like in the backend:
 			"dispersed": 0,
 			"pledged": 0
 		}
+
+## Databases
+
+Each chapter has its own database and they're identified by their [ISO 3166-1 Alpha2 country code](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes):
+
+- Dominican Republic -> DM
+- Bangladesh -> BD
+- Kenya -> KE
+- Maldives -> MD
+- Mexico -> MX
+- Peru -> PE
+
+You can create all needed databases by running the create_databases.js from the `backend scripts/` folder. 
+
+`$ node backend\ scripts/create_databases.js`
+
+It will prompt you for the username, the password (you can leave them both blank when they're not needed), the database url (e.g. http://127.0.0.1) and the database port (e.g. 5984). After that it tries to create the databases in the specified CouchDB.
