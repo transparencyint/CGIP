@@ -2,7 +2,7 @@
 
 <h1><%= @name %></h1>
 
-<form>
+<form class="standardForm">
 	<div>
 		<label for="type">1. What is organization type of the actor?</label>
 		<select id="type" class="hasOther" name="type">
@@ -19,14 +19,20 @@
     <div>
       <label>2. What is the role of this actor in the climate sector in the country?</label>
       <span class="hint">(mulitiple choices possible)</span>
-      <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label><br>
-      <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label><br>
-      <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label><br>
-      <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label><br>
-      <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label><br>
-      <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label><br>
-      <input type="checkbox" name="role" value="other" id="other"><label for="other">Other roles</label><br>
-      <input type="text" id="typeOther" class="hidden" name="roleOther" />
+      <div>
+        <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label>
+        <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label>
+        <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label>
+      </div>
+      <div>
+        <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label>
+        <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label>
+        <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label>
+      </div>
+      <div>
+        <input type="checkbox" name="role" value="other" id="other" class="hasOther"><label for="other">Other roles</label>
+        <input type="text" id="typeOther" class="hidden" name="roleOther" />
+      </div>
     </div>
         
     <div>

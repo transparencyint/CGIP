@@ -6,11 +6,33 @@ module.exports = View.extend({
   template: require('./templates/lightbox'),
 
   events: {
-    'click #metadataClose': 'closeMetaData'
+    'click #metadataClose': 'closeMetaData',
+    'change .hasOther': 'showInput'
   },
 
   initialize: function(){ 
+    $('.hasOther').change(function(){
+
+      var hiddenBrother = $(this).next();
+      if( this.value === "other" ){
+        hiddenBrother.removeClass('hidden');
+      } else {
+        hiddenBrother.addClass('hidden').val("");
+      }
+    });
+
   },  
+
+  showInput: function(event){
+
+    console.log(event);
+    var hiddenBrother = $(event.target.nextElementSibling);
+      if(event.target.value === "other" ){
+        hiddenBrother.removeClass('hidden');
+      } else {
+        hiddenBrother.addClass('hidden').val("");
+      }
+  },
 
   show: function(event){
     $('#lightbox').show();
@@ -26,7 +48,9 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-
+    
+    
+    
     //$('#lightbox').click(function(){
       
     //});    
