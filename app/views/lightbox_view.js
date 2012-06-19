@@ -8,6 +8,7 @@ module.exports = View.extend({
   events: {
     'click #metadataClose': 'closeMetaData',
     'change .hasOther': 'showInput',
+    'change #purposeOfProject': 'showSelectBox',
     'submit .standardForm': 'formSubmit'
   },
 
@@ -41,6 +42,13 @@ module.exports = View.extend({
 
   },
 
+  showSelectBox: function(event){
+    if($(event.target).val() == 'mitigation')
+      $('#mitigationType').removeClass('hidden');
+    else
+      $('#mitigationType').addClass('hidden');
+  },
+
   formSubmit: function(event){
     event.preventDefault();
 
@@ -49,6 +57,11 @@ module.exports = View.extend({
 
     var _role = new Array();
 
+    var _purposeOfProject = $("select[name='purposeOfProject']").val(); 
+    var _mitigation = $("select[name='typeOfMitigation']").val(); 
+    var _corruptionRisk = $("textarea[name='corruptionRisk']").val(); 
+    var _description = $("textarea[name='description']").val(); 
+
     $("input[name='role']:checked").each(function() { 
       if($(this).val() == 'other' && $('input[name=roleOther]').val() != '')
         _role.push($('input[name=roleOther]').val());
@@ -56,21 +69,13 @@ module.exports = View.extend({
         _role.push($(this).val());
     });
 
-    var _purposeOfProject = $("select[name='purposeOfProject']").val(); 
-
     if(_purposeOfProject == 'other')
-    {
       _purposeOfProject = $('input[name=purposeOther]').val();
-    }
-
-    var _mitigation = $("select[name='mitigation']").val(); 
-    var _corruptionRisk = $("textarea[name='corruptionRisk']").val(); 
-    var _description = $("textarea[name='description']").val(); 
+    else if(_purposeOfProject == 'mitigation')
+      _purposeOfProject = $('input[name=purposeOther]').val();
 
     if(_otherType != '' && _type == 'other')
-    {
       _type = event.srcElement[1].value;
-    }
 
     console.log(_type);
     console.log(_role);

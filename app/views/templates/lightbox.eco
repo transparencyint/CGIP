@@ -59,7 +59,7 @@
       <input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />
     <div class="hidden" id="mitigationType">
       <label for="typeOfMitigation">What type of mitigation?</label>
-      <select id="typeOfMitigation" name="mitigation" class="hasOther" multiple>
+      <select id="typeOfMitigation" name="typeOfMitigation" class="hasOther" multiple>
         <option value="redd">Forests/REDD</option>
         <option value="cdm">CDM (Clean Development Mechanisms)</option>
       </select>
