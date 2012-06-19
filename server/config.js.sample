@@ -2,5 +2,6 @@ exports.config = {
   adminName: "",
   adminPassword: "",
   databaseHost: "127.0.0.1",
-  databasePort: "5984"
+  databasePort: "5984",
+  salt: "keyboardcat"
 };
