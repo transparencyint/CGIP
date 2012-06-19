@@ -21,34 +21,45 @@
       <span class="hint">(mulitiple choices possible)</span>
       <div>
         <p>
-          <input type="checkbox" name="role[]" value="funding" id="funding"><label for="funding">funding climate sector projects</label></p>
-        <p><input type="checkbox" name="role[]" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label></p>
-        <p><input type="checkbox" name="role[]" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label></p>
+          <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label>
+        </p>
+        <p>
+          <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label>
+        </p>
+        <p>
+          <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label>
+        </p>
       </div>
       <div>
-        <p><input type="checkbox" name="role[]" value="approval" id="approval"><label for="approval">projects approval/rejection</label></p>
-        <p><input type="checkbox" name="role[]" value="implementation" id="implementation"><label for="implementation">implementation</label></p>
-        <p><input type="checkbox" name="role[]" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label></p>
+        <p>
+          <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label>
+        </p>
+        <p>
+          <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label>
+        </p>
+        <p>
+          <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label>
+        </p>
       </div>
       <div>
-        <p><input type="checkbox" name="role[]" value="other" id="other" class="hasOther"><label for="other">Other roles</label></p>
-        <p><input type="text" id="typeOther" class="hidden" name="roleOther" /></p>
+        <p><input type="checkbox" name="role" value="other" id="other" class="hasOther"><label for="other">Other roles</label></p>
+        <input type="text" id="typeOther" class="hidden" name="roleOther" />
       </div>
     </div>
         
     <div class="clear">
       <label for="purposeOfProject">3. What is the purpose of the climate projects that the actor is financing or implementing?</label>
-      <select id="purposeOfProject" name="actor[purposeOfProject]" size="5" class="hasOther" multiple>
+      <select id="purposeOfProject" name="purposeOfProject" size="5" class="hasOther" multiple>
         <option value="adaption">Adaption</option>
         <option value="mitigation">Mitigation</option>
         <option value="research">Research</option>
         <option value="capacity_building">Capacity Building</option>
         <option value="other" data-additionalField="#purposeOther">other</option>
       </select>
-      <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />
+      <input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />
     <div class="hidden" id="mitigationType">
       <label for="typeOfMitigation">What type of mitigation?</label>
-      <select id="typeOfMitigation" name="mitigation[]" class="hasOther" multiple>
+      <select id="typeOfMitigation" name="mitigation" class="hasOther" multiple>
         <option value="redd">Forests/REDD</option>
         <option value="cdm">CDM (Clean Development Mechanisms)</option>
       </select>
@@ -56,11 +67,11 @@
 
 	<div>
 	  	<label for="corruptionRisk">4. Are there indications that there is the risk of corruption in the organization?</label>
-	  	<textarea rows="4" cols="70" id="corruptionRisk" name="actor[corruptionRisk]"> </textarea>
+	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"> </textarea>
 	</div>
 	<div>
 	  	<label for="description">5. Additional information can be included in the description (optional):</label>
-		<textarea rows="3" cols="70" id="description" name="actor[description]"> </textarea>
+		<textarea rows="3" cols="70" id="description" name="description"> </textarea>
 	</div>
 	<input type="submit" value="Save Changes" />
 </form>
