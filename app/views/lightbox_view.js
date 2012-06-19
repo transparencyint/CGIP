@@ -7,25 +7,19 @@ module.exports = View.extend({
 
   events: {
     'click #metadataClose': 'closeMetaData',
-    'change .hasOther': 'showInput'
+    'change .hasOther': 'showInput',
+    'submit .standardForm': 'formSubmit'
   },
 
   initialize: function(){ 
-    $('.hasOther').change(function(){
-
-      var hiddenBrother = $(this).next();
-      if( this.value === "other" ){
-        hiddenBrother.removeClass('hidden');
-      } else {
-        hiddenBrother.addClass('hidden').val("");
-      }
-    });
 
   },  
 
-  showInput: function(event){
+  closeMetaData: function(){ 
+    $('#lightbox').hide();
+  },
 
-    console.log(event);
+  showInput: function(event){
     var hiddenBrother = $(event.target.nextElementSibling);
       if(event.target.value === "other" ){
         hiddenBrother.removeClass('hidden');
@@ -34,13 +28,31 @@ module.exports = View.extend({
       }
   },
 
-  show: function(event){
-    $('#lightbox').show();
+  formSubmit: function(event){
+    event.preventDefault();
+    console.log(event);
+
+    console.log(event.srcElement[0].value);
+    console.log(event.srcElement[0].value);
+    /* Parse the form */
+    //console.log(request);
+
+    //var type = event.
+    /*this.model.save({
+      type : event.,
+      role : '',
+      purpose : '',
+      mitigation : '',
+      corruptionRisk : '',
+      description : ''
+    });
+*/
+
   },
 
-  closeMetaData: function(){ 
-    $('#lightbox').hide();
-  
+  show: function(event){
+    $('#lightbox').show();
+    console.log(this.model);
   },
 
   getRenderData : function(){
@@ -48,13 +60,7 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    
-    
-    
-    //$('#lightbox').click(function(){
-      
-    //});    
-    //$('#actorEditor').bind('lightbox', this.show);
+
   }
 
 });

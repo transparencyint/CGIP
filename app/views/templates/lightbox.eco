@@ -20,22 +20,23 @@
       <label>2. What is the role of this actor in the climate sector in the country?</label>
       <span class="hint">(mulitiple choices possible)</span>
       <div>
-        <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label>
-        <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label>
-        <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label>
+        <p>
+          <input type="checkbox" name="role[]" value="funding" id="funding"><label for="funding">funding climate sector projects</label></p>
+        <p><input type="checkbox" name="role[]" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label></p>
+        <p><input type="checkbox" name="role[]" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label></p>
       </div>
       <div>
-        <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label>
-        <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label>
-        <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label>
+        <p><input type="checkbox" name="role[]" value="approval" id="approval"><label for="approval">projects approval/rejection</label></p>
+        <p><input type="checkbox" name="role[]" value="implementation" id="implementation"><label for="implementation">implementation</label></p>
+        <p><input type="checkbox" name="role[]" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label></p>
       </div>
       <div>
-        <input type="checkbox" name="role" value="other" id="other" class="hasOther"><label for="other">Other roles</label>
-        <input type="text" id="typeOther" class="hidden" name="roleOther" />
+        <p><input type="checkbox" name="role[]" value="other" id="other" class="hasOther"><label for="other">Other roles</label></p>
+        <p><input type="text" id="typeOther" class="hidden" name="roleOther" /></p>
       </div>
     </div>
         
-    <div>
+    <div class="clear">
       <label for="purposeOfProject">3. What is the purpose of the climate projects that the actor is financing or implementing?</label>
       <select id="purposeOfProject" name="actor[purposeOfProject]" size="5" class="hasOther" multiple>
         <option value="adaption">Adaption</option>
