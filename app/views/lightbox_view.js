@@ -8,7 +8,7 @@ module.exports = View.extend({
   events: {
     'click #metadataClose': 'closeMetaData',
     'change .hasOther': 'showInput',
-    'change #purposeOfProject': 'showSelectBox',
+    'change input[name=purpose]': 'showSelectBox',
     'submit .standardForm': 'formSubmit'
   },
 
@@ -24,7 +24,11 @@ module.exports = View.extend({
     var hiddenBrother = $(event.target.nextElementSibling);
 
     if(event.srcElement.type == 'checkbox'){
-      hiddenBrother = $('input[name=roleOther]'); 
+      console.log(event.srcElement.name);
+      if(event.srcElement.name == 'role')
+        hiddenBrother = $('input[name=roleOther]'); 
+      else if(event.srcElement.name == 'purpose')
+        hiddenBrother = $('input[name=purposeOther]'); 
 
       if(event.target.value === "other" && $(event.target).is(':checked')){
           hiddenBrother.removeClass('hidden');
@@ -56,8 +60,8 @@ module.exports = View.extend({
     var _otherType = $("input[name='otherType']").val();
 
     var _role = new Array();
+    var _purposeOfProject = new Array(); 
 
-    var _purposeOfProject = $("select[name='purposeOfProject']").val(); 
     var _mitigation = $("select[name='typeOfMitigation']").val(); 
     var _corruptionRisk = $("textarea[name='corruptionRisk']").val(); 
     var _description = $("textarea[name='description']").val(); 
@@ -65,6 +69,13 @@ module.exports = View.extend({
     $("input[name='role']:checked").each(function() { 
       if($(this).val() == 'other' && $('input[name=roleOther]').val() != '')
         _role.push($('input[name=roleOther]').val());
+      else
+        _role.push($(this).val());
+    });
+
+    $("input[name='purpose']:checked").each(function() { 
+      if($(this).val() == 'other' && $('input[name=purposeOther]').val() != '')
+        _role.push($('input[name=purposeOther]').val());
       else
         _role.push($(this).val());
     });
