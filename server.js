@@ -3,6 +3,7 @@ var http = require('http');
 var url = require('url');
 var express = require('express');
 var ConnectCouchdb = require('connect-couchdb')(express);
+var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
 
 var sessionStore = new ConnectCouchdb({
@@ -19,22 +20,15 @@ var User = require('./server/models/user').User;
 
 var app = express.createServer();
 
-passport.use(new LocalStrategy(function(username, pw, callback){
-  console.log(1);
-  callback(null, User.findByName('Hans'));
-}));
+passport.use(new LocalStrategy({
+  usernameField: 'username',
+  passwordField: 'password'
+},
+auth.authenticate));
 
-passport.serializeUser(function(user, done) {
-  console.log('serializeUser');
-  console.log(user);
-  done(null, user.id);
-});
+passport.serializeUser(auth.serializeUser);
 
-passport.deserializeUser(function(id, done) {
-  console.log('deserializeUser');
-  console.log(User.get(id));
-  done(null, User.get(id));
-});
+passport.deserializeUser(auth.deserializeUser);
 
 // The remote database information
 var PREFIX = '/db/';
@@ -140,12 +134,12 @@ app.configure(function(){
 
 app.post('/session', passport.authenticate('local'), function(req, res){
   console.log(req.user);
-  res.json({'ok': true});
+  res.json({ ok: true });
 });
 
 app.get('/logout', function(req, res){
   req.logout();
-  res.redirect('/');
+  res.json({ ok: true });
 });
 
 app.get('/', function(req, res){
@@ -153,7 +147,7 @@ app.get('/', function(req, res){
   res.redirect('/index.html');
 });
 
-app.get('/test', function(req, res){
+app.get('/test', auth.ensureAdmin, function(req, res){
   res.json(req.user);
 });
 
