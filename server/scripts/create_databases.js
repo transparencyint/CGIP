@@ -1,7 +1,7 @@
 var cradle = require('cradle');
 var config = require('../config').config;
 
-var databases = ['cgip_user_sessions', 'cgip_dm', 'cgip_bd', 'cgip_ke', 'cgip_md', 'cgip_mx', 'cgip_pe'];
+var databases = ['cgip_user_sessions', 'cgip_users', 'cgip_dm', 'cgip_bd', 'cgip_ke', 'cgip_md', 'cgip_mx', 'cgip_pe'];
 
 cradle.setup({
   host: 'http://' + config.databaseHost,
