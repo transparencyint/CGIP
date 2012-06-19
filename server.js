@@ -6,6 +6,17 @@ var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
 
+var cradle = require('cradle');
+
+cradle.setup({
+  host: 'http://' + config.databaseHost,
+  port: config.databasePort,
+  auth: {
+    username: config.adminName,
+    password: config.adminPassword
+  }
+});
+
 var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
   username: config.adminName,
@@ -53,13 +64,12 @@ app.get('/logout', function(req, res){
   res.json({ ok: true });
 });
 
-app.get('/', function(req, res){
-  console.log(req.user);
-  res.redirect('/index.html');
-});
-
-app.get('/test', auth.ensureAdmin, function(req, res){
+app.get('/test', function(req, res){
   res.json(req.user);
 });
 
-app.listen(appPort);
+app.get('/testauth', auth.ensureAuthenticated, function(req, res){
+  res.json(req.user);
+});
+
+app.listen(process.env['app_port'] || 3000);
