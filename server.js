@@ -5,7 +5,8 @@ var express = require('express');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
-var dbConnection = require('../db/database_connection').connection.createConnection();
+var dbConnection = require('./server/db/database_connection').connection.createConnection();
+var dataDb = dbConnection.database('cgip_data');
 
 var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
@@ -18,6 +19,8 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('./server/models/user').User;
+var Actor = require('./server/models/actor').Actor;
+var Connection = require('./server/models/connection').Connection;
 
 var app = express.createServer();
 
@@ -60,6 +63,20 @@ app.get('/test', function(req, res){
 
 app.get('/testauth', auth.ensureAuthenticated, function(req, res){
   res.json(req.user);
+});
+
+app.get('/:country/actors', function(req, res){
+  Actor.allByCountry(req.params.country, function(err, docs){
+    if(err) return res.json(err, 404);
+    res.json(docs);
+  });
+});
+
+app.get('/:country/connections', function(req, res){
+  Connection.allByCountry(req.params.country, function(err, docs){
+    if(err) return res.json(err, 404);
+    res.json(docs);
+  });
 });
 
 app.listen(process.env['app_port'] || 3000);

@@ -1,15 +1,7 @@
 var config = require('../config').config;
 var crypto = require('crypto');
-var cradle = require('cradle');
-cradle.setup({
-  host: 'http://' + config.databaseHost,
-  port: config.databasePort,
-  auth: {
-    username: config.adminName,
-    password: config.adminPassword
-  }
-});
-var db = new cradle.Connection().database('cgip_users');
+var connection = require('../db/database_connection').connection.createConnection();
+var db = connection.database('cgip_users');
 
 exports.User = {
   get: function(id, done){
