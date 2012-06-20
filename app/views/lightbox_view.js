@@ -8,7 +8,7 @@ module.exports = View.extend({
   events: {
     'click #metadataClose': 'closeMetaData',
     'change .hasOther': 'showInput',
-    'change input[name=purpose]': 'showSelectBox',
+    'change input#mitigation': 'showSelectBox',
     'submit .standardForm': 'formSubmit'
   },
 
@@ -47,9 +47,9 @@ module.exports = View.extend({
   },
 
   showSelectBox: function(event){
-    if($(event.target).val() == 'mitigation')
+    if($(event.target).is(':checked'))
       $('#mitigationType').removeClass('hidden');
-    else
+    else if(!$('#mitigationType').hasClass('hidden'))
       $('#mitigationType').addClass('hidden');
   },
 
