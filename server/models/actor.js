@@ -1,25 +1,23 @@
+var Model = require('./model').Model;
+var _ = require('underscore');
+
 var connection = require('../db/database_connection').connection.createConnection();
 var db = connection.database('cgip_data');
 
-exports.Actor = {
-  allByCountry: function(country, done){
-    db.view('cgip/actorsByCountry', { key: country }, function(err, docs){
-      if(err) return done(err);
-      var parsedDocs = [];
+var Actor = {};
+_.extend(Actor, Model);
 
-      docs.forEach(function(doc){
-        parsedDocs.push(doc);
-      });
+Actor.allByCountry = function(country, done){
+  db.view('cgip/actorsByCountry', { key: country }, function(err, docs){
+    if(err) return done(err);
+    var parsedDocs = [];
 
-      done(err, parsedDocs)
+    docs.forEach(function(doc){
+      parsedDocs.push(doc);
     });
-  },
 
-  edit: function(id, doc, done){
-    db.save(id, doc._rev, doc, function(err, res){
-      if(err) return done(err);
-      doc._rev = res.rev;
-      done(err, doc);
-    });
-  }
+    done(err, parsedDocs)
+  });
 };
+
+exports.Actor = Actor;
