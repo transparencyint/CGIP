@@ -1,8 +1,9 @@
 module.exports = Backbone.Model.extend({
-  url: '/actors',
+  url: '/actor',
 
   defaults : {
-    name : ''
+    name: '',
+    type: 'actor'
   },
 
   moveByDelta: function(delta){

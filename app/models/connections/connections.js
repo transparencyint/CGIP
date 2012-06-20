@@ -12,7 +12,7 @@ var types = {
 
 module.exports = Collection.extend({
   model: Connection,
-  url: '/connections',
+  urlPart: '/connections',
 
   initialize: function(){
     // call super initialize

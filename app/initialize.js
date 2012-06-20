@@ -1,11 +1,8 @@
 var application = require('application');
 
-// set up the database info
-Backbone.couch_connector.config.db_name = "cgip";
-Backbone.couch_connector.config.ddoc_name = "cgip";
-Backbone.couch_connector.config.global_changes = false;
-
 $(function() {
+  Backbone.Model.prototype.idAttribute = "_id";
+  
   application.initialize();
   Backbone.history.start();
 });

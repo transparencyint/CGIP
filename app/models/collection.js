@@ -1,5 +1,14 @@
 // Base class for all collections.
 module.exports = Backbone.Collection.extend({
+  url: function(){
+    if(!this.country) throw('You need to specify a country for the collection.');
+    if(!this.urlPart) throw('You need to specify a urlPart for the collection');
+
+    return '/' + this.country + this.urlPart;
+  },
+
+  country: 'dm',
+  
   initialize: function(){
     // call super method
     Backbone.Model.prototype.initialize.call(this);
