@@ -13,5 +13,13 @@ exports.Actor = {
 
       done(err, parsedDocs)
     });
+  },
+
+  edit: function(id, doc, done){
+    db.save(id, doc._rev, doc, function(err, res){
+      if(err) return done(err);
+      doc._rev = res.rev;
+      done(err, doc);
+    });
   }
 };

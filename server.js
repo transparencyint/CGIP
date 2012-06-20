@@ -72,6 +72,13 @@ app.get('/:country/actors', function(req, res){
   });
 });
 
+app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
+  Actor.edit(req.params.id, req.body, function(err, actor){
+    if(err) return res.json(err, 404);
+    res.json(actor);
+  });
+});
+
 app.get('/:country/connections', function(req, res){
   Connection.allByCountry(req.params.country, function(err, docs){
     if(err) return res.json(err, 404);
