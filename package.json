@@ -11,6 +11,7 @@
   "engines": {
     "node": "~0.6.10"
   },
+  "node":"0.6.17",
   "scripts": {
     "start": "brunch watch --server"
   },
