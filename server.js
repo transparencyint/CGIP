@@ -72,8 +72,22 @@ app.get('/:country/actors', function(req, res){
   });
 });
 
+app.post('/:country/actors', auth.ensureAuthenticated, function(req, res){
+  Actor.create(req.body, function(err, actor){
+    if(err) return res.json(err, 404);
+    res.json(actor);
+  });
+});
+
 app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
-  Actor.edit(req.params.id, req.body, function(err, actor){
+  Actor.edit(req.params.actor_id, req.body, function(err, actor){
+    if(err) return res.json(err, 404);
+    res.json(actor);
+  });
+});
+
+app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
+  Actor.remove(req.params.actor_id, function(err, actor){
     if(err) return res.json(err, 404);
     res.json(actor);
   });

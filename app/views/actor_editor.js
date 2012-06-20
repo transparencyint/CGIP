@@ -74,7 +74,9 @@ module.exports = View.extend({
     var editor = this;
     
     var actor = new Actor();
+    /* TODO: add current country and not simply 'dm' */
     actor.save({
+      country: 'dm',
       pos : {
         x : event.clientX,
         y : event.clientY
