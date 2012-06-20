@@ -75,9 +75,9 @@ module.exports = View.extend({
 
     $("input[name='purpose']:checked").each(function() { 
       if($(this).val() == 'other' && $('input[name=purposeOther]').val() != '')
-        _role.push($('input[name=purposeOther]').val());
+        _purposeOfProject.push($('input[name=purposeOther]').val());
       else
-        _role.push($(this).val());
+        _purposeOfProject.push($(this).val());
     });
 
     if(_purposeOfProject == 'other')
