@@ -1,18 +1,11 @@
 var cradle = require('cradle');
 var config = require('../config').config;
+var connection = require('../db/database_connection').connection.createConnection();
 
-var databases = ['cgip_user_sessions', 'cgip_users', 'cgip_dm', 'cgip_bd', 'cgip_ke', 'cgip_md', 'cgip_mx', 'cgip_pe'];
+var databases = ['cgip_user_sessions', 'cgip_users', 'cgip_data'];
 
-cradle.setup({
-  host: 'http://' + config.databaseHost,
-  port: config.databasePort,
-  auth: {
-    username: config.adminName,
-    password: config.adminPassword
-  }
-});
+// 'cgip_dm', 'cgip_bd', 'cgip_ke', 'cgip_md', 'cgip_mx', 'cgip_pe'
 
-var connection = new(cradle.Connection)();
 var currentDb = 0;
 
 var createIfNotExists = function(dbName){

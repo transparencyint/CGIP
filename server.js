@@ -5,17 +5,7 @@ var express = require('express');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
-
-var cradle = require('cradle');
-
-cradle.setup({
-  host: 'http://' + config.databaseHost,
-  port: config.databasePort,
-  auth: {
-    username: config.adminName,
-    password: config.adminPassword
-  }
-});
+var dbConnection = require('../db/database_connection').connection.createConnection();
 
 var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
