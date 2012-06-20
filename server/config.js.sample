@@ -1,7 +1,16 @@
-exports.config = {
-  adminName: "",
-  adminPassword: "",
-  databaseHost: "127.0.0.1",
-  databasePort: "5984",
-  salt: "keyboardcat"
-};
+if(process.env['NODE_ENV'] && process.env['NODE_ENV'] === 'production')
+  exports.config = {
+    adminName: "",
+    adminPassword: "",
+    databaseHost: "127.0.0.1",
+    databasePort: "5984",
+    salt: "keyboardcat"
+  };
+else
+  exports.config = {
+    adminName: "",
+    adminPassword: "",
+    databaseHost: "127.0.0.1",
+    databasePort: "5984",
+    salt: "keyboardcat"
+  };
