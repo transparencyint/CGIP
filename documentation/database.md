@@ -2,7 +2,7 @@
 
 ## Technology
 
-The CGIP app uses CouchDB as its backend and runs as a Singple Page App inside CouchApp in order to query it directly without a proxy in between.
+The CGIP app uses CouchDB as its backend and runs as a Singple Page App backed by a node.js backend that restricts db access and serves as a caching layer.
 
 ## Documents
 
@@ -14,7 +14,7 @@ The CGIP app uses CouchDB as its backend and runs as a Singple Page App inside C
 				"x": 23,
 				"y": 100
 			},
-			"collection": "actors"
+			"type": "actor"
 		}
 
 ### Connections
@@ -41,23 +41,19 @@ Each connection also has a dedicated Collection that you can also find in the sa
 This is how an accountability connection looks like in the backend:
 
 		{
-			"collection": "connections",
-			"type": "connections",
+			"type": "connection",
 			"connectionType": "accountability",
 			"from": "ACTOR_ID",
 			"to": "ACTOR_ID",
 			"source": ""
 		}
 
-The 
-
 #### Money
 
 This is how a money connection looks like in the backend:
 
 		{
-			"collection": "connections",
-			"type": "connections",
+			"type": "connection",
 			"connectionType": "money",
 			"from": "ACTOR_ID",
 			"to": "ACTOR_ID",
@@ -67,17 +63,12 @@ This is how a money connection looks like in the backend:
 
 ## Databases
 
-Each chapter has its own database and they're identified by their [ISO 3166-1 Alpha2 country code](http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes):
+There are three databases needed to run this app:
 
-- Dominican Republic -> DM
-- Bangladesh -> BD
-- Kenya -> KE
-- Maldives -> MD
-- Mexico -> MX
-- Peru -> PE
+- `cgip_data`: all data for the visualisation (e.g. actors, connections) is stored here
+- `cgip_users`: all registered users
+- `cgip_user_sessions`: as a permanent session store
 
-You can create all needed databases by running the create_databases.js from the `backend scripts/` folder. 
+You can create all needed databases by running the create_databases.js from the `server/scripts/` folder. 
 
-`$ node backend\ scripts/create_databases.js`
-
-It will prompt you for the username, the password (you can leave them both blank when they're not needed), the database url (e.g. http://127.0.0.1) and the database port (e.g. 5984). After that it tries to create the databases in the specified CouchDB.
+`$ node server/scripts/create_databases.js`
