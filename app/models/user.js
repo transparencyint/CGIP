@@ -3,7 +3,7 @@ module.exports = Backbone.Model.extend({
     return this.has('_id') && this.has('_rev');
   },
 
-  logIn: function(username, password, options){
+  login: function(username, password, options){
     if(!options) options = {};
     if(!options.success) options.success = function(){};
     if(!options.error) options.error = function(){};
@@ -27,7 +27,7 @@ module.exports = Backbone.Model.extend({
     }
   },
 
-  logOut: function(options){
+  logout: function(options){
     if(!options) options = {};
     if(!options.success) options.success = function(){};
     if(!options.error) options.error = function(){};
