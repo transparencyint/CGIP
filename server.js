@@ -147,4 +147,4 @@ app.post('/:country/connections/:connection_type/destroyAll', auth.ensureAuthent
     res.json({ ok: true });
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 8812);

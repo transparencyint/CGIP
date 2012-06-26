@@ -10,10 +10,11 @@ The documentation can be found in the `documentation` folder.
 2. Install brunch from command line via `npm install -g brunch@1.1.2`
 3. Navigate to the `CGIP/` folder in the command line
 4. Run `npm install` from the command line
-5. Create the databases with: `node server/scripts/create_databases.js`
-6. Create the design docs with: `node server/scripts/create_design_docs.js`
-7. Create a user with: `node server/scripts/create_user.js` (will prompt for details)
-8. Run `node server.js` and open [http://localhost:3000](http://localhost:3000) in your browser
+6. Go to `server` and copy `config.js.sample` to `config.js` and fill in your credentials
+7. Create the databases with: `node server/scripts/create_databases.js`
+8. Create the design docs with: `node server/scripts/create_design_docs.js`
+9. Create a user with: `node server/scripts/create_user.js` (will prompt for details)
+10. Run `node server.js` and open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Working on the project
 
