@@ -3,6 +3,7 @@ var config = require('../config').config;
 
 cradle.setup({
   raw: false,
+  cache: true,
   host: 'http://' + config.databaseHost,
   port: config.databasePort,
   auth: {
