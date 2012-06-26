@@ -12,7 +12,8 @@ var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
   username: config.adminName,
   password: config.adminPassword,
-  host: config.databaseHost
+  host: config.databaseHost,
+  port: config.databasePort
 });
 
 var passport = require('passport');
