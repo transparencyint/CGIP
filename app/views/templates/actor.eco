@@ -7,4 +7,11 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+  <div class="roles">
+	<% if @role: %>
+		<% for value in @role: %>
+			<div class="role"></div>
+		<% end %>
+	<% end %>
+   </div>
 </div>

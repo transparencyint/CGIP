@@ -1,3 +1,6 @@
+/**
+  
+*/
 var View = require('./view');
 var ContextMenuView = require('./contextmenu_view');
 
@@ -96,6 +99,16 @@ module.exports = View.extend({
   afterRender: function(){
     var name = this.model.get('name');
     
+    console.log("Get role of "+name);
+    var roles = this.model.get('role');
+    if(roles != undefined){
+      roles.forEach(function(role){
+          this.$('.roles').val();
+          console.log(role);
+      });
+    }
+
+    //console.log(roles);
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
