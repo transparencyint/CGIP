@@ -100,4 +100,18 @@ app.get('/:country/connections', function(req, res){
   });
 });
 
+app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
+  Connection.create(req.body, function(err, connection){
+    if(err) return res.json(err, 404);
+    res.json(connection);
+  });
+});
+
+app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
+  Connection.remove(req.params.connection_id, function(err, connection){
+    if(err) return res.json(err, 404);
+    res.json(connection);
+  });
+});
+
 app.listen(process.env.PORT || 3000);

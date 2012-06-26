@@ -36,6 +36,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
   }else if(this.selectedActors.length === 2){
 
     var newConnection = new this.collection.model({
+      country: this.selectedActors[0].get('country'),
       from: this.selectedActors[0].id,
       to: this.selectedActors[1].id
     });

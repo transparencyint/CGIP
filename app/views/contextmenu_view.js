@@ -29,7 +29,7 @@ module.exports = View.extend({
     }
   },
 
-  deleteClicked: function(){  
+  deleteClicked: function(){
     if(this.model) this.model.destroy();
   },
 
