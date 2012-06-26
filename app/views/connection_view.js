@@ -34,7 +34,7 @@ module.exports = View.extend({
   afterRender: function(){
     this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
     this.selectStyle = 'hsl(205,100%,55%)';
-    this.strokeWidth = 6;
+    this.strokeWidth = 4;
     this.actorRadius = 60;
     this.markerSize = 4;
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
@@ -112,8 +112,41 @@ module.exports = View.extend({
       y : start.y,
     };
     
-    var path = 'M' + start.x +','+ start.y +' '+ end.x +','+ end.y;
-    //var path = 'M'+ start.x +','+start.y+' C'+cp1.x+','+cp1.y+' '+cp2.x+','+cp2.y+' '+end.x+','+end.y;
+    if (this.model.get("connectionType") === 'accountability'){
+
+      //find the other edge length
+      var a = 30;
+      var b = getB(a);
+      a = a/2;
+      b = b/2;
+
+      var midpoint = getMidpoint(start, end);
+
+      var distance = getDistance(start, end);
+      distance = distance/5;
+
+      cp1 = getControlPoint1(start, end, midpoint, a, b, distance);
+      cp2 = getControlPoint2(start, end, midpoint, a, b, distance);
+
+    }
+    else
+    {
+      //find the other edge length
+      var a = 50;
+      var b = getB(a);
+      a = a/1.8;
+      b = b/1.8;
+
+      var midpoint = getMidpoint(start, end);
+
+      var distance = getDistance(start, end);
+      distance = distance/5;
+
+      cp1 = getControlPoint1(start, end, midpoint, a, b, distance);
+      cp2 = getControlPoint2(start, end, midpoint, a, b, distance);
+    }
+
+    var path = 'M'+ start.x +','+start.y+' C'+cp1.x+','+cp1.y+' '+cp2.x+','+cp2.y+' '+end.x+','+end.y;
 
     if(this.path) this.svg.remove(this.path);
     this.path = this.svg.path(this.g, path, {
@@ -147,4 +180,83 @@ function createDefs(markerSize, strokeStyle, selectStyle){
     var selectedMarker = this.svg.marker(defs, 'selectedTriangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
     this.svg.use(selectedMarker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: selectStyle });
   }
+}
+
+function getB(a){
+  var c = 100;
+  var gamma = 90;
+
+  var alpha = a * Math.asin(a * Math.sin(gamma) / c);
+  var beta = 180 - alpha - gamma;
+  var b =  a * Math.sin(beta) / Math.sin(alpha);
+
+  return b;
+}
+
+function getMidpoint(start, end){
+  var midpoint = {
+    x : (start.x + end.x)/2,
+    y : (start.y + end.y)/2,
+  };
+  return midpoint;
+}
+
+function getDistance(start, end){
+  return Math.sqrt((start.x-end.x)*(start.x-end.x) + (start.y - end.y)*(start.y - end.y));
+}
+
+function getControlPoint1(start, end, midpoint, a, b, distance){
+var cp1 = {
+      x : start.x,
+      y : end.y,
+    };
+
+  if(start.x < end.x){
+        if (start.y < end.y){
+          cp1.x = midpoint.x - a - distance;
+          cp1.y = midpoint.y + b - distance;
+        }else{
+          cp1.x = midpoint.x + a - distance;
+          cp1.y = midpoint.y + b + distance;
+        }
+      }
+      else{
+        if (start.y < end.y){
+          cp1.x = midpoint.x - a + distance;
+          cp1.y = midpoint.y - b - distance;
+        }else{
+          cp1.x = midpoint.x + a + distance;
+          cp1.y = midpoint.y - b + distance;
+        }
+      }
+
+      return cp1;
+}
+
+function getControlPoint2(start, end, midpoint, a, b, distance){
+var cp2 = {
+      x : start.x,
+      y : end.y,
+    };
+
+  if(start.x < end.x){
+        if (start.y < end.y){
+          cp2.x = midpoint.x - a + distance;
+          cp2.y = midpoint.y + b + distance;
+        }else{
+          cp2.x = midpoint.x + a + distance;
+          cp2.y = midpoint.y + b - distance;
+        }
+      }
+      else{
+        if (start.y < end.y){
+          cp2.x = midpoint.x - a - distance;
+          cp2.y = midpoint.y - b + distance;
+        }else{
+          cp2.x = midpoint.x + a - distance;
+          cp2.y = midpoint.y - b - distance;
+        }
+      }
+
+  return cp2;
 }
