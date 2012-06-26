@@ -97,7 +97,6 @@ module.exports = View.extend({
       description : _description
     });
 
-
     $('#output').html('Data successfully saved');
 
     //Close the lightbox

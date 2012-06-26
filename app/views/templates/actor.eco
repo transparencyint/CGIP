@@ -10,14 +10,21 @@
 
   <div class="overlay">
   	<% if @type: %>
-	<p>The Actor is a <i><%= @type %></i></p>
-	<% end %>
-	<% if @corruptionRisk: %>
-  	<p><%= @corruptionRisk %></p>
-  	<% end %>
+    	<p>The Actor is a <i><%= @type %></i></p>
+    <% end %>
+  	<% if @corruptionRisk: %>
+    	<p><%= @corruptionRisk %></p>
+    <% end %>
   	<% if @description: %>
-  	<p><%= @description %></p>
+  	 <p><%= @description %></p>
   	<% end %>
   </div>
 
+  <div class="roles">
+	<% if @role: %>
+		<% for value in @role: %>
+			<div class="role" id="<%= value%>"></div>
+		<% end %>
+	<% end %>
+   </div>
 </div>
