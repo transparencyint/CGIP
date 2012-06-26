@@ -129,7 +129,10 @@ module.exports = View.extend({
   afterRender: function(){
     var name = this.model.get('name');
     var roles = this.model.get('role');
-    
+    if(roles != undefined){
+      this.checkRoles(roles);
+    }
+
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
