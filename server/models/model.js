@@ -7,7 +7,7 @@ var Model = {
     db.save(id, doc._rev, doc, function(err, res){
       if(err) return done(err);
       doc._rev = res.rev;
-      console.log('Time needed (allByCountry): ' + (new Date().getTime() - start) + 'ms');
+      console.log('Time needed (edit): ' + (new Date().getTime() - start) + 'ms');
       done(err, doc);
     });
   },
