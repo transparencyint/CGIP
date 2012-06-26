@@ -10,7 +10,7 @@
   <div class="roles">
 	<% if @role: %>
 		<% for value in @role: %>
-			<div class="role"></div>
+			<div class="role" id="<%= value%>"></div>
 		<% end %>
 	<% end %>
    </div>
