@@ -29,6 +29,7 @@
 
     "express": "2.5.9",
     "connect-couchdb": "0.2.5",
+    "jade": "0.26.3",
     
     "passport": "0.1.10",
     "passport-local": "0.1.3",

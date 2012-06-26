@@ -46,6 +46,20 @@ app.configure(function(){
   app.use(passport.session());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.set('view engine', 'jade');
+  app.set('views', __dirname + '/server/views');
+  app.set('view options', {
+    layout: false
+  });
+});
+
+app.get('/', function(req, res){
+  var user = {};
+  if(req.user)
+    user._id = req.user.id
+  else
+    user = null
+  res.render('index', { user: user });
 });
 
 app.post('/session', passport.authenticate('local'), function(req, res){
