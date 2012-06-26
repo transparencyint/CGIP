@@ -100,6 +100,13 @@ app.get('/:country/connections', function(req, res){
   });
 });
 
+app.get('/:country/connections/:connection_type', function(req, res){
+  Connection.allByCountryAndType(req.params.country, req.params.connection_type, function(err, docs){
+    if(err) return res.json(err, 404);
+    res.json(docs);
+  });
+});
+
 app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   Connection.create(req.body, function(err, connection){
     if(err) return res.json(err, 404);
@@ -112,6 +119,17 @@ app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, functi
     if(err) return res.json(err, 404);
     res.json(connection);
   });
+});
+
+app.post('/:country/connections/:connection_type/destroyAll', auth.ensureAuthenticated, function(req, res){
+  var models = req.body.models || [];
+  if(models.length > 0)
+    Connection.removeAll(req.body.models, function(err, con){
+      if(err) return res.json(err, 404);
+      res.json({ ok: true });
+    });
+  else
+    res.json({ ok: true });
 });
 
 app.listen(process.env.PORT || 3000);

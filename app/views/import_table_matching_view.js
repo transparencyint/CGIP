@@ -189,7 +189,9 @@ module.exports = View.extend({
           if(bothMarked)
           {
             tableRow.setMarkedActor();
+            /* TODO: set the correct country here */
             var moneyConnection = new MoneyConnection({
+              country: 'dm',
               from: connections[l-1][0],
               to: connections[l-1][1],
               disbursed: connections[l-1][2],

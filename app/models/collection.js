@@ -19,13 +19,12 @@ module.exports = Backbone.Collection.extend({
     if(!options.success) options.success = function(){};
     if(!options.error) options.error = function(){};
 
-    var docs = {
-      docs: this.toJSON()
-    };
+    var models = { models: this.toJSON() };
 
-    var db = Backbone.couch_connector.helpers.make_db();
-
-    db.bulkRemove(docs, {
+    $.ajax({
+      type: 'POST',
+      url: '/' + this.country + this.urlPart + '/destroyAll',
+      data: models,
       success: function(){
         options.success();
       },

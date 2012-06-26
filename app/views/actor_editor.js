@@ -146,7 +146,7 @@ module.exports = View.extend({
     
     this.actors.each(this.appendActor);
 
-    this.connections.each(this.appendAccountabilityConnection);
+    this.accountabilityConnections.each(this.appendAccountabilityConnection);
 
     this.afterRender();
   },

@@ -23,4 +23,19 @@ Connection.allByCountry = function(country, done){
   });
 };
 
+Connection.allByCountryAndType = function(country, type, done){
+  db.view('cgip/connectionsByTypeAndCountry', { 
+    key: [country, type]
+  }, function(err, docs){
+    if(err) return done(err);
+    var parsedDocs = [];
+
+    docs.forEach(function(doc){
+      parsedDocs.push(doc);
+    });
+
+    done(err, parsedDocs)
+  });
+};
+
 exports.Connection = Connection;

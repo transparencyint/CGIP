@@ -38,7 +38,7 @@ module.exports = Collection.extend({
       connections[connectionType].reset(filtered);
     }
     filtered = null;
-
+    
     return connections;
   }
 });

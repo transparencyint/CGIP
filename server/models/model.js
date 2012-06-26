@@ -27,6 +27,25 @@ var Model = {
         done(error, {});
       });
     });
+  },
+
+  removeAll: function(docs, done){
+    if(docs.length === 0) return done({ message: 'No models to delete!' });
+    
+    var toDelete = [];
+    docs.forEach(function(doc){
+      toDelete.push({
+        id: doc._id,
+        _id: doc._id,
+        _rev: doc._rev,
+        _deleted: true
+      });
+    });
+
+    db.save(toDelete, function(err, res){
+      if(err) return done(err);
+      done(err, res);
+    });
   }
 };
 
