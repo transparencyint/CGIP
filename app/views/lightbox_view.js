@@ -103,6 +103,9 @@ module.exports = View.extend({
       corruptionRisk : _corruptionRisk,
       description : _description
     });
+
+    $('#lightbox').hide();
+    
   },
 
   show: function(event){
