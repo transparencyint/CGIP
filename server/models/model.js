@@ -3,9 +3,11 @@ var db = connection.database('cgip_data');
 
 var Model = {
   edit: function(id, doc, done){
+    var start = new Date().getTime();
     db.save(id, doc._rev, doc, function(err, res){
       if(err) return done(err);
       doc._rev = res.rev;
+      console.log('Time needed (allByCountry): ' + (new Date().getTime() - start) + 'ms');
       done(err, doc);
     });
   },
