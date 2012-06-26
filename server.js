@@ -45,6 +45,7 @@ app.configure(function(){
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
+  app.use(express.staticCache());
   app.use(express.static(__dirname + '/public'));
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/server/views');
