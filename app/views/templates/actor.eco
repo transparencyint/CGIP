@@ -7,4 +7,17 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+
+  <div class="overlay">
+  	<% if @type: %>
+	<p>The Actor is a <i><%= @type %></i></p>
+	<% end %>
+	<% if @corruptionRisk: %>
+  	<p><%= @corruptionRisk %></p>
+  	<% end %>
+  	<% if @description: %>
+  	<p><%= @description %></p>
+  	<% end %>
+  </div>
+
 </div>

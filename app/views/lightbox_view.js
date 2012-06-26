@@ -88,13 +88,6 @@ module.exports = View.extend({
     if(_otherType != '' && _type == 'other')
       _type = event.srcElement[1].value;
 
-    console.log(_type);
-    console.log(_role);
-    console.log(_purposeOfProject);
-    console.log(_mitigation);
-    console.log(_corruptionRisk);
-    console.log(_description);
-
     this.model.save({
       type : _type,
       role : _role,
@@ -103,11 +96,16 @@ module.exports = View.extend({
       corruptionRisk : _corruptionRisk,
       description : _description
     });
+
+
+    $('#output').html('Data successfully saved');
+
+    //Close the lightbox
+    $('#lightbox').delay(800).hide(150);
   },
 
   show: function(event){
     $('#lightbox').show();
-    console.log(this.model);
   },
 
   getRenderData : function(){
@@ -115,7 +113,7 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-
+    var role;
   }
 
 });

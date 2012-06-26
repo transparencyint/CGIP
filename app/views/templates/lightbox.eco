@@ -2,50 +2,89 @@
 
 <h1><%= @name %></h1>
 
+<% selected = 'selected="selected"' %>
+<% otherType = true %>
+
 <form class="standardForm">
 	<div>
 		<label for="type">1. What is organization type of the actor?</label>
 		<select id="type" class="hasOther" name="type">
-			<option value="ministry">Government Ministry</option>
-			<option value="agency">Government Agency</option>
-			<option value="civil">Civil Society Organization</option>
-			<option value="multilateralOrganization">Multilateral Organization</option>
-			<option value="bank">Bank</option>
-			<option value="company">Private Company</option>
-			<option value="other">Other</option>
+			<option value="Government Ministry" <% if @type == 'Government Ministry': %> <% otherType = false %> <%= selected %> <% end%>>Government Ministry</option>
+
+			<option value="Government Agency" <% if @type == 'Government Agency': %> <% otherType = false %> <%= selected %> <% end%>>Government Agency</option>
+
+			<option value="Civil Society Organization" <% if @type == 'Civil Society Organization': %> <% otherType = false %> <%= selected %> <% end%>>Civil Society Organization</option>
+
+			<option value="Multilateral Organization" <% if @type == 'Multilateral Organization': %> <% otherType = false %> <%= selected %> <% end%>>Multilateral Organization</option>
+
+			<option value="Bank" <% if @type == 'Bank': %> <% otherType = false %> <%= selected %> <% end%>>Bank</option>
+			<option value="Private Company" <% if @type == 'Private Company': %> <% otherType = false %> <%= selected %> <% end%>>Private Company</option>
+			<option value="other" <% if otherType: %> <%= selected %> <% end %>>Other</option>
 		</select>
-		<input type="text" id="typeOther" class="hidden" name="typeOther" />
+		<input type="text" id="typeOther" <% if otherType: %> value="<%= @type %>" <% else: %> class="hidden" <% end%> name="typeOther" />
 	</div>
+
+  <div>
+    <label>2. What is the role of this actor in the climate sector in the country?</label>
+    <span class="hint">(mulitiple choices possible)</span>
     <div>
-      <label>2. What is the role of this actor in the climate sector in the country?</label>
-      <span class="hint">(mulitiple choices possible)</span>
-      <div>
-        <p>
-          <input type="checkbox" name="role" value="funding" id="funding"><label for="funding">funding climate sector projects</label>
-        </p>
-        <p>
-          <input type="checkbox" name="role" value="coordination" id="coordination"><label for="coordination">coordination of other organizations</label>
-        </p>
-        <p>
-          <input type="checkbox" name="role" value="accreditation" id="accreditation"><label for="accreditation">accreditation and requirements verification</label>
-        </p>
-      </div>
-      <div>
-        <p>
-          <input type="checkbox" name="role" value="approval" id="approval"><label for="approval">projects approval/rejection</label>
-        </p>
-        <p>
-          <input type="checkbox" name="role" value="implementation" id="implementation"><label for="implementation">implementation</label>
-        </p>
-        <p>
-          <input type="checkbox" name="role" value="monitoring" id="monitoring"><label for="monitoring">monitoring, reviewing and verification</label>
-        </p>
-      </div>
-      <div>
-        <p><input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther"><label for="roleCheckboxOther">Other roles</label></p>
-        <input type="text" id="typeOther" class="hidden" name="roleOther" />
-      </div>
+      <p>
+        <input type="checkbox" name="role" value="funding" id="funding" <% if 'funding' in @role: %> checked<% end %>>
+        <label for="funding">funding climate sector projects</label>
+      </p>
+      <p>
+        <input type="checkbox" name="role" value="coordination" id="coordination" <% if 'coordination' in @role: %> checked<% end %>>
+        <label for="coordination">coordination of other organizations</label>
+      </p>
+      <p>
+        <input type="checkbox" name="role" value="accreditation" id="accreditation" <% if 'accreditation' in @role: %> checked<% end %>>
+        <label for="accreditation">accreditation and requirements verification</label>
+      </p>
     </div>
+    <div>
+      <p>
+        <input type="checkbox" name="role" value="approval" id="approval" <% if 'approval' in @role: %> checked<% end %>>
+        <label for="approval">projects approval/rejection</label>
+      </p>
+      <p>
+        <input type="checkbox" name="role" value="implementation" id="implementation" <% if 'implementation' in @role: %> checked<% end %>>
+        <label for="implementation">implementation</label>
+      </p>
+      <p>
+        <input type="checkbox" name="role" value="monitoring" id="monitoring" <% if 'monitoring' in @role: %> checked<% end %>>
+        <label for="monitoring">monitoring, reviewing and verification</label>
+      </p>
+    </div>
+
+    <% otherRole = false %>
+    <% for value in @role: %>
+      <% if value != 'coordination' && value != 'accreditation' && value != 'approval' && value != 'implementation' && value != 'monitoring': %>
+        <% otherRole = true %>
+        
+        <div>
+          <p>
+            <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther">
+            <label for="roleCheckboxOther">Other roles</label>
+          </p>
+          <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
+        </div>
+
+      <% end %>
+    <% end %>
+        
+    <% if !otherRole: %>
+
+        <div>
+          <p>
+            <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther">
+            <label for="roleCheckboxOther">Other roles</label>
+          </p>
+          <input type="text" id="typeOther" class="hidden" name="roleOther" />
+        </div>
+
+    <% end %>
+
+  </div>
         
     <div class="clear">
       <label>3. What is the purpose of the climate projects that the actor is financing or implementing?</label>
@@ -72,11 +111,12 @@
 
 	<div class="clear">
 	  	<label for="corruptionRisk">4. Are there indications that there is the risk of corruption in the organization?</label>
-	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"></textarea>
+	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
 	</div>
 	<div>
 	  	<label for="description">5. Additional information can be included in the description (optional):</label>
-		<textarea rows="3" cols="70" id="description" name="description"></textarea>
+		<textarea rows="3" cols="70" id="description" name="description"><%= @description%></textarea>
 	</div>
 	<input type="submit" value="Save Changes" />
+  <span id="output"></span>
 </form>
