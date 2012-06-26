@@ -55,18 +55,19 @@ app.configure(function(){
 
 app.get('/', function(req, res){
   var user = {};
-  if(req.user)
-    user._id = req.user.id
-  else
-    user = null
+  if(req.user){
+    user._id = req.user.id;
+    user._rev = req.user._rev;
+  }else
+    user = null;
   res.render('index', { user: user });
 });
 
 app.post('/session', passport.authenticate('local'), function(req, res){
-  res.json({ok : true});
+  res.json({_id: req.user._id, _rev: req.user._rev});
 });
 
-app.get('/logout', function(req, res){
+app.del('/session', function(req, res){
   req.logout();
   res.json({ ok: true });
 });
