@@ -8,7 +8,6 @@ var Connection = {};
 _.extend(Connection, Model);
 
 Connection.allByCountry = function(country, done){
-  var start = new Date().getTime();
   db.view('cgip/connectionsByTypeAndCountry', { 
     startKey: [country],
     endKey: [country]
@@ -20,7 +19,6 @@ Connection.allByCountry = function(country, done){
       parsedDocs.push(doc);
     });
 
-    console.log('Time needed (allByCountry): ' + (new Date().getTime() - start) + 'ms');
     done(err, parsedDocs)
   });
 };
