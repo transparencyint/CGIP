@@ -149,6 +149,6 @@ app.post('/:country/connections/:connection_type/destroyAll', auth.ensureAuthent
     res.json({ ok: true });
 });
 
-var port = process.env.PORT || 8812;
+var port = process.env.APP_PORT || 3000;
 app.listen(port);
 console.log('Server is up and running on port: ' + port);
