@@ -48,6 +48,8 @@ module.exports = View.extend({
     $('#import_table').hide();
     //Make button invisible
     $('#matchButton').hide();
+    $('#matchInfo').hide();
+    $('#confirmInfo').show();
     $('#confirmButton').show();
 
     var model = this.model;
