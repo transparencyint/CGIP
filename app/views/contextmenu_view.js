@@ -1,4 +1,5 @@
 var View = require('./view');
+var LightboxView = require('./lightbox_view');
 
 // Base class for all views.
 module.exports = View.extend({
@@ -8,7 +9,8 @@ module.exports = View.extend({
   className: 'contextMenu',
 
   events: {
-    'click .delete': 'deleteClicked'
+    'click .delete': 'deleteClicked',
+    'click .add': 'addClicked'
   },
 
   initialize: function(){
@@ -31,6 +33,15 @@ module.exports = View.extend({
 
   deleteClicked: function(){  
     if(this.model) this.model.destroy();
+  },
+
+  addClicked: function(){  
+    var model = this.model;
+    $('#lightbox').empty();
+    this.lightboxView = new LightboxView({model : model});
+    $('#lightbox').append(this.lightboxView.render().el);
+    this.lightboxView.show();
+    this.$el.removeClass('visible');
   },
 
   afterRender: function(){

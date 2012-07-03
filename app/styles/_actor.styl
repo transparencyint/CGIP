@@ -18,11 +18,20 @@
     display box
     box-align center
     box-pack center
+    box-orient vertical
+  .roles
+    margin-top 10px
+  .role
+    width 8px
+    height 8px
+    border-radius 4px
+    margin-right 2px
+    float left
+  
   .name
     margin-top 4px
     min-width 50%
     text-align center
-
   input
     width 66%
     font-size 100%
@@ -33,3 +42,16 @@
       display block
     .name
       display none
+
+.overlay
+  width 200px
+  display none
+  padding 10px 10px
+  background #fff
+  border-radius 10px
+  position absolute
+  top 50%
+  left 75%
+  z-index 2
+  box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+
