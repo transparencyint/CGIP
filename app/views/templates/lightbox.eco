@@ -29,49 +29,80 @@
     <span class="hint">(mulitiple choices possible)</span>
     <div>
       <p>
-        <input type="checkbox" name="role" value="funding" id="funding" <% if 'funding' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="funding" id="funding" 
+        <% if @role: %> 
+          <% if 'funding' in @role: %> 
+            checked
+          <% end %>
+        <%end%>>
         <label for="funding">funding climate sector projects</label>
       </p>
       <p>
-        <input type="checkbox" name="role" value="coordination" id="coordination" <% if 'coordination' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="coordination" id="coordination" 
+        <% if @role: %> 
+          <% if 'coordination' in @role: %> 
+            checked
+          <% end %>
+        <% end %>>
         <label for="coordination">coordination of other organizations</label>
       </p>
       <p>
-        <input type="checkbox" name="role" value="accreditation" id="accreditation" <% if 'accreditation' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="accreditation" id="accreditation" 
+        <% if @role: %> 
+          <% if 'accreditation' in @role: %> 
+            checked
+          <% end %>
+        <% end %>>
         <label for="accreditation">accreditation and requirements verification</label>
       </p>
     </div>
     <div>
       <p>
-        <input type="checkbox" name="role" value="approval" id="approval" <% if 'approval' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="approval" id="approval" 
+        <% if @role: %> 
+          <% if 'approval' in @role: %> 
+            checked
+          <% end %>
+        <% end %>>
         <label for="approval">projects approval/rejection</label>
       </p>
       <p>
-        <input type="checkbox" name="role" value="implementation" id="implementation" <% if 'implementation' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="implementation" id="implementation" 
+        <% if @role: %> 
+          <% if 'implementation' in @role: %> 
+            checked
+          <% end %>
+        <%end%>>
         <label for="implementation">implementation</label>
       </p>
       <p>
-        <input type="checkbox" name="role" value="monitoring" id="monitoring" <% if 'monitoring' in @role: %> checked<% end %>>
+        <input type="checkbox" name="role" value="monitoring" id="monitoring" 
+        <% if @role: %> 
+          <% if 'monitoring' in @role: %> 
+            checked
+          <% end %>
+        <% end%>>
         <label for="monitoring">monitoring, reviewing and verification</label>
       </p>
     </div>
 
     <% otherRole = false %>
-    <% for value in @role: %>
-      <% if value != 'coordination' && value != 'accreditation' && value != 'approval' && value != 'implementation' && value != 'monitoring': %>
-        <% otherRole = true %>
-        
-        <div>
-          <p>
-            <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther">
-            <label for="roleCheckboxOther">Other roles</label>
-          </p>
-          <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
-        </div>
+    <% if @role: %>
+      <% for value in @role: %>
+        <% if value != 'funding' && value != 'coordination' && value != 'accreditation' && value != 'approval' && value != 'implementation' && value != 'monitoring': %>
+          <% otherRole = true %>
+          
+          <div>
+            <p>
+              <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther" checked>
+              <label for="roleCheckboxOther">Other roles</label>
+            </p>
+            <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
+          </div>
 
+        <% end %>
       <% end %>
-    <% end %>
-        
+    <% end %>   
     <% if !otherRole: %>
 
         <div>
@@ -85,22 +116,102 @@
     <% end %>
 
   </div>
-        
+ 
+  <% mitigation = false; %>       
+
     <div class="clear">
       <label>3. What is the purpose of the climate projects that the actor is financing or implementing?</label>
       <span class="hint">(mulitiple choices possible)</span>
       <div>
-        <p><input type="checkbox" name="purpose" value="adaption" id="adaption"><label for="adaption">Adaption</label></p>
-        <p><input type="checkbox" name="purpose" value="mitigation" id="mitigation"><label for="mitigation">Mitigation</label></p>
-        <p><input type="checkbox" name="purpose" value="research" id="research"><label for="research">Research</label></p>
+
+        <p>
+          <input type="checkbox" name="purpose" value="adaption" id="adaption"
+          <% if @purposeOfProject: %> 
+            <% if 'adaption' in @purposeOfProject: %> 
+              checked
+            <% end %>
+          <%end%>>
+          <label for="adaption">Adaption</label>
+        </p>
+
+        <p>
+          <input type="checkbox" name="purpose" value="mitigation" id="mitigation"
+          <% if @purposeOfProject: %> 
+            <% if 'mitigation' in @purposeOfProject: %> 
+              <% mitigation = true; %>
+              checked
+            <% end %>
+          <%end%>>
+          <label for="mitigation">Mitigation</label>
+        </p>
+
+        <p>
+          <input type="checkbox" name="purpose" value="research" id="research"
+          <% if @purposeOfProject: %> 
+            <% if 'research' in @purposeOfProject: %> 
+              checked
+            <% end %>
+          <%end%>>
+          <label for="research">Research</label>
+        </p>
+
       </div>
+
       <div>
-        <p><input type="checkbox" name="purpose" value="capacity_building" id="capacity_building"><label for="capacity_building">Capacity Building</label></p>
-        <p><input type="checkbox" name="purpose" value="other" id="purposeCheckboxOther" class="hasOther"><label for="purposeCheckboxOther">Other</label></p>
-        <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" /></p>
+
+        <p>
+          <input type="checkbox" name="purpose" value="capacity_building" id="capacity_building"
+          <% if @purposeOfProject: %> 
+            <% if 'capacity_building' in @purposeOfProject: %> 
+              checked
+            <% end %>
+          <%end%>>
+          <label for="capacity_building">Capacity Building</label>
+        </p>
+
+        <% otherPurpose = false %>
+        <% if @purposeOfProject: %>
+          <% for value in @purposeOfProject: %>
+            <% if value != 'adaption' && value != 'mitigation' && value != 'research' && value != 'capacity_building': %>
+              <% otherPurpose = true %>
+              
+              <p>
+                <input type="checkbox" name="purpose" value="other" id="purposeCheckboxOther" class="hasOther" checked>
+                <label for="purposeCheckboxOther">Other</label>
+              </p>
+
+              <p><input type="text" name="purposeOther" id="purposeOther" class="" 
+                placeholder="describe the purpose here" value="<%= value%>"/></p>
+
+            <% end %>
+          <% end %>  
+        <% end %>  
+
+        <% if !otherPurpose:%>
+          <p>
+            <input type="checkbox" name="purpose" value="other" id="purposeCheckboxOther" class="hasOther">
+            <label for="purposeCheckboxOther">Other</label>
+          </p>
+
+          <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" /></p>
+
+        <% end %>
+        
       </div> 
 
-      
+    <% if mitigation: %> 
+      <% if @mitigation: %> 
+
+      <div class="clear" id="mitigationType">
+        <label for="typeOfMitigation">What type of mitigation?</label>
+        <select id="typeOfMitigation" name="typeOfMitigation" class="hasOther" multiple>
+          <option value="redd" <% if 'redd' in @mitigation: %> selected <% end%> >Forests/REDD</option>
+          <option value="cdm" <% if 'cdm' in @mitigation: %> selected <% end%>>CDM (Clean Development Mechanisms)</option>
+        </select>
+      </div>
+      <% end %>
+    <% else: %>
+
     <div class="hidden clear" id="mitigationType">
       <label for="typeOfMitigation">What type of mitigation?</label>
       <select id="typeOfMitigation" name="typeOfMitigation" class="hasOther" multiple>
@@ -108,6 +219,8 @@
         <option value="cdm">CDM (Clean Development Mechanisms)</option>
       </select>
     </div>
+
+    <% end %>
 
 	<div class="clear">
 	  	<label for="corruptionRisk">4. Are there indications that there is the risk of corruption in the organization?</label>

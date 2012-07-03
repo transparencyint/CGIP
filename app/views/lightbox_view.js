@@ -112,7 +112,6 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    var role;
   }
 
 });
