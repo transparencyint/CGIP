@@ -14,7 +14,6 @@ module.exports = View.extend({
   
   },
 
-
   render: function(){
     var table = this;
     var model = this.model;
