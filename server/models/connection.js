@@ -9,8 +9,8 @@ _.extend(Connection, Model);
 
 Connection.allByCountry = function(country, done){
   db.view('cgip/connectionsByTypeAndCountry', { 
-    startKey: [country],
-    endKey: [country]
+    startkey: [country],
+    endkey: [country, {}]
   }, function(err, docs){
     if(err) return done(err);
     var parsedDocs = [];
