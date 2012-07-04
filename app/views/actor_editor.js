@@ -20,6 +20,8 @@ module.exports = View.extend({
   },
   
   initialize: function(options){
+    this.country = options.country;
+
     // initialize the collections
     this.actors = options.actors;
     this.connections = options.connections;
@@ -81,9 +83,8 @@ module.exports = View.extend({
     var editor = this;
     
     var actor = new Actor();
-    /* TODO: add current country and not simply 'dm' */
     actor.save({
-      country: 'dm',
+      country: editor.country,
       pos : {
         x : event.clientX,
         y : event.clientY

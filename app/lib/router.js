@@ -6,12 +6,13 @@ var ImportView = require('views/import_view');
 
 module.exports = Backbone.Router.extend({
   routes: {
-    '': 'home',
-    'edit/:country/money/import': 'import'
+    ':country/actors/edit': 'actor_editor',
+    ':country/money/import': 'import'
   },
 
-  home: function() {
+  actor_editor: function(country) {
     var actors = new Actors();
+    actors.country = country;
 
     // fetch all actors
     actors.fetch({
@@ -19,11 +20,12 @@ module.exports = Backbone.Router.extend({
 
         // fetch all connections
         var connections = new Connections();
+        connections.country = country;
         connections.fetch({
           success: function(){
 
             // instantiate the editor
-            var editor = new ActorEditor({connections: connections, actors: actors});
+            var editor = new ActorEditor({connections: connections, actors: actors, country: country});
             editor.render();
             $('#container').empty().html( editor.el );    
           }
