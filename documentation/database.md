@@ -6,6 +6,17 @@ The CGIP app uses CouchDB as its backend and runs as a Singple Page App backed b
 
 ## Documents
 
+### Countries
+
+Each document is associated to one specific country so that it only appears in the maps of the representative country. The field `country` is the [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) of the country. The codes we use in the first iteration are the following:
+
+- `bd`: Bangladesh
+- `do`: Dominican Republic
+- `ke`: Kenya
+- `mv`: Maldives
+- `mx`: Mexico
+- `pe`: Peru
+
 ### Actor
 
 		{
