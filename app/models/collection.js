@@ -6,8 +6,6 @@ module.exports = Backbone.Collection.extend({
 
     return '/' + this.country + this.urlPart;
   },
-
-  country: 'dm',
   
   initialize: function(){
     // call super method

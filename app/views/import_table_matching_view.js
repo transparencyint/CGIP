@@ -14,9 +14,8 @@ module.exports = View.extend({
   className : 'import-table',
 
   initialize: function(options){
-    this.model = options.model;
     this.tableColumns = options.tableColumns;
-
+    this.country = options.country;
     this.dbActors = new Actors();
     _.bindAll(this, 'setActors'); 
   },
@@ -189,9 +188,8 @@ module.exports = View.extend({
           if(bothMarked)
           {
             tableRow.setMarkedActor();
-            /* TODO: set the correct country here */
             var moneyConnection = new MoneyConnection({
-              country: 'dm',
+              country: table.country,
               from: connections[l-1][0],
               to: connections[l-1][1],
               disbursed: connections[l-1][2],
