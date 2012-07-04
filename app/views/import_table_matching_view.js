@@ -17,6 +17,7 @@ module.exports = View.extend({
     this.tableColumns = options.tableColumns;
     this.country = options.country;
     this.dbActors = new Actors();
+    this.dbActors.country = options.country;
     _.bindAll(this, 'setActors'); 
   },
   
