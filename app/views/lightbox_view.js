@@ -56,7 +56,7 @@ module.exports = View.extend({
   formSubmit: function(event){
     event.preventDefault();
 
-    var _type = $("select[name='type']").val();
+    var _organizationType = $("select[name='organizationType']").val();
     var _otherType = $("input[name='otherType']").val();
 
     var _role = new Array();
@@ -85,11 +85,11 @@ module.exports = View.extend({
     else if(_purposeOfProject == 'mitigation')
       _purposeOfProject = $('input[name=purposeOther]').val();
 
-    if(_otherType != '' && _type == 'other')
-      _type = event.srcElement[1].value;
+    if(_otherType != '' && _organizationType == 'other')
+      _organizationType = event.srcElement[1].value;
 
     this.model.save({
-      type : _type,
+      organizationType : _organizationType,
       role : _role,
       purposeOfProject : _purposeOfProject,
       mitigation : _mitigation,
