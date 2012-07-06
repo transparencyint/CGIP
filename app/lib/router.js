@@ -1,3 +1,5 @@
+var CountrySelectionView = require('views/country_selection_view');
+var CountryEditIndexView = require('views/country_edit_index_view');
 var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
 var ActorConnection = require('views/connection_view');
@@ -6,8 +8,22 @@ var ImportView = require('views/import_view');
 
 module.exports = Backbone.Router.extend({
   routes: {
-    ':country/actors/edit': 'actor_editor',
-    ':country/money/import': 'import'
+    'edit' : 'country_selection',
+    'edit/' : 'country_selection',
+    'edit/:country': 'country_edit_index',
+    'edit/:country/': 'country_edit_index',
+    'edit/:country/actors': 'actor_editor',
+    'import/:country/money': 'import'
+  },
+
+  country_selection: function(){
+    var countrySelectionView = new CountrySelectionView()
+    $('#container').html(countrySelectionView.render().el);
+  },
+
+  country_edit_index: function(country){
+    var countryEditIndexView = new CountryEditIndexView({ country: country});
+    $('#container').html(countryEditIndexView.render().el);
   },
 
   actor_editor: function(country) {

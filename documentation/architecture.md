@@ -119,7 +119,7 @@ The method `render` takes care of rendering te template to the DOM and therefore
 		/* this method is executed after the element has been rendered */
 	},
 	
-	getTemplateData: function(){
+	getRenderData: function(){
 		/* this method is used to prepare the data for the templat
 		We can do any sort of pre-calculation in here */
 		var data = this.model.toJSON();
