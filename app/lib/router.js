@@ -1,3 +1,4 @@
+var AsyncRouter = require('./async_router');
 var CountrySelectionView = require('views/country_selection_view');
 var CountryEditIndexView = require('views/country_edit_index_view');
 var Actors = require('models/actors');
@@ -6,7 +7,7 @@ var ActorConnection = require('views/connection_view');
 var Connections = require('models/connections/connections')
 var ImportView = require('views/import_view');
 
-module.exports = Backbone.Router.extend({
+module.exports = AsyncRouter.extend({
   routes: {
     'edit' : 'country_selection',
     'edit/' : 'country_selection',
@@ -17,13 +18,11 @@ module.exports = Backbone.Router.extend({
   },
 
   country_selection: function(){
-    var countrySelectionView = new CountrySelectionView()
-    $('#container').html(countrySelectionView.render().el);
+    this.switchToView(new CountrySelectionView());
   },
 
   country_edit_index: function(country){
-    var countryEditIndexView = new CountryEditIndexView({ country: country});
-    $('#container').html(countryEditIndexView.render().el);
+    this.switchToView(new CountryEditIndexView({ country: country}));
   },
 
   actor_editor: function(country) {
