@@ -12,7 +12,7 @@ module.exports = Backbone.Router.extend({
     var router = this;
     clearTimeout(this.lastTimeout);
     this.lastTimeout = setTimeout(function(){
-      if(router.currentView && router.currentView.leave)
+      if(router.currentView)
         router.currentView.leave(function(){
           router._renderViewToContainer(view);
         });
