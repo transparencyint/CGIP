@@ -26,6 +26,7 @@ module.exports = AsyncRouter.extend({
   },
 
   actor_editor: function(country) {
+    var router = this;
     var actors = new Actors();
     actors.country = country;
 
@@ -40,9 +41,7 @@ module.exports = AsyncRouter.extend({
           success: function(){
 
             // instantiate the editor
-            var editor = new ActorEditor({connections: connections, actors: actors, country: country});
-            editor.render();
-            $('#container').empty().html( editor.el );    
+            router.switchToView(new ActorEditor({connections: connections, actors: actors, country: country}));
           }
         });
         
