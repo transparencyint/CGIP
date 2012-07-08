@@ -6,5 +6,9 @@ module.exports = View.extend({
 
   getRenderData: function(){
     return { country: this.options.country };
+  },
+
+  leave: function(done){
+    this.fadedLeave(done);
   }
 });

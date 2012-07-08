@@ -224,8 +224,12 @@ module.exports = View.extend({
   },
 
   destroy: function(){
-    Collection.prototype.destroy.call(this);
+    View.prototype.destroy.call(this);
 
     $(document).unbind('keyup', this._keyUp);
+  },
+
+  leave: function(done){
+    this.fadedLeave(done);
   }
 });
