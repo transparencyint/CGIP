@@ -55,6 +55,7 @@ app.configure(function(){
   });
 });
 
+/* Renders the index jade with the user info */
 app.get('/', function(req, res){
   var user = {};
   if(req.user){
@@ -65,6 +66,7 @@ app.get('/', function(req, res){
   res.render('index', { user: user });
 });
 
+/* Session / auth handling */
 app.post('/session', passport.authenticate('local'), function(req, res){
   res.json({_id: req.user._id, _rev: req.user._rev});
 });
@@ -74,14 +76,12 @@ app.del('/session', function(req, res){
   res.json({ ok: true });
 });
 
+/* Testfoo */
 app.get('/test', function(req, res){
   res.json(req.user);
 });
 
-app.get('/testauth', auth.ensureAuthenticated, function(req, res){
-  res.json(req.user);
-});
-
+/* Actor CRUD */
 app.get('/:country/actors', function(req, res){
   Actor.allByCountry(req.params.country, function(err, docs){
     if(err) return res.json(err, 404);
@@ -110,6 +110,7 @@ app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, re
   });
 });
 
+/* Connections CRUD */
 app.get('/:country/connections', function(req, res){
   Connection.allByCountry(req.params.country, function(err, docs){
     if(err) return res.json(err, 404);
