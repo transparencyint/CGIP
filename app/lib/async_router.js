@@ -6,19 +6,12 @@ module.exports = Backbone.Router.extend({
     Backbone.Router.prototype.initialize.call(this);
   },
 
-  switchToView: function(view, delay){
-    if(!delay) delay = 0;
-
+  switchToView: function(view){
     var router = this;
-    clearTimeout(this.lastTimeout);
-    this.lastTimeout = setTimeout(function(){
-      if(router.currentView)
-        router.currentView.leave(function(){
-          router._renderViewToContainer(view);
-        });
-      else
-        router._renderViewToContainer(view);
-    }, delay);
+
+    this._leaveCurrentView(function(){
+      router._renderViewToContainer(view);
+    });
   },
 
   _renderViewToContainer: function(view){    
@@ -28,5 +21,22 @@ module.exports = Backbone.Router.extend({
 
     if(view.enter)
       view.enter();
+  },
+
+  /* UNSTABLE DO NOT YET USE */
+  leaveCurrentView: function(done){
+    if(!done) done = function(){};
+    this._leaveCurrentView(done)
+  },
+
+  _leaveCurrentView: function(done){
+    var router = this;
+    if(router.currentView)
+      router.currentView.leave(function(){
+        delete router.currentView;
+        done();
+      });
+    else
+      done();
   }
 });
