@@ -7,21 +7,21 @@
 
 <form class="standardForm">
 	<div>
-		<label for="type">1. What is organization type of the actor?</label>
-		<select id="type" class="hasOther" name="type">
-			<option value="Government Ministry" <% if @type == 'Government Ministry': %> <% otherType = false %> <%= selected %> <% end%>>Government Ministry</option>
+		<label for="organizationType">1. What is organization type of the actor?</label>
+		<select id="organizationType" class="hasOther" name="organizationType">
+			<option value="Government Ministry" <% if @organizationType == 'Government Ministry': %> <% otherType = false %> <%= selected %> <% end%>>Government Ministry</option>
 
-			<option value="Government Agency" <% if @type == 'Government Agency': %> <% otherType = false %> <%= selected %> <% end%>>Government Agency</option>
+			<option value="Government Agency" <% if @organizationType == 'Government Agency': %> <% otherType = false %> <%= selected %> <% end%>>Government Agency</option>
 
-			<option value="Civil Society Organization" <% if @type == 'Civil Society Organization': %> <% otherType = false %> <%= selected %> <% end%>>Civil Society Organization</option>
+			<option value="Civil Society Organization" <% if @organizationType == 'Civil Society Organization': %> <% otherType = false %> <%= selected %> <% end%>>Civil Society Organization</option>
 
-			<option value="Multilateral Organization" <% if @type == 'Multilateral Organization': %> <% otherType = false %> <%= selected %> <% end%>>Multilateral Organization</option>
+			<option value="Multilateral Organization" <% if @organizationType == 'Multilateral Organization': %> <% otherType = false %> <%= selected %> <% end%>>Multilateral Organization</option>
 
-			<option value="Bank" <% if @type == 'Bank': %> <% otherType = false %> <%= selected %> <% end%>>Bank</option>
-			<option value="Private Company" <% if @type == 'Private Company': %> <% otherType = false %> <%= selected %> <% end%>>Private Company</option>
+			<option value="Bank" <% if @organizationType == 'Bank': %> <% otherType = false %> <%= selected %> <% end%>>Bank</option>
+			<option value="Private Company" <% if @organizationType == 'Private Company': %> <% otherType = false %> <%= selected %> <% end%>>Private Company</option>
 			<option value="other" <% if otherType: %> <%= selected %> <% end %>>Other</option>
 		</select>
-		<input type="text" id="typeOther" <% if otherType: %> value="<%= @type %>" <% else: %> class="hidden" <% end%> name="typeOther" />
+		<input type="text" id="typeOther" <% if otherType: %> value="<%= @organizationType %>" <% else: %> class="hidden" <% end%> name="typeOther" />
 	</div>
 
   <div>
