@@ -41,7 +41,10 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({
     store: sessionStore,
-    secret: 'aabdonie98gsdv79sdjsbv2624zihef'
+    secret: 'aabdonie98gsdv79sdjsbv2624zihef',
+    cookie: {
+      maxAge: 604800000
+    }
   }));
   app.use(passport.initialize());
   app.use(passport.session());
