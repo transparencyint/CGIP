@@ -15,7 +15,7 @@ var auth = {
 
   serializeUser: function(user, done) {
     var id = user.id? user.id : user._id;
-    done(null, user.id);
+    done(null, id);
   },
 
   deserializeUser: function(id, done) {

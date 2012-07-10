@@ -39,6 +39,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
+  app.use(passport.initialize());
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
@@ -47,7 +48,6 @@ app.configure(function(){
       maxAge: 604800000
     }
   }));
-  app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
   app.use(express.staticCache());
