@@ -30,22 +30,13 @@ module.exports = AsyncRouter.extend({
     var actors = new Actors();
     actors.country = country;
 
-    // fetch all actors
-    actors.fetch({
-      success: function(){
+    var connections = new Connections();
+    connections.country = country;
 
-        // fetch all connections
-        var connections = new Connections();
-        connections.country = country;
-        connections.fetch({
-          success: function(){
-
-            // instantiate the editor
-            router.switchToView(new ActorEditor({connections: connections, actors: actors, country: country}));
-          }
-        });
-        
-      }
+    // fetch all actors and all connections
+    $.when(actors.fetch(), connections.fetch()).done(function(){
+      // instantiate the editor
+      router.switchToView(new ActorEditor({connections: connections, actors: actors, country: country}));
     });
   },
 
