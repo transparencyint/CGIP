@@ -41,6 +41,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({
     store: sessionStore,
+    key: 'cgipsid',
     secret: 'aabdonie98gsdv79sdjsbv2624zihef',
     cookie: {
       maxAge: 604800000
