@@ -7,11 +7,19 @@ module.exports = View.extend({
 
   events: {
     'mouseover td': 'showEditField',
-    'blur input': 'hideEditField'
+    'blur input': 'hideEditField',
+    'click button': 'askDestroy'
   },
 
   initialize: function(){
     _.bindAll(this, 'actorChanged');
+    
+    this.model.on('destroy', this.destroy, this);
+  },
+
+  askDestroy: function(){
+    if(confirm('Are you sure you want to delete this connection?'))
+      this.model.destroy();
   },
 
   showEditField: function(event){
