@@ -137,6 +137,13 @@ app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   });
 });
 
+app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(req, res){
+  Connection.edit(req.params.actor_id, req.body, function(err, connection){
+    if(err) return res.json(err, 404);
+    res.json(connection);
+  });
+});
+
 app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
   Connection.remove(req.params.connection_id, function(err, connection){
     if(err) return res.json(err, 404);
