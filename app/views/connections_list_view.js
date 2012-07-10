@@ -6,6 +6,7 @@ module.exports = View.extend({
 
   template: require('./templates/connections_list'),
   tagName: 'table',
+  id: 'money-connection-list',
 
   initialize: function(){
     this.collection.on('add', this.addOne, this);

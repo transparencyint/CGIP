@@ -14,6 +14,15 @@
     <option value="none">--none--</option>
   </select>
 </td>
-<td><%= @disbursed %></td>
-<td><%= @pledged %></td>
-<td><%= @source %></td>
+<td>
+  <span><%= @disbursed %></span>
+  <input type="text" class="" value="<%= @disbursed %>" data-model-attribute="disbursed" />
+</td>
+<td>
+  <span><%= @pledged %></span>
+  <input type="text" class="" value="<%= @pledged %>" data-model-attribute="pledged" />
+</td>
+<td>
+  <span><%= @source %></span>
+  <input type="text" class="" value="<%= @source %>" data-model-attribute="source" />
+</td>

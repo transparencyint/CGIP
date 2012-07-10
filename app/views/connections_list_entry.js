@@ -5,12 +5,41 @@ module.exports = View.extend({
   template: require('./templates/connections_list_entry'),
   tagName: 'tr',
 
+  events: {
+    'mouseover td': 'showEditField',
+    'blur input': 'hideEditField'
+  },
+
   initialize: function(){
     _.bindAll(this, 'actorChanged');
   },
 
+  showEditField: function(event){
+    var spanElement = $('span', event.currentTarget);
+    var inputElement = spanElement.siblings('input');
+    inputElement.show();
+    inputElement.focus();
+    spanElement.hide();
+  },
+
+  hideEditField: function(event){
+    var currentElement = $(event.currentTarget);
+    var spanElement = currentElement.siblings('span');
+    spanElement.show();
+    currentElement.hide();
+
+    var value = currentElement.val();
+    var modelAttribute = currentElement.data('model-attribute');
+    var modelValue = this.model.get(modelAttribute);
+    
+    if(String(value) != String(modelValue)){
+      this.model.set(modelAttribute, value);
+      this.model.save()
+      spanElement.text(value);
+    }
+  },
+
   actorChanged: function(){
-    console.log('change');
     var newFrom = this.$('.from-actors-select').val();
     var newTo = this.$('.to-actors-select').val();
 
@@ -21,7 +50,7 @@ module.exports = View.extend({
 
       this.model.save({from: newFrom, to: newTo});
     }else
-      alert('A connection hast to have two different actors.');
+      alert('A connection has to have two different actors.');
   },
 
   getRenderData: function(){
