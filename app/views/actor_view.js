@@ -11,7 +11,7 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'mouseover': 'showMetadata',
+    'click' : 'showMetadata',
     'mouseout': 'hideMetadata',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
