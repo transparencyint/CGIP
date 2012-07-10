@@ -1,0 +1,7 @@
+<% if window.user.isLoggedIn(): %>
+  <%= window.user.id %>
+  <button id="logout-button">Logout</button>
+<% else: %>
+  <input type="text" placeholder="username" id="username-input" />
+  <input type="password" placeholder="password" id="password-input" />
+<% end %>

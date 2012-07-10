@@ -12,7 +12,7 @@ var types = {
 
 module.exports = Collection.extend({
   model: Connection,
-  url: '/connections',
+  urlPart: '/connections',
 
   initialize: function(){
     // call super initialize
@@ -38,7 +38,7 @@ module.exports = Collection.extend({
       connections[connectionType].reset(filtered);
     }
     filtered = null;
-
+    
     return connections;
   }
 });

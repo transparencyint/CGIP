@@ -3,11 +3,7 @@ var AccountabilityConnection = require('./accountability_connection');
 
 module.exports = Collection.extend({
   model: AccountabilityConnection,
-  url: '/connections',
-  db: {
-    view: 'connectionsByType',
-    keys: ['accountability']
-  },
+  urlPart: '/connections/accountability',
 
   initialize: function(){
     // call super initialize

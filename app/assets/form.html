@@ -94,7 +94,7 @@
         background-position: center;
         background-size: cover;
         border-radius: 3px;
-        box-shadow: 
+        box-shadow:
           0 0 0 1px rgba(0,0,0,.34) inset,
           0 2px rgba(255,255,255,.34) inset,
           0 1px rgba(0,0,0,.21),
@@ -102,7 +102,7 @@
           0 3px 5px -1px rgba(0,0,0,.21);
       }
       .countrys .selected .flag {
-        box-shadow: 
+        box-shadow:
           0 0 0 3px hsl(204, 100%, 70%),
           0 0 0 1px rgba(0,0,0,.34) inset,
           0 2px rgba(255,255,255,.34) inset,
@@ -260,7 +260,7 @@
             <option value="capacity_building">Capacity Building</option>
             <option value="other" data-additionalField="#purposeOther">other</option>
           </select>
-          <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />                                                         
+          <input type="text" name="actor[purposeOther]" id="purposeOther" class="hidden" placeholder="describe the purpose hered" />
         <div class="hidden" id="mitigationType">
           <label for="typeOfMitigation">What type of mitigation?</label>
           <select id="typeOfMitigation" name="mitigation[]" class="hasOther" multiple>
@@ -268,13 +268,13 @@
             <option value="cdm">CDM (Clean Development Mechanisms)</option>
           </select>
         </div>
-		    <div>
+<div>
           <label for="corruptionRisk">10. Are there indications that there is the risk of corruption in the organization?</label>
-		      <textarea rows="4" cols="70" id="corruptionRisk" name="actor[corruptionRisk]"> </textarea> 
+<textarea rows="4" cols="70" id="corruptionRisk" name="actor[corruptionRisk]"> </textarea>
         </div>
-		    <div>
+<div>
           <label for="description">11. Additional information can be included in the description (optional):</label>
-		      <textarea rows="3" cols="70" id="description" name="actor[description]"> </textarea> 
+<textarea rows="3" cols="70" id="description" name="actor[description]"> </textarea>
         </div>
         <input type="submit" value="Save Changes" />
       </div>
@@ -282,19 +282,15 @@
   <script type="text/javascript" src="../../vendor/scripts/jquery-1.7.2.js"></script>
   <script>
     /* #########################################
-    
-      Show 'Other' input field after selects
-      
-      Environment:
-        - the <select> element has the class 'hasOther'
-        - the <select> element has an element with the value 'other', which is not initialy selected
-        - there is a input field behind the <select> element containing a class 'hidden'
-        
-      Behaviour:
-        - when the user selects 'other', the input field behind the <select> element gets shown
-          by removing the 'hidden' class
-    
-    ######################################### */
+Show 'Other' input field after selects
+Environment:
+- the <select> element has the class 'hasOther'
+- the <select> element has an element with the value 'other', which is not initialy selected
+- there is a input field behind the <select> element containing a class 'hidden'
+Behaviour:
+- when the user selects 'other', the input field behind the <select> element gets shown
+by removing the 'hidden' class
+######################################### */
     
     $('.hasOther').change(function(){
       var hiddenBrother = $(this).next();

@@ -15,7 +15,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    this.model = options.model;
+    this.country = options.country;
   },
 
   afterRender: function(){
@@ -54,13 +54,14 @@ module.exports = View.extend({
 
     var model = this.model;
     console.log('loading match view');
-    this.tableMatchingView = new ImportTableMatchingView({model : model, tableColumns : tableColumns});
+    this.tableMatchingView = new ImportTableMatchingView({model : model, tableColumns : tableColumns, country: this.country});
     this.tableMatchingView.render();
     this.$el.append(this.tableMatchingView.el);
   },
 
   createConnections: function(){
     var oldMoneyConnections = new MoneyConnections();
+    oldMoneyConnections.country = this.country;
     var tableMatchingView = this.tableMatchingView;
     oldMoneyConnections.fetch({
       success: function(){
@@ -69,6 +70,7 @@ module.exports = View.extend({
           oldMoneyConnections.destroyAll({
             success: function(){
               //debugger
+
               tableMatchingView.newMoneyConnections.each(function(connection){
                 connection.save();
               });    

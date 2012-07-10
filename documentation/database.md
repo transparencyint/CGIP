@@ -2,9 +2,20 @@
 
 ## Technology
 
-The CGIP app uses CouchDB as its backend and runs as a Singple Page App inside CouchApp in order to query it directly without a proxy in between.
+The CGIP app uses CouchDB as its backend and runs as a Singple Page App backed by a node.js backend that restricts db access and serves as a caching layer.
 
 ## Documents
+
+### Countries
+
+Each document is associated to one specific country so that it only appears in the maps of the representative country. The field `country` is the [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) of the country. The codes we use in the first iteration are the following:
+
+- `bd`: Bangladesh
+- `do`: Dominican Republic
+- `ke`: Kenya
+- `mv`: Maldives
+- `mx`: Mexico
+- `pe`: Peru
 
 ### Actor
 
@@ -14,7 +25,7 @@ The CGIP app uses CouchDB as its backend and runs as a Singple Page App inside C
 				"x": 23,
 				"y": 100
 			},
-			"collection": "actors"
+			"type": "actor"
 		}
 
 ### Connections
@@ -41,26 +52,34 @@ Each connection also has a dedicated Collection that you can also find in the sa
 This is how an accountability connection looks like in the backend:
 
 		{
-			"collection": "connections",
-			"type": "connections",
+			"type": "connection",
 			"connectionType": "accountability",
 			"from": "ACTOR_ID",
 			"to": "ACTOR_ID",
 			"source": ""
 		}
 
-The 
-
 #### Money
 
 This is how a money connection looks like in the backend:
 
 		{
-			"collection": "connections",
-			"type": "connections",
+			"type": "connection",
 			"connectionType": "money",
 			"from": "ACTOR_ID",
 			"to": "ACTOR_ID",
 			"dispersed": 0,
 			"pledged": 0
 		}
+
+## Databases
+
+There are three databases needed to run this app:
+
+- `cgip_data`: all data for the visualisation (e.g. actors, connections) is stored here
+- `cgip_users`: all registered users
+- `cgip_user_sessions`: as a permanent session store
+
+You can create all needed databases by running the create_databases.js from the `server/scripts/` folder. 
+
+`$ node server/scripts/create_databases.js`

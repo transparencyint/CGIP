@@ -5,6 +5,7 @@ var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
+var LoginView = require('./login_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -12,12 +13,15 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .connections .accountability': 'activateAccountabilityMode',
+    'click .connections li': 'toggleMode',
+    'click .connections li .eye': 'toggleVisibility',
     'mousedown .zoom .in': 'zoomIn',
-    'mousedown .zoom .out': 'zoomOut',
+    'mousedown .zoom .out': 'zoomOut'
   },
   
   initialize: function(options){
+    this.country = options.country;
+
     // initialize the collections
     this.actors = options.actors;
     this.connections = options.connections;
@@ -31,9 +35,14 @@ module.exports = View.extend({
     
     // subscribe to add events
     this.actors.on('add', this.appendActor, this);
-    this.accountabilityConnections.on('add', this.appendAccountabilityConnection, this);
+    this.accountabilityConnections.on('add', this.appendConnection, this);
+    this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendAccountabilityConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+    _.bindAll(this, 'appendActor', 'createActor', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+  },
+
+  logoutClicked: function(){
+    debugger
   },
   
   zoomIn: function(){
@@ -75,6 +84,7 @@ module.exports = View.extend({
     
     var actor = new Actor();
     actor.save({
+      country: editor.country,
       pos : {
         x : event.clientX,
         y : event.clientY
@@ -91,7 +101,7 @@ module.exports = View.extend({
     this.workspace.append(actorView.el);
   },
 
-  appendAccountabilityConnection: function(connection){
+  appendConnection: function(connection){
     connection.pickOutActors(this.actors);
     var connView = new ConnectionView({ model : connection });
     connView.render();  
@@ -110,28 +120,44 @@ module.exports = View.extend({
       this.mode.actorSelected(actorView);
   },
 
-  activateAccountabilityMode: function(event){
+  toggleMode: function(event){
     this.$('.connections li').removeClass('active');
-    var thisEl = this.$('.connections .accountability');
+    var target = $(event.target);
+    var selectedElement = target.is('li') ? target : target.parents('li');
+    var connectionType = selectedElement.attr('data-connectionType');
+    var collection = this[ connectionType + "Connections" ];
+    
     if(this.mode){
-      this.deactivateAccountabilityMode();
-    }else{
-      thisEl.addClass('active');
-      this.mode = new ConnectionMode(this.workspace, this.accountabilityConnections, this);
+      this.deactivateMode();
     }
+    
+    selectedElement.addClass('active');
+    this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
   },
 
-  deactivateAccountabilityMode: function(){
-    if(this.mode){
-      this.$('.connections li').removeClass('active');
-      this.mode.abort();
-      this.mode = null;
-    }
+  deactivateMode: function(){
+    this.$('.connections li').removeClass('active');
+    this.mode.abort();
+    this.mode = null;
   },
 
   _keyUp: function(){
     if(this.mode)
-      this.deactivateAccountabilityMode();
+      this.deactivateMode();
+  },
+  
+  toggleVisibility: function(event){
+    event.stopPropagation();
+    var parent = $(event.target).parent().toggleClass('invisible');
+    var connectionType = parent.attr('data-connectionType');
+    var hideClass = 'hide-' + connectionType;
+    
+    if(parent.hasClass('invisible')){
+      // invisible
+      this.workspace.addClass( hideClass );
+    } else {
+      this.workspace.removeClass( hideClass );
+    };
   },
   
   render: function(){
@@ -144,7 +170,8 @@ module.exports = View.extend({
     
     this.actors.each(this.appendActor);
 
-    this.connections.each(this.appendAccountabilityConnection);
+    //this.accountabilityConnections.each(this.appendAccountabilityConnection);
+    this.connections.each(this.appendConnection);
 
     this.afterRender();
   },
@@ -153,6 +180,11 @@ module.exports = View.extend({
     var editor = this;
 
     $(document).bind('keyup', this._keyUp);
+
+    var lv = new LoginView({
+      el: this.$('.user')
+    });
+    lv.render();
 
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
@@ -192,8 +224,12 @@ module.exports = View.extend({
   },
 
   destroy: function(){
-    Collection.prototype.destroy.call(this);
+    View.prototype.destroy.call(this);
 
     $(document).unbind('keyup', this._keyUp);
+  },
+
+  leave: function(done){
+    this.fadedLeave(done);
   }
 });

@@ -3,11 +3,7 @@ var MoneyConnection = require('./money_connection');
 
 module.exports = Collection.extend({
   model: MoneyConnection,
-  url: '/connections',
-  db: {
-    view: 'connectionsByType',
-    key: 'money'
-  },
+  urlPart: '/connections/money',
 
   initialize: function(){
     // call super initialize

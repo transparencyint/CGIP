@@ -30,5 +30,18 @@ module.exports = Backbone.View.extend({
       this.model.off(null, null, this);
 
     this.$el.remove();
+  },
+
+  leave: function(done){
+    this.destroy();
+    done();
+  },
+
+  fadedLeave: function(done){
+    var view = this;
+    this.$el.fadeOut(function(){
+      view.destroy();
+      done();
+    });
   }
 });

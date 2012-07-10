@@ -7,4 +7,24 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+
+  <div class="overlay">
+  	<% if @organizationType: %>
+    	<p>The Actor is a <i><%= @organizationType %></i></p>
+    <% end %>
+  	<% if @corruptionRisk: %>
+    	<p><%= @corruptionRisk %></p>
+    <% end %>
+  	<% if @description: %>
+  	 <p><%= @description %></p>
+  	<% end %>
+  </div>
+
+  <div class="roles">
+	<% if @role: %>
+		<% for value in @role: %>
+			<div class="role" id="<%= value%>"></div>
+		<% end %>
+	<% end %>
+   </div>
 </div>

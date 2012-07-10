@@ -32,8 +32,7 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    //this.ctx = this.$el.get(0).getContext('2d');
-    this.strokeStyle = 'white';
+    this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
     this.selectStyle = 'hsl(205,100%,55%)';
     this.strokeWidth = 6;
     this.actorRadius = 60;
@@ -41,12 +40,18 @@ module.exports = View.extend({
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
     this.$el.svg();
     this.svg = this.$el.svg('get');
+    var defs = this.svg.defs();
+    var marker = this.svg.marker(defs, this.model.id, 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize});
+    this.svg.use(marker, 0, 0, this.markerSize, this.markerSize, '#trianglePath', { fill: this.strokeStyle });
+    
     this.g = this.svg.group();
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
     this.$el.append(this.contextmenu.render().el);
+    
+    this.$el.addClass( this.model.get("connectionType") );
   },
 
   update: function(){
@@ -115,7 +120,7 @@ module.exports = View.extend({
       fill : 'none', 
       stroke : this.strokeStyle,
       'stroke-width' : this.strokeWidth, 
-      'marker-end' : 'url(#triangle)'
+      'marker-end' : 'url(#'+ this.model.id +')'
     });
     
     //this.ctx.lineWidth = 2;
@@ -135,12 +140,9 @@ function createDefs(markerSize, strokeStyle, selectStyle){
   if(this.svg === undefined){
     $('body').svg().find('> svg').attr('id', 'svgDefinitions');
     this.svg = $('body').svg('get');
-    var defs = this.svg.defs();    
+    var defs = this.svg.defs();
     var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, markerSize, markerSize);
     this.svg.path(markerSymbol, 'M 0 0 L '+ markerSize +' '+ markerSize/2 +' L 0 '+ markerSize +' z');
-
-    var marker = this.svg.marker(defs, 'triangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
-    this.svg.use(marker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: strokeStyle });
 
     var selectedMarker = this.svg.marker(defs, 'selectedTriangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
     this.svg.use(selectedMarker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: selectStyle });

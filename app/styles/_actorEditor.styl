@@ -35,6 +35,12 @@
   position absolute
   width 100%
   min-height 100%
+  &.hide-money
+    .money
+      display none
+  &.hide-accountability
+    .accountability
+      display none
 
 .controls
   top 50%
@@ -82,32 +88,39 @@
     color black
     list-style none
     li
-      padding 13px 13px 8px
       vertical-align top
       cursor pointer
-      &:last-child
-        border-bottom-right-radius 5px
+      display box
+      border-bottom 1px solid rgba(0,0,0,.13)
+      box-shadow 0 1px white
+      &:first-child
+        border-top 1px solid rgba(0,0,0,.13)
+        box-shadow 0 1px white inset, 0 1px white
       &.active
-        background white
-        box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.08) inset, 0 -1px rgba(0,0,0,.08) inset, 0 -2px rgba(0,0,0,.08) inset
-      &.active:last-child
-        box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.08) inset
-      img
-        margin-bottom 3px
-        display block
-      .name
-        font-size 11px
-        text-shadow 0 1px white
-        text-align center
-        display block
+        .description
+          background white
+      .description
+        padding 13px 13px 8px
+        box-flex 1
+        display box
+        box-align center
+        box-pack center
+        box-orient vertical
+        img
+          margin-bottom 3px
+          display block
+        .name
+          font-size 11px
+          text-shadow 0 1px white
+          text-align center
+          display block
       .eye
-        width 20px
-        height 20px
-        margin-right 5px
+        width 34px
+        height 50px
         background url(../images/glyphicons_051_eye_open.png) no-repeat center center
         background-size 16px
-        border 1px solid gray
-        display none
+        border-right 1px solid rgba(0,0,0,.13)
+        box-shadow 1px 0 white
       &.invisible .eye
         background none
   .zoom
@@ -131,4 +144,11 @@
       &:active
         background rgba(0,0,0,.05)
         box-shadow 0 1px white, 0 -1px rgba(0,0,0,.13) inset, 0 1px 1px rgba(0,0,0,.13) inset
-        
+  .user
+    font-size 12px
+    color #000
+    margin-bottom 13px
+    
+    input
+      width 80px
+      display block
