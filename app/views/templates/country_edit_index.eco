@@ -2,5 +2,6 @@ Choose the action:
 
 <ul>
   <li><a href="#edit/<%= @country %>/actors">Edit the Actors</a></li>
+  <li><a href="#edit/<%= @country %>/money/list">Edit Money Connections</a></li>
   <li><a href="#import/<%= @country %>/money">Import Money Connections</a></li>
 </ul>
