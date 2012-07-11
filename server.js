@@ -69,7 +69,7 @@ app.configure(function(){
 });
 
 /* Renders the index jade with the user info */
-app.get('/', '/index', function(req, res){
+app.get('/', function(req, res){
   var user = {};
   if(req.user){
     user._id = req.user.id;
@@ -87,7 +87,7 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy();
-  res.redirect('/index');
+  res.redirect('/');
 });
 
 /* Testfoo */
