@@ -37,6 +37,7 @@ passport.serializeUser(auth.serializeUser);
 passport.deserializeUser(auth.deserializeUser);
 
 app.configure(function(){
+  app.set('basepath', '/');
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/server/views');
   app.set('view options', {
@@ -87,7 +88,7 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('home');
 });
 
 /* Testfoo */
