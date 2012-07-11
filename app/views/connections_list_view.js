@@ -5,8 +5,6 @@ var ConnectionListEntry = require('./connections_list_entry');
 module.exports = View.extend({
 
   template: require('./templates/connections_list'),
-  tagName: 'table',
-  id: 'money-connection-list',
 
   initialize: function(){
     this.collection.on('add', this.addOne, this);
@@ -15,13 +13,20 @@ module.exports = View.extend({
 
   addOne: function(connection){
     var newView = new ConnectionListEntry({model: connection, actors: this.options.actors});
-    this.$el.append(newView.render().el);
+    this.$('tbody').append(newView.render().el);
+  },
+
+  getRenderData: function(){
+    var data =  {}
+    data.country = this.options.actors.country;
+    data.actors = this.options.actors.toJSON();
+    return data;
   },
 
   render: function(){
     var list = this;
 
-    this.$el.append(this.template());
+    this.$el.append(this.template(this.getRenderData()));
 
     this.collection.each(function(connection){
       list.addOne(connection);
