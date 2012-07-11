@@ -37,6 +37,12 @@ passport.serializeUser(auth.serializeUser);
 passport.deserializeUser(auth.deserializeUser);
 
 app.configure(function(){
+  app.set('view engine', 'jade');
+  app.set('views', __dirname + '/server/views');
+  app.set('view options', {
+    layout: false
+  });
+  
   app.use(express.methodOverride());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
@@ -48,16 +54,17 @@ app.configure(function(){
       maxAge: 604800000
     }
   }));
+  app.use(function(req, res, next) {
+    console.log('-- session --');
+    console.dir(req.session);
+    console.log('-------------');
+    next()
+  });
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
   app.use(express.staticCache());
   app.use(gzippo.staticGzip(__dirname + '/public'));
-  app.set('view engine', 'jade');
-  app.set('views', __dirname + '/server/views');
-  app.set('view options', {
-    layout: false
-  });
 });
 
 /* Renders the index jade with the user info */
@@ -78,6 +85,7 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 
 app.del('/session', function(req, res){
   req.logout();
+  req.session.destroy();
   res.json({ ok: true });
 });
 
