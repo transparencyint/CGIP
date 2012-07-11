@@ -56,6 +56,7 @@ app.configure(function(){
   }));
   app.use(function(req, res, next) {
     console.log('-- session --');
+    console.log('path: ' + req.url);
     console.dir(req.session);
     console.log('-------------');
     next()
@@ -68,7 +69,7 @@ app.configure(function(){
 });
 
 /* Renders the index jade with the user info */
-app.get('/', function(req, res){
+app.get('/', '/index', function(req, res){
   var user = {};
   if(req.user){
     user._id = req.user.id;
@@ -86,7 +87,7 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('/index');
 });
 
 /* Testfoo */
