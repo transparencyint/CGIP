@@ -1,26 +1,25 @@
 var config = require('../config').config;
 var crypto = require('crypto');
 var connection = require('../db/database_connection').connection.createConnection();
-var db = connection.database('cgip_users');
 
 exports.User = {
   get: function(id, done){
-    db.get(String(id), function(err, doc){
+    connection.database('cgip_users').get(String(id), function(err, doc){
       done(err, doc);
     });
   },
 
   findByName: function(name, done){
-    db.get(name, function(err, doc){
+    connection.database('cgip_users').get(name, function(err, doc){
       done(err, doc);
     });
   },
 
   create: function(username, password, done){
     var pwhash = this.getSaltedHash(username, password);
-    db.get(username, function(err, doc){
+    connection.database('cgip_users').get(username, function(err, doc){
       if(err && err.error == 'not_found')
-        db.save(username, {
+        connection.database('cgip_users').save(username, {
           id: username,
           pwhash: pwhash
         }, function(err, res){
