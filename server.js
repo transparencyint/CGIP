@@ -37,7 +37,6 @@ passport.serializeUser(auth.serializeUser);
 passport.deserializeUser(auth.deserializeUser);
 
 app.configure(function(){
-  app.set('basepath', '/');
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/server/views');
   app.set('view options', {
@@ -67,6 +66,10 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.staticCache());
   app.use(gzippo.staticGzip(__dirname + '/public'));
+});
+
+app.configure('production', function(){
+  app.set('basepath', 'http://speculos.taurus.uberspace.de/');
 });
 
 /* Renders the index jade with the user info */
