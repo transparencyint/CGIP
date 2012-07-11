@@ -91,7 +91,7 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy();
-  res.redirect('home');
+  res.redirect('/');
 });
 
 /* Testfoo */
