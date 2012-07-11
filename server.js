@@ -83,10 +83,10 @@ app.post('/session', passport.authenticate('local'), function(req, res){
   res.json({_id: req.user._id, _rev: req.user._rev});
 });
 
-app.del('/session', function(req, res){
+app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy();
-  res.json({ ok: true });
+  res.redirect('/');
 });
 
 /* Testfoo */

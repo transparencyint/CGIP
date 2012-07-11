@@ -27,25 +27,7 @@ module.exports = Backbone.Model.extend({
     }
   },
 
-  logout: function(options){
-    if(!options) options = {};
-    if(!options.success) options.success = function(){};
-    if(!options.error) options.error = function(){};
-
-    if(this.isLoggedIn()){
-      var user = this;
-      $.ajax({
-        url: '/session',
-        type: 'DELETE',
-        success: function(){
-          user.set({ _id: null, _rev: null });
-          options.success();
-        },
-        error: function(){
-          options.error();
-        }
-      });
-    }else
-      options.success();
+  logout: function(){
+    window.location.href = '/logout';
   }
 });
