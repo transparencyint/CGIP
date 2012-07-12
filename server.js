@@ -54,18 +54,22 @@ app.configure(function(){
       maxAge: 604800000
     }
   }));
+  app.use(passport.initialize());
   app.use(function(req, res, next) {
-    console.log('-- session --');
-    console.log('path: ' + req.url);
-    console.dir(req.session);
-    console.log('-------------');
+  //   console.log('-- session --');
+    console.log('sid: ' + req.sessionID);
+   console.log('path: ' + req.url);
+    if(req._passport.session)
+      console.dir(req._passport.session);
+  //   console.dir(req.session);
+  //   console.log('-------------');
     next()
   });
-  app.use(passport.initialize());
   app.use(passport.session());
   app.use(app.router);
-  app.use(express.staticCache());
-  app.use(gzippo.staticGzip(__dirname + '/public'));
+  //app.use(express.staticCache());
+  //app.use(gzippo.staticGzip(__dirname + '/public'));
+  app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('production', function(){
@@ -88,10 +92,10 @@ app.post('/session', passport.authenticate('local'), function(req, res){
   res.json({_id: req.user._id, _rev: req.user._rev});
 });
 
-app.get('/logout', function(req, res){
+app.del('/session', function(req, res){
   req.logout();
   req.session.destroy();
-  res.redirect('/');
+  res.json({ok:true});
 });
 
 /* Testfoo */
