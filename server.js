@@ -46,6 +46,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
+  app.use(express.favicon());
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
