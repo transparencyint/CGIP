@@ -56,10 +56,11 @@ app.configure(function(){
     }
   }));
   app.use(passport.initialize());
+  
   app.use(function(req, res, next) {
   //   console.log('-- session --');
-    console.log('sid: ' + req.sessionID);
-   console.log('path: ' + req.url);
+  console.log('sid: ' + req.sessionID);
+  console.log('path: ' + req.url);
     if(req._passport.session)
       console.dir(req._passport.session);
   //   console.dir(req.session);
@@ -68,13 +69,7 @@ app.configure(function(){
   });
   app.use(passport.session());
   app.use(app.router);
-  //app.use(express.staticCache());
-  //app.use(gzippo.staticGzip(__dirname + '/public'));
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('production', function(){
-  app.set('basepath', 'http://speculos.taurus.uberspace.de/');
+  app.use(gzippo.staticGzip(__dirname + '/public'));
 });
 
 /* Renders the index jade with the user info */
