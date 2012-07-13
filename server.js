@@ -47,6 +47,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.favicon());
+  app.use(gzippo.staticGzip(__dirname + '/public'));
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
@@ -69,7 +70,6 @@ app.configure(function(){
   });
   app.use(passport.session());
   app.use(app.router);
-  app.use(gzippo.staticGzip(__dirname + '/public'));
 });
 
 /* Renders the index jade with the user info */
