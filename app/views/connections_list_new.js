@@ -45,5 +45,11 @@ module.exports = View.extend({
 
     this.afterRender();
     return this;
+  },
+
+  afterRender: function(){
+    // select the none option on default
+    this.$('#from-actors-select option').last().attr('selected', 'selected');
+    this.$('#to-actors-select option').last().attr('selected', 'selected');
   }
 });
