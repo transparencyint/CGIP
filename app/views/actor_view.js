@@ -23,11 +23,20 @@ module.exports = View.extend({
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
-    this.model.on('change:name', this.render, this);
+    this.model.on('change', this.dataChanged, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
+    //this.contextmenu = new ContextMenuView(parent_el: this.$el);
+    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+  },
+
+  dataChanged: function(){ 
+
+    if(this.contextmenu && this.contextmenu.$el)
+      this.contextmenu.destroy();
+    this.render();
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
@@ -149,7 +158,9 @@ module.exports = View.extend({
     this.$el.append(this.contextmenu.render().el);
   },
 
-  showMetadata: function(){   
+  showMetadata: function(){ 
+
+    console.log("showMetadata");  
     if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
     {
       this.$el.find('.overlay').fadeIn(0);
