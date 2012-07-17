@@ -27,7 +27,8 @@
     "uglify-js-brunch": "> 1.0 < 1.3",
     "clean-css-brunch": "> 1.0 < 1.3",
 
-    "express": "2.5.9",
+    "express": "2.5.11",
+    "gzippo": "0.1.7",
     "connect-couchdb": "0.2.5",
     "jade": "0.26.3",
     

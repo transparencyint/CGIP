@@ -1,0 +1,35 @@
+<h2>All money connections for <%= @country %></h2>
+
+<table id="money-connection-list">
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Disbursed</th>
+      <th>Pledged</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+<button id="new-connection">New connection</button>
+<a href="#edit/<%= @country %>">back to the index</a>
+<div id="new-connection-container">
+  <label for="to-actors-select">To:</label>
+  <select id="to-actors-select">
+    <option value="none">--none--</option>
+    <% for actor in @actors: %>
+      <option value="<%= actor._id %>"><%= actor.name %></option>
+    <% end %>
+  </select>
+
+  <label for="from-actors-select">From:</label>
+  <select id="from-actors-select">
+    <option value="none">--none--</option>
+    <% for actor in @actors: %>
+      <option value="<%= actor._id %>"><%= actor.name %></option>
+    <% end %>
+  </select>
+</div>

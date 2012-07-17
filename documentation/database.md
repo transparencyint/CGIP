@@ -19,14 +19,14 @@ Each document is associated to one specific country so that it only appears in t
 
 ### Actor
 
-		{
-			"name": "World Bank",
-			"pos": {
-				"x": 23,
-				"y": 100
-			},
-			"type": "actor"
-		}
+    {
+      "name": "World Bank",
+      "pos": {
+        "x": 23,
+        "y": 100
+      },
+      "type": "actor"
+    }
 
 ### Connections
 
@@ -34,15 +34,15 @@ Connections are independent from Actors and there is an own document type and cl
 
 In order to create a connection of any type, simply require its class in your current class and instantiate it by the wished values into the constructor. They can be handled as normal Backbone Models and therefore in order to save a connection you have to call save on it e.g. `myConnection.save()`. You can pass the save method an object with callbacks to be called in case of an error or success:
 
-	myConnections.save(null, {
-		success: function(){
-			// when created
-		},
-		error: function(){
-			// in case of an error
-		}
-	});
-	
+  myConnections.save(null, {
+    success: function(){
+      // when created
+    },
+    error: function(){
+      // in case of an error
+    }
+  });
+  
 You can also simply use `myConnection.destroy()` in order to delete it from the server.
 
 Each connection also has a dedicated Collection that you can also find in the same folder. These Collections can be used to fetch all the connections of that very type with the `fetch` method. In addition to that, they also have a method called `destroyAll` which deletes all the models inside that collection from the database.
@@ -51,26 +51,26 @@ Each connection also has a dedicated Collection that you can also find in the sa
 
 This is how an accountability connection looks like in the backend:
 
-		{
-			"type": "connection",
-			"connectionType": "accountability",
-			"from": "ACTOR_ID",
-			"to": "ACTOR_ID",
-			"source": ""
-		}
+    {
+      "type": "connection",
+      "connectionType": "accountability",
+      "from": "ACTOR_ID",
+      "to": "ACTOR_ID",
+      "source": ""
+    }
 
 #### Money
 
 This is how a money connection looks like in the backend:
 
-		{
-			"type": "connection",
-			"connectionType": "money",
-			"from": "ACTOR_ID",
-			"to": "ACTOR_ID",
-			"dispersed": 0,
-			"pledged": 0
-		}
+    {
+      "type": "connection",
+      "connectionType": "money",
+      "from": "ACTOR_ID",
+      "to": "ACTOR_ID",
+      "dispersed": 0,
+      "pledged": 0
+    }
 
 ## Databases
 
@@ -83,3 +83,27 @@ There are three databases needed to run this app:
 You can create all needed databases by running the create_databases.js from the `server/scripts/` folder. 
 
 `$ node server/scripts/create_databases.js`
+
+### Delete all docs of a database
+
+There is no handy way to delete all docs from a database in CouchDB, so here a litte jQuery script:
+
+    $.ajax({
+      url: '/couchdb/cgip_user_sessions/_all_docs', 
+      success: function(res){
+        console.log(res.rows.length);
+        var total = res.rows.length;
+        var currentlyDeleted = 0;
+        for(var i = 0; i < res.rows.length; i++){
+          $.ajax({ 
+            url: '/couchdb/cgip_user_sessions/' + encodeURI(res.rows[i].id) + '?rev=' + res.rows[i].value.rev,
+            type: 'DELETE',
+            success: function(){
+              currentlyDeleted++;
+              console.log(currentlyDeleted + '/' + total);
+            }
+          });
+        }
+      },
+      dataType: 'json'
+    });
