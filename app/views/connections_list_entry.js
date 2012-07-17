@@ -50,9 +50,36 @@ module.exports = View.extend({
     }
   },
 
-  actorChanged: function(){
+  renderSelect: function(element, select, exclude){
+    element.unbind('change');
+    
+    var actors = this.options.actors.toJSON();
+    if(exclude){
+      var found = _.find(actors, function(actor){ return actor._id == exclude});
+      actors = _.without(actors, found);
+    }
+
+    element.empty().html(this.dropDownTemplate({actors: actors}));
+    
+    if(select)
+      element.find('option[value=' + select + ']').attr('selected', 'selected');
+    else
+      element.find('option').last().attr('selected', 'selected');
+
+    element.bind('change', this.actorChanged);
+  },
+
+  actorChanged: function(event){
+    var row = this;
     var newFrom = utils.sanitizeConnectionVal(this.$('.from-actors-select').val());
     var newTo = utils.sanitizeConnectionVal(this.$('.to-actors-select').val());
+
+    var currentSelect = $(event.currentTarget);
+    var changeThisSelect = currentSelect.hasClass('from-actors-select') ? this.$('.to-actors-select') : this.$('.from-actors-select');
+    var currentVal = utils.sanitizeConnectionVal(currentSelect.val());
+    var changeVal = utils.sanitizeConnectionVal(changeThisSelect.val());
+    
+    row.renderSelect(changeThisSelect, changeVal, currentVal);
 
     this.model.save({from: newFrom, to: newTo});
   },
@@ -69,27 +96,10 @@ module.exports = View.extend({
     this.$el.html(this.template(data));
 
     // render the dropdown-menus
-    this.$('.from-actors-select').html(this.dropDownTemplate(data));
-    this.$('.to-actors-select').html(this.dropDownTemplate(data));
+    this.renderSelect(this.$('.from-actors-select'), data.from, data.to);
+    this.renderSelect(this.$('.to-actors-select'), data.to, data.from);
 
     this.afterRender();
     return this;
-  },
-
-  afterRender: function(){
-    // select the current actors
-    var from = this.model.get('from');
-    var to = this.model.get('to');
-    if(from)
-      this.$('.from-actors-select option[value=' + from + ']').attr('selected', 'selected');
-    else
-      this.$('.from-actors-select option').last().attr('selected', 'selected');
-    if(to)
-      this.$('.to-actors-select option[value=' + to + ']').attr('selected', 'selected');
-    else
-      this.$('.to-actors-select option').last().attr('selected', 'selected');
-
-    // bind to select changes
-    this.$('.from-actors-select, .to-actors-select').change(this.actorChanged);
   }
 });
