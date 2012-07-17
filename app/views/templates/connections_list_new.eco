@@ -1,0 +1,20 @@
+<label for="from-actors-select">From:</label>
+<select id="from-actors-select">
+  
+</select>
+
+<label for="to-actors-select">To:</label>
+<select id="to-actors-select">
+  
+</select>
+
+<label for="disbursed">Disbursed:</label>
+<input type="text" id="disbursed" />
+
+<label for="pledged">Pledged:</label>
+<input type="text" id="pledged" />
+
+<label for="source">Source:</label>
+<input type="text" id="source" />
+
+<button id="create">Create!</button>

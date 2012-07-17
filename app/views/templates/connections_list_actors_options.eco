@@ -1,0 +1,4 @@
+<% for actor in @actors: %>
+  <option value="<%= actor._id %>"><%= actor.name %></option>
+<% end %>
+<option value="none">--none--</option>

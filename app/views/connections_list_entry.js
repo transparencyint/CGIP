@@ -1,8 +1,10 @@
 var View = require('./view');
+var utils = require('../lib/utils');
 
 module.exports = View.extend({
 
   template: require('./templates/connections_list_entry'),
+  dropDownTemplate: require('./templates/connections_list_actors_options'),
   tagName: 'tr',
 
   events: {
@@ -15,6 +17,7 @@ module.exports = View.extend({
     _.bindAll(this, 'actorChanged');
     
     this.model.on('destroy', this.destroy, this);
+    this.model.on('error', this.alertError, this);
   },
 
   askDestroy: function(){
@@ -48,23 +51,29 @@ module.exports = View.extend({
   },
 
   actorChanged: function(){
-    var newFrom = this.$('.from-actors-select').val();
-    var newTo = this.$('.to-actors-select').val();
+    var newFrom = utils.sanitizeConnectionVal(this.$('.from-actors-select').val());
+    var newTo = utils.sanitizeConnectionVal(this.$('.to-actors-select').val());
 
-    if(newFrom !== newTo){
-      // none means no connection
-      if(newTo == 'none') newTo = null;
-      if(newFrom == 'none') newFrom = null;
-
-      this.model.save({from: newFrom, to: newTo});
-    }else
-      alert('A connection has to have two different actors.');
+    this.model.save({from: newFrom, to: newTo});
   },
 
   getRenderData: function(){
     var data = this.model.toJSON()
     data.actors = this.options.actors.toJSON();
     return data;
+  },
+
+  render: function(){
+    // render the normal template
+    var data = this.getRenderData();
+    this.$el.html(this.template(data));
+
+    // render the dropdown-menus
+    this.$('.from-actors-select').html(this.dropDownTemplate(data));
+    this.$('.to-actors-select').html(this.dropDownTemplate(data));
+
+    this.afterRender();
+    return this;
   },
 
   afterRender: function(){
