@@ -5,6 +5,6 @@
 	</form>
 </div>
 <div class="or">or</div>
-<div id="csv-upload-target" class="box">Drag & Drop file here</div>
+<div id="csv-upload-target" class="box">Drag &amp; Drop file here</div>
 
 

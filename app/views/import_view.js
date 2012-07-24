@@ -6,7 +6,7 @@ module.exports = View.extend({
   
   template: require('./templates/import'),
   
-  className : 'import',
+  className : 'importView',
   
   events : {
     "change #importfile" : "preProcessFile"
