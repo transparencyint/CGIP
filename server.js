@@ -2,6 +2,7 @@ var util = require('util');
 var http = require('http');
 var url = require('url');
 var express = require('express');
+var gzippo = require('gzippo');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
@@ -41,6 +42,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({
     store: sessionStore,
+    key: 'cgipsid',
     secret: 'aabdonie98gsdv79sdjsbv2624zihef',
     cookie: {
       maxAge: 604800000
@@ -50,7 +52,7 @@ app.configure(function(){
   app.use(passport.session());
   app.use(app.router);
   app.use(express.staticCache());
-  app.use(express.static(__dirname + '/public'));
+  app.use(gzippo.staticGzip(__dirname + '/public'));
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/server/views');
   app.set('view options', {
