@@ -1,0 +1,59 @@
+.countrySelection
+  h1 
+    text-align center
+.countrys
+  padding 0
+  margin 0
+  background rgba(0,0,0,.21)
+  border 1px solid rgba(0,0,0,.34)
+  border-radius 5px
+  box-shadow 0 0 3px 1px rgba(0,0,0,.21) inset, 0 1px rgba(255,255,255,.13)
+  li
+    list-style none
+    width 800px
+    &:first-child
+      border-radius 5px 5px 0 0
+    &:last-child
+      border-radius 0 0 5px 5px
+    &:hover
+      background rgba(0,0,0,.21)
+      box-shadow 0 1px rgba(0,0,0,.21) inset, 0 1px rgba(255,255,255,.13)
+    &:first-child:hover  
+      box-shadow 0 1px rgba(255,255,255,.13)
+    &:last-child:hover
+      box-shadow 0 1px rgba(0,0,0,.21) inset
+  .name
+    font-size 18px
+    margin 0 13px
+    line-height 55px
+  .flag
+    width 34px
+    height 21px
+    margin-top 16px
+    margin-left 13px
+    background-position center
+    background-size cover
+    border-radius 2px
+    display inline-block
+    vertical-align top
+  .actions
+    float right
+    a
+      cursor pointer
+      padding-left 34px
+      padding-right 21px
+      line-height 55px
+      font-size 12px
+      color hsl(219, 70%, 80%)
+      text-decoration none
+      background-position 5px 15px
+      background-repeat no-repeat
+      display inline-block
+      &:hover
+        color white
+    .map
+      background-image url(../images/sitemap.png)
+    .moneyConnections
+      background-image url(../images/table.png)
+    .importCSV
+      background-image url(../images/document-import.png)

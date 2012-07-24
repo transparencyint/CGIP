@@ -1,5 +1,8 @@
-Choose the action:
-
+<div>
+  <class="flag big" style="background-image: url(images/flags/bd.png);"></a>
+  <span>Bangladesh</span>
+</div>
+<h2>Choose the action:</h2>
 <ul>
   <li><a href="#edit/<%= @country %>/actors">Edit the Actors</a></li>
   <li><a href="#import/<%= @country %>/money">Import Money Connections</a></li>
