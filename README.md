@@ -27,6 +27,7 @@ The documentation can be found in the `documentation` folder.
 ## Deployment
 
 Git-deployment on [Ubserspace](http://www.uberspace.com)!
+Documentation will follow soon!
 
 ## Technologies
 
