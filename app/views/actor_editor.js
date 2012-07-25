@@ -134,12 +134,22 @@ module.exports = View.extend({
     
     selectedElement.addClass('active');
     this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
+
+    // disable all draggables during mode
+    this.trigger('disableDraggable');
+    // disable the select mode
+    this.workspace.selectable('disable');
   },
 
   deactivateMode: function(){
     this.$('.connections li').removeClass('active');
     this.mode.abort();
     this.mode = null;
+
+    // re-enable draggables
+    this.trigger('enableDraggable');
+    // re-enable select mode
+    this.workspace.selectable('enable');
   },
 
   _keyUp: function(){

@@ -21,12 +21,23 @@ module.exports = View.extend({
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
+    this.editor.on('disableDraggable', this.disableDraggable, this);
+    this.editor.on('enableDraggable', this.enableDraggable, this);
+
     this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+  },
+
+  disableDraggable: function(){
+    this.$el.draggable('disable');
+  },
+
+  enableDraggable: function(){
+    this.$el.draggable('enable');
   },
 
   select: function(event){
@@ -145,5 +156,12 @@ module.exports = View.extend({
 
     this.nameElement = this.$el.find('.name');
     this.$el.append(this.contextmenu.render().el);
+  },
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+
+    this.editor.off('disableDraggable', this.disableDraggable, this);
+    this.editor.off('enableDraggable', this.enableDraggable, this);
   }
 });
