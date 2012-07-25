@@ -19,12 +19,12 @@
   	 <p><%= @description %></p>
   	<% end %>
   </div>
-
-  <div class="roles">
+  
 	<% if @role: %>
+  <div class="roles">
 		<% for value in @role: %>
 			<div class="role" id="<%= value%>"></div>
 		<% end %>
-	<% end %>
-   </div>
+   </div> 
+	 <% end %>
 </div>

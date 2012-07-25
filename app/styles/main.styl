@@ -2,17 +2,19 @@
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
 @import '_shim'
+@import '_form'
 @import '_home'
-@import '_countries'
+@import '_countrySelection'
 @import '_actor'
 @import '_connection'
 @import '_contextMenu'
 @import '_actorEditor'
-@import '_import'
+@import '_importView'
 @import '_roles'
 @import '_lightbox'
 @import '_metadataForm'
 @import '_tables'
+@import '_user'
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -21,29 +23,37 @@
 
 html
   height 100%
-  font 300 16px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  font 15px/27px Arial, sans-serif
   color white
   user-select none
   
 body
   height 100%
-  background url(../images/bluegrid.png) center top
   overflow hidden
+  
+#container
+  padding 21px
+  height 100%
+  background url(../images/bluegrid.png) center top
+  box-sizing border-box
+  display box
+  box-align center
+  box-pack center
+  box-orient vertical
 
-a, a:visited
+a
   color #fff
 
 a:hover
   color #ccc
-
-#container
-  padding 0px 100px
-  height 100%
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
 h1
+  margin 0 0 34px
+  font-size 34px
+  line-height 1
   text-shadow 0 1px 5px rgba(0,0,0,.55)
     
 .breadcrumb
