@@ -26,7 +26,7 @@ The documentation can be found in the `documentation` folder.
 
 ## Deployment
 
-no deployment strategy yet
+coming soon...
 
 ## Technologies
 
