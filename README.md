@@ -26,7 +26,7 @@ The documentation can be found in the `documentation` folder.
 
 ## Deployment
 
-coming soon...
+coming soon [Ubserspace](http://www.uberspace.com)...
 
 ## Technologies
 
