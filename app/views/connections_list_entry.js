@@ -14,8 +14,12 @@ module.exports = View.extend({
   },
 
   initialize: function(){
+    View.prototype.initialize.call(this);
+
     _.bindAll(this, 'actorChanged');
     
+    this.autoSaveConnections = true;
+
     this.model.on('destroy', this.destroy, this);
     this.model.on('error', this.alertError, this);
   },
@@ -81,7 +85,7 @@ module.exports = View.extend({
     
     row.renderSelect(changeThisSelect, changeVal, currentVal);
 
-    this.model.save({from: newFrom, to: newTo});
+    if(this.autoSaveConnections) this.model.save({from: newFrom, to: newTo});
   },
 
   getRenderData: function(){

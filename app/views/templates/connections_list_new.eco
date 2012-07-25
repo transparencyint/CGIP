@@ -1,10 +1,10 @@
 <label for="from-actors-select">From:</label>
-<select id="from-actors-select">
+<select id="from-actors-select" class="from-actors-select">
   
 </select>
 
 <label for="to-actors-select">To:</label>
-<select id="to-actors-select">
+<select id="to-actors-select" class="to-actors-select">
   
 </select>
 

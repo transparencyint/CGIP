@@ -1,4 +1,5 @@
 var View = require('./view');
+var EntryView = require('./connections_list_entry');
 var utils = require('../lib/utils');
 var MoneyConnection = require('../models/connections/money_connection');
 
@@ -9,6 +10,15 @@ module.exports = View.extend({
 
   events: {
     'click #create': 'createConnection'
+  },
+
+  initialize: function(){
+    View.prototype.initialize.call(this);
+
+    // borrow two methods from the entry view
+    this.actorChanged = EntryView.prototype.actorChanged;
+    this.renderSelect = EntryView.prototype.renderSelect;
+    _.bindAll(this, 'actorChanged');
   },
 
   createConnection: function(){
@@ -39,17 +49,11 @@ module.exports = View.extend({
     var data = this.getRenderData();
     this.$el.html(this.template(data));
 
-    // render the dropdown-menus
-    this.$('#from-actors-select').html(this.dropDownTemplate(data));
-    this.$('#to-actors-select').html(this.dropDownTemplate(data));
+    // render the select elements and bind to events
+    this.renderSelect(this.$('.from-actors-select'), null, null);
+    this.renderSelect(this.$('.to-actors-select'), null, null);
 
     this.afterRender();
     return this;
-  },
-
-  afterRender: function(){
-    // select the none option on default
-    this.$('#from-actors-select option').last().attr('selected', 'selected');
-    this.$('#to-actors-select option').last().attr('selected', 'selected');
   }
 });
