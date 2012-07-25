@@ -34,7 +34,7 @@ module.exports = View.extend({
     this.zoomStep = 0.25;
     
     // subscribe to add events
-    this.actors.on('add', this.appendActor, this);
+    this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
@@ -91,10 +91,15 @@ module.exports = View.extend({
     }});
   },
   
-  appendActor: function(actor){
+  appendNewActor: function(actor){
+    this.appendActor(actor, true);
+  },
+
+  appendActor: function(actor, startEdit){
     var actorView = new ActorView({ model : actor, editor: this});
     actorView.render();
     this.workspace.append(actorView.el);
+    if(startEdit === true) actorView.startEditName();
   },
 
   appendConnection: function(connection){

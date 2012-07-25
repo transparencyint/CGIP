@@ -36,7 +36,7 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(event){
+  startEditName: function(){
     this.$el.addClass('editingName');
     this.$el.draggable('disable');
     this.$('.nameInput').focus();
