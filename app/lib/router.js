@@ -11,6 +11,8 @@ var ImportView = require('views/import_view');
 
 module.exports = AsyncRouter.extend({
   routes: {
+    '': 'index',
+    '/': 'index',
     'edit' : 'country_selection',
     'edit/' : 'country_selection',
     'edit/:country': 'country_edit_index',
@@ -18,6 +20,10 @@ module.exports = AsyncRouter.extend({
     'edit/:country/actors': 'actor_editor',
     'edit/:country/money/list': 'money_connections_list',
     'import/:country/money': 'import'
+  },
+
+  index: function(){
+    this.navigate('/edit', { trigger: true });
   },
 
   country_selection: function(){
