@@ -7,7 +7,7 @@ var ActorConnection = require('views/connection_view');
 var Connections = require('models/connections/connections');
 var MoneyConnections = require('models/connections/money_connections');
 var ConnectionsListView = require('views/connections_list_view');
-var ImportView = require('views/import_view');
+var ImportView = require('views/csv_import/import_view');
 
 module.exports = AsyncRouter.extend({
   routes: {
