@@ -11,8 +11,6 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'mouseover': 'showMetadata',
-    'mouseout': 'hideMetadata',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
@@ -147,23 +145,5 @@ module.exports = View.extend({
 
     this.nameElement = this.$el.find('.name');
     this.$el.append(this.contextmenu.render().el);
-  },
-
-  showMetadata: function(){   
-    if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
-    {
-      this.$el.find('.overlay').fadeIn(0);
-      this.$el.addClass('activeOverlay');
-    }
-  },
-
-  hideMetadata: function(){   
-    if(this.$el.hasClass('activeOverlay'))
-    {
-
-      this.$el.find('.overlay').fadeOut(0);
-      this.$el.removeClass('activeOverlay');
-    }
-      
   }
 });
