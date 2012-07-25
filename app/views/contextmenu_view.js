@@ -6,7 +6,7 @@ module.exports = View.extend({
 
   template: require('./templates/contextmenu'),
   tagName: 'ul',
-  className: 'contextMenu',
+  className: 'contextMenu list',
 
   events: {
     'click .delete': 'deleteClicked',
