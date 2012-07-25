@@ -40,10 +40,6 @@ module.exports = View.extend({
 
     _.bindAll(this, 'appendActor', 'createActor', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
   },
-
-  logoutClicked: function(){
-    debugger
-  },
   
   zoomIn: function(){
     if ( (this.zoom + this.zoomStep) <= this.maxZoom ) {
