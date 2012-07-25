@@ -16,8 +16,6 @@ Application = {
     });
     lv.render();
 
-    
-
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
 
@@ -33,8 +31,7 @@ Application = {
       if(href == '' || href == undefined || href.charAt(0) == '#') return
 
       // check for external link
-      var currentHostname = location.hostname.replace('.', '\\.');
-      var external = (el.hostname != '' && el.hostname != currentHostname);
+      var external = (el.hostname != '' && el.hostname != location.hostname);
 
       // if external do nothing, else: let the router handle it
       if(external)
