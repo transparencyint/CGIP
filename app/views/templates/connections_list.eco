@@ -15,5 +15,5 @@
   </tbody>
 </table>
 <button id="new-connection">New connection</button>
-<a href="#edit/<%= @country %>">back to the index</a>
+<a href="/edit">back to the index</a>
 <div id="new-connection-container"></div>
