@@ -5,7 +5,6 @@ var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
-var LoginView = require('./login_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -191,11 +190,6 @@ module.exports = View.extend({
     var editor = this;
 
     $(document).bind('keyup', this._keyUp);
-
-    var lv = new LoginView({
-      el: this.$('.user')
-    });
-    lv.render();
 
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
