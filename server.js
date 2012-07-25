@@ -37,9 +37,17 @@ passport.serializeUser(auth.serializeUser);
 passport.deserializeUser(auth.deserializeUser);
 
 app.configure(function(){
+  app.set('view engine', 'jade');
+  app.set('views', __dirname + '/server/views');
+  app.set('view options', {
+    layout: false
+  });
+  
   app.use(express.methodOverride());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
+  app.use(express.favicon());
+  app.use(gzippo.staticGzip(__dirname + '/public'));
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
@@ -49,14 +57,19 @@ app.configure(function(){
     }
   }));
   app.use(passport.initialize());
+  
+  app.use(function(req, res, next) {
+  //   console.log('-- session --');
+  console.log('sid: ' + req.sessionID);
+  console.log('path: ' + req.url);
+    if(req._passport.session)
+      console.dir(req._passport.session);
+  //   console.dir(req.session);
+  //   console.log('-------------');
+    next()
+  });
   app.use(passport.session());
   app.use(app.router);
-  app.use(gzippo.staticGzip(__dirname + '/public'));
-  app.set('view engine', 'jade');
-  app.set('views', __dirname + '/server/views');
-  app.set('view options', {
-    layout: false
-  });
 });
 
 /* Renders the index jade with the user info */
@@ -77,7 +90,8 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 
 app.del('/session', function(req, res){
   req.logout();
-  res.json({ ok: true });
+  req.session.destroy();
+  res.json({ok:true});
 });
 
 /* Testfoo */
@@ -131,6 +145,13 @@ app.get('/:country/connections/:connection_type', function(req, res){
 
 app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   Connection.create(req.body, function(err, connection){
+    if(err) return res.json(err, 404);
+    res.json(connection);
+  });
+});
+
+app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(req, res){
+  Connection.edit(req.params.actor_id, req.body, function(err, connection){
     if(err) return res.json(err, 404);
     res.json(connection);
   });

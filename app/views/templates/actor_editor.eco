@@ -1,6 +1,10 @@
 <div id="overlay"></div>
 <div id="lightbox"></div>
 
+<div class="user">
+  
+</div>
+
 <div class="controls">
   <div class="newActor">
     <div class="actor new">
@@ -29,9 +33,6 @@
   <div class="zoom">
     <div class="out">-</div>
     <div class="in">+</div>
-  </div>
-  <div class="user">
-    
   </div>
 </div>
 <div class="workspace"></div>

@@ -1,0 +1,23 @@
+<td>
+  <select class="from-actors-select">
+  </select>
+</td>
+<td>
+  <select class="to-actors-select">
+  </select>
+</td>
+<td>
+  <span><%= @disbursed %></span>
+  <input type="text" class="" value="<%= @disbursed %>" data-model-attribute="disbursed" />
+</td>
+<td>
+  <span><%= @pledged %></span>
+  <input type="text" class="" value="<%= @pledged %>" data-model-attribute="pledged" />
+</td>
+<td>
+  <span><%= @source %></span>
+  <input type="text" class="" value="<%= @source %>" data-model-attribute="source" />
+</td>
+<td>
+  <button>Delete</button>
+</td>

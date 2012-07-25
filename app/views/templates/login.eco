@@ -1,5 +1,5 @@
 <% if window.user.isLoggedIn(): %>
-  <%= window.user.id %>
+  <span class="username"><%= window.user.id %></span>
   <button id="logout-button">Logout</button>
 <% else: %>
   <input type="text" placeholder="username" id="username-input" />
