@@ -14,7 +14,7 @@
   <span><%= @pledged %></span>
   <input type="text" class="" value="<%= @pledged %>" data-model-attribute="pledged" />
 </td>
-<td>
+<td class="source">
   <span><%= @source %></span>
   <input type="text" class="" value="<%= @source %>" data-model-attribute="source" />
 </td>
