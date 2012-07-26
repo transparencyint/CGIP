@@ -18,19 +18,10 @@ module.exports = View.extend({
     this.country = options.country;
     this.dbActors = new Actors();
     this.dbActors.country = options.country;
-    _.bindAll(this, 'setActors'); 
   },
   
   getRenderData : function(){
     return this.model.toJSON();
-  },
-
-  setActors: function(model){
-    console.log("DB Entry:", model);
-    this.dbActors.forEach(function(model){
-      console.log("DB Actor");  
-      console.log("DB Actors:", model.get('name'));  
-    }); 
   },
 
   render: function(){
@@ -41,8 +32,6 @@ module.exports = View.extend({
     var headline = true;
     this.newMoneyConnections = new MoneyConnections();
     var newMoneyConnections = this.newMoneyConnections;
-    //console.log(model);
-    console.log(tableColumns);
 
     dbActors.fetch({
       success: function(dbActors){
@@ -50,8 +39,10 @@ module.exports = View.extend({
         var matchedColumns = new Array();
         var connections = new Array();
 
+        //find the position of the needed columns in the old table 
         for(i=0; i<tableColumns.length; i++)
         {
+          var position;
           if(tableColumns[i] == "provider")
             matchedColumns[0] = i;
           if(tableColumns[i] == "recipient")
@@ -63,9 +54,9 @@ module.exports = View.extend({
           if(tableColumns[i] == "source")
             matchedColumns[4] = i;
         }
-        console.log(matchedColumns);
 
-        //creating the new table with only 4 columns
+        //creating the new table with only 5 columns
+        //do this by going through each line of the old table
         var newTable = new Array();
         var y = 0;
         model.forEach(function(row){
@@ -96,11 +87,9 @@ module.exports = View.extend({
           });
           y++;
         });
-        console.log(newTable);
-        console.log(model);
 
+        //this 5-column table is now our model which is used for finding machting actors
         model = newTable;
-
 
         //now create the table and find actors
         var j = 0;
@@ -115,43 +104,36 @@ module.exports = View.extend({
           //Print out the 4 headlines
           if(headline){
             var headlines = "<tr><th>Provider</th><th>Recipient</th><th>Disbursed</th><th>Pledged</th><th>Source</th></tr>";
-
             table.$el.append(headlines);
             headline = false;
           }
 
           //Combine the columns and to the correct places
-
           var matchedActors = false;
-          var i = 0;
           var bothMarked = false;
+          var columnCounter = 0;
 
           //for each row in the CSV document get the column
           row.forEach(function(column){
-            
             var foundActor = "";
-            
 
             //go through each actor in the database for the provider and receiver cell
-            if(i == 0 || i == 1){
+            if(columnCounter == 0 || columnCounter == 1){
               var addedColumn = false;
               dbActors.forEach(function(dbActor){
                 
-                if(column == dbActor.get('name'))
-                {
+                if(column == dbActor.get('name')){
                   matchedActors = true;
                   foundActor = column;
                   
-                  if(i == 0)
+                  if(columnCounter == 0)
                   {
-                    matchingActors[k] = new Array('provider', dbActor.id, dbActor.get('name'), j , i);
-                    console.log('Found ', dbActor.get('name'), 'in row ', j, 'and row ', i, 'type: provider');
+                    matchingActors[k] = new Array('provider', dbActor.id, dbActor.get('name'), j , columnCounter);
                   }
-                  else if(i == 1)
+                  else if(columnCounter == 1)
                   {
                     
-                    matchingActors[k] = new Array('recipient', dbActor.id, dbActor.get('name'), j , i);
-                    console.log('Found ', dbActor.get('name'), 'in row ', j, 'and column ', i, 'type: recipient');
+                    matchingActors[k] = new Array('recipient', dbActor.id, dbActor.get('name'), j , columnCounter);
 
                     if(k > 0 && (matchingActors[k][3] == matchingActors[k-1][3]))
                     {
@@ -167,20 +149,20 @@ module.exports = View.extend({
                 
               });
             }
-            if(i == matchedColumns[2] && bothMarked)
+            if(columnCounter == matchedColumns[2] && bothMarked)
             {
               connections[l-1][2] = column;
             }
-            if(i == matchedColumns[3] && bothMarked)
+            if(columnCounter == matchedColumns[3] && bothMarked)
             {
               connections[l-1][3] = column;
             }
-            if(i == matchedColumns[4] && bothMarked)
+            if(columnCounter == matchedColumns[4] && bothMarked)
             {
               connections[l-1][4] = column;
             }
 
-            i++;
+            columnCounter++;
             
           });
           
@@ -205,12 +187,6 @@ module.exports = View.extend({
           table.$el.append(tableRow.el);
           j++
         });
-        //end of the last row
-        console.log(connections);
-        console.log(newMoneyConnections);
-        
-       
-
       }
     });
 

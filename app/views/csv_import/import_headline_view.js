@@ -58,7 +58,6 @@ module.exports = View.extend({
     $('#confirmButton').show();
 
     var model = this.model;
-    console.log('loading match view');
     this.tableMatchingView = new ImportTableMatchingView({model : model, tableColumns : tableColumns, country: this.country});
     this.tableMatchingView.render();
     this.$el.append(this.tableMatchingView.el);

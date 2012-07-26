@@ -11,7 +11,6 @@ module.exports = View.extend({
   className : 'import-table',
 
   initialize: function(){
-  
   },
 
   render: function(){
@@ -19,7 +18,6 @@ module.exports = View.extend({
     var model = this.model;
     var headline = true;
 
-        //CSV data
         model.forEach(function(row){
           if(headline){
             headline=false;
