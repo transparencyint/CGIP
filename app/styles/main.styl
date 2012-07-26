@@ -45,9 +45,8 @@ body
 a, a:visited
   color hsl(19,89%,55%)
   text-decoration none
-
 a:hover
-  color #ccc
+  color hsl(23,100%,58%)
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
@@ -61,22 +60,26 @@ h1
 button
   padding 5px 8px
   border-radius 3px
-  color #222
-  text-shadow 0 1px rgba(255,255,255,.89)
-  background linear-gradient(top, #ddd, #bbb)
-  border 1px solid #333
-  box-shadow 0 1px #fff inset, 0 1px rgba(0,0,0,.13)
+  color #333
+  text-shadow 0 1px white
+  background linear-gradient(top, hsl(0,0%,93%), hsl(0,0%,89%))
+  border none
+  box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34), 0 -1px rgba(0,0,0,.34) inset
   &:hover
-    background linear-gradient(top, #fff, #ccc)
+    background linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,93%))
+  &:active
+    padding-top 6px
+    padding-bottom 4px
+    box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
   &.callToAction
     color white
     text-shadow 0 -1px hsl(19,89%,40%)
     background linear-gradient(top, hsl(19,89%,55%), hsl(19,89%,50%))
-    border-color solid hsl(19,55%,34%)
-    border-bottom-color hsl(19,55%,21%)
-    box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13)
+    box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34), 0 -1px hsl(19,89%,34%) inset
     &:hover
-      background linear-gradient(top, hsl(19,100%,60%), hsl(19,100%,50%))
+      background linear-gradient(top, hsl(23,100%,60%), hsl(23,100%,50%))
+    &:active
+      box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
       
     
 nav
@@ -84,14 +87,6 @@ nav
   position absolute
   top 0
   left 0
-  a
-    &.icon
-      padding-left 21px
-      background-size 16px
-      background-position left top
-      background-repeat no-repeat
-    &.home
-      background-image url(../images/home.png)
 
 .clear
   clear both
