@@ -4,7 +4,7 @@
 @import '_shim'
 @import '_form'
 @import '_list'
-@import '_home'
+@import '_tables'
 @import '_countrySelection'
 @import '_actor'
 @import '_connection'
@@ -14,8 +14,8 @@
 @import '_roles'
 @import '_lightbox'
 @import '_metadataForm'
-@import '_tables'
 @import '_user'
+@import '_connectionsList'
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -42,8 +42,9 @@ body
   box-pack center
   box-orient vertical
 
-a
-  color #fff
+a, a:visited
+  color hsl(19,89%,55%)
+  text-decoration none
 
 a:hover
   color #ccc
@@ -52,21 +53,45 @@ a:hover
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
 h1
-  margin 0 0 34px
+  margin 0 0 21px
   font-size 34px
   line-height 1
   text-shadow 0 1px 5px rgba(0,0,0,.55)
+  
+button
+  padding 5px 8px
+  border-radius 3px
+  color #222
+  text-shadow 0 1px rgba(255,255,255,.89)
+  background linear-gradient(top, #ddd, #bbb)
+  border 1px solid #333
+  box-shadow 0 1px #fff inset, 0 1px rgba(0,0,0,.13)
+  &:hover
+    background linear-gradient(top, #fff, #ccc)
+  &.callToAction
+    color white
+    text-shadow 0 -1px hsl(19,89%,40%)
+    background linear-gradient(top, hsl(19,89%,55%), hsl(19,89%,50%))
+    border-color solid hsl(19,55%,34%)
+    border-bottom-color hsl(19,55%,21%)
+    box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13)
+    &:hover
+      background linear-gradient(top, hsl(19,100%,60%), hsl(19,100%,50%))
+      
     
-.breadcrumb
-  margin 21px
-  span
-    margin 0 5px
-    vertical-align text-bottom
-  a, span
-    color rgba(255,255,255,.34)
-    text-decoration none
-    &.selected
-      color white
+nav
+  margin 13px
+  position absolute
+  top 0
+  left 0
+  a
+    &.icon
+      padding-left 21px
+      background-size 16px
+      background-position left top
+      background-repeat no-repeat
+    &.home
+      background-image url(../images/home.png)
 
 .clear
   clear both
