@@ -70,6 +70,7 @@ module.exports = View.extend({
           //ui.draggable.remove();
 
           //check if all elements are moved to headlines
+          //check if provider and recipient are moved to headlines
           setTimeout(function(){
             headlineView.checkHiddenstates();  
           }, 250);
@@ -81,10 +82,18 @@ module.exports = View.extend({
   checkHiddenstates: function(){
 
     var allHidden = true;
-    $('#headlines li').each(function(){
+ /*   $('#headlines li').each(function(){
       if($(this).is(':visible'))
         allHidden = false;
-    });
+    });*/
+
+
+    if ($('#headlines #recipient').is(':visible'))
+      allHidden = false;
+    if ($('#headlines #provider').is(':visible'))
+      allHidden = false;
+
+
     if(allHidden)
       $('#matchButton').css('display', 'block');
     else

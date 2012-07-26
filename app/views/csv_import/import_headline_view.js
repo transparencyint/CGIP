@@ -43,6 +43,12 @@ module.exports = View.extend({
       i++;
     });
 
+    //Make all buttons invisble
+    $('#headlines li').each(function(){
+      if($(this).is(':visible'))
+        $(this).css('display', 'none');
+    });
+
     //Make other view invisible
     $('#import_table').hide();
     //Make button invisible
@@ -68,14 +74,22 @@ module.exports = View.extend({
         {
           oldMoneyConnections.destroyAll({
             success: function(){
-              //debugger
+              
 
               tableMatchingView.newMoneyConnections.each(function(connection){
                 connection.save();
-              });    
+              }); 
+
+              $('#successInfo').show();
+              $('#confirmInfo').hide();
+              $('#confirmButton').hide(); 
+              
+            },
+            error: function(){
+              $('#failureInfo').show(); 
             }
           });
-          
+
         }
       }
     });
