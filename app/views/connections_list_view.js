@@ -11,6 +11,8 @@ module.exports = View.extend({
     'click #new-connection': 'toggleNewForm'
   },
 
+  className: 'connectionsList',
+  
   initialize: function(){
     this.collection.on('add', this.addOne, this);
     this.collection.on('add', this.removeNewForm, this);
@@ -24,12 +26,14 @@ module.exports = View.extend({
 
   toggleNewForm: function(){
     if(!this.newFormView){
+      $('#new-connection').addClass('cancel').find('.label').text('Cancel');
       this.newFormView = new ConnectionListNew({
         actors: this.options.actors,
         collection: this.collection
       });
       this.$('#new-connection-container').html(this.newFormView.render().el);
-    }else{
+    } else {
+      $('#new-connection').removeClass('cancel').find('.label').text('Add Connection');
       this.removeNewForm();
     }
   },

@@ -30,27 +30,22 @@ module.exports = View.extend({
   },
 
   showEditField: function(event){
-    var spanElement = $('span', event.currentTarget);
-    var inputElement = spanElement.siblings('input');
-    inputElement.show();
-    inputElement.focus();
-    spanElement.hide();
+    $(event.currentTarget).addClass('edit').find('input').focus();
   },
 
   hideEditField: function(event){
-    var currentElement = $(event.currentTarget);
-    var spanElement = currentElement.siblings('span');
-    spanElement.show();
-    currentElement.hide();
+    var input = $(event.currentTarget);
+    
+    input.parent('td').removeClass('edit');
 
-    var value = currentElement.val();
-    var modelAttribute = currentElement.data('model-attribute');
+    var value = input.val();
+    var modelAttribute = input.data('model-attribute');
     var modelValue = this.model.get(modelAttribute);
     
     if(String(value) != String(modelValue)){
       this.model.set(modelAttribute, value);
       this.model.save()
-      spanElement.text(value);
+      input.siblings('span').text(value);
     }
   },
 
