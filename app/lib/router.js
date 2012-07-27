@@ -44,10 +44,8 @@ module.exports = AsyncRouter.extend({
   },
 
   import: function(country) {
-    var options = {country: country};
-    var importView = new ImportView(options);
-    importView.render();
-    $('#container').empty().html( importView.el );
+    // switch view with animation
+    this.switchToView(new ImportView({country: country}));
   },
 
   money_connections_list: function(country){
