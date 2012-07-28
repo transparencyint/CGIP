@@ -3,12 +3,11 @@ var Actors = require('models/actors');
 var MoneyConnection = require('models/connections/money_connection');
 var MoneyConnections = require('models/connections/money_connections');
 var ImportTableRowView = require('./import_table_row_view');
-//var ImportTableHeadlineView = require('./import_table_headline_view');
+var TableHeadline = require('views/templates/csv_import/import_matched_headlines');
 
 module.exports = View.extend({
   
   tagName : 'table',
-
 
   initialize: function(options){
     this.selectedColumns = options.selectedColumns;
@@ -84,6 +83,11 @@ module.exports = View.extend({
     var matchedColumns = this.matchedColumnPosition();
     var newTable = this.createNewTable(matchedColumns);
 
+    console.log(matchedColumns);
+
+    //Print out the headlines
+    this.$el.append(TableHeadline);
+
     var dbActors = this.dbActors;
     var headline = true;
     this.newMoneyConnections = new MoneyConnections();
@@ -94,80 +98,68 @@ module.exports = View.extend({
 
         var connections = new Array();
 
-        //this 5-column table is now our model which is used for finding machting actors
-        //model = newTable;
-
         //now create the table and find actors
-        var j = 0;
-        var k = 0;
-        var l = 0;
+        var indexCurrentRow = 0;
+        var indexFoundActors = 0;
+        var indexCurrentConnection = -1;
         
         var matchingActors = new Array();
 
         newTable.forEach(function(row){
 
-          //Print out the 4 headlines
-          if(headline){
-            var headlines = "<tr><th>Provider</th><th>Recipient</th><th>Disbursed</th><th>Pledged</th><th>Source</th></tr>";
-            table.$el.append(headlines);
-            headline = false;
-          }
-
           //Combine the columns and to the correct places
           var matchedActors = false;
           var bothMarked = false;
-          var columnCounter = 0;
+          var indexCurrentColumn = 0;
 
           //for each row in the CSV document get the column
           row.forEach(function(column){
-            var foundActor = "";
+            //var foundActor = "";
 
             //go through each actor in the database for the provider and receiver cell
-            if(columnCounter == 0 || columnCounter == 1){
+            if(indexCurrentColumn == 0 || indexCurrentColumn == 1){
               var addedColumn = false;
               dbActors.forEach(function(dbActor){
                 
+                //Found equal actor in database
                 if(column == dbActor.get('name')){
                   matchedActors = true;
-                  foundActor = column;
+                  //foundActor = column;
                   
-                  if(columnCounter == 0)
+                  if(indexCurrentColumn == 0)
                   {
-                    matchingActors[k] = new Array('provider', dbActor.id, dbActor.get('name'), j , columnCounter);
+                    matchingActors[indexFoundActors] = new Array('provider', dbActor.id, dbActor.get('name'), indexCurrentRow , indexCurrentColumn);
                   }
-                  else if(columnCounter == 1)
+                  else if(indexCurrentColumn == 1)
                   {
                     
-                    matchingActors[k] = new Array('recipient', dbActor.id, dbActor.get('name'), j , columnCounter);
+                    matchingActors[indexFoundActors] = new Array('recipient', dbActor.id, dbActor.get('name'), indexCurrentRow , indexCurrentColumn);
 
-                    if(k > 0 && (matchingActors[k][3] == matchingActors[k-1][3]))
+                    if(indexFoundActors > 0 && (matchingActors[indexFoundActors][3] == matchingActors[indexFoundActors-1][3]))
                     {
                       bothMarked = true;
-                      connections[l] = new Array(matchingActors[k-1][1], matchingActors[k][1]);
-                      l++;
+                      indexCurrentConnection++;
+                      connections[indexCurrentConnection] = new Array(matchingActors[indexFoundActors-1][1], matchingActors[indexFoundActors][1]);
                     }
                     
                   }
 
-                  k++;    
+                  indexFoundActors++;    
                 }
                 
               });
             }
-            if(columnCounter == matchedColumns[2] && bothMarked)
-            {
-              connections[l-1][2] = column;
-            }
-            if(columnCounter == matchedColumns[3] && bothMarked)
-            {
-              connections[l-1][3] = column;
-            }
-            if(columnCounter == matchedColumns[4] && bothMarked)
-            {
-              connections[l-1][4] = column;
+
+            //add other columns to connection
+            if(indexCurrentColumn > 1 && bothMarked) {
+              for (i=2; i<matchedColumns.length; i++) {
+                if(indexCurrentColumn == matchedColumns[i]) {
+                  connections[indexCurrentConnection][i] = column;
+                }
+              } 
             }
 
-            columnCounter++;
+            indexCurrentColumn++;
             
           });
           
@@ -178,11 +170,11 @@ module.exports = View.extend({
             tableRow.setMarkedActor();
             var moneyConnection = new MoneyConnection({
               country: table.country,
-              from: connections[l-1][0],
-              to: connections[l-1][1],
-              disbursed: connections[l-1][2],
-              pledged: connections[l-1][3],
-              source: connections[l-1][4]
+              from: connections[indexCurrentConnection][0],
+              to: connections[indexCurrentConnection][1],
+              disbursed: connections[indexCurrentConnection][2],
+              pledged: connections[indexCurrentConnection][3],
+              source: connections[indexCurrentConnection][4]
             });
 
             newMoneyConnections.add(moneyConnection);
@@ -190,7 +182,7 @@ module.exports = View.extend({
 
           tableRow.render();
           table.$el.append(tableRow.el);
-          j++
+          indexCurrentRow++
         });
 
       }
