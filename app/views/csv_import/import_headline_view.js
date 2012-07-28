@@ -1,15 +1,12 @@
 var View = require('views/view');
-var ImportTableHeadlineView = require('./import_table_headline_view');
-var ImportTableMatchingView = require('./import_table_matching_view');
-var MoneyConnections = require('models/connections/money_connections');
+var ImportMatchingView = require('./import_matching_view');
 
 module.exports = View.extend({
   
   template: require('views/templates/csv_import/import_headline'),
 
   events : {
-    'click #matchButton': 'loadMatchView',
-    'click #confirmButton': 'createConnections'
+    'click #matchButton': 'loadMatchView'
   },
 
   initialize: function(options){
@@ -19,14 +16,12 @@ module.exports = View.extend({
   afterRender: function(){
       this.$('#headlines li').draggable({
         revert: true,
-        revertDuration: 100,
-        stop: function(event,ui){
-        }
+        revertDuration: 100
       });
   },
 
   loadMatchView: function(){
-    var tableColumns = new Array();
+    var selectedColumns = new Array();
     var i = 0;
 
     //Get the positions of the dragged buttons
@@ -34,62 +29,20 @@ module.exports = View.extend({
       var divID = $(this).find('div').attr('id');
 
       if(divID)
-        tableColumns[i] = divID;
+        selectedColumns[i] = divID;
+        //selectedColumns.push(divID);
       else
-        tableColumns[i] = null;
+        selectedColumns[i] = null;
       
       i++;
     });
 
-    //Make all buttons invisble
-    $('#headlines li').each(function(){
-      if($(this).is(':visible'))
-        $(this).css('display', 'none');
-    });
-
-    //Make other view invisible
     $('#import_table').hide();
-    //Make button invisible
-    $('#matchButton').hide();
-    $('#matchInfo').hide();
-    $('#confirmInfo').show();
-    $('#confirmButton').show();
 
     var csvdata = this.model;
-    this.tableMatchingView = new ImportTableMatchingView({model : csvdata, tableColumns : tableColumns, country: this.country});
-    this.tableMatchingView.render();
-    this.$el.append(this.tableMatchingView.el);
-  },
-
-  createConnections: function(){
-    var oldMoneyConnections = new MoneyConnections();
-    oldMoneyConnections.country = this.country;
-    var tableMatchingView = this.tableMatchingView;
-    oldMoneyConnections.fetch({
-      success: function(){
-        if(confirm('This will delete all previous money connections, Are you sure?'))
-        {
-          oldMoneyConnections.destroyAll({
-            success: function(){
-              
-
-              tableMatchingView.newMoneyConnections.each(function(connection){
-                connection.save();
-              }); 
-
-              $('#successInfo').show();
-              $('#confirmInfo').hide();
-              $('#confirmButton').hide(); 
-              
-            },
-            error: function(){
-              $('#failureInfo').show(); 
-            }
-          });
-
-        }
-      }
-    });
+    var matchingView = new ImportMatchingView({model : csvdata, selectedColumns : selectedColumns, country: this.country});
+    matchingView.render();
+    this.$el.empty().append(matchingView.el);
   }
 
 });

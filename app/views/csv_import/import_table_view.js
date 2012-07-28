@@ -7,7 +7,6 @@ module.exports = View.extend({
   id: 'import_table',
   
   tagName : 'table',
-  className : 'import-table',
 
   render: function(){
     var table = this;

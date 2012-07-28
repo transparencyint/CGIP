@@ -3,17 +3,15 @@ var Actors = require('models/actors');
 var MoneyConnection = require('models/connections/money_connection');
 var MoneyConnections = require('models/connections/money_connections');
 var ImportTableRowView = require('./import_table_row_view');
-var ImportTableHeadlineView = require('./import_table_headline_view');
+//var ImportTableHeadlineView = require('./import_table_headline_view');
 
 module.exports = View.extend({
-  id: 'import_table_matching',
   
-  //template: require('views/templates/csv_import/import_table'),
   tagName : 'table',
-  className : 'import-table',
+
 
   initialize: function(options){
-    this.tableColumns = options.tableColumns;
+    this.selectedColumns = options.selectedColumns;
     this.country = options.country;
     this.dbActors = new Actors();
     this.dbActors.country = options.country;
@@ -23,10 +21,69 @@ module.exports = View.extend({
     return this.model.toJSON();
   },
 
+  /**
+    Find the positions of the needed columns from the old table 
+    and save it in a new ordered (Provider,Recipient etc) array
+  **/
+  matchedColumnPosition : function(){
+    var selectedColumns = this.selectedColumns;
+    var matchedColumns = new Array();
+    for(i=0; i<selectedColumns.length; i++)
+    {
+      if(selectedColumns[i] == "provider")
+        matchedColumns[0] = i;
+      else if(selectedColumns[i] == "recipient")
+        matchedColumns[1] = i;
+      else if(selectedColumns[i] == "disbursed")
+        matchedColumns[2] = i;
+      else if(selectedColumns[i] == "pledged")
+        matchedColumns[3] = i;
+      else if(selectedColumns[i] == "source")
+        matchedColumns[4] = i;
+    }
+    return matchedColumns;
+  },
+
+  /**
+    creating the new table with only 5 columns
+    do this by going through each line of the old table
+  **/
+  createNewTable : function(matchedColumns){
+    var newTable = new Array();
+    var y = 0;
+    this.model.forEach(function(row){
+      var x = 0;
+      var tempArray = new Array("" , "", "", "", "");
+      row.forEach(function(cell){
+        if (x == matchedColumns[0]){
+          tempArray[0] = cell;
+        }
+        if (x == matchedColumns[1]){
+          tempArray[1] = cell;
+        }
+        if (x == matchedColumns[2]){
+          tempArray[2] = cell;
+        }
+        if (x == matchedColumns[3]){
+          tempArray[3] = cell;
+        }
+        if(x == matchedColumns[4]){
+          tempArray[4] = cell;
+        }
+        newTable[y] = tempArray;
+        x++;
+      });
+      y++;
+    });
+    return newTable; 
+  },
+
   render: function(){
     var table = this;
-    var model = this.model;
-    var tableColumns = this.tableColumns;
+
+    var matchedColumns = this.matchedColumnPosition();
+    var newTable = this.createNewTable(matchedColumns);
+
     var dbActors = this.dbActors;
     var headline = true;
     this.newMoneyConnections = new MoneyConnections();
@@ -35,60 +92,10 @@ module.exports = View.extend({
     dbActors.fetch({
       success: function(dbActors){
 
-        var matchedColumns = new Array();
         var connections = new Array();
 
-        //find the position of the needed columns in the old table 
-        for(i=0; i<tableColumns.length; i++)
-        {
-          var position;
-          if(tableColumns[i] == "provider")
-            matchedColumns[0] = i;
-          if(tableColumns[i] == "recipient")
-            matchedColumns[1] = i;
-          if(tableColumns[i] == "disbursed")
-            matchedColumns[2] = i;
-          if(tableColumns[i] == "pledged")
-            matchedColumns[3] = i;
-          if(tableColumns[i] == "source")
-            matchedColumns[4] = i;
-        }
-
-        //creating the new table with only 5 columns
-        //do this by going through each line of the old table
-        var newTable = new Array();
-        var y = 0;
-        model.forEach(function(row){
-          var x = 0;
-          var tempArray = new Array("" , "", "", "", "");
-          row.forEach(function(cell){
-            if (x == matchedColumns[0]){
-              tempArray[0] = cell;
-              newTable[y] = tempArray;
-            }
-            if (x == matchedColumns[1]){
-              tempArray[1] = cell;
-              newTable[y] = tempArray;
-            }
-            if (x == matchedColumns[2]){
-              tempArray[2] = cell;
-              newTable[y] = tempArray;
-            }
-            if (x == matchedColumns[3]){
-              tempArray[3] = cell;
-              newTable[y] = tempArray;
-            }
-            if(x == matchedColumns[4]){
-              tempArray[4] = cell;
-              newTable[y] = tempArray;
-            }
-            x++;
-          });
-          y++;
-        });
-
         //this 5-column table is now our model which is used for finding machting actors
-        model = newTable;
+        //model = newTable;
 
         //now create the table and find actors
         var j = 0;
@@ -97,8 +104,7 @@ module.exports = View.extend({
         
         var matchingActors = new Array();
 
-        //CSV data
-        model.forEach(function(row){
+        newTable.forEach(function(row){
 
           //Print out the 4 headlines
           if(headline){
@@ -186,6 +192,7 @@ module.exports = View.extend({
           table.$el.append(tableRow.el);
           j++
         });
+
       }
     });
 
