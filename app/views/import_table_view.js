@@ -1,6 +1,6 @@
 var View = require('./view');
 var Actors = require('models/actors');
-var Import = require('models/import');
+//var Import = require('models/import');
 var ImportTableRowView = require('./import_table_row_view');
 var ImportTableHeadlineView = require('./import_table_headline_view');
 
@@ -11,7 +11,6 @@ module.exports = View.extend({
   className : 'import-table',
 
   initialize: function(){
-  
   },
 
   render: function(){

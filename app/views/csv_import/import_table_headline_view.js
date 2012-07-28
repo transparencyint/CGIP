@@ -1,14 +1,10 @@
 var View = require('views/view');
-var Import = require('models/import');
 
 module.exports = View.extend({
   
   template: require('views/templates/csv_import/import_table_headline'),
   
   tagName : 'tr',
-  
-  initialize: function(){
-  },
   
   getRenderData : function(){
     return this.model;
@@ -33,7 +29,8 @@ module.exports = View.extend({
           }
 
           $(event.target).empty();
-
+          
+          //removes table headline
           $('#import_table th').each(function(){
             if($(this).find('div').attr('id') == $(ui.draggable).attr("id"))
             {
@@ -42,6 +39,7 @@ module.exports = View.extend({
             }
           });
 
+          //adds table headline
           $(event.target).html("<div>" + $(ui.draggable).html() + "</div>");
           $(this).find("div").attr("id", $(ui.draggable).attr("id"));
           $(this).find("div").addClass("state-dragged");

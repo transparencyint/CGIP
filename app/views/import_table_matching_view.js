@@ -1,6 +1,6 @@
 var View = require('./view');
 var Actors = require('models/actors');
-var Import = require('models/import');
+//var Import = require('models/import');
 var MoneyConnection = require('models/connections/money_connection');
 var MoneyConnections = require('models/connections/money_connections');
 var ImportTableRowView = require('./import_table_row_view');

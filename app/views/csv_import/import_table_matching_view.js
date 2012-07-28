@@ -1,6 +1,5 @@
 var View = require('views/view');
 var Actors = require('models/actors');
-var Import = require('models/import');
 var MoneyConnection = require('models/connections/money_connection');
 var MoneyConnections = require('models/connections/money_connections');
 var ImportTableRowView = require('./import_table_row_view');
@@ -9,7 +8,7 @@ var ImportTableHeadlineView = require('./import_table_headline_view');
 module.exports = View.extend({
   id: 'import_table_matching',
   
-  template: require('views/templates/csv_import/import_table'),
+  //template: require('views/templates/csv_import/import_table'),
   tagName : 'table',
   className : 'import-table',
 

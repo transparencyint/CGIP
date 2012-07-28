@@ -1,5 +1,5 @@
 <h1>Import CSV</h1>
-<div id="matchInfo"><p>Drag the 5 elements to the matching headline column.</p></div>
+<div id="matchInfo"><p>Drag the 5 elements to the matching headline column. The headlines with the * are obligatory.</p></div>
 <div id="confirmInfo"><p>All marked lines have two matching actors and will be added to the database.<br />Please comfirm the import by pressing the button.</p></div>
 <div id="successInfo"><p>All changes successfully changed.</p></div>
 <div id="failureInfo"><p>An error occured. Changes are not saved.<br />Check if you are logged in to save information.</p></div>

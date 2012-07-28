@@ -1,5 +1,5 @@
 var View = require('./view');
-var Import = require('models/import');
+//var Import = require('models/import');
 var ImportTableView = require('./import_table_view');
 var ImportHeadlineView = require('./import_headline_view');
 module.exports = View.extend({

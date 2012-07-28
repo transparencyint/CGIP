@@ -1,5 +1,5 @@
 var View = require('./view');
-var Import = require('models/import');
+//var Import = require('models/import');
 var ImportTableHeadlineView = require('./import_table_headline_view');
 var ImportTableMatchingView = require('./import_table_matching_view');
 var MoneyConnections = require('models/connections/money_connections');

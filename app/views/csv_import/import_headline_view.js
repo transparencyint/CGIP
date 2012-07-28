@@ -1,11 +1,9 @@
 var View = require('views/view');
-var Import = require('models/import');
 var ImportTableHeadlineView = require('./import_table_headline_view');
 var ImportTableMatchingView = require('./import_table_matching_view');
 var MoneyConnections = require('models/connections/money_connections');
 
 module.exports = View.extend({
-  id: 'import_headline',
   
   template: require('views/templates/csv_import/import_headline'),
 
@@ -57,8 +55,8 @@ module.exports = View.extend({
     $('#confirmInfo').show();
     $('#confirmButton').show();
 
-    var model = this.model;
-    this.tableMatchingView = new ImportTableMatchingView({model : model, tableColumns : tableColumns, country: this.country});
+    var csvdata = this.model;
+    this.tableMatchingView = new ImportTableMatchingView({model : csvdata, tableColumns : tableColumns, country: this.country});
     this.tableMatchingView.render();
     this.$el.append(this.tableMatchingView.el);
   },

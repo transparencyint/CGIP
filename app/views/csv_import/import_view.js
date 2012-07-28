@@ -29,7 +29,7 @@ module.exports = View.extend({
       return function(e) {
         var filecontent = e.target.result;
         var csvdata = $.csv2Array(filecontent);
-        
+
         var importHeadlineView = new ImportHeadlineView({country: importView.options.country, model: csvdata});
         importHeadlineView.render();
         importView.$el.empty().append(importHeadlineView.el);
@@ -43,6 +43,10 @@ module.exports = View.extend({
     reader.readAsText(f);
   },
   
+
+  /**
+  Add Drag and Drop capability to import a file
+  **/
   afterRender: function(){
     // Give visual Feedback on drag event
     this.$('#csv-upload-target').on('dragstart', function(event){event.preventDefault();});
