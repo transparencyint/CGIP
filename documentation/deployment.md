@@ -14,8 +14,8 @@ Now go to the `hooks` folder and create file called `post-receive` and fill it w
 
 	# set the needed env variables
 	unset $(git rev-parse --local-env-vars)
-	export USER=speculos
-	export HOME=/home/speculos
+	export USER=username
+	export HOME=/home/username
 	. $HOME/.bash_profile
 
 	# go to the remote repo of the server
