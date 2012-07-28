@@ -30,7 +30,6 @@ module.exports = View.extend({
 
       if(divID)
         selectedColumns[i] = divID;
-        //selectedColumns.push(divID);
       else
         selectedColumns[i] = null;
       
