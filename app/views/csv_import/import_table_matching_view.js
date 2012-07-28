@@ -54,20 +54,10 @@ module.exports = View.extend({
       var x = 0;
       var tempArray = new Array("" , "", "", "", "");
       row.forEach(function(cell){
-        if (x == matchedColumns[0]){
-          tempArray[0] = cell;
-        }
-        if (x == matchedColumns[1]){
-          tempArray[1] = cell;
-        }
-        if (x == matchedColumns[2]){
-          tempArray[2] = cell;
-        }
-        if (x == matchedColumns[3]){
-          tempArray[3] = cell;
-        }
-        if(x == matchedColumns[4]){
-          tempArray[4] = cell;
+        for (i=0; i<matchedColumns.length; i++) {
+          if (x == matchedColumns[i]){
+            tempArray[i] = cell;
+          }
         }
         newTable[y] = tempArray;
         x++;
@@ -82,8 +72,6 @@ module.exports = View.extend({
 
     var matchedColumns = this.matchedColumnPosition();
     var newTable = this.createNewTable(matchedColumns);
-
-    console.log(matchedColumns);
 
     //Print out the headlines
     this.$el.append(TableHeadline);
@@ -114,7 +102,6 @@ module.exports = View.extend({
 
           //for each row in the CSV document get the column
           row.forEach(function(column){
-            //var foundActor = "";
 
             //go through each actor in the database for the provider and receiver cell
             if(indexCurrentColumn == 0 || indexCurrentColumn == 1){
@@ -124,7 +111,6 @@ module.exports = View.extend({
                 //Found equal actor in database
                 if(column == dbActor.get('name')){
                   matchedActors = true;
-                  //foundActor = column;
                   
                   if(indexCurrentColumn == 0)
                   {
@@ -150,8 +136,7 @@ module.exports = View.extend({
               });
             }
 
-            //add other columns to connection
-            if(indexCurrentColumn > 1 && bothMarked) {
+            if(bothMarked) {
               for (i=2; i<matchedColumns.length; i++) {
                 if(indexCurrentColumn == matchedColumns[i]) {
                   connections[indexCurrentConnection][i] = column;
@@ -167,16 +152,8 @@ module.exports = View.extend({
 
           if(bothMarked)
           {
-            tableRow.setMarkedActor();
-            var moneyConnection = new MoneyConnection({
-              country: table.country,
-              from: connections[indexCurrentConnection][0],
-              to: connections[indexCurrentConnection][1],
-              disbursed: connections[indexCurrentConnection][2],
-              pledged: connections[indexCurrentConnection][3],
-              source: connections[indexCurrentConnection][4]
-            });
-
+            tableRow.setMarkedActor();          
+            var moneyConnection = table.createMoneyConnection(table.country,connections[indexCurrentConnection]);
             newMoneyConnections.add(moneyConnection);
           }
 
@@ -189,4 +166,17 @@ module.exports = View.extend({
     });
 
   },
+
+  createMoneyConnection : function(country,connections){
+    var moneyConnection = new MoneyConnection({
+          country: country,
+          from: connections[0],
+          to: connections[1],
+          disbursed: connections[2],
+          pledged: connections[3],
+          source: connections[4]
+    });
+    return moneyConnection;
+  }
+
 });
