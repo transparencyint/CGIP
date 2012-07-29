@@ -67,6 +67,10 @@ module.exports = View.extend({
     return newTable; 
   },
 
+  /**
+    Matches actors from the table to the actors in the database und saves the matched once
+    as a new money connection 
+  **/
   render: function(){
     var table = this;
 
@@ -150,6 +154,7 @@ module.exports = View.extend({
           
           var tableRow = new ImportTableRowView({ model : row});
 
+          //Create new connection
           if(bothMarked)
           {
             tableRow.setMarkedActor();          
@@ -167,6 +172,9 @@ module.exports = View.extend({
 
   },
 
+  /**
+    Create a new money connection, which will be saved to the database
+  **/
   createMoneyConnection : function(country,connections){
     var moneyConnection = new MoneyConnection({
           country: country,

@@ -15,6 +15,9 @@ module.exports = View.extend({
     this.country = options.country;
   },
 
+  /**
+    Shows the table with the matched actors marked in green
+  **/
   afterRender: function(){
     var csvdata = this.model;
     this.tableMatchingView = new ImportTableMatchingView({model : csvdata, selectedColumns : this.selectedColumns, country: this.country});
@@ -22,6 +25,9 @@ module.exports = View.extend({
     this.$el.append(this.tableMatchingView.el);
   },
 
+  /**
+    Saves the created money connections to the database
+  **/
   createConnections: function(){
     var oldMoneyConnections = new MoneyConnections();
     oldMoneyConnections.country = this.country;

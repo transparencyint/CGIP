@@ -13,6 +13,7 @@ module.exports = View.extend({
     this.country = options.country;
   },
 
+
   afterRender: function(){
       this.$('#headlines li').draggable({
         revert: true,
@@ -20,6 +21,9 @@ module.exports = View.extend({
       });
   },
 
+  /**
+    Displays table with the matched actors
+  **/
   loadMatchView: function(){
     var selectedColumns = new Array();
     var i = 0;

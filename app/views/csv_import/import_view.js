@@ -19,7 +19,8 @@ module.exports = View.extend({
   },
 
   /**
-  Reads in the CSV File, parses it and creates an ImportTableView
+  Reads in the CSV File, parses it and creates a table out of the CSV-data
+  as well as the headlines for the matching 
   **/
   processFile: function(f) {
     var importView = this;

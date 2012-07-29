@@ -8,6 +8,9 @@ module.exports = View.extend({
   
   tagName : 'table',
 
+  /**
+    Shows the table from the CSV data and make droppable table headlines 
+  **/
   render: function(){
     var table = this;
     var csvdata = this.model;

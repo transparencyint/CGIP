@@ -10,6 +10,9 @@ module.exports = View.extend({
     return this.model;
   },
   
+  /**
+    Makes Table headlines droppable so that headlines can be assigned to each column 
+  **/
   afterRender: function(){
     var headlineView = this;
 
