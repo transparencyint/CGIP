@@ -171,7 +171,7 @@ module.exports = View.extend({
     console.log("meta clicked "+event);
     if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
     {
-      this.$el.find('.overlay').fadeIn(0);
+      this.$el.find('.overlay').fadeIn(200);
       this.$el.addClass('activeOverlay');
     }
     //return false;
@@ -180,8 +180,7 @@ module.exports = View.extend({
   hideMetadata: function(event){   
     if(this.$el.hasClass('activeOverlay'))
     {
-
-      this.$el.find('.overlay').fadeOut(0);
+      this.$el.find('.overlay').fadeOut(200);
       this.$el.removeClass('activeOverlay');
     }
       
