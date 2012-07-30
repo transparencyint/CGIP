@@ -20,7 +20,7 @@ module.exports = View.extend({
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
-    this.model.on('change', this.dataChanged, this);
+    this.model.on('change', this.metadataChanged, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
@@ -29,7 +29,10 @@ module.exports = View.extend({
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
-  dataChanged: function(){ 
+  /**
+    Model hase been changed
+  */
+  metadataChanged: function(){ 
     if(this.contextmenu && this.contextmenu.$el)
       this.contextmenu.destroy();
     this.render();
@@ -104,6 +107,9 @@ module.exports = View.extend({
     return this.model.toJSON();
   },
   
+  /**
+    Displays colored circle for each role. Every role has a defined color.
+  */  
   checkRoles : function(roles){
     var actor = this;
     roles.forEach(function(role){
@@ -156,6 +162,7 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
+    //this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
     this.$el.append(this.contextmenu.render().el);
   },
 

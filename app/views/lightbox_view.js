@@ -49,6 +49,9 @@ module.exports = View.extend({
       $('#mitigationType').addClass('hidden');
   },
 
+  /**
+    Gather all the data given by the user through inputs and save the addional Information to the actor model
+  */
   formSubmit: function(event){
 
     //avoids taking Browser to a new URL
@@ -108,8 +111,5 @@ module.exports = View.extend({
   getRenderData : function(){
     return this.model.toJSON();
   },
-
-  afterRender: function(){
-  }
 
 });

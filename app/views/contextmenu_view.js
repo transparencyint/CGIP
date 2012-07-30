@@ -36,6 +36,7 @@ module.exports = View.extend({
   deleteClicked: function(event){
     if(this.model) 
       this.model.destroy();
+    //return false;
   },
 
   addClicked: function(event){
