@@ -13,14 +13,14 @@ module.exports = View.extend({
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
-    'mousedown': 'select'
+    'mousedown': 'select',
+    'contextmenu': 'showContextMenu'
   },
   
   initialize: function(options){
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
-    this.model.on('change', this.metadataChanged, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
@@ -29,15 +29,9 @@ module.exports = View.extend({
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
-  /**
-    Model hase been changed
-  */
-  metadataChanged: function(){ 
-    if(this.contextmenu && this.contextmenu.$el)
-      this.contextmenu.destroy();
-    this.render();
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
-    //this.$el.append(this.contextmenu.render().el);
+  showContextMenu: function(event){
+    event.preventDefault();
+    this.contextmenu.show(event);
   },
 
   select: function(event){

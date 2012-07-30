@@ -21,7 +21,6 @@ module.exports = View.extend({
   */
   show: function(event){
     $('.contextMenu').removeClass('visible');
-
     if(event.button === 2){
       var offset = this.$el.parent('.hasContextMenu').offset();
 
@@ -49,10 +48,5 @@ module.exports = View.extend({
     this.lightboxView.show();
     this.$el.removeClass('visible');
     //return false;
-  },
-
-  afterRender: function(){
-    this.options.parent_el.bind('contextmenu', this.show);
   }
-
 });
