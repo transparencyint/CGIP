@@ -1,6 +1,3 @@
-/**
-  
-*/
 var View = require('./view');
 var ContextMenuView = require('./contextmenu_view');
 
@@ -11,7 +8,7 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'click' : 'showMetadata',
+    'click': 'showMetadata',
     'mouseout': 'hideMetadata',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
@@ -33,11 +30,11 @@ module.exports = View.extend({
   },
 
   dataChanged: function(){ 
-
     if(this.contextmenu && this.contextmenu.$el)
       this.contextmenu.destroy();
     this.render();
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    //this.$el.append(this.contextmenu.render().el);
   },
 
   select: function(event){
@@ -111,37 +108,41 @@ module.exports = View.extend({
     var actor = this;
     roles.forEach(function(role){
       switch(role) {
-      case "funding":
-        actor.$('#funding').css('background-color', 'red');
-        break;
-      case "coordination":
-        actor.$('#coordination').css('background-color', 'silver');
-        break;
-      case "accreditation":
-        actor.$('#accreditation').css('background-color', 'yellow');
-        break;
-      case "approval":
-        actor.$('#approval').css('background-color', 'green');
-        break;
-      case "implementation":
-        actor.$('#implementation').css('background-color', 'orange');
-        break;
-      case "monitoring":
-        actor.$('#monitoring').css('background-color', 'blue');
-        break;
-      default:
-        actor.$('.role:last').css('background-color', 'black');
+        case "funding":
+          actor.$('#funding').css('background-color', 'red');
+          break;
+        case "coordination":
+          actor.$('#coordination').css('background-color', 'silver');
+          break;
+        case "accreditation":
+          actor.$('#accreditation').css('background-color', 'yellow');
+          break;
+        case "approval":
+          actor.$('#approval').css('background-color', 'green');
+          break;
+        case "implementation":
+          actor.$('#implementation').css('background-color', 'orange');
+          break;
+        case "monitoring":
+          actor.$('#monitoring').css('background-color', 'blue');
+          break;
+        default:
+          actor.$('.role:last').css('background-color', 'black');
       }
     });
   },
 
-  afterRender: function(){
-    var name = this.model.get('name');
+  showRoles: function(){
     var roles = this.model.get('role');
     if(roles != undefined){
       this.checkRoles(roles);
     }
+  },
 
+  afterRender: function(){
+    var name = this.model.get('name');
+
+    this.showRoles();
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
@@ -158,17 +159,18 @@ module.exports = View.extend({
     this.$el.append(this.contextmenu.render().el);
   },
 
-  showMetadata: function(){ 
-
-    console.log("showMetadata");  
+  showMetadata: function(event){ 
+    //event.preventDefault();
+    console.log("meta clicked "+event);
     if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
     {
       this.$el.find('.overlay').fadeIn(0);
       this.$el.addClass('activeOverlay');
     }
+    //return false;
   },
 
-  hideMetadata: function(){   
+  hideMetadata: function(event){   
     if(this.$el.hasClass('activeOverlay'))
     {
 

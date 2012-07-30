@@ -1,11 +1,10 @@
 var View = require('./view');
 var LightboxView = require('./lightbox_view');
 
-// Base class for all views.
 module.exports = View.extend({
 
-  template: require('./templates/contextmenu'),
-  tagName: 'ul',
+  template: require('./templates/contextmenu'), //will be within the 'ul' of the tagName
+  tagName: 'ul', 
   className: 'contextMenu',
 
   events: {
@@ -17,6 +16,9 @@ module.exports = View.extend({
     _.bindAll(this, 'show');
   },
 
+  /**
+    Show context menu at the right place
+  */
   show: function(event){
     $('.contextMenu').removeClass('visible');
 
@@ -31,17 +33,21 @@ module.exports = View.extend({
     }
   },
 
-  deleteClicked: function(){
-    if(this.model) this.model.destroy();
+  deleteClicked: function(event){
+    if(this.model) 
+      this.model.destroy();
   },
 
-  addClicked: function(){  
-    var model = this.model;
+  addClicked: function(event){
+    //event.stopImmediatePropagation();
+    //event.preventDefault();
+    console.log("Add clicked "+event);
     $('#lightbox').empty();
-    this.lightboxView = new LightboxView({model : model});
+    this.lightboxView = new LightboxView({model : this.model});
     $('#lightbox').append(this.lightboxView.render().el);
     this.lightboxView.show();
     this.$el.removeClass('visible');
+    //return false;
   },
 
   afterRender: function(){

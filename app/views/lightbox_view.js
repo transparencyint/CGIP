@@ -7,20 +7,16 @@ module.exports = View.extend({
 
   events: {
     'click #metadataClose': 'closeMetaData',
-    'change .hasOther': 'showInput',
-    'change input#mitigation': 'showSelectBox',
+    'change .hasOther': 'showInputOther',
+    'change input#mitigation': 'showMitigationType',
     'submit .standardForm': 'formSubmit'
-  },
-
-  initialize: function(){ 
-
-  },  
+  }, 
 
   closeMetaData: function(){ 
     $('#lightbox').hide();
   },
 
-  showInput: function(event){
+  showInputOther: function(event){
     var hiddenBrother = $(event.target.nextElementSibling);
 
     if(event.srcElement.type == 'checkbox'){
@@ -46,7 +42,7 @@ module.exports = View.extend({
 
   },
 
-  showSelectBox: function(event){
+  showMitigationType: function(event){
     if($(event.target).is(':checked'))
       $('#mitigationType').removeClass('hidden');
     else if(!$('#mitigationType').hasClass('hidden'))
@@ -54,6 +50,8 @@ module.exports = View.extend({
   },
 
   formSubmit: function(event){
+
+    //avoids taking Browser to a new URL
     event.preventDefault();
 
     var _organizationType = $("select[name='organizationType']").val();
