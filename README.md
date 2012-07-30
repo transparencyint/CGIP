@@ -26,7 +26,8 @@ The documentation can be found in the `documentation` folder.
 
 ## Deployment
 
-no deployment strategy yet
+Git-deployment on [Uberspace](http://www.uberspace.de)!
+For a detailed documentation see [documentation/deployment.md](https://github.com/transparencyint/CGIP/blob/master/documentation/deployment.md).
 
 ## Technologies
 

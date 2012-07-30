@@ -42,16 +42,32 @@
       display block
     .name
       display none
-
-.overlay
-  width 200px
-  display none
-  padding 10px 10px
-  background #fff
-  border-radius 10px
-  position absolute
-  top 50%
-  left 75%
-  z-index 2
-  box-shadow 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  &.activeOverlay .overlay
+    opacity 1
+    transform none
+  .overlay
+    opacity 0
+    transform translateY(13px)
+    transition 250ms
+    top 144px
+    width 200px
+    left -42px
+    border 1px solid rgba(0,0,0,.21)
+    border-radius 5px
+    box-shadow 0 1px 5px rgba(0,0,0,.13)
+    position absolute
+    box-shadow 0 1px 3px rgba(0,0,0,.55)
+    z-index 2
+    &:before
+      content ""
+      position absolute
+      width 20px
+      height 20px
+      top -10px
+      left 50%
+      margin-left -10px
+      transform rotate(45deg)
+      background white
+      border 1px solid rgba(0,0,0,.21)
+      z-index -1
 

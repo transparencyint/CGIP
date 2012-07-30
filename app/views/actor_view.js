@@ -11,8 +11,6 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'mouseover': 'showMetadata',
-    'mouseout': 'hideMetadata',
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
@@ -23,12 +21,23 @@ module.exports = View.extend({
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
+    this.editor.on('disableDraggable', this.disableDraggable, this);
+    this.editor.on('enableDraggable', this.enableDraggable, this);
+
     this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+  },
+
+  disableDraggable: function(){
+    this.$el.draggable('disable');
+  },
+
+  enableDraggable: function(){
+    this.$el.draggable('enable');
   },
 
   select: function(event){
@@ -38,7 +47,7 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(event){
+  startEditName: function(){
     this.$el.addClass('editingName');
     this.$el.draggable('disable');
     this.$('.nameInput').focus();
@@ -149,21 +158,10 @@ module.exports = View.extend({
     this.$el.append(this.contextmenu.render().el);
   },
 
-  showMetadata: function(){   
-    if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
-    {
-      this.$el.find('.overlay').fadeIn(0);
-      this.$el.addClass('activeOverlay');
-    }
-  },
+  destroy: function(){
+    View.prototype.destroy.call(this);
 
-  hideMetadata: function(){   
-    if(this.$el.hasClass('activeOverlay'))
-    {
-
-      this.$el.find('.overlay').fadeOut(0);
-      this.$el.removeClass('activeOverlay');
-    }
-      
+    this.editor.off('disableDraggable', this.disableDraggable, this);
+    this.editor.off('enableDraggable', this.enableDraggable, this);
   }
 });
