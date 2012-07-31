@@ -23,7 +23,10 @@ module.exports = View.extend({
   show: function(event){
     console.log(this.isDeletableOnly);
     if(this.isDeletableOnly)
-      this.$el.find('.add').hide();
+    {
+      this.$el.find('.add').remove();
+      this.$el.find('.delete').addClass('deletableOnly');
+    }
 
     $('.contextMenu').removeClass('visible');
     if(event.button === 2){
