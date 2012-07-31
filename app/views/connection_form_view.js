@@ -12,7 +12,6 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    console.log(options);
   },
 
   getRenderData : function(){

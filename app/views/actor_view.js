@@ -30,6 +30,7 @@ module.exports = View.extend({
   },
 
   showContextMenu: function(event){
+    console.log(event);
     event.preventDefault();
     this.contextmenu.show(event);
   },

@@ -12,7 +12,9 @@ module.exports = View.extend({
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
-    'dblclick path' : 'showMetadataForm'
+    'dblclick path' : 'showMetadataForm',
+    'click path': 'showContextMenu',
+    'contextmenu': 'showContextMenu'
   },
 
   initialize: function(options){
@@ -28,10 +30,21 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
+
+    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu.deletableOnly();
   },
 
   getRenderData : function(){
     return this.model.toJSON();
+  },
+
+  showContextMenu: function(event){
+    event.preventDefault();
+    console.log(event);
+    //event.preventDefault();
+    this.contextmenu.deletableOnly();
+    this.contextmenu.show(event);
   },
 
   select: function(event){

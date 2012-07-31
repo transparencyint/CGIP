@@ -14,12 +14,17 @@ module.exports = View.extend({
 
   initialize: function(){
     _.bindAll(this, 'show');
+    this.isDeletableOnly = false;
   },
 
   /**
     Show context menu at the right place
   */
   show: function(event){
+    console.log(this.isDeletableOnly);
+    if(this.isDeletableOnly)
+      this.$el.find('.add').hide();
+
     $('.contextMenu').removeClass('visible');
     if(event.button === 2){
       var offset = this.$el.parent('.hasContextMenu').offset();
@@ -30,6 +35,11 @@ module.exports = View.extend({
       });
       return false;
     }
+  },
+
+
+  deletableOnly: function(){
+    this.isDeletableOnly = true;
   },
 
   deleteClicked: function(event){
