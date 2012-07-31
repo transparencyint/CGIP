@@ -197,7 +197,7 @@ module.exports = View.extend({
       drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
     });
 
-    this.workspace.draggable();
+    //this.workspace.draggable();
 
     this.workspace.droppable({
       drop : function(event, ui){
