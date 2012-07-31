@@ -1,0 +1,11 @@
+<div class="overlay">
+	<% if @organizationType: %>
+  	<p><b>Organization Type:</b> <i><%= @organizationType %></i></p>
+  <% end %>
+	<% if @corruptionRisk: %>
+  	<p><b>Corruption Risk:</b> <i><%= @corruptionRisk %></i></p>
+  <% end %>
+	<% if @description: %>
+	 <p><b>Description:</b> <i><%= @description %></i></p>
+	<% end %>
+</div>

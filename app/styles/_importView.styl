@@ -29,6 +29,20 @@
     height 55px
     line-height 55px
   table
+    width 100%
+    border-collapse collapse
+    background rgba(0,0,0,.13)
+    border 1px solid rgba(0,0,0,.21)
+    box-shadow 0 0 3px 1px rgba(0,0,0,.21) inset, 0 1px rgba(255,255,255,.13)
+    td
+      padding 5px 13px   
+    th
+      padding 8px 13px
+      background rgba(0,0,0,.34)
+      text-align left
+      border-bottom 1px solid rgba(255,255,255,.13)
+    tr:nth-child(odd)
+      background rgba(0,0,0,.08)
     tr.matchedRow
       background-color #009900
     .state-hover
@@ -43,12 +57,13 @@
       box-shadow 0 1px 3px rgba(0,0,0,.55), 0 1px white inset
   
 #headlines
-  margin 0
-  height 66px
+  display box
+  box-pack center
+  margin 0 0 18px
+  padding 0
   list-style none
   li
     padding 5px 21px
-    float left
     margin-left 20px
     color black
     background #FAFAFA
@@ -56,17 +71,22 @@
     border-radius 3px
     box-shadow 0 1px 3px rgba(0,0,0,.55), 0 1px white inset
     cursor move
+    &:first-child
+      margin-left 0
 
 #matchButton, #confirmButton
-  border-radius: 4px
-  display none
+  border-radius 4px
+  margin-bottom 18px
   float right
 
-#confirmInfo
+#matchButton
   display none
 
-#conformInfo, #matchInfo
+#confirmInfo, #matchInfo, #successInfo, #failureInfo
   text-align center
+
+#successInfo, #failureInfo
+  display none
 
 #csv-upload-target.active-file
     background #fff

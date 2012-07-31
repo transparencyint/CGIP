@@ -1,0 +1,13 @@
+<h1>Import CSV</h1>
+
+<div id="matchInfo"><p>Drag the 5 elements to the matching headline column. The headlines with the * are obligatory.</p></div>
+<input type="button" id="matchButton" value="Match Actors">
+<ul id="headlines">
+	<li id="provider">Provider*</li>
+	<li id="recipient">Recipient*</li>
+	<li id="disbursed">Disbursed</li>
+	<li id="pledged">Pledged</li>
+	<li id="source">Source</li>
+</ul>
+
+

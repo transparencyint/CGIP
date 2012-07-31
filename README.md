@@ -1,6 +1,6 @@
 # CGIP
 
-a student project
+a project by students from the HTW Berlin
 
 ## Getting started
 

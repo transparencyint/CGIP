@@ -1,46 +1,29 @@
-var View = require('./view');
-var Import = require('models/import');
+var View = require('views/view');
 
 module.exports = View.extend({
   
-  template: require('./templates/import_table_headline'),
+  template: require('views/templates/csv_import/import_table_headline'),
   
   tagName : 'tr',
-  
-  initialize: function(){
-  },
   
   getRenderData : function(){
     return this.model;
   },
   
+  /**
+    Makes Table headlines droppable so that headlines can be assigned to each column 
+  **/
   afterRender: function(){
     var headlineView = this;
 
     this.$('th').droppable({
         hoverClass: "state-hover",
-        over: function(event,ui){
-          var idx = $(this).parent().children().index(this);
-
-          $("#import_table").find("td").each(function(){
-              //if($(this).index() == idx)
-                //$(this).addClass("state-hover");
-          });          
-        },
-        out: function(event,ui){
-          $("#import_table").find("td").each(function(){
-              //$(this).removeClass("state-hover");
-          });
-        },
         drop: function(event,ui){
-
           //check if there is a div element already
           var targetDivID = $(event.target).find("div").attr('id');
           var sourceDivID = $(ui.draggable).attr('id');
-
           if(targetDivID && (targetDivID != sourceDivID))
           {
-            console.log('found');
             $('#headlines li').each(function(){
 
                 if($(this).attr('id') == targetDivID)
@@ -49,7 +32,8 @@ module.exports = View.extend({
           }
 
           $(event.target).empty();
-
+          
+          //removes table headline
           $('#import_table th').each(function(){
             if($(this).find('div').attr('id') == $(ui.draggable).attr("id"))
             {
@@ -58,18 +42,18 @@ module.exports = View.extend({
             }
           });
 
+          //adds table headline
           $(event.target).html("<div>" + $(ui.draggable).html() + "</div>");
           $(this).find("div").attr("id", $(ui.draggable).attr("id"));
           $(this).find("div").addClass("state-dragged");
-          //$(this).find("div").removeClass("state-hover");
           $(this).find("div").draggable({
             revert: true,
             revertDuration: 100
           });
           ui.draggable.hide(200);
-          //ui.draggable.remove();
 
           //check if all elements are moved to headlines
+          //check if provider and recipient are moved to headlines
           setTimeout(function(){
             headlineView.checkHiddenstates();  
           }, 250);
@@ -81,10 +65,12 @@ module.exports = View.extend({
   checkHiddenstates: function(){
 
     var allHidden = true;
-    $('#headlines li').each(function(){
-      if($(this).is(':visible'))
-        allHidden = false;
-    });
+
+    if ($('#headlines #recipient').is(':visible'))
+      allHidden = false;
+    if ($('#headlines #provider').is(':visible'))
+      allHidden = false;
+
     if(allHidden)
       $('#matchButton').css('display', 'block');
     else

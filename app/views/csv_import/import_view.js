@@ -1,10 +1,10 @@
-var View = require('./view');
-var Import = require('models/import');
+var View = require('views/view');
 var ImportTableView = require('./import_table_view');
 var ImportHeadlineView = require('./import_headline_view');
+
 module.exports = View.extend({
   
-  template: require('./templates/import'),
+  template: require('views/templates/csv_import/import'),
   
   className : 'importView',
   
@@ -12,17 +12,15 @@ module.exports = View.extend({
     "change #importfile" : "preProcessFile"
   },
   
-  initialize: function(){
-    this.model = new Import();
-  },
-  
   preProcessFile: function(event){
     var files = event.target.files;
+    //Only one file is in the filelist
     this.processFile(files[0]);
   },
 
   /**
-  Reads in the CSV File, parses it and creates an ImportTableView
+  Reads in the CSV File, parses it and creates a table out of the CSV-data
+  as well as the headlines for the matching 
   **/
   processFile: function(f) {
     var importView = this;
@@ -31,26 +29,25 @@ module.exports = View.extend({
     reader.onload = (function(f){
       return function(e) {
         var filecontent = e.target.result;
-        var model = $.csv2Array(filecontent);
-        
-        var importHeadlineView = new ImportHeadlineView({country: importView.options.country, model: model});
+        var csvdata = $.csv2Array(filecontent);
+
+        var importHeadlineView = new ImportHeadlineView({country: importView.options.country, model: csvdata});
         importHeadlineView.render();
         importView.$el.empty().append(importHeadlineView.el);
         
-        var importTableView = new ImportTableView({model: model});
+        var importTableView = new ImportTableView({model: csvdata});
         importTableView.render();
-
         importView.$el.append(importTableView.el);
       }
     })(f);
 
     reader.readAsText(f);
   },
-
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
   
+
+  /**
+  Add Drag and Drop capability to import a file
+  **/
   afterRender: function(){
     // Give visual Feedback on drag event
     this.$('#csv-upload-target').on('dragstart', function(event){event.preventDefault();});
