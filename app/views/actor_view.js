@@ -106,41 +106,10 @@ module.exports = View.extend({
   getRenderData : function(){
     return this.model.toJSON();
   },
-  
-  checkRoles : function(roles){
-    var actor = this;
-    roles.forEach(function(role){
-      switch(role) {
-      case "funding":
-        actor.$('#funding').css('background-color', 'red');
-        break;
-      case "coordination":
-        actor.$('#coordination').css('background-color', 'silver');
-        break;
-      case "accreditation":
-        actor.$('#accreditation').css('background-color', 'yellow');
-        break;
-      case "approval":
-        actor.$('#approval').css('background-color', 'green');
-        break;
-      case "implementation":
-        actor.$('#implementation').css('background-color', 'orange');
-        break;
-      case "monitoring":
-        actor.$('#monitoring').css('background-color', 'blue');
-        break;
-      default:
-        actor.$('.role:last').css('background-color', 'black');
-      }
-    });
-  },
 
   afterRender: function(){
     var name = this.model.get('name');
     var roles = this.model.get('role');
-    if(roles != undefined){
-      this.checkRoles(roles);
-    }
 
     this.updatePosition();
 
