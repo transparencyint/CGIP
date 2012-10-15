@@ -1,0 +1,7 @@
+<h1>Import CSV</h1>
+
+<div id="confirmInfo"><p>All in green marked lines have two matching actors and therefore will be added to the database.<br />Please comfirm the import by pressing the button.</p></div>
+<div id="successInfo"><p>All changes successfully changed.</p></div>
+<div id="failureInfo"><p>An error occured. Changes are not saved.<br />Check if you are logged in to save information.</p></div>
+<input type="button" id="confirmButton" value="Confirm Import">
+

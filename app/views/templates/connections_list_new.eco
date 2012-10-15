@@ -1,0 +1,8 @@
+<tr>
+  <td><select id="from-actors-select" class="from-actors-select"></select>
+  <td><select id="to-actors-select" class="to-actors-select"></select>
+  <td><input type="text" id="disbursed" />
+  <td><input type="text" id="pledged" />
+  <td class="source"><input type="text" id="source" />
+  <td><button id="create">Create!</button>
+</tr>
