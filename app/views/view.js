@@ -15,6 +15,11 @@ module.exports = Backbone.View.extend({
     return this;
   },
 
+  alertError: function(model, error){
+    console.log(error, error.responseText);
+    alert(error);
+  },
+
   normalizedX: function(event){
     return window.Touch ? event.originalEvent.touches[0].pageX : event.pageX;
   },

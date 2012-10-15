@@ -1,19 +1,46 @@
 var View = require('./view');
 var ConnectionListEntry = require('./connections_list_entry');
+var ConnectionListNew = require('./connections_list_new');
 
 // Base class for all views.
 module.exports = View.extend({
 
   template: require('./templates/connections_list'),
 
+  events: {
+    'click #new-connection': 'toggleNewForm'
+  },
+
+  className: 'connectionsList',
+  
   initialize: function(){
     this.collection.on('add', this.addOne, this);
+    this.collection.on('add', this.removeNewForm, this);
     this.collection.on('reset', this.render, this);
   },
 
   addOne: function(connection){
     var newView = new ConnectionListEntry({model: connection, actors: this.options.actors});
     this.$('tbody').append(newView.render().el);
+  },
+
+  toggleNewForm: function(){
+    if(!this.newFormView){
+      $('#new-connection').addClass('cancel').find('.label').text('Cancel');
+      this.newFormView = new ConnectionListNew({
+        actors: this.options.actors,
+        collection: this.collection
+      });
+      this.$('#new-connection-container').html(this.newFormView.render().el);
+    } else {
+      $('#new-connection').removeClass('cancel').find('.label').text('Add Connection');
+      this.removeNewForm();
+    }
+  },
+
+  removeNewForm: function(){
+    this.newFormView.destroy();
+    this.newFormView = null;
   },
 
   getRenderData: function(){
@@ -26,7 +53,7 @@ module.exports = View.extend({
   render: function(){
     var list = this;
 
-    this.$el.append(this.template(this.getRenderData()));
+    this.$el.empty().append(this.template(this.getRenderData()));
 
     this.collection.each(function(connection){
       list.addOne(connection);

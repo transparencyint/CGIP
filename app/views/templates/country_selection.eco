@@ -1,27 +1,57 @@
-<h2>Select the country you want work on</h2>
-<div class="countrys clearfix">
-  <div class="bangladesh">
-    <a class="flag" style="background-image: url(images/flags/bd.png);" href="#edit/bd"></a>
-    <span>Bangladesh</span>
-  </div>
-  <div class="dominicanRepublic">
-    <a class="flag" style="background-image: url(images/flags/do.png);" href="#edit/do"></a>
-    <span>Dominican Republic</span>
-  </div>
-  <div class="kenya">
-    <a class="flag" style="background-image: url(images/flags/ke.png);" href="#edit/ke"></a>
-    <span>Kenya</span>
-  </div>
-  <div class="maldives">
-    <a class="flag" style="background-image: url(images/flags/mv.png);" href="#edit/mv"></a>
-    <span>Maldives</span>
-  </div>
-  <div class="mexico">
-    <a class="flag" style="background-image: url(images/flags/mx.png);" href="#edit/mx"></a>
-    <span>Mexico</span>
-  </div>
-  <div class="peru">
-    <a class="flag" style="background-image: url(images/flags/pe.png);" href="#edit/pe"></a>
-    <span>Peru</span>
-  </div>
-</div>
+<h1>CGIP Countrys</h1>
+<ul class="countrys clearfix">
+  <li>
+    <span class="flag" style="background-image: url(images/flags/bd.png);"></span>
+    <span class="name">Bangladesh</span>
+    <div class="actions">
+      <a href="/edit/bd/actors" class="map">Edit Map</a>
+      <a href="/edit/bd/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/bd/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+  <li>
+    <span class="flag" style="background-image: url(images/flags/do.png);"></span>
+    <span class="name">Dominican Republic</span>
+    <div class="actions">
+      <a href="/edit/do/actors" class="map">Edit Map</a>
+      <a href="/edit/do/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/do/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+  <li>
+    <span class="flag" style="background-image: url(images/flags/ke.png);"></span>
+    <span class="name">Kenya</span>
+    <div class="actions">
+      <a href="/edit/ke/actors" class="map">Edit Map</a>
+      <a href="/edit/ke/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/ke/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+  <li>
+    <span class="flag" style="background-image: url(images/flags/mv.png);"></span>
+    <span class="name">Maldives</span>
+    <div class="actions">
+      <a href="/edit/mv/actors" class="map">Edit Map</a>
+      <a href="/edit/mv/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/mv/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+  <li>
+    <span class="flag" style="background-image: url(images/flags/mx.png);"></span>
+    <span class="name">Mexico</span>
+    <div class="actions">
+      <a href="/edit/mx/actors" class="map">Edit Map</a>
+      <a href="/edit/mx/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/mx/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+  <li>
+    <span class="flag" style="background-image: url(images/flags/pe.png);"></span>
+    <span class="name">Peru</span>
+    <div class="actions">
+      <a href="/edit/pe/actors" class="map">Edit Map</a>
+      <a href="/edit/pe/money/list" class="moneyConnections">Edit Money Connections</a>
+      <a href="/import/pe/money" class="importCSV">Import CSV</a>
+    </div>
+  </li>
+</ul>

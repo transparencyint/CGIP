@@ -1,8 +1,10 @@
 var View = require('./view');
+var utils = require('../lib/utils');
 
 module.exports = View.extend({
 
   template: require('./templates/connections_list_entry'),
+  dropDownTemplate: require('./templates/connections_list_actors_options'),
   tagName: 'tr',
 
   events: {
@@ -12,9 +14,14 @@ module.exports = View.extend({
   },
 
   initialize: function(){
+    View.prototype.initialize.call(this);
+
     _.bindAll(this, 'actorChanged');
     
+    this.autoSaveConnections = true;
+
     this.model.on('destroy', this.destroy, this);
+    this.model.on('error', this.alertError, this);
   },
 
   askDestroy: function(){
@@ -23,42 +30,57 @@ module.exports = View.extend({
   },
 
   showEditField: function(event){
-    var spanElement = $('span', event.currentTarget);
-    var inputElement = spanElement.siblings('input');
-    inputElement.show();
-    inputElement.focus();
-    spanElement.hide();
+    $(event.currentTarget).addClass('edit').find('input').focus();
   },
 
   hideEditField: function(event){
-    var currentElement = $(event.currentTarget);
-    var spanElement = currentElement.siblings('span');
-    spanElement.show();
-    currentElement.hide();
+    var input = $(event.currentTarget);
+    
+    input.parent('td').removeClass('edit');
 
-    var value = currentElement.val();
-    var modelAttribute = currentElement.data('model-attribute');
+    var value = input.val();
+    var modelAttribute = input.data('model-attribute');
     var modelValue = this.model.get(modelAttribute);
     
     if(String(value) != String(modelValue)){
       this.model.set(modelAttribute, value);
       this.model.save()
-      spanElement.text(value);
+      input.siblings('span').text(value);
     }
   },
 
-  actorChanged: function(){
-    var newFrom = this.$('.from-actors-select').val();
-    var newTo = this.$('.to-actors-select').val();
+  renderSelect: function(element, select, exclude){
+    element.unbind('change');
+    
+    var actors = this.options.actors.toJSON();
+    if(exclude){
+      var found = _.find(actors, function(actor){ return actor._id == exclude});
+      actors = _.without(actors, found);
+    }
 
-    if(newFrom !== newTo){
-      // none means no connection
-      if(newTo == 'none') newTo = null;
-      if(newFrom == 'none') newFrom = null;
+    element.empty().html(this.dropDownTemplate({actors: actors}));
+    
+    if(select)
+      element.find('option[value=' + select + ']').attr('selected', 'selected');
+    else
+      element.find('option').last().attr('selected', 'selected');
 
-      this.model.save({from: newFrom, to: newTo});
-    }else
-      alert('A connection has to have two different actors.');
+    element.bind('change', this.actorChanged);
+  },
+
+  actorChanged: function(event){
+    var row = this;
+    var newFrom = utils.sanitizeConnectionVal(this.$('.from-actors-select').val());
+    var newTo = utils.sanitizeConnectionVal(this.$('.to-actors-select').val());
+
+    var currentSelect = $(event.currentTarget);
+    var changeThisSelect = currentSelect.hasClass('from-actors-select') ? this.$('.to-actors-select') : this.$('.from-actors-select');
+    var currentVal = utils.sanitizeConnectionVal(currentSelect.val());
+    var changeVal = utils.sanitizeConnectionVal(changeThisSelect.val());
+    
+    row.renderSelect(changeThisSelect, changeVal, currentVal);
+
+    if(this.autoSaveConnections) this.model.save({from: newFrom, to: newTo});
   },
 
   getRenderData: function(){
@@ -67,20 +89,16 @@ module.exports = View.extend({
     return data;
   },
 
-  afterRender: function(){
-    // select the current actors
-    var from = this.model.get('from');
-    var to = this.model.get('to');
-    if(from)
-      this.$('.from-actors-select option[value=' + from + ']').attr('selected', 'selected');
-    else
-      this.$('.from-actors-select option').last().attr('selected', 'selected');
-    if(to)
-      this.$('.to-actors-select option[value=' + to + ']').attr('selected', 'selected');
-    else
-      this.$('.to-actors-select option').last().attr('selected', 'selected');
+  render: function(){
+    // render the normal template
+    var data = this.getRenderData();
+    this.$el.html(this.template(data));
 
-    // bind to select changes
-    this.$('.from-actors-select, .to-actors-select').change(this.actorChanged);
+    // render the dropdown-menus
+    this.renderSelect(this.$('.from-actors-select'), data.from, data.to);
+    this.renderSelect(this.$('.to-actors-select'), data.to, data.from);
+
+    this.afterRender();
+    return this;
   }
 });

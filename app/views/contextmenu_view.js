@@ -3,9 +3,9 @@ var LightboxView = require('./lightbox_view');
 
 module.exports = View.extend({
 
-  template: require('./templates/contextmenu'), //will be within the 'ul' of the tagName
-  tagName: 'ul', 
-  className: 'contextMenu',
+  template: require('./templates/contextmenu'),
+  tagName: 'ul',
+  className: 'contextMenu list',
 
   events: {
     'click .delete': 'deleteClicked',

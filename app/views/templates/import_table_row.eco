@@ -1,7 +1,0 @@
-<% for value in @: %>
-	<% if @.length: %>
-    	<td><%= value%></td> 
-    <% else: %>
-    	test
-    <% end %>
-<% end %>

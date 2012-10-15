@@ -2,17 +2,20 @@
 // No more vendor prefixes. http//visionmedia.github.com/nib/
 @import 'nib'
 @import '_shim'
-@import '_home'
-@import '_countries'
+@import '_form'
+@import '_list'
+@import '_tables'
+@import '_countrySelection'
 @import '_actor'
 @import '_connection'
 @import '_contextMenu'
 @import '_actorEditor'
-@import '_import'
+@import '_importView'
 @import '_roles'
 @import '_lightbox'
 @import '_metadataForm'
-@import '_tables'
+@import '_user'
+@import '_connectionsList'
 
 // Apply a natural box layout model to all elements.
 // http//paulirish.com/2012/box-sizing-border-box-ftw/
@@ -21,41 +24,72 @@
 
 html
   height 100%
-  font 300 16px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  font 15px/27px Arial, sans-serif
   color white
   user-select none
   
 body
   height 100%
-  background url(../images/bluegrid.png) center top
   overflow hidden
+  
+#container
+  padding 21px
+  height 100%
+  width 100%
+  background url(/images/bluegrid.png) center top
+  box-sizing border-box
+  display box
+  box-align center
+  box-pack center
+  box-orient vertical
+  position relative
 
 a, a:visited
-  color #fff
-
+  color hsl(19,89%,55%)
+  text-decoration none
 a:hover
-  color #ccc
-
-#container
-  padding 0px 100px
-  height 100%
+  color hsl(23,100%,58%)
   
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
 h1
+  margin 0 0 21px
+  font-size 34px
+  line-height 1
   text-shadow 0 1px 5px rgba(0,0,0,.55)
+  
+button
+  padding 5px 8px
+  border-radius 3px
+  color #333
+  text-shadow 0 1px white
+  background linear-gradient(top, hsl(0,0%,93%), hsl(0,0%,89%))
+  border none
+  box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34), 0 -1px rgba(0,0,0,.34) inset
+  &:hover
+    background linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,93%))
+  &:active
+    padding-top 6px
+    padding-bottom 4px
+    box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
+  &.callToAction
+    color white
+    text-shadow 0 -1px hsl(19,89%,40%)
+    background linear-gradient(top, hsl(19,89%,55%), hsl(19,89%,50%))
+    box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34), 0 -1px hsl(19,89%,34%) inset
+    &:hover
+      background linear-gradient(top, hsl(23,100%,60%), hsl(23,100%,50%))
+    &:active
+      box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
+      
     
-.breadcrumb
-  margin 21px
-  span
-    margin 0 5px
-    vertical-align text-bottom
-  a, span
-    color rgba(255,255,255,.34)
-    text-decoration none
-    &.selected
-      color white
+nav
+  margin 0 13px
+  position absolute
+  top -34px
+  left 0
+  z-index 4
 
 .clear
   clear both

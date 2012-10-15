@@ -52,6 +52,12 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
+
+  render: function(){
+    // only render if it's a valid view
+    if(this.hasBothConnections())
+      View.prototype.render.call(this)
+  },
   
   afterRender: function(){
     this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
@@ -78,6 +84,10 @@ module.exports = View.extend({
     this.$el.addClass( this.model.get("connectionType") );
 
     var amount = this.model.get("amount");
+  },
+
+  hasBothConnections: function(){
+    return (this.model.from && this.model.to);
   },
 
   update: function(){

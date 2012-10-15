@@ -8,8 +8,10 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'click': 'showMetadata',
-    'mouseout': 'hideMetadata',
+
+    //'click': 'showMetadata',
+    //'mouseout': 'hideMetadata',
+
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
@@ -21,6 +23,11 @@ module.exports = View.extend({
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
+
+    this.editor.on('disableDraggable', this.disableDraggable, this);
+    this.editor.on('enableDraggable', this.enableDraggable, this);
+
+    this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
@@ -29,10 +36,19 @@ module.exports = View.extend({
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
+  /*
   showContextMenu: function(event){
     console.log(event);
     event.preventDefault();
     this.contextmenu.show(event);
+  },*/
+
+  disableDraggable: function(){
+    this.$el.draggable('disable');
+  },
+
+  enableDraggable: function(){
+    this.$el.draggable('enable');
   },
 
   select: function(event){
@@ -42,7 +58,7 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(event){
+  startEditName: function(){
     this.$el.addClass('editingName');
     this.$el.draggable('disable');
     this.$('.nameInput').focus();
@@ -101,10 +117,12 @@ module.exports = View.extend({
   getRenderData : function(){
     return this.model.toJSON();
   },
+
   
   /**
     Displays colored circle for each role. Every role has a defined color.
   */  
+  /*
   checkRoles : function(roles){
     var actor = this;
     roles.forEach(function(role){
@@ -138,12 +156,12 @@ module.exports = View.extend({
     if(roles != undefined){
       this.checkRoles(roles);
     }
-  },
+  },*/
 
   afterRender: function(){
     var name = this.model.get('name');
+    var roles = this.model.get('role');
 
-    this.showRoles();
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
@@ -161,6 +179,7 @@ module.exports = View.extend({
     this.$el.append(this.contextmenu.render().el);
   },
 
+/*
   showMetadata: function(event){ 
     //event.preventDefault();
     console.log("meta clicked "+event);
@@ -178,6 +197,12 @@ module.exports = View.extend({
       this.$el.find('.overlay').fadeOut(200);
       this.$el.removeClass('activeOverlay');
     }
-      
+   }, */
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+
+    this.editor.off('disableDraggable', this.disableDraggable, this);
+    this.editor.off('enableDraggable', this.enableDraggable, this);
   }
 });

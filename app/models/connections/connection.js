@@ -18,6 +18,11 @@ module.exports = Model.extend({
     }
   },
 
+  validate: function(attributes){
+    if(attributes.from == attributes.to)
+      return 'A connection has to have two different actors. Or at least one set to "none".';
+  },
+
   pickOutActors: function(actors){
     var connection = this;
 

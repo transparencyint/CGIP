@@ -7,24 +7,25 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
-
-  <div class="overlay">
-  	<% if @organizationType: %>
-    	<p><b>Organization Type:</b> <i><%= @organizationType %></i></p>
-    <% end %>
-  	<% if @corruptionRisk: %>
-    	<p><b>Corruption Risk:</b> <i><%= @corruptionRisk %></i></p>
-    <% end %>
-  	<% if @description: %>
-  	 <p><b>Description:</b> <i><%= @description %></i></p>
-  	<% end %>
-  </div>
-
+  <% if @role: %>
   <div class="roles">
-	<% if @role: %>
-		<% for value in @role: %>
-			<div class="role" id="<%= value%>"></div>
-		<% end %>
-	<% end %>
-   </div>
+  	<% for value in @role: %>
+  		<div class="<%= value%>"></div>
+  	<% end %>
+  </div> 
+  <% end %>
 </div>
+
+<!--
+<ul class="overlay list">
+	<% if @organizationType: %>
+  	<li>The Actor is a <i><%= @organizationType %></i>
+  <% end %>
+	<% if @corruptionRisk: %>
+  	<li><%= @corruptionRisk %>
+  <% end %>
+	<% if @description: %>
+	 <li><%= @description %>
+	<% end %>
+</ul>
+-->
