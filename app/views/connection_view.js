@@ -13,7 +13,6 @@ module.exports = View.extend({
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
     'dblclick path' : 'showMetadataForm',
-    'click path': 'showContextMenu',
     'contextmenu': 'showContextMenu'
   },
 
@@ -43,7 +42,6 @@ module.exports = View.extend({
     event.preventDefault();
     console.log(event);
     //event.preventDefault();
-    this.contextmenu.deletableOnly();
     this.contextmenu.show(event);
   },
 
@@ -78,7 +76,6 @@ module.exports = View.extend({
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
     this.$el.append(this.contextmenu.render().el);
     
     this.$el.addClass( this.model.get("connectionType") );

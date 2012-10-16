@@ -25,8 +25,6 @@ module.exports = View.extend({
     if(this.contextmenu && this.contextmenu.$el)
       this.contextmenu.destroy();
     this.render();
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
-    //this.$el.append(this.contextmenu.render().el);
   },
   
   getRenderData : function(){
