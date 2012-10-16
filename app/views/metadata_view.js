@@ -15,8 +15,7 @@ module.exports = View.extend({
     this.editor = options.editor;
     this.model.on('change', this.metadataChanged, this);
 
-    //this.contextmenu = new ContextMenuView(parent_el: this.$el);
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
   /**
@@ -52,7 +51,7 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
-    //this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+
     this.$el.append(this.contextmenu.render().el);
   },
 

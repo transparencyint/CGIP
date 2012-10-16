@@ -31,7 +31,7 @@ module.exports = View.extend({
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu = new ContextMenuView({model: this.model});
     this.contextmenu.deletableOnly();
   },
 

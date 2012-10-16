@@ -32,8 +32,7 @@ module.exports = View.extend({
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
-    //this.contextmenu = new ContextMenuView(parent_el: this.$el);
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
   
@@ -136,7 +135,7 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
-    //this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    
     this.$el.append(this.contextmenu.render().el);
   },
 
