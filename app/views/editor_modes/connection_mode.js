@@ -57,6 +57,11 @@ ConnectionMode.prototype.actorSelected = function(actor){
   }
 };
 
+ConnectionMode.prototype.showMetadataForm = function(model){   
+    ConnectionFormView = new ConnectionFormView({ model: model });
+    ConnectionFormView.render(); 
+};
+
 ConnectionMode.prototype.cancel = function(){
   if(this.connectionView)
     this.connectionView.destroy();

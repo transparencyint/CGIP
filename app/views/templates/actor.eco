@@ -1,3 +1,4 @@
+<div class="svg-holder"></div>
 <div class="inner">
   <div class="name">
     <% if @name.length == 0: %>
@@ -7,6 +8,7 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+  <!--
   <% if @role: %>
   <div class="roles">
   	<% for value in @role: %>
@@ -14,6 +16,7 @@
   	<% end %>
   </div> 
   <% end %>
+  -->
 </div>
 
 <!--
