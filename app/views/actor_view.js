@@ -180,7 +180,8 @@ module.exports = View.extend({
             close(), {
               fill: colors[roleValue], 
               stroke: colors[roleValue], 
-              strokeWidth: 1
+              strokeWidth: 1,
+              transform: 'rotate(90, 60, 60)'
             });
         });
       }
