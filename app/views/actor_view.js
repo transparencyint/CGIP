@@ -36,12 +36,12 @@ module.exports = View.extend({
     this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
   },
 
-  /*
+  
   showContextMenu: function(event){
     console.log(event);
     event.preventDefault();
     this.contextmenu.show(event);
-  },*/
+  },
 
   disableDraggable: function(){
     this.$el.draggable('disable');
@@ -118,45 +118,6 @@ module.exports = View.extend({
     return this.model.toJSON();
   },
 
-  
-  /**
-    Displays colored circle for each role. Every role has a defined color.
-  */  
-  /*
-  checkRoles : function(roles){
-    var actor = this;
-    roles.forEach(function(role){
-      switch(role) {
-        case "funding":
-          actor.$('#funding').css('background-color', 'red');
-          break;
-        case "coordination":
-          actor.$('#coordination').css('background-color', 'silver');
-          break;
-        case "accreditation":
-          actor.$('#accreditation').css('background-color', 'yellow');
-          break;
-        case "approval":
-          actor.$('#approval').css('background-color', 'green');
-          break;
-        case "implementation":
-          actor.$('#implementation').css('background-color', 'orange');
-          break;
-        case "monitoring":
-          actor.$('#monitoring').css('background-color', 'blue');
-          break;
-        default:
-          actor.$('.role:last').css('background-color', 'black');
-      }
-    });
-  },
-
-  showRoles: function(){
-    var roles = this.model.get('role');
-    if(roles != undefined){
-      this.checkRoles(roles);
-    }
-  },*/
 
   afterRender: function(){
     var name = this.model.get('name');
