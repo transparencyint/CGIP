@@ -149,41 +149,43 @@ module.exports = View.extend({
 
         /* if there is just one role we drwa a scg circle */
         if(roles.length == 1){
-          svg.circle(60, 60, 60, {
+          svg.circle(width/2, width/2, width/2, {
               fill: colors[roles[0]], 
               stroke: colors[roles[0]], 
               strokeWidth: 1
             });
         }
+        else {
 
-        var percent = 100 / roles.length;
-        var angles = percent * 360 / 100;
-        var startAngle = 0;
-        var endAngle = 0;
+          var percent = 100 / roles.length;
+          var angles = percent * 360 / 100;
+          var startAngle = 0;
+          var endAngle = 0;
 
-        $.each(roles, function(role, roleValue){
-          // this.drawCirclePath(svg, percent);
-          startAngle = endAngle;
-          endAngle = startAngle + angles;
+          $.each(roles, function(role, roleValue){
+            // this.drawCirclePath(svg, percent);
+            startAngle = endAngle;
+            endAngle = startAngle + angles;
 
-          x1 = parseInt(60 + 59*Math.cos(Math.PI*startAngle/180));
-          y1 = parseInt(60 + 59*Math.sin(Math.PI*startAngle/180));
+            x1 = parseInt(width/2 + 59*Math.cos(Math.PI*startAngle/180));
+            y1 = parseInt(height/2 + 59*Math.sin(Math.PI*startAngle/180));
 
-          x2 = parseInt(60 + 59*Math.cos(Math.PI*endAngle/180));
-          y2 = parseInt(60 + 59*Math.sin(Math.PI*endAngle/180));                
+            x2 = parseInt(width/2 + 59*Math.cos(Math.PI*endAngle/180));
+            y2 = parseInt(height/2 + 59*Math.sin(Math.PI*endAngle/180));                
 
-          var path = svg.createPath();
-          svg.path(
-            path.move(60, 60).
-            line(x1, y1).
-            arc(59, 59, 0, 0, true, x2, y2).
-            close(), {
-              fill: colors[roleValue], 
-              stroke: colors[roleValue], 
-              strokeWidth: 1,
-              transform: 'rotate(90, 60, 60)'
-            });
-        });
+            var path = svg.createPath();
+            svg.path(
+              path.move(width/2, height/2).
+              line(x1, y1).
+              arc(59, 59, 0, 0, true, x2, y2).
+              close(), {
+                fill: colors[roleValue], 
+                stroke: colors[roleValue], 
+                strokeWidth: 1,
+                transform: 'rotate(90, 60, 60)'
+              });
+          });
+        }
       }
   },
 
