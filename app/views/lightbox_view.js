@@ -57,6 +57,10 @@ module.exports = View.extend({
     //avoids taking Browser to a new URL
     event.preventDefault();
 
+    var _abbreviation = $("input[name='abbreviation']").val();
+
+    var _fullname = $("input[name='name']").val();
+
     var _organizationType = $("select[name='organizationType']").val();
     var _otherType = $("input[name='otherType']").val();
 
@@ -90,6 +94,8 @@ module.exports = View.extend({
       _organizationType = event.srcElement[1].value;
 
     this.model.save({
+      abbreviation : _abbreviation,
+      name : _fullname,
       organizationType : _organizationType,
       role : _role,
       purposeOfProject : _purposeOfProject,
