@@ -58,8 +58,8 @@ module.exports = View.extend({
 
   afterRender: function(){
     if(this.isDeletableOnly){
-      this.$el.find('.add').remove();
-      this.$el.find('.delete').addClass('deletableOnly');
+      this.$('.add').remove();
+      this.$('.delete').addClass('deletableOnly');
     }
   }
 
