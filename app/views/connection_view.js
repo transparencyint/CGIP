@@ -29,6 +29,7 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
+    this.model.on('change:amount', this.updateAmount, this);
 
     this.contextmenu = new ContextMenuView({model: this.model});
     this.contextmenu.deletableOnly();
@@ -194,6 +195,10 @@ module.exports = View.extend({
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
+  updateAmount: function(){
+    this.$('.connection-metadata').text(this.model.get('amount'));
+  },
+
   showMetadataInput: function(){   
     this.$el.find('.overlay-form-container').fadeIn(100);
   },
@@ -209,7 +214,7 @@ module.exports = View.extend({
     }    
   },
 
-  showMetadata: function(e){   
+  showMetadata: function(e){
     if(this.model.get('amount'))
     {
       var metadata = this.$el.find('.connection-metadata');
