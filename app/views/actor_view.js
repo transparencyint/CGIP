@@ -163,21 +163,20 @@ module.exports = View.extend({
           var endAngle = 0;
 
           $.each(roles, function(role, roleValue){
-            // this.drawCirclePath(svg, percent);
             startAngle = endAngle;
             endAngle = startAngle + angles;
 
-            x1 = parseInt(width/2 + 59*Math.cos(Math.PI*startAngle/180));
-            y1 = parseInt(height/2 + 59*Math.sin(Math.PI*startAngle/180));
+            x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
+            y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
 
-            x2 = parseInt(width/2 + 59*Math.cos(Math.PI*endAngle/180));
-            y2 = parseInt(height/2 + 59*Math.sin(Math.PI*endAngle/180));                
+            x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
+            y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
 
             var path = svg.createPath();
             svg.path(
               path.move(width/2, height/2).
               line(x1, y1).
-              arc(59, 59, 0, 0, true, x2, y2).
+              arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
               close(), {
                 fill: colors[roleValue], 
                 stroke: colors[roleValue], 
