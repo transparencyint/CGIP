@@ -44,16 +44,18 @@
 
 .controls
   top 50%
+  width 140px
   margin-top -134px
   background linear-gradient(top, #ececec, #f7f7f7)
   border-top-right-radius 5px
   border-bottom-right-radius 5px
   box-shadow 0 1px 13px rgba(0,0,0,0.55), 0 0 3px rgba(0,0,0,.21) inset, 0 -1px rgba(0,0,0,.13) inset
   z-index 3
-  display box
-  box-orient vertical
-  box-align center
   position fixed
+  .inner
+    display box
+    box-orient vertical
+    box-align center
   .newActor
     margin 8px
     position relative
@@ -70,17 +72,21 @@
       position absolute
       top 0
       left 0
-      width 80px
-      height 80px
-      text-align center
+      width 64px
+      height 64px
+      box-sizing content-box
+      padding 8px
+      display table
       color rgba(0,0,0,.34)
       text-shadow 0 1px rgba(255,255,255,.13)
       font-size 13px
       border-radius 100%
-      display box
-      box-align center
       background rgba(0,0,0,.08)
       box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
+      span
+        display table-cell
+        vertical-align middle
+        text-align center
   ul
     margin 0
     padding 0
@@ -90,6 +96,7 @@
     li
       vertical-align top
       cursor pointer
+      width 100%
       display box
       border-bottom 1px solid rgba(0,0,0,.13)
       box-shadow 0 1px white
@@ -126,6 +133,7 @@
   .zoom
     margin 13px 0
     display box
+    width 100%
     > div
       margin 3px
       width 34px

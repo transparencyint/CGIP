@@ -2,7 +2,6 @@
 	<label for="amount"> Amount: 
 	<input type="text" class="amount" name="amount"/></label>
 	<input type="submit" value="Save">
-	<span class="deleteConnection">Delete</span>
 </form>
 
 <div class="connection-money-slider"></div>

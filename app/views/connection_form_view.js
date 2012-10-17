@@ -13,7 +13,6 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    console.log(options);
   },
 
   getRenderData : function(){
@@ -65,8 +64,6 @@ module.exports = View.extend({
     this.model.save({
       amount: _amount
     });
-
-
   },
 
   deleteConnection: function(e){

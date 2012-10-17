@@ -15,6 +15,13 @@ module.exports = View.extend({
     'click path' : 'showMetadataForm'
   },
 
+  events: {
+    'mouseover path' : 'showMetadata',
+    'mouseout path' : 'hideMetadata',
+    'dblclick path' : 'showMetadataForm',
+    'contextmenu': 'showContextMenu'
+  },
+
   initialize: function(options){
     if(options.noClick)
       this.$el.unbind('click')
@@ -28,10 +35,20 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
+
+    this.contextmenu = new ContextMenuView({model: this.model});
+    this.contextmenu.deletableOnly();
   },
 
   getRenderData : function(){
     return this.model.toJSON();
+  },
+
+  showContextMenu: function(event){
+    event.preventDefault();
+    console.log(event);
+    //event.preventDefault();
+    this.contextmenu.show(event);
   },
 
   select: function(event){
@@ -39,13 +56,19 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
+
+  render: function(){
+    // only render if it's a valid view
+    if(this.hasBothConnections())
+      View.prototype.render.call(this)
+  },
   
   afterRender: function(){
     this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
     this.selectStyle = 'hsl(205,100%,55%)';
     
     this.updateStrokeWidth();
-    
+
     this.actorRadius = 60;
     this.markerSize = 4;
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
@@ -59,12 +82,15 @@ module.exports = View.extend({
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
     this.$el.append(this.contextmenu.render().el);
     
     this.$el.addClass( this.model.get("connectionType") );
 
     var amount = this.model.get("amount");
+  },
+
+  hasBothConnections: function(){
+    return (this.model.from && this.model.to);
   },
 
   update: function(){
