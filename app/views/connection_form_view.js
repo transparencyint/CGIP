@@ -22,8 +22,6 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    $('body').append(this.$el);
-
     this.$el.attr('id', this.model.id);
     this.$el.fadeIn(100);
 
@@ -44,6 +42,7 @@ module.exports = View.extend({
     });
 
     this.$el.draggable({handle: '.movable'});
+    this.$el.css('position', 'absolute');
   },
 
   updateAmount: function () {

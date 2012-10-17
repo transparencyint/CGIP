@@ -207,20 +207,19 @@ module.exports = View.extend({
     //Remove all other forms
     if(this.$el.hasClass('money'))
     {
-      $('body').find('.connection-form-container').remove();
+      $('.connection-form-container').remove();
       var model = this.model;
       var cfw = new ConnectionFormView({ model: model });
-      cfw.render();   
+      $(document.body).append(cfw.render().el);
     }    
   },
 
   showMetadata: function(e){
-    if(this.model.get('amount'))
-    {
+    if(this.model.get('amount')){
       var metadata = this.$el.find('.connection-metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
       metadata.fadeIn(0);
-    }    
+    }
   },
 
   hideMetadata: function(e){   
