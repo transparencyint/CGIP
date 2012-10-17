@@ -4,7 +4,7 @@
   left 100%
   position absolute
   display none
-  z-index 3
+  z-index 9999
   &.visible
     display block
   li
@@ -21,3 +21,5 @@
     &:active
       padding-top 9px
       padding-bottom 7px
+    &.deletableOnly
+      border-radius 5px 5px 5px 5px !important
