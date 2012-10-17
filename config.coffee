@@ -26,7 +26,8 @@ exports.config =
           'vendor/scripts/underscore-1.3.1.js',
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/jquery.csv-0-6.js',
-          'vendor/scripts/jquery.svg.min.js'
+          'vendor/scripts/jquery.svg.min.js',
+          'vendor/scripts/jquery.autosize.js'
         ]
 
     stylesheets:

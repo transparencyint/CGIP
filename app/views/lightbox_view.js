@@ -28,14 +28,14 @@ module.exports = View.extend({
   },
 
   handleEscape: function(event){
-    console.log("cnds");
-    if (event.keyCode == 27) {
+    if (event.keyCode === 27) {
       this.closeMetaData();
     }
   },
 
   afterRender: function() {
     $(document).keydown(this.handleEscape);
+    this.$('textarea').autosize();
   },
 
   showInputOther: function(event){
