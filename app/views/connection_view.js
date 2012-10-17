@@ -7,7 +7,7 @@ module.exports = View.extend({
   template: require('./templates/connection'),
 
   tagName : 'div',
-  className : 'connection',
+  className : 'connection hasContextMenu',
 
   events: {
     'mouseover path' : 'showMetadata',
@@ -46,8 +46,6 @@ module.exports = View.extend({
 
   showContextMenu: function(event){
     event.preventDefault();
-    console.log(event);
-    //event.preventDefault();
     this.contextmenu.show(event);
   },
 
