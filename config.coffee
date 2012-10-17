@@ -33,7 +33,7 @@ exports.config =
       defaultExtension: 'styl'
       joinTo: 'stylesheets/app.css'
       order:
-        before: ['vendor/styles/normalize.css']
+        before: ['vendor/styles/normalize.css', 'vendor/styles/jquery-ui-1.8.21.custom.css']
 
     templates:
       defaultExtension: 'eco'

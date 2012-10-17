@@ -1,6 +1,3 @@
-/**
-  
-*/
 var View = require('./view');
 var ContextMenuView = require('./contextmenu_view');
 
@@ -11,16 +8,22 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
+
+    //'click': 'showMetadata',
+    //'mouseout': 'hideMetadata',
+
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
-    'mousedown': 'select'
+    'mousedown': 'select',
+    'contextmenu': 'showContextMenu'
   },
   
   initialize: function(options){
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
+
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
@@ -29,7 +32,14 @@ module.exports = View.extend({
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu = new ContextMenuView({model: this.model});
+  },
+
+  
+  showContextMenu: function(event){
+    console.log(event);
+    event.preventDefault();
+    this.contextmenu.show(event);
   },
 
   disableDraggable: function(){
@@ -107,6 +117,7 @@ module.exports = View.extend({
     return this.model.toJSON();
   },
 
+
   afterRender: function(){
     var name = this.model.get('name');
     var roles = this.model.get('role');
@@ -124,8 +135,29 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
+    
     this.$el.append(this.contextmenu.render().el);
   },
+
+/*
+  showMetadata: function(event){ 
+    //event.preventDefault();
+    console.log("meta clicked "+event);
+    if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
+    {
+      this.$el.find('.overlay').fadeIn(200);
+      this.$el.addClass('activeOverlay');
+    }
+    //return false;
+  },
+
+  hideMetadata: function(event){   
+    if(this.$el.hasClass('activeOverlay'))
+    {
+      this.$el.find('.overlay').fadeOut(200);
+      this.$el.removeClass('activeOverlay');
+    }
+   }, */
 
   destroy: function(){
     View.prototype.destroy.call(this);
