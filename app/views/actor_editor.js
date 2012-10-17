@@ -106,7 +106,8 @@ module.exports = View.extend({
     var connView = new ConnectionView({ model : connection });
     connView.render();  
     this.workspace.append(connView.el);
-    if(connection.showMetaDataForm)
+
+    if(connection.showMetadataForm)
       connView.showMetadataForm();
   },
 

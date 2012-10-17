@@ -205,13 +205,10 @@ module.exports = View.extend({
 
   showMetadataForm: function(){
     //Remove all other forms
-    if(this.$el.hasClass('money'))
-    {
-      $('.connection-form-container').remove();
-      var model = this.model;
-      var cfw = new ConnectionFormView({ model: model });
-      $(document.body).append(cfw.render().el);
-    }    
+    $('.connection-form-container').remove();
+    var model = this.model;
+    var cfw = new ConnectionFormView({ model: model });
+    $(document.body).append(cfw.render().el);  
   },
 
   showMetadata: function(e){
