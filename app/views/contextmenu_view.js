@@ -45,15 +45,10 @@ module.exports = View.extend({
   },
 
   addClicked: function(event){
-    //event.stopImmediatePropagation();
-    //event.preventDefault();
     console.log("Add clicked "+event);
-    $('#lightbox').empty();
     this.lightboxView = new LightboxView({model : this.model});
-    $('#lightbox').append(this.lightboxView.render().el);
-    this.lightboxView.show();
+    $(document.body).append(this.lightboxView.render().el);
     this.$el.removeClass('visible');
-    //return false;
   },
 
   afterRender: function(){

@@ -4,6 +4,7 @@ var View = require('./view');
 module.exports = View.extend({
 
   template: require('./templates/lightbox'),
+  id: 'lightbox',
 
   events: {
     'click #metadataClose': 'closeMetaData',
@@ -12,8 +13,29 @@ module.exports = View.extend({
     'submit .standardForm': 'formSubmit'
   }, 
 
+  initialize: function(){
+    View.prototype.initialize.call(this);
+    _.bindAll(this, 'handleEscape');
+  },
+
   closeMetaData: function(){ 
-    $('#lightbox').hide();
+    this.destroy();
+  },
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+    $(document).unbind('keydown', this.handleEscape);
+  },
+
+  handleEscape: function(event){
+    console.log("cnds");
+    if (event.keyCode == 27) {
+      this.closeMetaData();
+    }
+  },
+
+  afterRender: function() {
+    $(document).keydown(this.handleEscape);
   },
 
   showInputOther: function(event){
@@ -111,6 +133,7 @@ module.exports = View.extend({
   },
 
   show: function(event){
+
     $('#lightbox').show();
   },
 
