@@ -7,20 +7,16 @@ module.exports = View.extend({
 
   events: {
     'click #metadataClose': 'closeMetaData',
-    'change .hasOther': 'showInput',
-    'change input#mitigation': 'showSelectBox',
+    'change .hasOther': 'showInputOther',
+    'change input#mitigation': 'showMitigationType',
     'submit .standardForm': 'formSubmit'
-  },
-
-  initialize: function(){ 
-
-  },  
+  }, 
 
   closeMetaData: function(){ 
     $('#lightbox').hide();
   },
 
-  showInput: function(event){
+  showInputOther: function(event){
     var hiddenBrother = $(event.target.nextElementSibling);
 
     if(event.srcElement.type == 'checkbox'){
@@ -46,15 +42,24 @@ module.exports = View.extend({
 
   },
 
-  showSelectBox: function(event){
+  showMitigationType: function(event){
     if($(event.target).is(':checked'))
       $('#mitigationType').removeClass('hidden');
     else if(!$('#mitigationType').hasClass('hidden'))
       $('#mitigationType').addClass('hidden');
   },
 
+  /**
+    Gather all the data given by the user through inputs and save the addional Information to the actor model
+  */
   formSubmit: function(event){
+
+    //avoids taking Browser to a new URL
     event.preventDefault();
+
+    var _abbreviation = $("input[name='abbreviation']").val();
+
+    var _fullname = $("input[name='name']").val();
 
     var _organizationType = $("select[name='organizationType']").val();
     var _otherType = $("input[name='otherType']").val();
@@ -89,6 +94,8 @@ module.exports = View.extend({
       _organizationType = event.srcElement[1].value;
 
     this.model.save({
+      abbreviation : _abbreviation,
+      name : _fullname,
       organizationType : _organizationType,
       role : _role,
       purposeOfProject : _purposeOfProject,
@@ -110,8 +117,5 @@ module.exports = View.extend({
   getRenderData : function(){
     return this.model.toJSON();
   },
-
-  afterRender: function(){
-  }
 
 });

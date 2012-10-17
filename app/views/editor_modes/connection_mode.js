@@ -1,4 +1,5 @@
 var ConnectionView = require('views/connection_view');
+var ConnectionFormView = require('views/connection_form_view');
 
 var ConnectionMode = function(workspace, collection, connectionType, editor){
   this.workspace = workspace;
@@ -16,6 +17,7 @@ ConnectionMode.prototype.reset = function(){
   this.connection.id = 1337;
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
+  this.connection.amount = 0;
   this.isActive = true;
   this.connection.set('connectionType', this.connectionType);
 
@@ -51,10 +53,16 @@ ConnectionMode.prototype.actorSelected = function(actor){
       }
     });
 
-    this.editor.deactivateMode();
+    this.editor.deactivateMode()
+    this.showMetadataForm(newConnection);
     this.connectionView.destroy();
     this.reset();
   }
+};
+
+ConnectionMode.prototype.showMetadataForm = function(model){   
+    ConnectionFormView = new ConnectionFormView({ model: model });
+    ConnectionFormView.render(); 
 };
 
 ConnectionMode.prototype.cancel = function(){

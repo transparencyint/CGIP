@@ -13,13 +13,17 @@
   &.ui-selected
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   .inner
+    margin 8px
     padding 0 8px
-    width 100%
-    height 100%
+    width 104px
+    height 104px
     display box
     box-align center
     box-pack center
     box-orient vertical
+    border-radius 52px
+    position absolute
+    background #f9f9f9
   
   .name
     margin-top 4px
@@ -64,3 +68,12 @@
       border 1px solid rgba(0,0,0,.21)
       z-index -1
 
+
+.actor-svg
+  position absolute
+
+.newActor
+  .inner
+    width 100%
+    height 100%
+    margin 0
