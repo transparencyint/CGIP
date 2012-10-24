@@ -12,14 +12,27 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
+    'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .connection': 'toggleMode',
     'click .connection .eye': 'toggleVisibility',
-    'mousedown .zoom .in': 'zoomIn',
-    'mousedown .zoom .out': 'zoomOut'
+    'mousedown .zoom.in': 'zoomIn',
+    'mousedown .zoom.out': 'zoomOut'
+  },
+  
+  transEndEventNames: {
+    'WebkitTransition' : 'webkitTransitionEnd',
+    'MozTransition'    : 'transitionend',
+    'OTransition'      : 'oTransitionEnd',
+    'msTransition'     : 'MSTransitionEnd',
+    'transition'       : 'transitionend'
   },
   
   initialize: function(options){
     this.country = options.country;
+    this.radius = 60;
+    this.smallRadius = 40;
+    
+    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
     // initialize the collections
     this.actors = options.actors;
@@ -37,7 +50,7 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActor', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+    _.bindAll(this, 'appendActor', 'createActorAt', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
   },
   
   zoomIn: function(){
@@ -74,16 +87,13 @@ module.exports = View.extend({
     });
   },
   
-  createActor: function(event){
+  createActorAt: function(x, y){
     var editor = this;
     
     var actor = new Actor();
     actor.save({
       country: editor.country,
-      pos : {
-        x : event.clientX,
-        y : event.clientY
-      }
+      pos : { x : x, y : y }
     },{
       success : function(){
         editor.actors.add(actor);
@@ -170,6 +180,30 @@ module.exports = View.extend({
     };
   },
   
+  slideActorIn: function(){
+    var editor = this;
+    var newActor = this.$el.find('.newActor');
+    
+    newActor.one(this.transEndEventName, function(){
+      var offset = $(this).find('.actor').offset();
+      var x = offset.left + editor.radius;
+      var y = offset.top + editor.radius;
+      editor.createActorAt(x, y);
+      
+      _.delay(function(){
+        newActor.addClass('curtainDown');
+        newActor.removeClass('slideIn').addClass('slideUp');
+
+        document.redraw();
+
+        newActor.removeClass('curtainDown');
+        newActor.removeClass('slideUp');
+      }, 100);
+    });
+    
+    newActor.addClass('slideIn');
+  },
+  
   render: function(){
     var editor = this;
     
@@ -206,7 +240,11 @@ module.exports = View.extend({
       drop : function(event, ui){
         var draggable = $(ui.draggable);
         if(draggable.hasClass('new') && !draggable.data('stopped')){
-          editor.createActor(event);
+          /* TODO: fix after implementing pan&zoom */
+          var x = draggable.offset().left + editor.smallRadius;
+          var y = draggable.offset().top + editor.smallRadius;
+
+          editor.createActorAt(x, y);
         }
       }
     });

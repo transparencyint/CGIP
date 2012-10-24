@@ -2,13 +2,14 @@
   > *
     padding 14px 13px
     display inline-block
+    float left
     &:not(:last-child)
       border-right 1px solid hsl(213, 55%, 28%)
       box-shadow 1px 0 hsl(213,55%,60%)
+    &:last-child
+      border-bottom-right-radius 3px
   a
     color white
-  span, a
-    vertical-align middle
   .flag
     margin-right 3px
     display inline-block
@@ -19,3 +20,5 @@
     border-radius 2px
     border 1px solid hsl(217,60%,27%)
     box-shadow 0 1px rgba(255,255,255,.13) inset, 0 1px 1px hsl(217,60%,47%)
+  .active  
+    background linear-gradient(top, hsl(218,55%,50%), hsl(213,55%,55%))
