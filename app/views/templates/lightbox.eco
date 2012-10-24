@@ -112,6 +112,8 @@
               <label for="roleCheckboxOther">Other roles</label>
             </p>
             <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
+            <span class="saved">saved</span>
+
           </div>
 
         <% end %>
@@ -125,6 +127,7 @@
             <label for="roleCheckboxOther">Other roles</label>
           </p>
           <input type="text" id="typeOther" class="hidden" name="roleOther" />
+          <span class="saved">saved</span>
         </div>
 
     <% end %>
@@ -195,7 +198,9 @@
               </p>
 
               <p><input type="text" name="purposeOther" id="purposeOther" class="" 
-                placeholder="describe the purpose here" value="<%= value%>"/></p>
+                placeholder="describe the purpose here" value="<%= value%>"/>
+                <span class="saved">saved</span>
+              </p>
 
             <% end %>
           <% end %>  
@@ -207,7 +212,10 @@
             <label for="purposeCheckboxOther">Other</label>
           </p>
 
-          <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" /></p>
+          <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" />
+          <span class="saved">saved</span>
+          </p>
+          
 
         <% end %>
         
@@ -222,6 +230,7 @@
           <option value="redd" <% if 'redd' in @mitigation: %> selected <% end%> >Forests/REDD</option>
           <option value="cdm" <% if 'cdm' in @mitigation: %> selected <% end%>>CDM (Clean Development Mechanisms)</option>
         </select>
+      <span class="saved">saved</span>  
       </div>
       <% end %>
     <% else: %>
@@ -232,6 +241,7 @@
         <option value="redd">Forests/REDD</option>
         <option value="cdm">CDM (Clean Development Mechanisms)</option>
       </select>
+      <span class="saved">saved</span>
     </div>
 
     <% end %>

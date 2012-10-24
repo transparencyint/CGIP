@@ -50,10 +50,10 @@ module.exports = View.extend({
   },
 
   showInputOther: function(event){
-    var hiddenBrother = $(event.target.nextElementSibling);
+    console.log($(event.target));
+    var hiddenBrother;
 
     if(event.srcElement.type == 'checkbox'){
-      console.log(event.srcElement.name);
       if(event.srcElement.name == 'role')
         hiddenBrother = $('input[name=roleOther]'); 
       else if(event.srcElement.name == 'purpose')
@@ -69,7 +69,7 @@ module.exports = View.extend({
       if(event.target.value === "other"){
           hiddenBrother.removeClass('hidden');
       } else {
-        hiddenBrother.addClass('hidden').val("");
+        //hiddenBrother.addClass('hidden').val("");
       }
     }
 

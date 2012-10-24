@@ -37,7 +37,6 @@ module.exports = View.extend({
 
   
   showContextMenu: function(event){
-    console.log(event);
     event.preventDefault();
     this.contextmenu.show(event);
   },
@@ -200,7 +199,7 @@ module.exports = View.extend({
       }
   },
 
-/*
+  /*
   showMetadata: function(event){ 
     //event.preventDefault();
     console.log("meta clicked "+event);
