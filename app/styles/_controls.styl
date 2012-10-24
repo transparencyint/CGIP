@@ -1,0 +1,171 @@
+.controls
+  z-index 3
+  position absolute
+  text-shadow 0 -1px hsl(213,55%,34%)
+  background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,50%))
+  border 1px solid hsl(213,55%,28%)
+  border-radius 3px
+  box-shadow 0 0 1px rgba(0,0,0,.34), 0 0 5px rgba(0,0,0,.13)
+  input
+    border 1px solid hsl(213,55%,38%)
+    box-shadow 0 1px hsl(213,10%,80%) inset, 0 1px hsl(213,55%,53%)
+    outline none
+    border-radius 3px
+    &:focus
+      border-color hsl(310, 57%, 31%)
+      box-shadow 0 0 2px hsl(280, 100%, 55%) inset
+  &.top
+    top 0
+    border-top none
+    border-top-right-radius 0
+    border-top-left-radius 0
+    &.right
+      right 0
+      border-bottom-right 0
+
+.object.controls
+  left 50%
+  margin-left -200px
+  .inner
+    display box
+  .newActor
+    cursor pointer
+    .description
+      padding-top 10px
+      height 50px
+      border-right 1px solid hsl(213,55%,28%)
+      box-shadow 1px 0 hsl(213,55%,60%)
+    .plus
+      font-size 16px
+      font-weight bold
+      vertical-align middle
+      margin-right 5px
+      margin-top -1px
+      display inline-block
+    .dock
+      position absolute
+      overflow hidden
+      top 37px
+      left 3px
+      width 84px
+      height 100px
+      border-top 1px solid hsl(213,55%,28%)
+      &:before
+        content ""
+        height 8px
+        width 82px
+        top 0
+        position absolute
+        background linear-gradient(top, rgba(0,0,0,.21), rgba(255,255,255,.05))
+        border 1px solid hsl(213,55%,28%)
+        border-bottom-color hsl(213,55%,25%)
+        border-top none
+      &:after
+        content ""
+        position absolute
+        top 0
+        height 2px
+        width 100%
+        box-shadow 0 1px 1px rgba(0,0,0,.21) inset
+        z-index 1
+      .offset
+        left 2px
+        top -69px
+        position absolute
+    .actor.new
+      margin 0
+      width 80px
+      height 80px
+      font-size 13px
+      text-shadow none
+      position relative !important
+      transition width 250ms, height 250ms, margin 250ms
+      cursor move
+    .cancel
+      position absolute
+      top 0
+      left 0
+      width 64px
+      height 64px
+      box-sizing content-box
+      padding 8px
+      display table
+      color rgba(0,0,0,.34)
+      text-shadow 0 1px rgba(255,255,255,.13)
+      font-size 13px
+      border-radius 100%
+      background rgba(0,0,0,.08)
+      box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
+      span
+        display table-cell
+        vertical-align middle
+        text-align center        
+  .description
+    float left
+    padding 13px 13px 8px
+    font-size 13px
+    img
+      margin-bottom 3px
+      display block
+    .name
+      font-size 11px
+      text-align center
+      display block
+  .connection
+    vertical-align top
+    cursor pointer
+    border-right 1px solid hsl(213,55%,28%)
+    box-shadow 1px 0 hsl(213,55%,60%)
+    &:last-child
+      border-right none
+      box-shadow none
+    .eye
+      float left
+      width 34px
+      height 50px
+      background url(/images/glyphicons_051_eye_open.png) no-repeat center center
+      background-size 16px
+      border-right 1px solid hsl(213,55%,40%)
+      box-shadow 1px 0 hsl(213,55%,60%)
+      display none
+    &.invisible .eye
+      background none
+      
+.view.controls
+  left 0
+  top 50%
+  margin -125px 34px
+  .range
+    padding 5px
+    height 154px
+    position relative
+    .bar
+      top 5px
+      left 18px
+      height 144px
+      width 3px
+      background white
+      border-radius 3px
+      position absolute
+      box-shadow 0 1px 3px black
+    .slider
+      top 50%
+      left -13px
+      height 10px
+      margin-top -5px
+      width 28px
+      background white
+      position absolute
+      border-radius 2px
+      cursor move
+      box-shadow 0 1px 3px black
+  .zoom
+    width 40px
+    height 40px
+    background-position center
+    background-repeat no-repeat
+    cursor pointer
+    &.in
+      background-image url(../images/zoom_in.png)
+    &.out
+      background-image url(../images/zoom_out.png)

@@ -1,37 +1,45 @@
 <div id="overlay"></div>
 <div id="lightbox"></div>
-  
-</div>
 
-<div class="controls">
+<div class="view controls">
+  <div class="zoom in"></div>
+  <div class="range">
+    <div class="bar">
+      <div class="slider"></div>
+    </div>
+  </div>
+  <div class="zoom out"></div>
+</div>
+<div class="object controls top">
   <div class="inner">
     <div class="newActor">
-      <div class="actor new">
-        <div class="inner">
-          <div class="name">New Actor</div>
+      <div class="description">
+        <span class="name"><i class="plus">+</i> Add Actor</span>
+      </div>
+      <div class="dock">
+        <div class="offset">
+          <div class="actor new">
+            <div class="inner">
+              <div class="name">New Actor</div>
+            </div>
+          </div>
+          <div class="cancel"><span>Drop here to cancel</span></div>
         </div>
       </div>
-      <div class="cancel"><span>Drop here to cancel</span></div>
     </div>
-    <ul class="connections">
-      <li class="money" data-connectionType="money">
-        <div class="eye"></div>
-        <div class="description" title="New Money Connection">
-          <img src="/images/moneyflow.png">
-          <span class="name">Money</span>
-        </div>
-      </li>
-      <li class="accountability" data-connectionType="accountability">
-        <div class="eye"></div>
-        <div class="description" title="New Accountability Connection">
-          <img src="/images/accountabilityflow.png">
-          <span class="name">Accountability</span>
-        </div>
-      </li>
-    </ul>
-    <div class="zoom">
-      <div class="out">-</div>
-      <div class="in">+</div>
+    <div class="connection money" data-connectionType="money">
+      <div class="eye"></div>
+      <div class="description button" title="New Money Connection">
+        <img src="/images/moneyflow.png">
+        <span class="name">Money</span>
+      </div>
+    </div>
+    <div class="connection accountability" data-connectionType="accountability">
+      <div class="eye"></div>
+      <div class="description button" title="New Accountability Connection">
+        <img src="/images/accountabilityflow.png">
+        <span class="name">Accountability</span>
+      </div>
     </div>
   </div>
 </div>

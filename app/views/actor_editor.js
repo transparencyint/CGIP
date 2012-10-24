@@ -12,8 +12,8 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .connections li': 'toggleMode',
-    'click .connections li .eye': 'toggleVisibility',
+    'click .connection': 'toggleMode',
+    'click .connection .eye': 'toggleVisibility',
     'mousedown .zoom .in': 'zoomIn',
     'mousedown .zoom .out': 'zoomOut'
   },
@@ -121,9 +121,9 @@ module.exports = View.extend({
   },
 
   toggleMode: function(event){
-    this.$('.connections li').removeClass('active');
+    this.$('.connection').removeClass('active');
     var target = $(event.target);
-    var selectedElement = target.is('li') ? target : target.parents('li');
+    var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
     var collection = this[ connectionType + "Connections" ];
     
