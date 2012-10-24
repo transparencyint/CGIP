@@ -122,7 +122,7 @@ module.exports = View.extend({
       _purposeOfProject = $('#purposeOther').val();
 
     if(_otherType != '' && _organizationType == 'other')
-      _organizationType = event.srcElement[1].value;
+      _organizationType = this.$('#typeOther').val();
 
     this.model.save({
       abbreviation : _abbreviation,
