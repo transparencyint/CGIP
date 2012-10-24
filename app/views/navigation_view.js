@@ -15,7 +15,7 @@ module.exports = View.extend({
     'mx': 'Mexico',
     'bd': 'Bangladesh',
     'ke': 'Kenya',
-    'md': 'Maldives'
+    'mv': 'Maldives'
   },
   locationTable: {
     'money_connections_list': 'Money List'
@@ -28,7 +28,8 @@ module.exports = View.extend({
   getRenderData: function(){
     return { 
       locationName: this.countryTable[ this.currentLocation ],
-      locationType: this.locationTable[ this.currentRoute ]
+      locationType: this.locationTable[ this.currentRoute ],
+      isoLocation: this.currentLocation
     };
   },
   
@@ -41,6 +42,8 @@ module.exports = View.extend({
 
     // remove the current location
     if(this.currentLocation) this.$el.removeClass( this.currentLocation );    
+    
+    this.currentLocation = '';
 
     if(country){
       this.currentLocation = country;
