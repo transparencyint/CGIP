@@ -7,12 +7,13 @@
 
 <form class="standardForm">
 
-  <div class="action-saved">
+  <div>
     <label for="name">Full name:</label>
     <input type="text" id="name" name="name" value="<%= @name %>" />
+    <span class="saved">saved</span>
   </div>
 
-  <div class="action-saved">
+  <div>
     <label for="abbreviation">Abbreviation:</label>
     <input type="text" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" />
     <span class="saved">saved</span>
