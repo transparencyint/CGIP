@@ -1,9 +1,21 @@
 .navigation.controls
-  padding 13px
+  > *
+    padding 14px 13px
+    display inline-block
+    &:not(:last-child)
+      border-right 1px solid hsl(213, 55%, 28%)
+      box-shadow 1px 0 hsl(213,55%,60%)
   a
     color white
-  .location
-    padding-left 36px
-    background-size 28px
-    background-position 3px center
-    background-repeat no-repeat
+  span, a
+    vertical-align middle
+  .flag
+    margin-right 3px
+    display inline-block
+    width 30px
+    height 18px
+    vertical-align text-bottom
+    background-size cover
+    border-radius 2px
+    border 1px solid hsl(217,60%,27%)
+    box-shadow 0 1px rgba(255,255,255,.13) inset, 0 1px 1px hsl(217,60%,47%)
