@@ -1,7 +1,7 @@
 <div id="overlay"></div>
 <div id="lightbox"></div>
 
-<div class="object controls top">
+<div class="tool controls top">
   <div class="newActor">
     <div class="description">
       <span class="name"><i class="plus">+</i> Add Actor</span>
