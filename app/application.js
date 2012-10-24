@@ -13,7 +13,7 @@ Application = {
     // render login view
     var lv = new LoginView();
     lv.render();
-    $('#user').append(lv.el);
+    $('.user').append(lv.el);
 
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
