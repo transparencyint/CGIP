@@ -10,7 +10,7 @@ module.exports = View.extend({
     'submit form': 'login'
   },
   
-  className: 'controls top right',
+  className: 'login controls top right',
 
   initialize: function(){
     window.user.on('change', this.render, this);

@@ -3,6 +3,7 @@ Application = {
   initialize: function() {
     var Router = require('lib/router');
     var LoginView = require('views/login_view');
+    var NavigationView = require('views/navigation_view');
     
     // initiate the routers
     this.router = new Router();
@@ -13,7 +14,12 @@ Application = {
     // render login view
     var lv = new LoginView();
     lv.render();
-    $('.user').append(lv.el);
+    
+    // render login view
+    var nav = new NavigationView({ router: this.router });
+    nav.render();
+    
+    $('.global').append(lv.el, nav.el);
 
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
