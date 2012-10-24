@@ -22,12 +22,11 @@ module.exports = View.extend({
   },
 
   saveData: function(event){
-    console.log($(event.currentTarget).parent());
     $(event.currentTarget).parent().addClass('action-saved');
     this.formSubmit(event);
     setTimeout(function() {
        $(event.currentTarget).parent().removeClass('action-saved');
-    }, 3000);
+    }, 2000);
   },
 
   closeMetaData: function(){ 
