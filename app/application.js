@@ -19,7 +19,7 @@ Application = {
     var nav = new NavigationView({ router: this.router });
     nav.render();
     
-    $('.global').append(lv.el, nav.el);
+    $(document.body).append(lv.el, nav.el);
 
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
