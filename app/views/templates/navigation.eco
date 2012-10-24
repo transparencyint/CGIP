@@ -1,1 +1,1 @@
-<a href="/edit">Dashboard</a><% if @locationName: %> <span>\</span> <span class="location"><%= @locationName %></span><% end %>
+<a href="/edit">Dashboard</a><% if @locationName: %> <span class="label">\</span> <span class="location label"><%= @locationName %></span><% end %>
