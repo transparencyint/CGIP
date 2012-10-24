@@ -232,9 +232,5 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
 
     $(document).unbind('keyup', this._keyUp);
-  },
-
-  leave: function(done){
-    this.fadedLeave(done);
   }
 });
