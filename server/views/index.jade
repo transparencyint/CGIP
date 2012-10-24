@@ -7,8 +7,6 @@ html
     link(rel="stylesheet", href="/stylesheets/app.css")
     script(src="/javascripts/vendor.js")
     script(src="/javascripts/app.js")
-    script
-      require('initialize');
     title CGIP
   body
     .global
@@ -16,3 +14,6 @@ html
       if user
         script(id="user_hash")
           window.user_hash = !{JSON.stringify(user)}
+
+    script
+      require('initialize');
