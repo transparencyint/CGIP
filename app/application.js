@@ -11,10 +11,9 @@ Application = {
     this.hijackLinks(this.router);
 
     // render login view
-    var lv = new LoginView({
-      el: $('#user')
-    });
+    var lv = new LoginView();
     lv.render();
+    $('#user').append(lv.el);
 
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
