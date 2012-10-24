@@ -7,14 +7,15 @@
 
 <form class="standardForm">
 
-  <div>
+  <div class="action-saved">
     <label for="name">Full name:</label>
     <input type="text" id="name" name="name" value="<%= @name %>" />
   </div>
 
-  <div>
+  <div class="action-saved">
     <label for="abbreviation">Abbreviation:</label>
     <input type="text" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" />
+    <span class="saved">saved</span>
   </div>
 
 	<div>
@@ -235,14 +236,12 @@
 
 	<div class="clear">
 	  	<label for="corruptionRisk">Indications of corruption in the organization:</label>
-	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
+	  	<textarea cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
 	</div>
 
 	<div>
 	  	<label for="description">Additional information(optional):</label>
-		<textarea rows="3" cols="70" id="description" name="description"><%= @description%></textarea>
+		<textarea cols="70" id="description" name="description"><%= @description%></textarea>
 	</div>
 
-	<input type="submit" value="Save Changes" />
-  <span id="output"></span>
 </form>

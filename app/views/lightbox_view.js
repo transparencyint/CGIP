@@ -10,7 +10,10 @@ module.exports = View.extend({
     'click #metadataClose': 'closeMetaData',
     'change .hasOther': 'showInputOther',
     'change input#mitigation': 'showMitigationType',
-    'submit .standardForm': 'formSubmit'
+    'submit .standardForm': 'formSubmit',
+    'change input': 'saveData',
+    'change select': 'saveData',
+    'change textarea': 'saveData'
   }, 
 
   initialize: function(){
@@ -18,7 +21,12 @@ module.exports = View.extend({
     _.bindAll(this, 'handleEscape');
   },
 
+  saveData: function(event){
+    this.formSubmit(event);
+  },
+
   closeMetaData: function(){ 
+    console.log(this.parent);
     this.destroy();
   },
 
@@ -35,7 +43,7 @@ module.exports = View.extend({
 
   afterRender: function() {
     $(document).keydown(this.handleEscape);
-    this.$('textarea').autosize();
+    this.$('textarea').autosize({className:'mirroredText'});
   },
 
   showInputOther: function(event){
@@ -79,38 +87,39 @@ module.exports = View.extend({
     //avoids taking Browser to a new URL
     event.preventDefault();
 
-    var _abbreviation = $("input[name='abbreviation']").val();
+    var _abbreviation = $('#abbreviation').val();
 
-    var _fullname = $("input[name='name']").val();
+    var _fullname = $('#name').val();
 
-    var _organizationType = $("select[name='organizationType']").val();
-    var _otherType = $("input[name='otherType']").val();
+    var _organizationType = $('#organizationType').val();
+    var _otherType = $('#otherType').val();
 
     var _role = new Array();
     var _purposeOfProject = new Array(); 
 
-    var _mitigation = $("select[name='typeOfMitigation']").val(); 
-    var _corruptionRisk = $("textarea[name='corruptionRisk']").val(); 
-    var _description = $("textarea[name='description']").val(); 
+    var _mitigation = $('#typeOfMitigation').val(); 
+    var _corruptionRisk = $('#corruptionRisk').val(); 
+    var _description = $('#description').val(); 
+
 
     $("input[name='role']:checked").each(function() { 
-      if($(this).val() == 'other' && $('input[name=roleOther]').val() != '')
-        _role.push($('input[name=roleOther]').val());
+      if($(this).val() == 'other' && $('#roleOther').val() != '')
+        _role.push($('#roleOther').val());
       else
         _role.push($(this).val());
     });
 
     $("input[name='purpose']:checked").each(function() { 
-      if($(this).val() == 'other' && $('input[name=purposeOther]').val() != '')
-        _purposeOfProject.push($('input[name=purposeOther]').val());
+      if($(this).val() == 'other' && $('#purposeOther').val() != '')
+        _purposeOfProject.push($('#purposeOther').val());
       else
         _purposeOfProject.push($(this).val());
     });
 
     if(_purposeOfProject == 'other')
-      _purposeOfProject = $('input[name=purposeOther]').val();
+      _purposeOfProject = $('#purposeOther').val();
     else if(_purposeOfProject == 'mitigation')
-      _purposeOfProject = $('input[name=purposeOther]').val();
+      _purposeOfProject = $('#purposeOther').val();
 
     if(_otherType != '' && _organizationType == 'other')
       _organizationType = event.srcElement[1].value;
@@ -125,16 +134,6 @@ module.exports = View.extend({
       corruptionRisk : _corruptionRisk,
       description : _description
     });
-
-    $('#output').html('Data successfully saved');
-
-    //Close the lightbox
-    $('#lightbox').delay(800).hide(150);
-  },
-
-  show: function(event){
-
-    $('#lightbox').show();
   },
 
   getRenderData : function(){
