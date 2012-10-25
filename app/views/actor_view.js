@@ -137,7 +137,7 @@ module.exports = View.extend({
   },
 
   drawRoleBorders: function(roles, el){
-    if(typeof(roles) !== 'undefined'){
+    if(roles){
       
       var width = height = 120;
       
