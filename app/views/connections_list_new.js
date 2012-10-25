@@ -11,6 +11,9 @@ module.exports = View.extend({
   events: {
     'click #create': 'createConnection'
   },
+  
+  tagName: 'table',
+  className: 'moneyList',
 
   initialize: function(){
     View.prototype.initialize.call(this);
@@ -37,6 +40,15 @@ module.exports = View.extend({
     
     this.collection.create(model, {wait: true});
   },
+  
+  adaptWidth: function(){
+    var tds = this.$el.find('td');
+    var currentTds = $('#money-connection-list tbody tr:first-child td');
+    
+    tds.each(function(i, td){
+      $(td).width( currentTds.eq(i).innerWidth() );
+    });
+  },
 
   getRenderData: function(){
     var data = {};
@@ -54,6 +66,8 @@ module.exports = View.extend({
     this.renderSelect(this.$('.to-actors-select'), null, null);
 
     this.afterRender();
+    this.adaptWidth();
+    
     return this;
   }
 });

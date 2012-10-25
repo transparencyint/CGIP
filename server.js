@@ -72,8 +72,7 @@ app.configure(function(){
   app.use(app.router);
 });
 
-/* Renders the index jade with the user info */
-app.get('/', function(req, res){
+var renderIndex = function(req, res){
   var user = {};
   if(req.user){
     user._id = req.user.id;
@@ -81,7 +80,17 @@ app.get('/', function(req, res){
   }else
     user = null;
   res.render('index', { user: user });
-});
+};
+
+/* Renders the index jade with the user info */
+app.get('/', renderIndex);
+
+/* Push state URLs */
+app.get('/edit', renderIndex);
+app.get('/edit/:country', renderIndex);
+app.get('/edit/:country/actors', renderIndex);
+app.get('/edit/:country/money/list', renderIndex);
+app.get('/import/:country/money', renderIndex);
 
 /* Session / auth handling */
 app.post('/session', passport.authenticate('local'), function(req, res){
@@ -173,6 +182,12 @@ app.post('/:country/connections/:connection_type/destroyAll', auth.ensureAuthent
     });
   else
     res.json({ ok: true });
+});
+
+//error handling
+app.error(function(error, request, response, next){
+  console.dir(error);
+  next(error);
 });
 
 var port = process.env.APP_PORT || 3000;

@@ -1,20 +1,8 @@
-<label for="from-actors-select">From:</label>
-<select id="from-actors-select" class="from-actors-select">
-  
-</select>
-
-<label for="to-actors-select">To:</label>
-<select id="to-actors-select" class="to-actors-select">
-  
-</select>
-
-<label for="disbursed">Disbursed:</label>
-<input type="text" id="disbursed" />
-
-<label for="pledged">Pledged:</label>
-<input type="text" id="pledged" />
-
-<label for="source">Source:</label>
-<input type="text" id="source" />
-
-<button id="create">Create!</button>
+<tr>
+  <td><select id="from-actors-select" class="from-actors-select"></select>
+  <td><select id="to-actors-select" class="to-actors-select"></select>
+  <td><input type="text" id="disbursed" />
+  <td><input type="text" id="pledged" />
+  <td class="source"><input type="text" id="source" />
+  <td><button id="create">Create!</button>
+</tr>

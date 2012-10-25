@@ -1,19 +1,23 @@
-<h2>All money connections for <%= @country %></h2>
+<nav>
+  <a href="/edit">Index</a> \
+  Edit Money Connections
+</nav>
+<h1>All money connections for <%= @country %></h1>
 
-<table id="money-connection-list">
+<table id="money-connection-list" class="moneyList">
   <thead>
     <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>Disbursed</th>
-      <th>Pledged</th>
-      <th>Source</th>
+      <th>From
+      <th>To
+      <th>Disbursed
+      <th>Pledged
+      <th>Source
+      <th>Action
     </tr>
   </thead>
   <tbody>
 
   </tbody>
 </table>
-<button id="new-connection">New connection</button>
-<a href="#edit/<%= @country %>">back to the index</a>
 <div id="new-connection-container"></div>
+<button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label">Add Connection</span></button>

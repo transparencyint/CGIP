@@ -107,3 +107,13 @@ There is no handy way to delete all docs from a database in CouchDB, so here a l
       },
       dataType: 'json'
     });
+
+## Get Production data
+
+In order to load the data from the production server on your local server or to create a backup of the production data simply go to your local CouchDB Futon interface (e.g. [http://127.0.0.1:5984/_utils](http://127.0.0.1:5984/_utils)) and select `Replicator` from the right menu.
+
+There, enter the the URL of the remote CouchDB into the from-field e.g. `http://myuser:mypassword@serverurl.com/databasename`. Then, enter the name of the local DB into the form on the left. If you create a backup, simply call it sth. like `cgip_backup_DATE`.
+
+All that is left now is to click the `Replicate` button and CouchDB will fetch all the documents from the production server.
+
+In case you want to delete all your data and refresh your database, delete your local database and create a new empty one to replicate the data to.

@@ -1,3 +1,4 @@
+<div class="svg-holder"></div>
 <div class="inner">
   <div class="name">
     <% if @name.length == 0: %>
@@ -7,24 +8,27 @@
     <% end %>
   </div>
   <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
-
-  <div class="overlay">
-  	<% if @organizationType: %>
-    	<p>The Actor is a <i><%= @organizationType %></i></p>
-    <% end %>
-  	<% if @corruptionRisk: %>
-    	<p><%= @corruptionRisk %></p>
-    <% end %>
-  	<% if @description: %>
-  	 <p><%= @description %></p>
-  	<% end %>
-  </div>
-  
-	<% if @role: %>
+  <!--
+  <% if @role: %>
   <div class="roles">
-		<% for value in @role: %>
-			<div class="role" id="<%= value%>"></div>
-		<% end %>
-   </div> 
-	 <% end %>
+  	<% for value in @role: %>
+  		<div class="<%= value%>"></div>
+  	<% end %>
+  </div> 
+  <% end %>
+  -->
 </div>
+
+<!--
+<ul class="overlay list">
+	<% if @organizationType: %>
+  	<li>The Actor is a <i><%= @organizationType %></i>
+  <% end %>
+	<% if @corruptionRisk: %>
+  	<li><%= @corruptionRisk %>
+  <% end %>
+	<% if @description: %>
+	 <li><%= @description %>
+	<% end %>
+</ul>
+-->

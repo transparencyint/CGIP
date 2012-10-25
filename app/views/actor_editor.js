@@ -5,7 +5,6 @@ var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
-var LoginView = require('./login_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -34,15 +33,11 @@ module.exports = View.extend({
     this.zoomStep = 0.25;
     
     // subscribe to add events
-    this.actors.on('add', this.appendActor, this);
+    this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
     _.bindAll(this, 'appendActor', 'createActor', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
-  },
-
-  logoutClicked: function(){
-    debugger
   },
   
   zoomIn: function(){
@@ -95,10 +90,15 @@ module.exports = View.extend({
     }});
   },
   
-  appendActor: function(actor){
+  appendNewActor: function(actor){
+    this.appendActor(actor, true);
+  },
+
+  appendActor: function(actor, startEdit){
     var actorView = new ActorView({ model : actor, editor: this});
     actorView.render();
     this.workspace.append(actorView.el);
+    if(startEdit === true) actorView.startEditName();
   },
 
   appendConnection: function(connection){
@@ -133,12 +133,22 @@ module.exports = View.extend({
     
     selectedElement.addClass('active');
     this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
+
+    // disable all draggables during mode
+    this.trigger('disableDraggable');
+    // disable the select mode
+    this.workspace.selectable('disable');
   },
 
   deactivateMode: function(){
     this.$('.connections li').removeClass('active');
     this.mode.abort();
     this.mode = null;
+
+    // re-enable draggables
+    this.trigger('enableDraggable');
+    // re-enable select mode
+    this.workspace.selectable('enable');
   },
 
   _keyUp: function(){
@@ -181,11 +191,6 @@ module.exports = View.extend({
 
     $(document).bind('keyup', this._keyUp);
 
-    var lv = new LoginView({
-      el: this.$('.user')
-    });
-    lv.render();
-
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
       revert : true,
@@ -196,6 +201,8 @@ module.exports = View.extend({
       greedy: true,
       drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
     });
+
+    //this.workspace.draggable();
 
     this.workspace.droppable({
       drop : function(event, ui){

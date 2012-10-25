@@ -1,6 +1,3 @@
-/**
-  
-*/
 var View = require('./view');
 var ContextMenuView = require('./contextmenu_view');
 
@@ -11,24 +8,46 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-    'mouseover': 'showMetadata',
-    'mouseout': 'hideMetadata',
+
+    //'click': 'showMetadata',
+    //'mouseout': 'hideMetadata',
+
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
-    'mousedown': 'select'
+    'mousedown': 'select',
+    'contextmenu': 'showContextMenu'
   },
   
   initialize: function(options){
     _.bindAll(this, 'stopMoving', 'drag');
 
     this.editor = options.editor;
+
+    this.editor.on('disableDraggable', this.disableDraggable, this);
+    this.editor.on('enableDraggable', this.enableDraggable, this);
+
     this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$el});
+    this.contextmenu = new ContextMenuView({model: this.model});
+  },
+
+  
+  showContextMenu: function(event){
+    console.log(event);
+    event.preventDefault();
+    this.contextmenu.show(event);
+  },
+
+  disableDraggable: function(){
+    this.$el.draggable('disable');
+  },
+
+  enableDraggable: function(){
+    this.$el.draggable('enable');
   },
 
   select: function(event){
@@ -38,7 +57,7 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(event){
+  startEditName: function(){
     this.$el.addClass('editingName');
     this.$el.draggable('disable');
     this.$('.nameInput').focus();
@@ -97,41 +116,11 @@ module.exports = View.extend({
   getRenderData : function(){
     return this.model.toJSON();
   },
-  
-  checkRoles : function(roles){
-    var actor = this;
-    roles.forEach(function(role){
-      switch(role) {
-      case "funding":
-        actor.$('#funding').css('background-color', 'red');
-        break;
-      case "coordination":
-        actor.$('#coordination').css('background-color', 'silver');
-        break;
-      case "accreditation":
-        actor.$('#accreditation').css('background-color', 'yellow');
-        break;
-      case "approval":
-        actor.$('#approval').css('background-color', 'green');
-        break;
-      case "implementation":
-        actor.$('#implementation').css('background-color', 'orange');
-        break;
-      case "monitoring":
-        actor.$('#monitoring').css('background-color', 'blue');
-        break;
-      default:
-        actor.$('.role:last').css('background-color', 'black');
-      }
-    });
-  },
+
 
   afterRender: function(){
     var name = this.model.get('name');
     var roles = this.model.get('role');
-    if(roles != undefined){
-      this.checkRoles(roles);
-    }
 
     this.updatePosition();
 
@@ -146,24 +135,85 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
+    
     this.$el.append(this.contextmenu.render().el);
+
+    this.drawRoleBorders(roles, this.$el);
   },
 
-  showMetadata: function(){   
+  drawRoleBorders: function(roles, el){
+    if(typeof(roles) !== 'undefined'){
+      
+      var width = height = 120;
+      
+      el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
+      var svg = el.find('.svg-holder').svg('get'); 
+
+        /* if there is just one role we drwa a scg circle */
+        if(roles.length == 1){
+          var drawnPath = svg.circle(width/2, width/2, width/2, {
+              strokeWidth: 1
+            });
+          $(drawnPath).attr('class', roles[0]);
+        }
+        else {
+
+          var percent = 100 / roles.length;
+          var angles = percent * 360 / 100;
+          var startAngle = 0;
+          var endAngle = 0;
+
+          $.each(roles, function(role, roleValue){
+            startAngle = endAngle;
+            endAngle = startAngle + angles;
+
+            x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
+            y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
+
+            x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
+            y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
+
+            var path = svg.createPath();
+            var drawnPath = svg.path(
+              path.move(width/2, height/2).
+              line(x1, y1).
+              arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
+              close(), {
+                strokeWidth: 1,
+                transform: 'rotate(90, 60, 60)'
+              });
+
+            $(drawnPath).attr('class', roleValue);
+
+          });
+        }
+      }
+  },
+
+/*
+  showMetadata: function(event){ 
+    //event.preventDefault();
+    console.log("meta clicked "+event);
     if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
     {
-      this.$el.find('.overlay').fadeIn(0);
+      this.$el.find('.overlay').fadeIn(200);
       this.$el.addClass('activeOverlay');
     }
+    //return false;
   },
 
-  hideMetadata: function(){   
+  hideMetadata: function(event){   
     if(this.$el.hasClass('activeOverlay'))
     {
-
-      this.$el.find('.overlay').fadeOut(0);
+      this.$el.find('.overlay').fadeOut(200);
       this.$el.removeClass('activeOverlay');
     }
-      
+   }, */
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+
+    this.editor.off('disableDraggable', this.disableDraggable, this);
+    this.editor.off('enableDraggable', this.enableDraggable, this);
   }
 });

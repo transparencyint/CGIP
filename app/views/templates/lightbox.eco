@@ -6,8 +6,19 @@
 <% otherType = true %>
 
 <form class="standardForm">
+
+  <div>
+    <label for="name">Full name:</label>
+    <input type="text" id="name" name="name" value="<%= @name %>" />
+  </div>
+
+  <div>
+    <label for="abbreviation">Abbreviation:</label>
+    <input type="text" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" />
+  </div>
+
 	<div>
-		<label for="organizationType">1. What is organization type of the actor?</label>
+		<label for="organizationType">Organization type:</label>
 		<select id="organizationType" class="hasOther" name="organizationType">
 			<option value="Government Ministry" <% if @organizationType == 'Government Ministry': %> <% otherType = false %> <%= selected %> <% end%>>Government Ministry</option>
 
@@ -25,7 +36,7 @@
 	</div>
 
   <div>
-    <label>2. What is the role of this actor in the climate sector in the country?</label>
+    <label>Role:</label>
     <span class="hint">(mulitiple choices possible)</span>
     <div>
       <p>
@@ -120,7 +131,7 @@
   <% mitigation = false; %>       
 
     <div class="clear">
-      <label>3. What is the purpose of the climate projects that the actor is financing or implementing?</label>
+      <label>Purpose of the project:</label>
       <span class="hint">(mulitiple choices possible)</span>
       <div>
 
@@ -223,13 +234,15 @@
     <% end %>
 
 	<div class="clear">
-	  	<label for="corruptionRisk">4. Are there indications that there is the risk of corruption in the organization?</label>
+	  	<label for="corruptionRisk">Indications of corruption in the organization:</label>
 	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
 	</div>
+
 	<div>
-	  	<label for="description">5. Additional information can be included in the description (optional):</label>
+	  	<label for="description">Additional information(optional):</label>
 		<textarea rows="3" cols="70" id="description" name="description"><%= @description%></textarea>
 	</div>
+
 	<input type="submit" value="Save Changes" />
   <span id="output"></span>
 </form>

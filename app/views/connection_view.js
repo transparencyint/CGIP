@@ -1,5 +1,6 @@
 var View = require('./view');
 var ContextMenuView = require('./contextmenu_view');
+var ConnectionFormView = require('views/connection_form_view');
 
 module.exports = View.extend({
 
@@ -7,6 +8,13 @@ module.exports = View.extend({
 
   tagName : 'div',
   className : 'connection hasContextMenu',
+
+  events: {
+    'mouseover path' : 'showMetadata',
+    'mouseout path' : 'hideMetadata',
+    'dblclick path' : 'showMetadataForm',
+    'contextmenu': 'showContextMenu'
+  },
 
   initialize: function(options){
     if(options.noClick)
@@ -19,10 +27,20 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
+
+    this.model.on('change:amount', this.updateStrokeWidth, this);
+
+    this.contextmenu = new ContextMenuView({model: this.model});
+    this.contextmenu.deletableOnly();
   },
 
   getRenderData : function(){
-    return {};
+    return this.model.toJSON();
+  },
+
+  showContextMenu: function(event){
+    event.preventDefault();
+    this.contextmenu.show(event);
   },
 
   select: function(event){
@@ -30,11 +48,19 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
+
+  render: function(){
+    // only render if it's a valid view
+    if(this.hasBothConnections())
+      View.prototype.render.call(this)
+  },
   
   afterRender: function(){
     this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
     this.selectStyle = 'hsl(205,100%,55%)';
-    this.strokeWidth = 6;
+    
+    this.updateStrokeWidth();
+
     this.actorRadius = 60;
     this.markerSize = 4;
     this.edgeRadius = 10;
@@ -50,10 +76,15 @@ module.exports = View.extend({
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
-    this.contextmenu = new ContextMenuView({model: this.model, parent_el: this.$('path')});
     this.$el.append(this.contextmenu.render().el);
     
     this.$el.addClass( this.model.get("connectionType") );
+
+    var amount = this.model.get("amount");
+  },
+
+  hasBothConnections: function(){
+    return (this.model.from && this.model.to);
   },
 
   update: function(){
@@ -302,7 +333,64 @@ module.exports = View.extend({
       'stroke-width' : this.strokeWidth, 
       'marker-end' : 'url(#'+ this.model.id +')'
     });
-    
+  },
+
+  /* 
+   * Define the thickness of the money line.
+   */
+  updateStrokeWidth: function(){
+
+    var minAmount = 0;
+    var maxAmount = 20000000;
+
+    var minStroke = 6;
+    var maxStroke = 40;
+
+    var amount = this.model.get('amount');
+
+    if(typeof(amount) !== 'undefined')
+    {
+      var percent = amount * 100 / maxAmount;
+      var strokeWidth = percent * maxStroke / 100;
+
+      if(strokeWidth < minStroke)
+        strokeWidth = minStroke;
+
+      this.strokeWidth = strokeWidth;
+    }
+    else
+      this.strokeWidth = minStroke;
+
+    this.$el.find('path').attr('stroke-width', this.strokeWidth);
+  },
+
+  showMetadataInput: function(){   
+    this.$el.find('.overlay-form-container').fadeIn(100);
+  },
+
+  showMetadataForm: function(){
+    //Remove all other forms
+    if(this.$el.hasClass('money'))
+    {
+      $('body').find('.connection-form-container').remove();
+      var model = this.model;
+      var cfw = new ConnectionFormView({ model: model });
+      cfw.render();   
+    }    
+  },
+
+  showMetadata: function(e){   
+    if(this.model.get('amount'))
+    {
+      var metadata = this.$el.find('.connection-metadata');
+      metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
+      metadata.fadeIn(0);
+    }    
+  },
+
+  hideMetadata: function(e){   
+    var metadata = this.$el.find('.connection-metadata');
+    metadata.fadeOut(0);  
   }
 
 });
