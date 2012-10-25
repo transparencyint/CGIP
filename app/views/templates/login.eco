@@ -1,7 +1,10 @@
 <% if window.user.isLoggedIn(): %>
-  <span class="username"><%= window.user.id %></span>
+  <span class="username label"><%= window.user.id %></span>
   <button id="logout-button">Logout</button>
 <% else: %>
-  <input type="text" placeholder="username" id="username-input" />
-  <input type="password" placeholder="password" id="password-input" />
+  <form>
+    <input type="text" placeholder="username" id="username-input" />
+    <input type="password" placeholder="password" id="password-input" />
+    <button type="submit">Login</button>
+  </form>
 <% end %>
