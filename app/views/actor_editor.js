@@ -6,6 +6,8 @@ var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
 
+// TODO: find a better place for `transEndEventNames`
+
 module.exports = View.extend({
   id: 'actorEditor',
   
