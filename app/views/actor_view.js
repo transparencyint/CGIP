@@ -8,10 +8,6 @@ module.exports = View.extend({
   className : 'actor hasContextMenu',
 
   events: {
-
-    //'click': 'showMetadata',
-    //'mouseout': 'hideMetadata',
-
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
@@ -198,26 +194,6 @@ module.exports = View.extend({
         }
       }
   },
-
-  /*
-  showMetadata: function(event){ 
-    //event.preventDefault();
-    console.log("meta clicked "+event);
-    if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
-    {
-      this.$el.find('.overlay').fadeIn(200);
-      this.$el.addClass('activeOverlay');
-    }
-    //return false;
-  },
-
-  hideMetadata: function(event){   
-    if(this.$el.hasClass('activeOverlay'))
-    {
-      this.$el.find('.overlay').fadeOut(200);
-      this.$el.removeClass('activeOverlay');
-    }
-   }, */
 
   destroy: function(){
     View.prototype.destroy.call(this);

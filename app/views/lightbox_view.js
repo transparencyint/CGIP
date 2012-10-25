@@ -50,7 +50,6 @@ module.exports = View.extend({
   },
 
   showInputOther: function(event){
-    console.log($(event.target));
     var hiddenBrother;
 
     if(event.srcElement.type == 'checkbox'){
@@ -141,6 +140,6 @@ module.exports = View.extend({
 
   getRenderData : function(){
     return this.model.toJSON();
-  },
+  }
 
 });
