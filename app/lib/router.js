@@ -1,4 +1,5 @@
 var AsyncRouter = require('./async_router');
+var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var CountryEditIndexView = require('views/country_edit_index_view');
 var Actors = require('models/actors');
@@ -13,6 +14,9 @@ module.exports = AsyncRouter.extend({
   routes: {
     '': 'index',
     '/': 'index',
+    'login': 'login',
+    'login?forward_to=:forward': 'login',
+    'login/': 'login',
     'edit' : 'country_selection',
     'edit/' : 'country_selection',
     'edit/:country': 'country_edit_index',
@@ -24,6 +28,16 @@ module.exports = AsyncRouter.extend({
 
   index: function(){
     this.navigate('/edit', { trigger: true });
+  },
+
+  login: function(forward){
+    // redirect to edit in default case
+    if(!forward) forward = '/edit';
+    
+    // parse the slahes
+    forward = forward.split('__').join('/');
+    
+    this.switchToView(new LoginView({ router: this, forward: forward }));
   },
 
   country_selection: function(){

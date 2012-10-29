@@ -70,26 +70,35 @@ app.configure(function(){
   app.use(app.router);
 });
 
-var renderIndex = function(req, res){
-  var user = {};
+var checkLoginAndRender = function(req, res){
   if(req.user){
+    var user = {};
     user._id = req.user.id;
     user._rev = req.user._rev;
-  }else
-    user = null;
-  res.render('index', { user: user });
+    res.render('index', { user: user });
+  }else{
+    res.redirect('/login?forward_to=' + req.url.split('/').join('__'));
+  }
+};
+
+var renderLoginOrRedirect = function(req, res){
+  if(req.user){
+    res.redirect('/edit');
+  }else{
+    res.render('index', { user: null });
+  }
 };
 
 /* Renders the index jade with the user info */
-app.get('/', renderIndex);
+app.get('/', checkLoginAndRender);
 
 /* Push state URLs */
-app.get('/login', renderIndex);
-app.get('/edit', renderIndex);
-app.get('/edit/:country', renderIndex);
-app.get('/edit/:country/actors', renderIndex);
-app.get('/edit/:country/money/list', renderIndex);
-app.get('/import/:country/money', renderIndex);
+app.get('/login', renderLoginOrRedirect);
+app.get('/edit', checkLoginAndRender);
+app.get('/edit/:country', checkLoginAndRender);
+app.get('/edit/:country/actors', checkLoginAndRender);
+app.get('/edit/:country/money/list', checkLoginAndRender);
+app.get('/import/:country/money', checkLoginAndRender);
 
 /* Session / auth handling */
 app.post('/session', passport.authenticate('local'), function(req, res){

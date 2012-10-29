@@ -13,7 +13,7 @@ module.exports = View.extend({
   className: 'login controls top right',
 
   initialize: function(){
-    window.user.on('change', this.render, this);
+    _.bindAll(this, 'redirectToGoal');
   },
 
   logoutClicked: function(){
@@ -28,10 +28,15 @@ module.exports = View.extend({
     var password = this.$('#password-input').val();
     
     window.user.login(username, password, {
+      success: this.redirectToGoal,
       error: function(){
         alert('Wrong username or password!');
         usernameElement.focus();
       }
     });
+  },
+
+  redirectToGoal: function(){
+    this.options.router.navigate(this.options.forward, { trigger: true });
   }
 });
