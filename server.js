@@ -6,8 +6,6 @@ var gzippo = require('gzippo');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
-var dbConnection = require('./server/db/database_connection').connection.createConnection();
-var dataDb = dbConnection.database('cgip_data');
 
 var sessionStore = new ConnectCouchdb({
   name: 'cgip_user_sessions',
@@ -86,6 +84,7 @@ var renderIndex = function(req, res){
 app.get('/', renderIndex);
 
 /* Push state URLs */
+app.get('/login', renderIndex);
 app.get('/edit', renderIndex);
 app.get('/edit/:country', renderIndex);
 app.get('/edit/:country/actors', renderIndex);
