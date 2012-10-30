@@ -111,6 +111,12 @@ app.del('/session', function(req, res){
   res.json({ok:true});
 });
 
+app.get('/logout', function(req, res){
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+});
+
 /* Testfoo */
 app.get('/test', function(req, res){
   res.json(req.user);

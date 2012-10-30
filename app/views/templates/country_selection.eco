@@ -1,4 +1,5 @@
 <h1>CGIP Countrys</h1>
+<p>Currently loggen in as: Jan <a href="/logout" external><button>Logout</button></a></p>
 <ul class="countrys clearfix">
   <li>
     <span class="flag" style="background-image: url(images/flags/bd.png);"></span>
