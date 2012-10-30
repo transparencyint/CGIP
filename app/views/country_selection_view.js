@@ -4,5 +4,9 @@ module.exports = View.extend({
   
   template : require('./templates/country_selection'),
   
-  className : 'countrySelection'
+  className : 'countrySelection',
+
+  getRenderData: function(){
+    return { user: user.toJSON() };
+  }
 });
