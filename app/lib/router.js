@@ -34,7 +34,7 @@ module.exports = AsyncRouter.extend({
     // redirect to edit in default case
     if(!forward) forward = '/edit';
     
-    // parse the slahes
+    // parse the slashes
     forward = forward.split('__').join('/');
     
     this.switchToView(new LoginView({ router: this, forward: forward }));
