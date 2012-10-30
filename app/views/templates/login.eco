@@ -1,3 +1,4 @@
+<h1>Login required</h1>
 <% if window.user.isLoggedIn(): %>
   <span class="username label"><%= window.user.id %></span>
   <button id="logout-button">Logout</button>

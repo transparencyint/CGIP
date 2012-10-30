@@ -10,7 +10,7 @@ module.exports = View.extend({
     'submit form': 'login'
   },
   
-  className: 'login controls top right',
+  className: 'login controls',
 
   initialize: function(){
     _.bindAll(this, 'redirectToGoal');
