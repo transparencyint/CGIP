@@ -31,7 +31,7 @@ Application = {
       if(href == '' || href == undefined || href.charAt(0) == '#') return
 
       // check for external link
-      var external = (el.hostname != '' && el.hostname != location.hostname);
+      var external = (el.hostname != '' && el.hostname != location.hostname) || ($el.attr('external') != undefined);
 
       // if external do nothing, else: let the router handle it
       if(external)
