@@ -107,14 +107,16 @@ app.post('/session', passport.authenticate('local'), function(req, res){
 
 app.del('/session', function(req, res){
   req.logout();
-  req.session.destroy();
-  res.json({ok:true});
+  req.session.destroy(function(){
+    res.json({ ok: true });
+  });
 });
 
 app.get('/logout', function(req, res){
   req.logout();
-  req.session.destroy();
-  res.redirect('/');
+  req.session.destroy(function(){
+    res.redirect('/');
+  });
 });
 
 /* Testfoo */
