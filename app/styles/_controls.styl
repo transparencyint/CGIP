@@ -139,9 +139,15 @@
     cursor pointer
     border-right 1px solid hsl(213,55%,28%)
     box-shadow 1px 0 hsl(213,55%,60%)
+    &.active
+      background linear-gradient(top, hsl(218,55%,40%), hsl(218,55%,41%))
+      .description
+        position relative
+        top 1px
     &:last-child
       border-right none
       box-shadow none
+      border-radius 0 0 3px 0
     .eye
       float left
       width 34px
