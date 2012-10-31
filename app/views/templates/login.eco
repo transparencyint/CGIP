@@ -1,6 +1,6 @@
 <h1>Login required</h1>
 <form>
-  <input type="text" placeholder="username" id="username-input" tabindex="1" autofocus="true" />
+  <input type="text" placeholder="username" id="username-input" tabindex="1" autofocus />
   <input type="password" placeholder="password" id="password-input" tabindex="2" />
   <button type="submit">Login</button>
 </form>
