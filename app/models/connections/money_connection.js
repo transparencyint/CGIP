@@ -8,6 +8,7 @@ module.exports = Connection.extend({
     data.connectionType = 'money';
     data.pledged = 0;
     data.disbursed = 0;
+    data.amount = 0;
     return data;
   }
 

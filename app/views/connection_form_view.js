@@ -9,10 +9,12 @@ module.exports = View.extend({
 
   events: {
     'submit .connection-form' : 'submitMetadataInput',
-    'click .deleteConnection': 'deleteConnection'
+    'change .amount': 'updateAmount', 
+    'blur .amount': 'saveAmount'
   },
 
   initialize: function(options){
+    this.saveAmount = _.debounce(this.saveAmount, 500);
   },
 
   getRenderData : function(){
@@ -20,8 +22,6 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    $('body').append(this.$el);
-
     this.$el.attr('id', this.model.id);
     this.$el.fadeIn(100);
 
@@ -32,30 +32,27 @@ module.exports = View.extend({
       this.$el.find(".amount").val('100000');
 
     var elem = this.$el;
-    var model = this.model;
+    var model = this.model;    
 
-    /* Show the money slider */
-    elem.find('.connection-money-slider').slider({
-
-      orientation: "vertical",
-      range: "min",
+    this.$('.amount').draggableInput({
+      type: 'integer',
       min: 0,
-      max: 20000000,
-      value: amount,
-      step: 100000,
-      slide: function(event, ui) {
-        elem.find('.amount').val(ui.value);
-        /* manipulate the thickness of the the connection */
-        model.set('amount', ui.value);
-      },
-      stop: function(event, ui) {
-        model.save();
-      }
+      max: 10000000,
+      scrollPrecision: 100000
     });
 
-    if(!this.$el.hasClass('ui-draggable'))
-      this.$el.draggable();
-    
+    this.$el.draggable({handle: '.movable'});
+    this.$el.css('position', 'absolute');
+  },
+
+  updateAmount: function () {
+    var newAmount = this.$('.amount').val();
+    this.model.set({amount: newAmount});
+    this.saveAmount();
+  },
+
+  saveAmount: function () {
+    this.model.save();
   },
 
   submitMetadataInput: function(e){
@@ -65,16 +62,7 @@ module.exports = View.extend({
     this.model.save({
       amount: _amount
     });
-  },
 
-  deleteConnection: function(e){
-    e.preventDefault();
-
-    if(confirm('Are you sure you want to delete this connection?'))
-    {
-      this.model.destroy();
-      this.$el.remove();
-    }
-  }
-  
+    this.destroy();
+  }  
 });

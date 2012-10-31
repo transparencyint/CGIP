@@ -29,6 +29,7 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
+    this.model.on('change:amount', this.updateAmount, this);
 
     this.contextmenu = new ContextMenuView({model: this.model});
     this.contextmenu.deletableOnly();
@@ -364,28 +365,28 @@ module.exports = View.extend({
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
+  updateAmount: function(){
+    this.$('.connection-metadata').text(this.model.get('amount'));
+  },
+
   showMetadataInput: function(){   
     this.$el.find('.overlay-form-container').fadeIn(100);
   },
 
   showMetadataForm: function(){
     //Remove all other forms
-    if(this.$el.hasClass('money'))
-    {
-      $('body').find('.connection-form-container').remove();
-      var model = this.model;
-      var cfw = new ConnectionFormView({ model: model });
-      cfw.render();   
-    }    
+    $('.connection-form-container').remove();
+    var model = this.model;
+    var cfw = new ConnectionFormView({ model: model });
+    $(document.body).append(cfw.render().el);  
   },
 
-  showMetadata: function(e){   
-    if(this.model.get('amount'))
-    {
+  showMetadata: function(e){
+    if(this.model.get('amount')){
       var metadata = this.$el.find('.connection-metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
       metadata.fadeIn(0);
-    }    
+    }
   },
 
   hideMetadata: function(e){   
