@@ -47,6 +47,9 @@ ConnectionMode.prototype.actorSelected = function(actor){
 
     var mode = this;
 
+    if(newConnection.get('connectionType') === 'money')
+      newConnection.showMetadataForm = true;
+
     newConnection.save(null, {
       success: function(){
         mode.collection.add(newConnection);
@@ -54,15 +57,9 @@ ConnectionMode.prototype.actorSelected = function(actor){
     });
 
     this.editor.deactivateMode()
-    this.showMetadataForm(newConnection);
     this.connectionView.destroy();
     this.reset();
   }
-};
-
-ConnectionMode.prototype.showMetadataForm = function(model){   
-    ConnectionFormView = new ConnectionFormView({ model: model });
-    ConnectionFormView.render(); 
 };
 
 ConnectionMode.prototype.cancel = function(){
