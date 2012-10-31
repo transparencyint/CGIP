@@ -1,4 +1,9 @@
-<h1>Login required</h1>
+<h1>
+  <span>Climate</span> 
+  <span>Governance</span>
+  <span>Integrity</span>
+  <span>Program</span>
+</h1>
 <form>
   <input type="text" placeholder="username" id="username-input" tabindex="1" autofocus />
   <input type="password" placeholder="password" id="password-input" tabindex="2" />

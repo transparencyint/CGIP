@@ -14,9 +14,13 @@
     box-shadow 0 1px hsl(213,10%,80%) inset, 0 1px hsl(213,55%,53%)
     outline none
     border-radius 3px
+    &:-moz-placeholder
+      color gray
     &:focus
-      border-color hsl(310, 57%, 31%)
-      box-shadow 0 0 2px hsl(280, 100%, 55%) inset
+      padding 7px
+      border-width 2px
+      border-color #222
+      box-shadow 0 0 2px hsl(0, 0%, 55%) inset
   &.top
     top 0
     border-top none
