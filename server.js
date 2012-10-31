@@ -70,7 +70,7 @@ app.configure(function(){
   app.use(app.router);
 });
 
-var baseURL = (process.env['NODE_ENV'] === 'production') ? 'speculos.taurus.uberspace.de' : '';
+var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
 
 var checkLoginAndRender = function(req, res){
   if(req.user){
