@@ -5,8 +5,7 @@ var auth = {
   authenticate: function(username, pw, done){
     User.findByName(username, function(err, user){
       if(err) return done(err, null, err);
-
-      if(user && User.checkPassword(username, pw, user))
+      if(user && User.checkPassword(pw, user))
         return done(null, user);
       else
         return done({ message: 'Wrong password.' }, null);

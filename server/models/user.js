@@ -17,7 +17,7 @@ exports.User = {
   },
 
   create: function(username, password, done){
-    var pwhash = this.getSaltedHash(username, password);
+    var pwhash = this.getSaltedHash(password);
     db.get(username, function(err, doc){
       if(err && err.error == 'not_found')
         db.save(username, {
@@ -31,15 +31,15 @@ exports.User = {
     });
   },
 
-  checkPassword: function(username, password, user){
+  checkPassword: function(password, user){
     var hash1 = user.pwhash;
-    var hash2 = this.getSaltedHash(username, password);
+    var hash2 = this.getSaltedHash(password);
     return hash1 === hash2;
   },
 
-  getSaltedHash: function(username, password){
+  getSaltedHash: function(password){
     var pwhash = crypto.createHash('sha1');
-    pwhash.update(username + config.salt + password);
+    pwhash.update(password + config.salt + password);
     return 'hashed-' + pwhash.digest('hex');
   }
 };

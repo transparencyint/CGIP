@@ -28,6 +28,7 @@ exports.config =
           'vendor/scripts/jquery.csv-0-6.js',
           'vendor/scripts/jquery.svg.min.js',
           'vendor/scripts/jquery-draggable-input.js'
+          'vendor/scripts/jquery.autosize.js'
         ]
 
     stylesheets:

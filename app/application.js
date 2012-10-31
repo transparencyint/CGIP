@@ -2,19 +2,19 @@
 Application = {
   initialize: function() {
     var Router = require('lib/router');
-    var LoginView = require('views/login_view');
+    var NavigationView = require('views/navigation_view');
     
     // initiate the routers
     this.router = new Router();
     
     // hijack link clicks
     this.hijackLinks(this.router);
-
-    // render login view
-    var lv = new LoginView({
-      el: $('#user')
-    });
-    lv.render();
+    
+    // render navigation view
+    var nav = new NavigationView({ router: this.router });
+    nav.render();
+    
+    $(document.body).append(nav.el);
 
     if (typeof Object.freeze === 'function') Object.freeze(this);
   },
@@ -31,7 +31,7 @@ Application = {
       if(href == '' || href == undefined || href.charAt(0) == '#') return
 
       // check for external link
-      var external = (el.hostname != '' && el.hostname != location.hostname);
+      var external = (el.hostname != '' && el.hostname != location.hostname) || ($el.attr('external') != undefined);
 
       // if external do nothing, else: let the router handle it
       if(external)

@@ -6,7 +6,7 @@ module.exports = View.extend({
   
   className : 'countrySelection',
 
-  leave: function(done){
-    this.fadedLeave(done);
+  getRenderData: function(){
+    return { user: user.toJSON() };
   }
 });

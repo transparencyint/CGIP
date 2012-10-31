@@ -7,27 +7,36 @@ module.exports = View.extend({
 
   events: {
     'click #logout-button': 'logoutClicked',
-    'keyup #username-input': 'key',
-    'keyup #password-input': 'key'
+    'submit form': 'login'
   },
+  
+  className: 'login controls',
 
   initialize: function(){
-    window.user.on('change', this.render, this);
+    _.bindAll(this, 'redirectToGoal');
   },
 
   logoutClicked: function(){
     window.user.logout();
   },
 
-  key: function(event){
-    if(event.keyCode == 13){
-      var username = this.$('#username-input').val();
-      var password = this.$('#password-input').val();
-      window.user.login(username, password, {
-        error: function(){
-          alert('Wrong username or password!');
-        }
-      });
-    }
+  login: function(event){
+    event.preventDefault();
+    var usernameElement = this.$('#username-input');
+    
+    var username = usernameElement.val();
+    var password = this.$('#password-input').val();
+    
+    window.user.login(username, password, {
+      success: this.redirectToGoal,
+      error: function(){
+        alert('Wrong username or password!');
+        usernameElement.focus();
+      }
+    });
+  },
+
+  redirectToGoal: function(){
+    this.options.router.navigate(this.options.forward, { trigger: true });
   }
 });

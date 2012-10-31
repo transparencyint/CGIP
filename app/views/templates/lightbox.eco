@@ -10,11 +10,13 @@
   <div>
     <label for="name">Full name:</label>
     <input type="text" id="name" name="name" value="<%= @name %>" />
+    <span class="saved">saved</span>
   </div>
 
   <div>
     <label for="abbreviation">Abbreviation:</label>
     <input type="text" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" />
+    <span class="saved">saved</span>
   </div>
 
 	<div>
@@ -33,6 +35,7 @@
 			<option value="other" <% if otherType: %> <%= selected %> <% end %>>Other</option>
 		</select>
 		<input type="text" id="typeOther" <% if otherType: %> value="<%= @organizationType %>" <% else: %> class="hidden" <% end%> name="typeOther" />
+    <span class="saved">saved</span>
 	</div>
 
   <div>
@@ -109,6 +112,8 @@
               <label for="roleCheckboxOther">Other roles</label>
             </p>
             <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
+            <span class="saved">saved</span>
+
           </div>
 
         <% end %>
@@ -122,6 +127,7 @@
             <label for="roleCheckboxOther">Other roles</label>
           </p>
           <input type="text" id="typeOther" class="hidden" name="roleOther" />
+          <span class="saved">saved</span>
         </div>
 
     <% end %>
@@ -192,7 +198,9 @@
               </p>
 
               <p><input type="text" name="purposeOther" id="purposeOther" class="" 
-                placeholder="describe the purpose here" value="<%= value%>"/></p>
+                placeholder="describe the purpose here" value="<%= value%>"/>
+                <span class="saved">saved</span>
+              </p>
 
             <% end %>
           <% end %>  
@@ -204,7 +212,10 @@
             <label for="purposeCheckboxOther">Other</label>
           </p>
 
-          <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" /></p>
+          <p><input type="text" name="purposeOther" id="purposeOther" class="hidden" placeholder="describe the purpose here" />
+          <span class="saved">saved</span>
+          </p>
+          
 
         <% end %>
         
@@ -219,6 +230,7 @@
           <option value="redd" <% if 'redd' in @mitigation: %> selected <% end%> >Forests/REDD</option>
           <option value="cdm" <% if 'cdm' in @mitigation: %> selected <% end%>>CDM (Clean Development Mechanisms)</option>
         </select>
+      <span class="saved">saved</span>  
       </div>
       <% end %>
     <% else: %>
@@ -229,20 +241,21 @@
         <option value="redd">Forests/REDD</option>
         <option value="cdm">CDM (Clean Development Mechanisms)</option>
       </select>
+      <span class="saved">saved</span>
     </div>
 
     <% end %>
 
 	<div class="clear">
-	  	<label for="corruptionRisk">Indications of corruption in the organization:</label>
-	  	<textarea rows="4" cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
+	  <label for="corruptionRisk">Indications of corruption in the organization:</label>
+	  <textarea cols="70" id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
+    <span class="saved">saved</span>
 	</div>
 
 	<div>
-	  	<label for="description">Additional information(optional):</label>
-		<textarea rows="3" cols="70" id="description" name="description"><%= @description%></textarea>
+	  <label for="description">Additional information(optional):</label>
+		<textarea cols="70" id="description" name="description"><%= @description%></textarea>
+    <span class="saved">saved</span>
 	</div>
 
-	<input type="submit" value="Save Changes" />
-  <span id="output"></span>
 </form>
