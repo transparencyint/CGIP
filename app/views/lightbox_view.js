@@ -63,12 +63,9 @@ module.exports = View.extend({
       } else {
         hiddenBrother.addClass('hidden').val("");
       }
-    }
-    else {
+    } else {
       if(event.target.value === "other"){
           hiddenBrother.removeClass('hidden');
-      } else {
-        //hiddenBrother.addClass('hidden').val("");
       }
     }
 
