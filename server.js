@@ -70,6 +70,8 @@ app.configure(function(){
   app.use(app.router);
 });
 
+var baseURL = (process.env['NODE_ENV'] === 'production') ? 'speculos.taurus.uberspace.de' : '';
+
 var checkLoginAndRender = function(req, res){
   if(req.user){
     var user = {};
@@ -77,13 +79,13 @@ var checkLoginAndRender = function(req, res){
     user._rev = req.user._rev;
     res.render('index', { user: user });
   }else{
-    res.redirect('/login?forward_to=' + req.url.split('/').join('__'));
+    res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
   }
 };
 
 var renderLoginOrRedirect = function(req, res){
   if(req.user){
-    res.redirect('/edit');
+    res.redirect(baseURL + '/edit');
   }else{
     res.render('index', { user: null });
   }
