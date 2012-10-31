@@ -12,12 +12,6 @@ module.exports = View.extend({
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
-    'click path' : 'showMetadataForm'
-  },
-
-  events: {
-    'mouseover path' : 'showMetadata',
-    'mouseout path' : 'hideMetadata',
     'dblclick path' : 'showMetadataForm',
     'contextmenu': 'showContextMenu'
   },

@@ -47,9 +47,10 @@ module.exports = View.extend({
         elem.find('.amount').val(ui.value);
         /* manipulate the thickness of the the connection */
         model.set('amount', ui.value);
+      },
+      stop: function(event, ui) {
         model.save();
       }
-
     });
 
     if(!this.$el.hasClass('ui-draggable'))

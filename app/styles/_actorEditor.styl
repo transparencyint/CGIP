@@ -4,7 +4,6 @@
   right 0
   bottom 0
   position absolute
-  overflow auto
   background #2e5aaa
   background url(/images/bluegrid.png) center top
   background-size 99px
@@ -22,133 +21,20 @@
     background-size 50px
   &.zoom25
     background-size 25px
-#actorEditor
-  display box
-  box-align center
   &.connectionMode
     .actor
       cursor default
-  .connection
-    position absolute
     
 .workspace
   position absolute
   width 100%
-  min-height 100%
+  height 100%
+  overflow auto
   &.hide-money
     .money
       display none
   &.hide-accountability
     .accountability
       display none
-
-.controls
-  top 50%
-  width 140px
-  margin-top -134px
-  background linear-gradient(top, #ececec, #f7f7f7)
-  border-top-right-radius 5px
-  border-bottom-right-radius 5px
-  box-shadow 0 1px 13px rgba(0,0,0,0.55), 0 0 3px rgba(0,0,0,.21) inset, 0 -1px rgba(0,0,0,.13) inset
-  z-index 3
-  position fixed
-  .inner
-    display box
-    box-orient vertical
-    box-align center
-  .newActor
-    margin 8px
-    position relative
-    .actor.new
-      margin 0
-      width 80px
-      height 80px
-      font-size 13px
-      position relative !important
-      box-shadow 0 1px 1px 1px rgba(0,0,0,.13), 0 1px #fbfbfb inset, 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
-      transition width 250ms, height 250ms, margin 250ms
-      cursor move
-    .cancel
-      position absolute
-      top 0
-      left 0
-      width 64px
-      height 64px
-      box-sizing content-box
-      padding 8px
-      display table
-      color rgba(0,0,0,.34)
-      text-shadow 0 1px rgba(255,255,255,.13)
-      font-size 13px
-      border-radius 100%
-      background rgba(0,0,0,.08)
-      box-shadow 0 0 2px 1px rgba(0,0,0,.13) inset
-      span
-        display table-cell
-        vertical-align middle
-        text-align center
-  ul
-    margin 0
-    padding 0
-    font-size 13px
-    color black
-    list-style none
-    li
-      vertical-align top
-      cursor pointer
-      width 100%
-      display box
-      border-bottom 1px solid rgba(0,0,0,.13)
-      box-shadow 0 1px white
-      &:first-child
-        border-top 1px solid rgba(0,0,0,.13)
-        box-shadow 0 1px white inset, 0 1px white
-      &.active
-        .description
-          background white
-      .description
-        padding 13px 13px 8px
-        box-flex 1
-        display box
-        box-align center
-        box-pack center
-        box-orient vertical
-        img
-          margin-bottom 3px
-          display block
-        .name
-          font-size 11px
-          text-shadow 0 1px white
-          text-align center
-          display block
-      .eye
-        width 34px
-        height 50px
-        background url(/images/glyphicons_051_eye_open.png) no-repeat center center
-        background-size 16px
-        border-right 1px solid rgba(0,0,0,.13)
-        box-shadow 1px 0 white
-      &.invisible .eye
-        background none
-  .zoom
-    margin 13px 0
-    display box
-    width 100%
-    > div
-      margin 3px
-      width 34px
-      height 34px
-      font-weight bold
-      color black
-      font-size 24px
-      line-height 34px
-      text-align center
-      text-shadow 0 1px white
-      background white
-      border-radius 50%
-      border 1px solid rgba(0,0,0,.34)
-      box-shadow 0 1px white, 0 -1px rgba(0,0,0,.13) inset
-      cursor pointer
-      &:active
-        background rgba(0,0,0,.05)
-        box-shadow 0 1px white, 0 -1px rgba(0,0,0,.13) inset, 0 1px 1px rgba(0,0,0,.13) inset
+  .connection
+    position absolute

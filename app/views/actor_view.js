@@ -144,23 +144,12 @@ module.exports = View.extend({
       el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
       var svg = el.find('.svg-holder').svg('get'); 
 
-        colors = {
-          'funding' : '#ffc345',
-          'coordination' : '#a5bfdd',
-          'accreditation' : '#ffe564',
-          'approval' : '#e8ddbd',
-          'implementation' : '#c9dfaf',
-          'monitoring' : '#d3cabd',
-          'stuff' : 'gray'
-        };
-
         /* if there is just one role we drwa a scg circle */
         if(roles.length == 1){
-          svg.circle(width/2, width/2, width/2, {
-              fill: colors[roles[0]], 
-              stroke: colors[roles[0]], 
+          var drawnPath = svg.circle(width/2, width/2, width/2, {
               strokeWidth: 1
             });
+          $(drawnPath).attr('class', roles[0]);
         }
         else {
 
@@ -180,16 +169,17 @@ module.exports = View.extend({
             y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
 
             var path = svg.createPath();
-            svg.path(
+            var drawnPath = svg.path(
               path.move(width/2, height/2).
               line(x1, y1).
               arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
               close(), {
-                fill: colors[roleValue], 
-                stroke: colors[roleValue], 
                 strokeWidth: 1,
                 transform: 'rotate(90, 60, 60)'
               });
+
+            $(drawnPath).attr('class', roleValue);
+
           });
         }
       }
