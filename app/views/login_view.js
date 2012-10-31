@@ -10,10 +10,10 @@ module.exports = View.extend({
     'submit form': 'login'
   },
   
-  className: 'login controls top right',
+  className: 'login controls',
 
   initialize: function(){
-    window.user.on('change', this.render, this);
+    _.bindAll(this, 'redirectToGoal');
   },
 
   logoutClicked: function(){
@@ -28,10 +28,15 @@ module.exports = View.extend({
     var password = this.$('#password-input').val();
     
     window.user.login(username, password, {
+      success: this.redirectToGoal,
       error: function(){
         alert('Wrong username or password!');
         usernameElement.focus();
       }
     });
+  },
+
+  redirectToGoal: function(){
+    this.options.router.navigate(this.options.forward, { trigger: true });
   }
 });
