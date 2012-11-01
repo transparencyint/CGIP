@@ -62,35 +62,41 @@ app.configure(function(){
 /** TODO: find out why res.redirect('/') is not working on uberhost */
 var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
 
-var checkLoginAndRender = function(req, res){
-  if(req.user){
-    var user = {};
-    user._id = req.user.id;
-    user._rev = req.user._rev;
-    res.render('index', { user: user });
-  }else{
-    res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
-  }
-};
+/** Is able to perform general routing actions */
+var routeHandler = {
 
-var renderLoginOrRedirect = function(req, res){
-  if(req.user){
-    res.redirect(baseURL + '/edit');
-  }else{
-    res.render('index', { user: null });
+  /** Redirects to the login when the user is not logged in */
+  checkLogin: function(req, res){
+    if(req.user){
+      var user = {};
+      user._id = req.user.id;
+      user._rev = req.user._rev;
+      res.render('index', { user: user });
+    }else{
+      res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
+    }
+  },
+
+  /** Redirects the user when already logged in */
+  redirectWhenLoggedIn: function(req, res){
+    if(req.user){
+      res.redirect(baseURL + '/edit');
+    }else{
+      res.render('index', { user: null });
+    }
   }
 };
 
 /* Renders the index jade with the user info */
-app.get('/', checkLoginAndRender);
+app.get('/', routeHandler.checkLogin);
 
 /* Push state URLs */
-app.get('/login', renderLoginOrRedirect);
-app.get('/edit', checkLoginAndRender);
-app.get('/edit/:country', checkLoginAndRender);
-app.get('/edit/:country/actors', checkLoginAndRender);
-app.get('/edit/:country/money/list', checkLoginAndRender);
-app.get('/import/:country/money', checkLoginAndRender);
+app.get('/login', routeHandler.redirectWhenLoggedIn);
+app.get('/edit', routeHandler.checkLogin);
+app.get('/edit/:country', routeHandler.checkLogin);
+app.get('/edit/:country/actors', routeHandler.checkLogin);
+app.get('/edit/:country/money/list', routeHandler.checkLogin);
+app.get('/import/:country/money', routeHandler.checkLogin);
 
 /* Session / auth handling */
 app.post('/session', passport.authenticate('local'), function(req, res){
