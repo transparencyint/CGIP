@@ -59,6 +59,7 @@ app.configure(function(){
   app.use(app.router);
 });
 
+/** TODO: find out why res.redirect('/') is not working on uberhost */
 var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
 
 var checkLoginAndRender = function(req, res){
