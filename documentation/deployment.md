@@ -2,7 +2,7 @@
 
 ## Preparations
 
-It is neccessary that you've already finished all the steps in `hosting.md`.
+It is neccessary that you've already finished all the steps in `hosting.md` (will be added soon).
 
 ### Remote repository
 
