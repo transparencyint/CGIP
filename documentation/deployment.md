@@ -26,6 +26,11 @@ Now go to the `hooks` folder and create file called `post-receive` and fill it w
 
 	# build tbe server and restart the service
 	./node_modules/brunch/bin/brunch build
+	
+	# minify the js-files
+	./node_modules/uglify-js/bin/uglifyjs --overwrite public/javascripts/app.js
+	./node_modules/uglify-js/bin/uglifyjs --overwrite public/javascripts/vendor.js
+
 	export NODE_ENV=production
 	svc -du ~/service/cgip
 
