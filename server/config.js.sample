@@ -4,7 +4,8 @@ if(process.env['NODE_ENV'] && process.env['NODE_ENV'] === 'production')
     adminPassword: "",
     databaseHost: "127.0.0.1",
     databasePort: "5984",
-    salt: "keyboardcat"
+    salt: "keyboardcat",
+    sessionSecret: "anotherkeyboardcat"
   };
 else
   exports.config = {
@@ -12,5 +13,6 @@ else
     adminPassword: "",
     databaseHost: "127.0.0.1",
     databasePort: "5984",
-    salt: "keyboardcat"
+    salt: "keyboardcat",
+    sessionSecret: "anotherkeyboardcat"
   };

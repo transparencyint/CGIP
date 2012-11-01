@@ -49,7 +49,7 @@ app.configure(function(){
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
-    secret: 'aabdonie98gsdv79sdjsbv2624zihef',
+    secret: config.sessionSecret,
     cookie: {
       maxAge: 604800000
     }
