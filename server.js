@@ -111,11 +111,6 @@ app.get('/logout', function(req, res){
   });
 });
 
-/* Testfoo */
-app.get('/test', function(req, res){
-  res.json(req.user);
-});
-
 /* Actor CRUD */
 app.get('/:country/actors', function(req, res){
   Actor.allByCountry(req.params.country, function(err, docs){
