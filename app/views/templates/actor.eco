@@ -1,22 +1,15 @@
 <div class="svg-holder"></div>
 <div class="inner">
-  <div class="name">
-    <% if @name.length == 0: %>
-      New Actor
-    <% else: %>
-      <%= @name %>
-    <% end %>
+  <div class="flexbox center">
+    <div class="name">
+      <% if @name.length == 0: %>
+        New Actor
+      <% else: %>
+        <%= @name %>
+      <% end %>
+    </div>
+    <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
   </div>
-  <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
-  <!--
-  <% if @role: %>
-  <div class="roles">
-  	<% for value in @role: %>
-  		<div class="<%= value%>"></div>
-  	<% end %>
-  </div> 
-  <% end %>
-  -->
 </div>
 
 <!--
