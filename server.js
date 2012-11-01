@@ -55,17 +55,6 @@ app.configure(function(){
     }
   }));
   app.use(passport.initialize());
-  
-  app.use(function(req, res, next) {
-  //   console.log('-- session --');
-  console.log('sid: ' + req.sessionID);
-  console.log('path: ' + req.url);
-    if(req._passport.session)
-      console.dir(req._passport.session);
-  //   console.dir(req.session);
-  //   console.log('-------------');
-    next()
-  });
   app.use(passport.session());
   app.use(app.router);
 });
