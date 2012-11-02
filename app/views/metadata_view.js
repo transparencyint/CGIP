@@ -54,8 +54,6 @@ module.exports = View.extend({
   },
 
   showMetadata: function(event){ 
-    //event.preventDefault();
-    console.log("meta clicked "+event);
     if(!this.$el.hasClass('activeOverlay') && this.$el.find('.overlay').html().trim())
     {
       this.$el.find('.overlay').fadeIn(200);

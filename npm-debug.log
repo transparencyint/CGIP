@@ -1,0 +1,176 @@
+info it worked if it ends with ok
+verbose cli [ 'c:\\Program Files\\nodejs\\\\node.exe',
+verbose cli   'c:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+verbose cli   'install' ]
+info using npm@1.1.16
+info using node@v0.6.15
+verbose c:\Program Files\nodejs\\node.exe node symlink
+verbose config file C:\Users\Bidi\.npmrc
+verbose config file c:\Program Files\nodejs\etc\npmrc
+verbose config file c:\Program Files\nodejs\node_modules\npm\npmrc
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\package.json
+verbose loadDefaults package-name@0.0.1
+verbose readDependencies: using package.json deps
+verbose where, deps [ 'g:\\Study\\Master\\Sem3\\MasterProject\\CGIP',
+verbose where, deps   [ 'javascript-brunch',
+verbose where, deps     'css-brunch',
+verbose where, deps     'stylus-brunch',
+verbose where, deps     'eco-brunch',
+verbose where, deps     'uglify-js-brunch',
+verbose where, deps     'clean-css-brunch',
+verbose where, deps     'express',
+verbose where, deps     'connect-couchdb',
+verbose where, deps     'passport',
+verbose where, deps     'passport-local',
+verbose where, deps     'couchapp',
+verbose where, deps     'cradle',
+verbose where, deps     'underscore',
+verbose where, deps     'prompt',
+verbose where, deps     'mocha',
+verbose where, deps     'expect.js' ] ]
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\package.json
+info preinstall package-name@0.0.1
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\clean-css-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\connect-couchdb\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\couchapp\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\cradle\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\css-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\eco-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\expect.js\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\express\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\gzippo\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\jade\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\javascript-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\mocha\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\passport\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\passport-local\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\prompt\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\stylus-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\uglify-js\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\uglify-js-brunch\package.json
+verbose caching g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\underscore\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\package.json
+verbose readDependencies: using package.json deps
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\clean-css-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\connect-couchdb\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\couchapp\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\cradle\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\css-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\eco-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\expect.js\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\express\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\gzippo\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\jade\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\javascript-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\mocha\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\passport\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\passport-local\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\prompt\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\stylus-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\uglify-js\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\uglify-js-brunch\package.json
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\underscore\package.json
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping javascript-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping css-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping stylus-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping eco-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping uglify-js-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping clean-css-brunch@> 1.0 < 1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping express@2.5.9
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping connect-couchdb@0.2.5
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping passport@0.1.10
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping passport-local@0.1.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping couchapp@0.9.0
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping cradle@0.6.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping underscore@1.3.3
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping prompt@0.1.12
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping mocha@0.14.0
+verbose already installed in g:\Study\Master\Sem3\MasterProject\CGIP skipping expect.js@0.1.2
+silly resolved []
+info build g:\Study\Master\Sem3\MasterProject\CGIP
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\package.json
+verbose linkStuff [ false, false, false, 'g:\\Study\\Master\\Sem3\\MasterProject' ]
+info linkStuff package-name@0.0.1
+verbose linkBins package-name@0.0.1
+verbose linkMans package-name@0.0.1
+verbose rebuildBundles package-name@0.0.1
+verbose rebuildBundles [ '.bin',
+verbose rebuildBundles   'brunch',
+verbose rebuildBundles   'clean-css-brunch',
+verbose rebuildBundles   'connect-couchdb',
+verbose rebuildBundles   'couchapp',
+verbose rebuildBundles   'cradle',
+verbose rebuildBundles   'css-brunch',
+verbose rebuildBundles   'eco-brunch',
+verbose rebuildBundles   'expect.js',
+verbose rebuildBundles   'express',
+verbose rebuildBundles   'gzippo',
+verbose rebuildBundles   'jade',
+verbose rebuildBundles   'javascript-brunch',
+verbose rebuildBundles   'mocha',
+verbose rebuildBundles   'passport',
+verbose rebuildBundles   'passport-local',
+verbose rebuildBundles   'prompt',
+verbose rebuildBundles   'stylus-brunch',
+verbose rebuildBundles   'uglify-js',
+verbose rebuildBundles   'uglify-js-brunch',
+verbose rebuildBundles   'underscore' ]
+verbose rebuild bundle g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\brunch
+info build g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\brunch
+verbose from cache g:\Study\Master\Sem3\MasterProject\CGIP\node_modules\brunch\package.json
+info preinstall brunch@1.2.1
+verbose linkStuff [ false,
+verbose linkStuff   false,
+verbose linkStuff   false,
+verbose linkStuff   'g:\\Study\\Master\\Sem3\\MasterProject\\CGIP\\node_modules' ]
+info linkStuff brunch@1.2.1
+verbose linkBins brunch@1.2.1
+verbose bins linking [ { brunch: './bin/brunch' },
+verbose bins linking   'g:\\Study\\Master\\Sem3\\MasterProject\\CGIP\\node_modules\\.bin',
+verbose bins linking   false ]
+verbose linkMans brunch@1.2.1
+verbose rebuildBundles brunch@1.2.1
+verbose rebuildBundles [ '.bin',
+verbose rebuildBundles   'ansi-color',
+verbose rebuildBundles   'argumentum',
+verbose rebuildBundles   'async',
+verbose rebuildBundles   'chokidar',
+verbose rebuildBundles   'coffee-script',
+verbose rebuildBundles   'date-utils',
+verbose rebuildBundles   'express',
+verbose rebuildBundles   'growl',
+verbose rebuildBundles   'mkdirp',
+verbose rebuildBundles   'ncp',
+verbose rebuildBundles   'rimraf' ]
+info install brunch@1.2.1
+info postinstall brunch@1.2.1
+verbose unsafe-perm in lifecycle true
+silly exec cmd "/c" "node setup.js postinstall"
+silly spawning [ 'cmd',
+silly spawning   [ '/c', 'node setup.js postinstall' ],
+silly spawning   'g:\\Study\\Master\\Sem3\\MasterProject\\CGIP\\node_modules\\brunch' ]
+info brunch@1.2.1 Failed to exec postinstall script
+ERR! brunch@1.2.1 postinstall: `node setup.js postinstall`
+ERR! `cmd "/c" "node setup.js postinstall"` failed with 1
+ERR! 
+ERR! Failed at the brunch@1.2.1 postinstall script.
+ERR! This is most likely a problem with the brunch package,
+ERR! not with npm itself.
+ERR! Tell the author that this fails on your system:
+ERR!     node setup.js postinstall
+ERR! You can get their info via:
+ERR!     npm owner ls brunch
+ERR! There is likely additional logging output above.
+ERR! 
+ERR! System Windows_NT 6.1.7601
+ERR! command "c:\\Program Files\\nodejs\\\\node.exe" "c:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+ERR! cwd g:\Study\Master\Sem3\MasterProject\CGIP
+ERR! node -v v0.6.15
+ERR! npm -v 1.1.16
+ERR! code ELIFECYCLE
+ERR! message brunch@1.2.1 postinstall: `node setup.js postinstall`
+ERR! message `cmd "/c" "node setup.js postinstall"` failed with 1
+ERR! errno {}
+verbose exit [ 1, true ]
