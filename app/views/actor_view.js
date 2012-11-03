@@ -26,6 +26,7 @@ module.exports = View.extend({
     this.model.on('change:name', this.render, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
+    this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
     this.contextmenu = new ContextMenuView({model: this.model});
@@ -115,7 +116,6 @@ module.exports = View.extend({
 
   afterRender: function(){
     var name = this.model.get('name');
-    var roles = this.model.get('role');
 
     this.updatePosition();
 
@@ -133,56 +133,59 @@ module.exports = View.extend({
     
     this.$el.append(this.contextmenu.render().el);
 
-    this.drawRoleBorders(roles, this.$el);
+    this.drawRoleBorders();
   },
 
-  drawRoleBorders: function(roles, el){
-    if(roles){
-      
+  drawRoleBorders: function(){
+    var roles = this.model.get('role');
+    var el = this.$el;
+
+    // remove all previous paths and circles
+    el.find('.svg-holder circle, .svg-holder path').remove();
+    
+    if(roles && roles.length > 0){
       var width = height = 120;
       
       el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
       var svg = el.find('.svg-holder').svg('get'); 
 
-        /* if there is just one role we drwa a scg circle */
-        if(roles.length == 1){
-          var drawnPath = svg.circle(width/2, width/2, width/2, {
-              strokeWidth: 1
-            });
-          $(drawnPath).attr('class', roles[0]);
-        }
-        else {
-
-          var percent = 100 / roles.length;
-          var angles = percent * 360 / 100;
-          var startAngle = 0;
-          var endAngle = 0;
-
-          $.each(roles, function(role, roleValue){
-            startAngle = endAngle;
-            endAngle = startAngle + angles;
-
-            x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
-            y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
-
-            x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
-            y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
-
-            var path = svg.createPath();
-            var drawnPath = svg.path(
-              path.move(width/2, height/2).
-              line(x1, y1).
-              arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
-              close(), {
-                strokeWidth: 1,
-                transform: 'rotate(90, 60, 60)'
-              });
-
-            $(drawnPath).attr('class', roleValue);
-
+      /* if there is just one role we drwa a svg circle */
+      if(roles.length == 1){
+        var drawnPath = svg.circle(width/2, width/2, width/2, {
+            strokeWidth: 1
           });
-        }
+        $(drawnPath).attr('class', roles[0]);
+    } else {
+        var percent = 100 / roles.length;
+        var angles = percent * 360 / 100;
+        var startAngle = 0;
+        var endAngle = 0;
+
+        $.each(roles, function(role, roleValue){
+          startAngle = endAngle;
+          endAngle = startAngle + angles;
+
+          x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
+          y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
+
+          x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
+          y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
+
+          var path = svg.createPath();
+          var drawnPath = svg.path(
+            path.move(width/2, height/2).
+            line(x1, y1).
+            arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
+            close(), {
+              strokeWidth: 1,
+              transform: 'rotate(90, 60, 60)'
+            });
+
+          $(drawnPath).attr('class', roleValue);
+
+        });
       }
+    }
   },
 
   destroy: function(){
