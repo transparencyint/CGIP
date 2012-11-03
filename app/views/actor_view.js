@@ -155,7 +155,7 @@ module.exports = View.extend({
             strokeWidth: 1
           });
         $(drawnPath).attr('class', roles[0]);
-    } else {
+      } else {
         var percent = 100 / roles.length;
         var angles = percent * 360 / 100;
         var startAngle = 0;
