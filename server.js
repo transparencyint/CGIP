@@ -113,7 +113,7 @@ app.del('/session', function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy(function(){
-    res.redirect('/');
+    res.redirect(baseURL + '/');
   });
 });
 
