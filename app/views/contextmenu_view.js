@@ -33,7 +33,6 @@ module.exports = View.extend({
     }
   },
 
-
   deletableOnly: function(){
     this.isDeletableOnly = true;
   },
@@ -41,7 +40,7 @@ module.exports = View.extend({
   deleteClicked: function(event){
     if(this.model) 
       this.model.destroy();
-    //return false;
+    return false;
   },
 
   addClicked: function(event){
@@ -55,6 +54,15 @@ module.exports = View.extend({
     if(this.isDeletableOnly){
       this.$('.add').remove();
       this.$('.delete').addClass('deletableOnly');
+    }
+  },
+
+  render: function(){
+    if(!this.alreadyRendered){
+      this.alreadyRendered = true;
+      return View.prototype.render.call(this);
+    }else{
+      return this;
     }
   }
 
