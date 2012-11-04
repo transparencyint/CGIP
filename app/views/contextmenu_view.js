@@ -44,7 +44,6 @@ module.exports = View.extend({
   },
 
   addClicked: function(event){
-    console.log("Add clicked "+event);
     this.lightboxView = new LightboxView({model : this.model});
     $(document.body).append(this.lightboxView.render().el);
     this.$el.removeClass('visible');
