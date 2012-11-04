@@ -40,6 +40,9 @@ app.configure(function(){
   app.set('view options', {
     layout: false
   });
+
+  var basepath = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
+  app.set('basepath', basepath);
   
   app.use(express.methodOverride());
   app.use(express.bodyParser());
@@ -59,9 +62,6 @@ app.configure(function(){
   app.use(app.router);
 });
 
-/** TODO: find out why res.redirect('/') is not working on uberhost */
-var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
-
 /** Is able to perform general routing actions */
 var routeHandler = {
 
@@ -73,14 +73,14 @@ var routeHandler = {
       user._rev = req.user._rev;
       res.render('index', { user: user });
     }else{
-      res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
+      res.redirect('/login?forward_to=' + req.url.split('/').join('__'));
     }
   },
 
   /** Redirects the user when already logged in */
   redirectWhenLoggedIn: function(req, res){
     if(req.user){
-      res.redirect(baseURL + '/edit');
+      res.redirect('/edit');
     }else{
       res.render('index', { user: null });
     }
@@ -113,7 +113,7 @@ app.del('/session', function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy(function(){
-    res.redirect(baseURL + '/edit');
+    res.redirect('/edit');
   });
 });
 
