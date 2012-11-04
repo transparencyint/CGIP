@@ -174,7 +174,7 @@ module.exports = View.extend({
     this.workspace.selectable('enable');
   },
 
-  _keyUp: function(){
+  _keyUp: function(event){
     if(this.mode)
       this.deactivateMode();
 
