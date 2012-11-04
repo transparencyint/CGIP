@@ -65,6 +65,14 @@ module.exports = View.extend({
       this.$el.addClass('zoom' + (this.zoom*100));
     }
   },
+
+  deleteOnDelKey: function(){
+    if(this.selectedActors != []) {
+      _.each(this.selectedActors, function(actor){
+        actor.destroy();
+      });
+    }
+  },
   
   zoomOut: function(){
     if ( (this.zoom - this.zoomStep) >= this.zoomStep ) {
@@ -166,9 +174,15 @@ module.exports = View.extend({
     this.workspace.selectable('enable');
   },
 
-  _keyUp: function(){
+  _keyUp: function(event){
     if(this.mode)
       this.deactivateMode();
+
+    //On del key remove selected actors
+    if(event.keyCode === 46){
+      event.preventDefault();
+      this.deleteOnDelKey();
+    }
   },
   
   toggleVisibility: function(event){
