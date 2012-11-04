@@ -17,6 +17,7 @@ module.exports = View.extend({
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .connection': 'toggleMode',
     'click .connection .eye': 'toggleVisibility',
+    'click .workspace': 'unselect',
     'mousedown .zoom.in': 'zoomIn',
     'mousedown .zoom.out': 'zoomOut'
   },
@@ -169,6 +170,11 @@ module.exports = View.extend({
   _keyUp: function(){
     if(this.mode)
       this.deactivateMode();
+
+      //Escape closes all context menus
+    if(event.keyCode === 27){
+      this.unselect();
+    }
   },
   
   toggleVisibility: function(event){
