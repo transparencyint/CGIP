@@ -41,7 +41,7 @@ app.configure(function(){
     layout: false
   });
 
-  var basepath = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
+  var basepath = (process.env['NODE_ENV'] === 'production') ? '//speculos.taurus.uberspace.de' : '';
   app.set('basepath', basepath);
   
   app.use(express.methodOverride());
