@@ -22,7 +22,7 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    this.$el.attr('id', this.model.id);
+    this.$el.attr('rel', this.model.id);
     this.$el.fadeIn(100);
 
     var amount = this.model.get('amount');
@@ -62,6 +62,10 @@ module.exports = View.extend({
     this.model.save({
       amount: _amount
     });
+
+    var connectionID = this.$el.attr('rel');
+    console.log(connectionID);
+    $('#'+connectionID).removeClass('active');
 
     this.destroy();
   }  
