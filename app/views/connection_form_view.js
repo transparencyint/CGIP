@@ -64,8 +64,7 @@ module.exports = View.extend({
     });
 
     var connectionID = this.$el.attr('rel');
-    console.log(connectionID);
-    $('#'+connectionID).removeClass('active');
+    $('#'+connectionID).removeClass('activeConnection');
 
     this.destroy();
   }  
