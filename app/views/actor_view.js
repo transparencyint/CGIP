@@ -120,6 +120,7 @@ module.exports = View.extend({
 
   afterRender: function(){
     var name = this.model.get('name');
+    var actorView = this;
 
     this.updatePosition();
 
@@ -129,7 +130,45 @@ module.exports = View.extend({
     if(!this.$el.hasClass('ui-draggable'))
       this.$el.draggable({
         stop: this.stopMoving,
-        drag: this.drag,
+        drag: function(event, ui){
+
+          //make drag available along a simple grid
+          var offset = $(this).parent().offset();
+          var gridSize = actorView.editor.gridSize;      
+
+          if(parseInt(event.clientX / gridSize) % 2 == 0) {
+              var row = Math.floor((event.clientY - offset.top) / gridSize) + Math.floor(event.clientX / (2 * gridSize));
+              var col = -Math.floor((event.clientY - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
+          }
+          else {
+              var row = Math.floor((event.clientY + gridSize / 2 - offset.top) / gridSize) + Math.floor(event.clientX / (2 * gridSize));
+              var col = -Math.floor((event.clientY + gridSize / 2 - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
+          }
+
+          console.log('row:', row);
+          console.log('col:', col);
+
+          var new_x = row * gridSize + col * gridSize;
+          var new_y = (row * (gridSize / 2)) - (col * (gridSize / 2));                     
+
+          if(event.clientX == new_x + gridSize * 2) {
+              ui.position.left = new_x;
+              new_x = event.clientX;
+          }
+
+          if(event.clientY == new_y + gridSize) {
+              ui.position.top = new_y;
+              new_y = event.clientY;
+          }                    
+
+          ui.position.left = new_x;
+          ui.position.top = new_y;
+
+          var pos = actorView.model.get('pos');
+          var newPos = actorView.getPosition();
+          var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
+          actorView.editor.dragGroup(delta);
+        },
         zIndex: 2
       });
 

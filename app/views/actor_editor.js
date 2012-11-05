@@ -46,6 +46,8 @@ module.exports = View.extend({
     this.zoom = 1;
     this.maxZoom = 1.75;
     this.zoomStep = 0.25;
+
+    this.gridSize = 20;
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -63,14 +65,6 @@ module.exports = View.extend({
       this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
       
       this.$el.addClass('zoom' + (this.zoom*100));
-    }
-  },
-
-  deleteOnDelKey: function(){
-    if(this.selectedActors != []) {
-      _.each(this.selectedActors, function(actor){
-        actor.destroy();
-      });
     }
   },
   
@@ -174,15 +168,9 @@ module.exports = View.extend({
     this.workspace.selectable('enable');
   },
 
-  _keyUp: function(event){
+  _keyUp: function(){
     if(this.mode)
       this.deactivateMode();
-
-    //On del key remove selected actors
-    if(event.keyCode === 46){
-      event.preventDefault();
-      this.deleteOnDelKey();
-    }
   },
   
   toggleVisibility: function(event){
