@@ -39,7 +39,9 @@ module.exports = View.extend({
 
     // initialize the collections
     this.actors = options.actors;
+    this.actorViews = [];
     this.actorGroups = this.actors.filterGroups();
+    this.actorGroupViews = [];
     this.connections = options.connections;
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
@@ -53,6 +55,9 @@ module.exports = View.extend({
     this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
+
+    // subscribe to remove events
+    this.actors.on('remove', this.removeActor, this);
 
     _.bindAll(this, 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
   },
@@ -120,13 +125,22 @@ module.exports = View.extend({
     var actorView = new ActorView({ model : actor, editor: this});
     actorView.render();
     this.workspace.append(actorView.el);
+    this.actorViews[actor.id] = actorView;
     if(startEdit === true) actorView.startEditName();
   },
 
+  // when an actor is removed, destroy its view
+  removeActor: function(actor){
+    var view = this.actorViews[actor.id];
+    if(view)
+      view.destroy();
+  },
+
   appendActorGroup: function(actorGroup){
-    var actorView = new ActorGroupView({ model : actorGroup, editor: this});
-    actorView.render();
-    this.workspace.append(actorView.el);
+    var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
+    actorGroupView.render();
+    this.workspace.append(actorGroupView.el);
+    this.actorGroupViews[actorGroup.id] = actorGroupView;
   },
 
   appendConnection: function(connection){
