@@ -136,6 +136,7 @@ module.exports = View.extend({
           var offset = $(this).parent().offset();
           var gridSize = actorView.editor.gridSize;      
 
+          //get the x and y grid cell
           if(parseInt(event.clientX / gridSize) % 2 == 0) {
               var row = Math.floor((event.clientY - offset.top) / gridSize) + Math.floor(event.clientX / (2 * gridSize));
               var col = -Math.floor((event.clientY - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
@@ -145,24 +146,21 @@ module.exports = View.extend({
               var col = -Math.floor((event.clientY + gridSize / 2 - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
           }
 
-          console.log('row:', row);
-          console.log('col:', col);
+          var newX = row * gridSize + col * gridSize;
+          var newY = (row * (gridSize / 2)) - (col * (gridSize / 2));                     
 
-          var new_x = row * gridSize + col * gridSize;
-          var new_y = (row * (gridSize / 2)) - (col * (gridSize / 2));                     
-
-          if(event.clientX == new_x + gridSize * 2) {
-              ui.position.left = new_x;
-              new_x = event.clientX;
+          if(event.clientX == newX + gridSize * 2) {
+              ui.position.left = newX;
+              newX = event.clientX;
           }
 
-          if(event.clientY == new_y + gridSize) {
-              ui.position.top = new_y;
-              new_y = event.clientY;
+          if(event.clientY == newY + gridSize) {
+              ui.position.top = newY;
+              newY = event.clientY;
           }                    
 
-          ui.position.left = new_x;
-          ui.position.top = new_y;
+          ui.position.left = newX;
+          ui.position.top = newY;
 
           var pos = actorView.model.get('pos');
           var newPos = actorView.getPosition();
