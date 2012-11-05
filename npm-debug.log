@@ -1,0 +1,161 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@1.1.63
+3 info using node@v0.8.12
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose read json c:\xampp\htdocs\CGIP\package.json
+6 verbose readDependencies using package.json deps
+7 verbose install where, deps [ 'c:\\xampp\\htdocs\\CGIP',
+7 verbose install   [ 'javascript-brunch',
+7 verbose install     'css-brunch',
+7 verbose install     'stylus-brunch',
+7 verbose install     'eco-brunch',
+7 verbose install     'clean-css-brunch',
+7 verbose install     'express',
+7 verbose install     'connect-couchdb',
+7 verbose install     'passport',
+7 verbose install     'passport-local',
+7 verbose install     'couchapp',
+7 verbose install     'cradle',
+7 verbose install     'underscore',
+7 verbose install     'prompt',
+7 verbose install     'uglify-js',
+7 verbose install     'mocha',
+7 verbose install     'expect.js' ] ]
+8 verbose from cache c:\xampp\htdocs\CGIP\package.json
+9 info preinstall package-name@0.0.1
+10 verbose read json c:\xampp\htdocs\CGIP\node_modules\brunch\package.json
+11 verbose read json c:\xampp\htdocs\CGIP\node_modules\clean-css-brunch\package.json
+12 verbose read json c:\xampp\htdocs\CGIP\node_modules\connect-couchdb\package.json
+13 verbose read json c:\xampp\htdocs\CGIP\node_modules\couchapp\package.json
+14 verbose read json c:\xampp\htdocs\CGIP\node_modules\cradle\package.json
+15 verbose read json c:\xampp\htdocs\CGIP\node_modules\css-brunch\package.json
+16 verbose read json c:\xampp\htdocs\CGIP\node_modules\eco-brunch\package.json
+17 verbose read json c:\xampp\htdocs\CGIP\node_modules\expect.js\package.json
+18 verbose read json c:\xampp\htdocs\CGIP\node_modules\express\package.json
+19 verbose read json c:\xampp\htdocs\CGIP\node_modules\gzippo\package.json
+20 verbose read json c:\xampp\htdocs\CGIP\node_modules\jade\package.json
+21 verbose read json c:\xampp\htdocs\CGIP\node_modules\javascript-brunch\package.json
+22 verbose read json c:\xampp\htdocs\CGIP\node_modules\mocha\package.json
+23 verbose read json c:\xampp\htdocs\CGIP\node_modules\passport\package.json
+24 verbose read json c:\xampp\htdocs\CGIP\node_modules\passport-local\package.json
+25 verbose read json c:\xampp\htdocs\CGIP\node_modules\prompt\package.json
+26 verbose read json c:\xampp\htdocs\CGIP\node_modules\stylus-brunch\package.json
+27 verbose read json c:\xampp\htdocs\CGIP\node_modules\uglify-js\package.json
+28 verbose read json c:\xampp\htdocs\CGIP\node_modules\uglify-js-brunch\package.json
+29 verbose read json c:\xampp\htdocs\CGIP\node_modules\underscore\package.json
+30 verbose from cache c:\xampp\htdocs\CGIP\package.json
+31 verbose readDependencies using package.json deps
+32 verbose read json c:\xampp\htdocs\CGIP\node_modules\.bin\package.json
+33 verbose from cache c:\xampp\htdocs\CGIP\node_modules\brunch\package.json
+34 verbose from cache c:\xampp\htdocs\CGIP\node_modules\clean-css-brunch\package.json
+35 verbose from cache c:\xampp\htdocs\CGIP\node_modules\connect-couchdb\package.json
+36 verbose from cache c:\xampp\htdocs\CGIP\node_modules\couchapp\package.json
+37 verbose from cache c:\xampp\htdocs\CGIP\node_modules\cradle\package.json
+38 verbose from cache c:\xampp\htdocs\CGIP\node_modules\css-brunch\package.json
+39 verbose from cache c:\xampp\htdocs\CGIP\node_modules\eco-brunch\package.json
+40 verbose from cache c:\xampp\htdocs\CGIP\node_modules\expect.js\package.json
+41 verbose from cache c:\xampp\htdocs\CGIP\node_modules\express\package.json
+42 verbose from cache c:\xampp\htdocs\CGIP\node_modules\gzippo\package.json
+43 verbose from cache c:\xampp\htdocs\CGIP\node_modules\jade\package.json
+44 verbose from cache c:\xampp\htdocs\CGIP\node_modules\javascript-brunch\package.json
+45 verbose from cache c:\xampp\htdocs\CGIP\node_modules\mocha\package.json
+46 verbose from cache c:\xampp\htdocs\CGIP\node_modules\passport\package.json
+47 verbose from cache c:\xampp\htdocs\CGIP\node_modules\passport-local\package.json
+48 verbose from cache c:\xampp\htdocs\CGIP\node_modules\prompt\package.json
+49 verbose from cache c:\xampp\htdocs\CGIP\node_modules\stylus-brunch\package.json
+50 verbose from cache c:\xampp\htdocs\CGIP\node_modules\uglify-js\package.json
+51 verbose from cache c:\xampp\htdocs\CGIP\node_modules\uglify-js-brunch\package.json
+52 verbose from cache c:\xampp\htdocs\CGIP\node_modules\underscore\package.json
+53 verbose already installed skipping prompt@0.1.12 c:\xampp\htdocs\CGIP
+54 verbose already installed skipping uglify-js@1.3.4 c:\xampp\htdocs\CGIP
+55 verbose already installed skipping mocha@0.14.0 c:\xampp\htdocs\CGIP
+56 verbose already installed skipping expect.js@0.1.2 c:\xampp\htdocs\CGIP
+57 verbose already installed skipping javascript-brunch@> 1.0 <= 1.3.1 c:\xampp\htdocs\CGIP
+58 verbose already installed skipping css-brunch@> 1.0 <= 1.3.1 c:\xampp\htdocs\CGIP
+59 verbose already installed skipping stylus-brunch@> 1.0 <= 1.3.1 c:\xampp\htdocs\CGIP
+60 verbose already installed skipping eco-brunch@> 1.0 <= 1.3.1 c:\xampp\htdocs\CGIP
+61 verbose already installed skipping clean-css-brunch@> 1.0 <= 1.3.1 c:\xampp\htdocs\CGIP
+62 verbose already installed skipping express@2.5.9 c:\xampp\htdocs\CGIP
+63 verbose already installed skipping connect-couchdb@0.2.5 c:\xampp\htdocs\CGIP
+64 verbose already installed skipping passport@0.1.10 c:\xampp\htdocs\CGIP
+65 verbose already installed skipping passport-local@0.1.3 c:\xampp\htdocs\CGIP
+66 verbose already installed skipping couchapp@0.9.0 c:\xampp\htdocs\CGIP
+67 verbose already installed skipping cradle@0.6.3 c:\xampp\htdocs\CGIP
+68 verbose already installed skipping underscore@1.3.3 c:\xampp\htdocs\CGIP
+69 silly resolved []
+70 info build c:\xampp\htdocs\CGIP
+71 verbose from cache c:\xampp\htdocs\CGIP\package.json
+72 verbose linkStuff [ false, false, false, 'c:\\xampp\\htdocs' ]
+73 info linkStuff package-name@0.0.1
+74 verbose linkBins package-name@0.0.1
+75 verbose linkMans package-name@0.0.1
+76 verbose rebuildBundles package-name@0.0.1
+77 verbose rebuildBundles [ '.bin',
+77 verbose rebuildBundles   'brunch',
+77 verbose rebuildBundles   'clean-css-brunch',
+77 verbose rebuildBundles   'connect-couchdb',
+77 verbose rebuildBundles   'couchapp',
+77 verbose rebuildBundles   'cradle',
+77 verbose rebuildBundles   'css-brunch',
+77 verbose rebuildBundles   'eco-brunch',
+77 verbose rebuildBundles   'expect.js',
+77 verbose rebuildBundles   'express',
+77 verbose rebuildBundles   'gzippo',
+77 verbose rebuildBundles   'jade',
+77 verbose rebuildBundles   'javascript-brunch',
+77 verbose rebuildBundles   'mocha',
+77 verbose rebuildBundles   'passport',
+77 verbose rebuildBundles   'passport-local',
+77 verbose rebuildBundles   'prompt',
+77 verbose rebuildBundles   'stylus-brunch',
+77 verbose rebuildBundles   'uglify-js',
+77 verbose rebuildBundles   'uglify-js-brunch',
+77 verbose rebuildBundles   'underscore' ]
+78 verbose rebuild bundle c:\xampp\htdocs\CGIP\node_modules\brunch
+79 info build c:\xampp\htdocs\CGIP\node_modules\brunch
+80 verbose from cache c:\xampp\htdocs\CGIP\node_modules\brunch\package.json
+81 info preinstall brunch@1.2.1
+82 verbose linkStuff [ false, false, false, 'c:\\xampp\\htdocs\\CGIP\\node_modules' ]
+83 info linkStuff brunch@1.2.1
+84 verbose linkBins brunch@1.2.1
+85 verbose link bins [ { brunch: './bin/brunch' },
+85 verbose link bins   'c:\\xampp\\htdocs\\CGIP\\node_modules\\.bin',
+85 verbose link bins   false ]
+86 verbose linkMans brunch@1.2.1
+87 verbose rebuildBundles brunch@1.2.1
+88 verbose rebuildBundles [ '.bin',
+88 verbose rebuildBundles   'ansi-color',
+88 verbose rebuildBundles   'argumentum',
+88 verbose rebuildBundles   'async',
+88 verbose rebuildBundles   'chokidar',
+88 verbose rebuildBundles   'coffee-script',
+88 verbose rebuildBundles   'date-utils',
+88 verbose rebuildBundles   'express',
+88 verbose rebuildBundles   'growl',
+88 verbose rebuildBundles   'mkdirp',
+88 verbose rebuildBundles   'ncp',
+88 verbose rebuildBundles   'rimraf' ]
+89 info install brunch@1.2.1
+90 info postinstall brunch@1.2.1
+91 verbose unsafe-perm in lifecycle true
+92 silly exec cmd "/c" "node setup.js postinstall"
+93 silly cmd,/c,node setup.js postinstall,c:\xampp\htdocs\CGIP\node_modules\brunch spawning
+94 error Error: write EPIPE
+94 error     at errnoException (net.js:769:11)
+94 error     at Object.afterWrite (net.js:593:19)
+95 error If you need help, you may report this log at:
+95 error     <http://github.com/isaacs/npm/issues>
+95 error or email it to:
+95 error     <npm-@googlegroups.com>
+96 error System Windows_NT 6.1.7601
+97 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+98 error cwd c:\xampp\htdocs\CGIP
+99 error node -v v0.8.12
+100 error npm -v 1.1.63
+101 error syscall write
+102 error code EPIPE
+103 error errno EPIPE
+104 verbose exit [ 1, true ]
