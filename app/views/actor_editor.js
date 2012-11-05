@@ -38,6 +38,9 @@ module.exports = View.extend({
 
     // initialize the collections
     this.actors = options.actors;
+    console.log('actors before filtering', this.actors.length);
+    this.actorGroups = this.actors.filterGroups();
+    console.log('actors after filtering', this.actors.length, 'actor group count', this.actorGroups.length);
     this.connections = options.connections;
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
