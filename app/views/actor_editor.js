@@ -2,6 +2,7 @@ var View = require('./view');
 var Actor = require('models/actor');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var ActorGroupView = require('./actor_group_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
@@ -38,9 +39,7 @@ module.exports = View.extend({
 
     // initialize the collections
     this.actors = options.actors;
-    console.log('actors before filtering', this.actors.length);
     this.actorGroups = this.actors.filterGroups();
-    console.log('actors after filtering', this.actors.length, 'actor group count', this.actorGroups.length);
     this.connections = options.connections;
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
@@ -55,7 +54,7 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActorAt', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+    _.bindAll(this, 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
   },
   
   zoomIn: function(){
@@ -122,6 +121,12 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     if(startEdit === true) actorView.startEditName();
+  },
+
+  appendActorGroup: function(actorGroup){
+    var actorView = new ActorGroupView({ model : actorGroup, editor: this});
+    actorView.render();
+    this.workspace.append(actorView.el);
   },
 
   appendConnection: function(connection){
@@ -235,6 +240,7 @@ module.exports = View.extend({
     this.cancel = this.$el.find('.controls .cancel');
     
     this.actors.each(this.appendActor);
+    this.actorGroups.each(this.appendActorGroup);
 
     //this.accountabilityConnections.each(this.appendAccountabilityConnection);
     this.connections.each(this.appendConnection);
