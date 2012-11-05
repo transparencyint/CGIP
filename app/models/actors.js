@@ -1,4 +1,5 @@
 var Actor = require('./actor');
+var ActorGroup = require('./actor_group');
 var Collection = require('./collection');
 
 module.exports = Collection.extend({
@@ -14,6 +15,7 @@ module.exports = Collection.extend({
   filterGroups: function(){
     // todo: create custom collection and custom model
     var actorGroups = new Backbone.Collection();
+    actorGroups.model = ActorGroup;
     var actorCollection = this;
 
     // 1) iterate over all actors to filter out the groups
