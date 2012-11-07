@@ -134,30 +134,7 @@ module.exports = View.extend({
         stop: this.stopMoving,
         drag: function(event, ui){
           
-          //make drag available along a simple grid
-          var offset = $(this).parent().offset();
-          var gridSize = actorView.editor.gridSize;      
-
-          //move the actor to the nearest grid point if it is inside the tolerance
-          var currentDistanceX = Math.floor(ui.position.left / gridSize);
-          var currentDistanceY = Math.floor(ui.position.top / gridSize);
-
-          //move to next largest gridPoint
-          if(ui.position.top % gridSize > gridSize/2) {
-            nextGridY = currentDistanceY * gridSize;
-          }
-          else {
-            nextGridY = currentDistanceY * gridSize + gridSize;
-          }
-
-          if(ui.position.left % gridSize > gridSize/2) {
-            nextGridX = currentDistanceX * gridSize;
-          }
-          else {
-            nextGridX = currentDistanceX * gridSize + gridSize;
-          }
-
-          console.log(nextGridX, nextGridY);
+          
 
           var pos = actorView.model.get('pos');
           var newPos = actorView.getPosition();
@@ -166,7 +143,29 @@ module.exports = View.extend({
           
         },
         stop: function(event, ui){
+          //make drag available along a simple grid
+          var gridSize = actorView.editor.gridSize;      
 
+          //move the actor to the nearest grid point if it is inside the tolerance
+          var currentDistanceX = Math.round(ui.position.left / gridSize);
+          var currentDistanceY = Math.round(ui.position.top / gridSize);
+
+          //move to next largest gridPoint
+          if(ui.position.top % gridSize > gridSize/2) {
+            nextGridY = currentDistanceY * gridSize;
+          }
+          else {
+            nextGridY = currentDistanceY * gridSize;
+          }
+
+          if(ui.position.left % gridSize > gridSize/2) {
+            nextGridX = currentDistanceX * gridSize;
+          }
+          else {
+            nextGridX = currentDistanceX * gridSize;
+          }
+
+          console.log(nextGridX, nextGridY);
           var pos = actorView.model.get('pos');
 
           $(this).animate({'left': nextGridX, 'top': nextGridY}, 100, function(){
