@@ -159,8 +159,6 @@ module.exports = View.extend({
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
-    // disable the select mode
-    this.workspace.selectable('disable');
   },
 
   deactivateMode: function(){
@@ -170,8 +168,6 @@ module.exports = View.extend({
 
     // re-enable draggables
     this.trigger('enableDraggable');
-    // re-enable select mode
-    this.workspace.selectable('enable');
   },
 
   _keyUp: function(event){
@@ -268,22 +264,6 @@ module.exports = View.extend({
           editor.createActorAt(x, y);
         }
       }
-    });
-
-    this.workspace.selectable({
-      filter: '.actor',
-      cancel: 'path',
-      selected: function(event, ui){
-        var selectedElements = $('.ui-selected');
-        var selectedActors = [];
-        selectedElements.each(function(index, el){
-          var actor = editor.actors.get(el.id);
-          if(actor)
-            selectedActors.push(actor);
-        });
-        editor.selectedActors = selectedActors;
-      },
-      unselected: editor.unselect
     });
   },
 
