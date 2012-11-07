@@ -13,12 +13,21 @@ module.exports = View.extend({
     'submit .standardForm': 'formSubmit',
     'change input': 'saveData',
     'change select': 'saveData',
-    'change textarea': 'saveData'
+    'change textarea': 'saveData',
+    'click .delete': 'deleteActor'
   }, 
 
   initialize: function(){
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleEscape');
+  },
+
+  deleteActor: function(){
+    if(this.model) 
+      this.model.destroy();
+
+    this.destroy();
+    return false;
   },
 
   saveData: function(event){

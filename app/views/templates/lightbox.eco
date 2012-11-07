@@ -257,5 +257,5 @@
 		<textarea cols="70" id="description" name="description"><%= @description%></textarea>
     <span class="saved">saved</span>
 	</div>
-
+  <button class="delete">Delete</button>
 </form>

@@ -1,5 +1,4 @@
 var View = require('./view');
-var ContextMenuView = require('./contextmenu_view');
 var ConnectionFormView = require('views/connection_form_view');
 
 module.exports = View.extend({
@@ -7,13 +6,12 @@ module.exports = View.extend({
   template: require('./templates/connection'),
 
   tagName : 'div',
-  className : 'connection hasContextMenu',
+  className : 'connection',
 
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
     'dblclick path' : 'showMetadataForm',
-    'contextmenu': 'showContextMenu'
   },
 
   initialize: function(options){
@@ -30,18 +28,10 @@ module.exports = View.extend({
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
     this.model.on('change:amount', this.updateAmount, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
-    this.contextmenu.deletableOnly();
   },
 
   getRenderData : function(){
     return this.model.toJSON();
-  },
-
-  showContextMenu: function(event){
-    event.preventDefault();
-    this.contextmenu.show(event);
   },
 
   select: function(event){
@@ -77,8 +67,6 @@ module.exports = View.extend({
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
-    this.$el.append(this.contextmenu.render().el);
-    
     this.$el.addClass( this.model.get("connectionType") );
 
     var amount = this.model.get("amount");

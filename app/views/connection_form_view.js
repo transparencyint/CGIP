@@ -10,11 +10,17 @@ module.exports = View.extend({
   events: {
     'submit .connection-form' : 'submitMetadataInput',
     'change .amount': 'updateAmount', 
+    'click': 'dontClose',
     'click .close': 'closeConnectionForm',
     'click .delete': 'deleteConnection'
   },
 
+  dontClose: function(event){
+    event.stopPropagation();
+  },
+
   initialize: function(options){
+    _.bindAll(this, 'destroy');
     this.saveAmount = _.debounce(this.saveAmount, 500);
     this.oldAmount = this.model.get('amount');
   },
@@ -45,6 +51,8 @@ module.exports = View.extend({
 
     this.$el.draggable({handle: '.movable'});
     this.$el.css('position', 'absolute');
+
+    $(document).on('click', this.destroy);
   },
 
   updateAmount: function () {
@@ -74,5 +82,11 @@ module.exports = View.extend({
     });
 
     this.destroy();
-  } 
+  },
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+
+    $(document).unbind('click', this.destory);
+  }
 });

@@ -86,7 +86,6 @@ module.exports = View.extend({
   },
   
   unselect: function(){
-    this.workspace.find('.contextMenu').removeClass('visible');
     if(this.mode) this.mode.unselect();
     this.selectedActors = [];
   },
@@ -269,27 +268,10 @@ module.exports = View.extend({
         }
       }
     });
-
-    this.workspace.selectable({
-      filter: '.actor',
-      cancel: 'path',
-      selected: function(event, ui){
-        var selectedElements = $('.ui-selected');
-        var selectedActors = [];
-        selectedElements.each(function(index, el){
-          var actor = editor.actors.get(el.id);
-          if(actor)
-            selectedActors.push(actor);
-        });
-        editor.selectedActors = selectedActors;
-      },
-      unselected: editor.unselect
-    });
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
-
     $(document).unbind('keyup', this._keyUp);
   }
 });
