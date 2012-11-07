@@ -162,7 +162,7 @@ module.exports = View.extend({
   },
 
   deactivateMode: function(){
-    this.$('.connections li').removeClass('active');
+    this.$('.connection').removeClass('active');
     this.mode.abort();
     this.mode = null;
 
