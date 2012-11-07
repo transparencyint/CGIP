@@ -10,11 +10,13 @@ module.exports = View.extend({
   events: {
     'submit .connection-form' : 'submitMetadataInput',
     'change .amount': 'updateAmount', 
-    'blur .amount': 'saveAmount'
+    'click .close': 'closeConnectionForm',
+    'click .delete': 'deleteConnection'
   },
 
   initialize: function(options){
     this.saveAmount = _.debounce(this.saveAmount, 500);
+    this.oldAmount = this.model.get('amount');
   },
 
   getRenderData : function(){
@@ -48,11 +50,19 @@ module.exports = View.extend({
   updateAmount: function () {
     var newAmount = this.$('.amount').val();
     this.model.set({amount: newAmount});
-    this.saveAmount();
   },
 
-  saveAmount: function () {
-    this.model.save();
+  deleteConnection: function(){
+    if(this.model) 
+      this.model.destroy();
+
+    this.destroy();
+    return false;
+  },
+
+  closeConnectionForm:function(event){
+    this.model.set({amount: this.oldAmount});
+    this.destroy();
   },
 
   submitMetadataInput: function(e){
@@ -64,5 +74,5 @@ module.exports = View.extend({
     });
 
     this.destroy();
-  }  
+  } 
 });

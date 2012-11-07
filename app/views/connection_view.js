@@ -374,11 +374,13 @@ module.exports = View.extend({
   },
 
   showMetadataForm: function(){
-    //Remove all other forms
-    $('.connection-form-container').remove();
-    var model = this.model;
-    var cfw = new ConnectionFormView({ model: model });
-    $(document.body).append(cfw.render().el);  
+    if(this.model.get('connectionType') === "money"){
+      //Remove all other forms
+      $('.connection-form-container').remove();
+      var model = this.model;
+      var cfw = new ConnectionFormView({ model: model });
+      $(document.body).append(cfw.render().el);  
+    }
   },
 
   showMetadata: function(e){
