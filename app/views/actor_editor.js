@@ -43,9 +43,12 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.selectedActors = [];
-    this.zoom = 1;
-    this.maxZoom = 1.75;
-    this.zoomStep = 0.25;
+    this.zoom = {
+      value: 1,
+      step: 0.25,
+      min: 0.25,
+      max: 1.75
+    };
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -264,6 +267,15 @@ module.exports = View.extend({
           editor.createActorAt(x, y);
         }
       }
+    });
+    
+    this.$('.bar').slider({ 
+      orientation: "vertical",
+      animate: "fast",
+      min: this.zoom.min,
+      max: this.zoom.max,
+      step: this.zoom.step,
+      value: this.zoom.value
     });
   },
 
