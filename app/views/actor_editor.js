@@ -47,7 +47,7 @@ module.exports = View.extend({
     this.maxZoom = 1.75;
     this.zoomStep = 0.25;
 
-    this.gridSize = 20;
+    this.gridSize = 25;
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);

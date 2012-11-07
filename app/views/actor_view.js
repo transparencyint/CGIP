@@ -126,46 +126,55 @@ module.exports = View.extend({
 
     this.$el.attr('id', this.model.id);
 
+    var nextGridY, nextGridX;
+
     // only add the draggable if it's not already set
     if(!this.$el.hasClass('ui-draggable'))
       this.$el.draggable({
         stop: this.stopMoving,
         drag: function(event, ui){
-
+          
           //make drag available along a simple grid
           var offset = $(this).parent().offset();
           var gridSize = actorView.editor.gridSize;      
 
-          //get the x and y grid cell
-          if(parseInt(event.clientX / gridSize) % 2 == 0) {
-              var row = Math.floor((event.clientY - offset.top) / gridSize) + Math.floor(event.clientX / (2 * gridSize));
-              var col = -Math.floor((event.clientY - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
+          //move the actor to the nearest grid point if it is inside the tolerance
+          var currentDistanceX = Math.floor(ui.position.left / gridSize);
+          var currentDistanceY = Math.floor(ui.position.top / gridSize);
+
+          //move to next largest gridPoint
+          if(ui.position.top % gridSize > gridSize/2) {
+            nextGridY = currentDistanceY * gridSize;
           }
           else {
-              var row = Math.floor((event.clientY + gridSize / 2 - offset.top) / gridSize) + Math.floor(event.clientX / (2 * gridSize));
-              var col = -Math.floor((event.clientY + gridSize / 2 - offset.top) / gridSize) + Math.floor((event.clientX + gridSize) / (2 * gridSize));
+            nextGridY = currentDistanceY * gridSize + gridSize;
           }
 
-          var newX = row * gridSize + col * gridSize;
-          var newY = (row * (gridSize / 2)) - (col * (gridSize / 2));                     
-
-          if(event.clientX == newX + gridSize * 2) {
-              ui.position.left = newX;
-              newX = event.clientX;
+          if(ui.position.left % gridSize > gridSize/2) {
+            nextGridX = currentDistanceX * gridSize;
+          }
+          else {
+            nextGridX = currentDistanceX * gridSize + gridSize;
           }
 
-          if(event.clientY == newY + gridSize) {
-              ui.position.top = newY;
-              newY = event.clientY;
-          }                    
-
-          ui.position.left = newX;
-          ui.position.top = newY;
+          console.log(nextGridX, nextGridY);
 
           var pos = actorView.model.get('pos');
           var newPos = actorView.getPosition();
           var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
           actorView.editor.dragGroup(delta);
+          
+        },
+        stop: function(event, ui){
+
+          var pos = actorView.model.get('pos');
+
+          $(this).animate({'left': nextGridX, 'top': nextGridY}, 100, function(){
+            var delta = { x: nextGridX - pos.x, y: nextGridY - pos.y };
+            actorView.editor.dragGroup(delta);
+            actorView.model.save();
+          });
+          
         },
         zIndex: 2
       });
