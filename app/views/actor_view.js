@@ -16,8 +16,6 @@ module.exports = View.extend({
   },
   
   initialize: function(options){
-    _.bindAll(this, 'stopMoving', 'drag');
-
     this.editor = options.editor;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
@@ -85,10 +83,6 @@ module.exports = View.extend({
     this.$el.remove();
   },
   
-  stopMoving : function(){
-    this.model.save(this.getPosition());
-  },
-
   drag: function(event){
     var pos = this.model.get('pos');
     var newPos = this.getPosition();
@@ -131,7 +125,6 @@ module.exports = View.extend({
     // only add the draggable if it's not already set
     if(!this.$el.hasClass('ui-draggable'))
       this.$el.draggable({
-        stop: this.stopMoving,
         drag: function(event, ui){
           var pos = actorView.model.get('pos');
           var newPos = actorView.getPosition();
@@ -174,7 +167,6 @@ module.exports = View.extend({
             });
           });
         
-         
         },
         zIndex: 2
       });
