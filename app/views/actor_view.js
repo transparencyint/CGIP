@@ -133,9 +133,6 @@ module.exports = View.extend({
       this.$el.draggable({
         stop: this.stopMoving,
         drag: function(event, ui){
-          
-          
-
           var pos = actorView.model.get('pos');
           var newPos = actorView.getPosition();
           var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
@@ -165,15 +162,19 @@ module.exports = View.extend({
             nextGridX = currentDistanceX * gridSize;
           }
 
-          console.log(nextGridX, nextGridY);
           var pos = actorView.model.get('pos');
 
           $(this).animate({'left': nextGridX, 'top': nextGridY}, 100, function(){
             var delta = { x: nextGridX - pos.x, y: nextGridY - pos.y };
             actorView.editor.dragGroup(delta);
-            actorView.model.save();
+            
+            //save dragged actors      
+            _.each(actorView.editor.selectedActors, function(actor){
+              actor.save();
+            });
           });
-          
+        
+         
         },
         zIndex: 2
       });
@@ -214,17 +215,17 @@ module.exports = View.extend({
           startAngle = endAngle;
           endAngle = startAngle + angles;
 
-          x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
-          y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
+          x1 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*startAngle/180));
+          y1 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*startAngle/180));
 
-          x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
-          y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
+          x2 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*endAngle/180));
+          y2 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*endAngle/180));                
 
           var path = svg.createPath();
           var drawnPath = svg.path(
             path.move(width/2, height/2).
             line(x1, y1).
-            arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
+            arc((width/2), (height/2), 0, 0, true, x2, y2).
             close(), {
               strokeWidth: 1,
               transform: 'rotate(90, 60, 60)'
