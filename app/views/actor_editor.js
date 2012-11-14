@@ -361,30 +361,6 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
-
-    //draw simple grid for help
-    var windowHeight = $(window).height();
-    var windowWidth = $(window).width();
-
-    var lineHolder = $('<div id="gridlines"></div>');
-
-    for(i=0; i<windowHeight; i++){
-      if(i % this.gridSize == 0) {
-        var obj = $('<div class="line-horizontal"></div>');
-        obj.css({'top': i+'px'});
-        lineHolder.append(obj);
-      }
-    }
-    for(i=0; i<windowWidth; i++){
-      if(i % this.gridSize == 0) {
-        var obj = $('<div class="line-vertical"></div>');
-        obj.css({'left': i+'px'});
-        lineHolder.append(obj);
-      }
-    } 
-
-    this.workspace.append(lineHolder);
-
   },
 
   destroy: function(){
