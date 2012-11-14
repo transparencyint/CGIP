@@ -68,8 +68,6 @@ module.exports = View.extend({
     this.update();
 
     this.$el.addClass( this.model.get("connectionType") );
-
-    var amount = this.model.get("amount");
   },
 
   hasBothConnections: function(){
@@ -335,7 +333,7 @@ module.exports = View.extend({
     var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = this.model.get('amount');
+    var amount = Number(this.model.get('amount'));
 
     if(typeof(amount) !== 'undefined')
     {

@@ -57,7 +57,7 @@ module.exports = View.extend({
 
   updateAmount: function () {
     var newAmount = this.$('.amount').val();
-    this.model.set({amount: newAmount});
+    this.model.set({amount: Number(newAmount)});
   },
 
   deleteConnection: function(){
