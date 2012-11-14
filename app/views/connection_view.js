@@ -58,6 +58,8 @@ module.exports = View.extend({
     this.path = "";
     this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
     this.$el.svg();
+    this.$el.attr('id', this.model.id);
+
     this.svg = this.$el.svg('get');
     var defs = this.svg.defs();
     var marker = this.svg.marker(defs, this.model.id, 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize});
@@ -367,6 +369,14 @@ module.exports = View.extend({
       var cfw = new ConnectionFormView({ model: model });
       $(document.body).append(cfw.render().el);  
     }
+
+    //remove all activeClasses from the connections
+    $('.connection').each(function(){ $(this).removeClass('activeConnection') });
+
+    if(!this.$el.hasClass('activeConnection'))
+      this.$el.addClass('activeConnection');
+    else
+      this.$el.removeClass('activeConnection');
   },
 
   showMetadata: function(e){
