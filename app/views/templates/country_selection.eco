@@ -1,58 +1,15 @@
 <h1>CGIP Countrys</h1>
 <p>Logged in as: <%= @user._id %> <a href="/logout" external><button class="small">Logout</button></a></p>
 <ul class="countrys clearfix">
-  <li>
-    <span class="flag" style="background-image: url(images/flags/bd.png);"></span>
-    <span class="name">Bangladesh</span>
-    <div class="actions">
-      <a href="/edit/bd/actors" class="map">Edit Map</a>
-      <a href="/edit/bd/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/bd/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
-  <li>
-    <span class="flag" style="background-image: url(images/flags/do.png);"></span>
-    <span class="name">Dominican Republic</span>
-    <div class="actions">
-      <a href="/edit/do/actors" class="map">Edit Map</a>
-      <a href="/edit/do/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/do/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
-  <li>
-    <span class="flag" style="background-image: url(images/flags/ke.png);"></span>
-    <span class="name">Kenya</span>
-    <div class="actions">
-      <a href="/edit/ke/actors" class="map">Edit Map</a>
-      <a href="/edit/ke/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/ke/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
-  <li>
-    <span class="flag" style="background-image: url(images/flags/mv.png);"></span>
-    <span class="name">Maldives</span>
-    <div class="actions">
-      <a href="/edit/mv/actors" class="map">Edit Map</a>
-      <a href="/edit/mv/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/mv/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
-  <li>
-    <span class="flag" style="background-image: url(images/flags/mx.png);"></span>
-    <span class="name">Mexico</span>
-    <div class="actions">
-      <a href="/edit/mx/actors" class="map">Edit Map</a>
-      <a href="/edit/mx/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/mx/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
-  <li>
-    <span class="flag" style="background-image: url(images/flags/pe.png);"></span>
-    <span class="name">Peru</span>
-    <div class="actions">
-      <a href="/edit/pe/actors" class="map">Edit Map</a>
-      <a href="/edit/pe/money/list" class="moneyConnections">Edit Money Connections</a>
-      <a href="/import/pe/money" class="importCSV">Import CSV</a>
-    </div>
-  </li>
+  <% for country in @countries: %>
+    <li>
+      <span class="flag" style="background-image: url(images/flags/<%= country.abbreviation %>.png);"></span>
+      <span class="name"><%= country.name %></span>
+      <div class="actions">
+        <a href="/edit/<%= country.abbreviation %>/actors" class="map">Edit Map</a>
+        <a href="/edit/<%= country.abbreviation %>/money/list" class="moneyConnections">Edit Money Connections</a>
+        <a href="/import/<%= country.abbreviation %>/money" class="importCSV">Import CSV</a>
+      </div>
+    </li>
+  <% end %>
 </ul>
