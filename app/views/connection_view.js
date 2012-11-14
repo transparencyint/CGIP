@@ -65,8 +65,10 @@ module.exports = View.extend({
     this.actorRadius = 60;
     this.markerSize = 4;
     this.edgeRadius = 10;
+    this.offsetDistance = 15;
+    this.edgeRadius = 10;
     this.path = "";
-    this.$el.css('margin', -this.strokeWidth/2 + 'px 0 0 '+ -this.strokeWidth/2 + 'px');
+    this.$el.css('margin', -(this.strokeWidth/2 + this.offsetDistance) + 'px 0 0 '+ -(this.strokeWidth/2 + this.offsetDistance) + 'px');
     this.$el.svg();
     this.svg = this.$el.svg('get');
     var defs = this.svg.defs();
@@ -91,26 +93,28 @@ module.exports = View.extend({
   update: function(){
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
+    this.edgeRadius = 10;
+    
     
     var pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
     }    
     var start = {
-      x : from.x - pos.x + this.strokeWidth/2,
-      y : from.y - pos.y + this.strokeWidth/2
+      x : from.x - pos.x + this.strokeWidth/2 + this.offsetDistance,
+      y : from.y - pos.y + this.strokeWidth/2 + this.offsetDistance
     };
     var end = {
-      x : to.x - pos.x + this.strokeWidth/2,
-      y : to.y - pos.y + this.strokeWidth/2
+      x : to.x - pos.x + this.strokeWidth/2 + this.offsetDistance,
+      y : to.y - pos.y + this.strokeWidth/2 + this.offsetDistance
     };
     
     var width = Math.abs(from.x - to.x) + this.strokeWidth;
     var height = Math.abs(from.y - to.y) + this.strokeWidth;
       
     this.svg.configure({
-      'width' : width+ this.strokeWidth,
-      'height' : height + this.strokeWidth
+      'width' : width+ this.strokeWidth + this.offsetDistance,
+      'height' : height + this.strokeWidth + this.offsetDistance
     }, true);
     this.$el.css({
       'left': pos.x + "px",
@@ -123,12 +127,27 @@ module.exports = View.extend({
     var halfY;
 
     //case 1
-    if(start.x < end.x && start.y < end.y){
+    if(start.x < end.x && start.y <= end.y){
+      //case 1f
+      //connections are on the same line
+      if(start.y == end.y){
+        var start2 = {
+          x : start.x - this.edgeRadius,
+          y : start.y
+        };
+        var end2 = {
+          x : end.x + this.edgeRadius,
+          y : end.y
+        };
+        definePath1Line(start2, end2);
+      }
       //case 1c
-      if(end.y - start.y < this.actorRadius){
+      else if(end.y - start.y <= this.actorRadius){
         start.x += this.actorRadius;
         end.x -= this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfX = (end.x - start.x)/2 + start.x;
+        if(end.y - start.y < 2* this.edgeRadius)
+          this.edgeRadius = (end.y - start.y) / 2;
         var start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -142,10 +161,12 @@ module.exports = View.extend({
         definePath3LinesX(start, halfX, end, start2, end2, halfX2, halfX3, 1, 0, this.edgeRadius);
       }
       //case 1d
-      else if(end.x - start.x < this.actorRadius){
+      else if(end.x - start.x <= this.actorRadius){
         start.y += this.actorRadius;
         end.y -= this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfY = (end.y - start.y)/2 + start.y;
+        if(end.x - start.x < 2 * this.edgeRadius)
+          this.edgeRadius = (end.x - start.x) / 2;
         var start2 = {
           x : start.x + this.edgeRadius,
           y : start.y
@@ -174,12 +195,27 @@ module.exports = View.extend({
       }
     }
     //case 2
-    else if(start.x < end.x && start.y > end.y){
+    else if(start.x <= end.x && start.y > end.y){
+      //case 2f
+      //connections are on the same line
+      if(start.x == end.x){
+        var start2 = {
+          x : start.x,
+          y : start.y - this.edgeRadius
+        };
+        var end2 = {
+          x : end.x,
+          y : end.y + this.edgeRadius
+        };
+        definePath1Line(start2, end2);
+      }
       //case 2c
       if (start.y - end.y < this.actorRadius){
         start.x += this.actorRadius;
         end.x -= this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfX = (end.x - start.x)/2 + start.x;
+        if (start.y - end.y < 2 * this.edgeRadius)
+          this.edgeRadius = (start.y - end.y) / 2;
         var start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -197,6 +233,8 @@ module.exports = View.extend({
         start.y -= this.actorRadius;
         end.y += this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfY = (start.y - end.y)/2 + end.y;
+        if (end.x - start.x < 2 * this.edgeRadius)
+          this.edgeRadius = (end.x - start.x) / 2;
         var start2 = {
           x : start.x + this.edgeRadius,
           y : start.y
@@ -225,12 +263,27 @@ module.exports = View.extend({
       }
     }
     //case 3
-    else if(start.x > end.x && start.y < end.y){
+    else if(start.x > end.x && start.y <= end.y){
+      //case 3f
+      //connections are on the same line
+      if(start.y == end.y){
+        var start2 = {
+          x : start.x - this.edgeRadius,
+          y : start.y
+        };
+        var end2 = {
+          x : end.x + this.edgeRadius,
+          y : end.y
+        };
+        definePath1Line(start2, end2);
+      }
       //case 3c
       if(end.y - start.y < this.actorRadius){
         start.x -= this.actorRadius;
         end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfX = (start.x - end.x)/2 + end.x;
+        if (end.y - start.y < 2 * this.edgeRadius)
+          this.edgeRadius = (end.y - start.y) / 2;
         var start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -248,6 +301,8 @@ module.exports = View.extend({
         start.y += this.actorRadius;
         end.y -= this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfY = (end.y - start.y)/2 + start.y;
+        if (start.x - end.x < 2 * this.edgeRadius)
+          this.edgeRadius = (start.x - end.x) / 2;
         var start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -277,11 +332,26 @@ module.exports = View.extend({
     }
     //case 4
     else{
+      //case 1f
+      //connections are on the same line
+      if(start.x == end.x){
+        var start2 = {
+          x : start.x,
+          y : start.y + this.edgeRadius
+        };
+        var end2 = {
+          x : end.x,
+          y : end.y - this.edgeRadius
+        };
+        definePath1Line(start2, end2);
+      }
       //case 4c
       if(start.y - end.y < this.actorRadius){
         start.x -= this.actorRadius;
         end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfX = (start.x - end.x)/2 + end.x;
+        if (start.y - end.y < 2 * this.edgeRadius)
+          this.edgeRadius = (start.y - end.y) / 2;
         var start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -299,6 +369,8 @@ module.exports = View.extend({
         start.y -= this.actorRadius;
         end.y += this.actorRadius + this.markerSize + this.strokeWidth/2;
         halfY = (start.y - end.y)/2 + end.y;
+        if (start.x - end.x < 2 * this.edgeRadius)
+          this.edgeRadius = (start.x - end.x) / 2;
         var start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -395,6 +467,11 @@ module.exports = View.extend({
   }
 
 });
+
+function definePath1Line(start, end){
+    this.path = 'M' + start.x + ',' + start.y + ' L' + end.x + ',' + end.y;
+     this.pathShadow = 'M' + start.x + ',' + start.y + ' L' + end.x + ',' + end.y;
+}
 
 function definePath2Lines(start, end, start2, end2, sweepFlag, edgeRadius){
   if(start.x < end.x){
