@@ -73,7 +73,7 @@ module.exports = View.extend({
         newValue = "New Actor";
       this.model.save({abbreviation: newValue});
     }
-    this.$el.draggable('enable');
+    this.dontDrag = false;
   },
 
   updateName: function(){
