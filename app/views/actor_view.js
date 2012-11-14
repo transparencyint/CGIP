@@ -110,10 +110,9 @@ module.exports = View.extend({
     this.offset.left += dx;
     
     this.editor.dragGroup(dx, dy);
-    this.reposition();
   },
   
-  reposition: function(){
+  updatePosition: function(){
     this.$el.css({
       left: this.offset.left,
       top: this.offset.top
@@ -142,7 +141,7 @@ module.exports = View.extend({
       left : pos.x,
       top : pos.y
     };
-    this.reposition();
+    this.updatePosition();
 
     this.$el.attr('id', this.model.id);
 
