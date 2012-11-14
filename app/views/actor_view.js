@@ -12,7 +12,7 @@ module.exports = View.extend({
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
     'mousedown .inner': 'select',
-    'dblclick' : 'showMetadataForm'
+    'dblclick' : 'showMetadataForm',
     'mousedown': 'dragStart'
   },
   
