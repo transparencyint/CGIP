@@ -27,12 +27,12 @@ module.exports = View.extend({
 
     var amount = this.model.get('amount');
     if(typeof(amount) !== 'undefined')
-      this.$el.find(".amount").val(amount);
-    else
-      this.$el.find(".amount").val('100000');
+      this.$('.amount').val(amount);
 
     var elem = this.$el;
     var model = this.model;    
+
+    this.$('.amount').numeric();
 
     this.$('.amount').draggableInput({
       type: 'integer',

@@ -10,6 +10,7 @@ module.exports = Backbone.Model.extend({
 
   defaults : {
     name: '',
+    abbreviation: '',
     type: 'actor'
   },
 
