@@ -95,8 +95,10 @@ module.exports = View.extend({
     if(!this.dontDrag){
       event.stopPropagation();
       
-      this.startX = event.pageX - this.position.left;
-      this.startY = event.pageY - this.position.top;
+      var pos = this.model.get('pos');
+      
+      this.startX = event.pageX - pos.x;
+      this.startY = event.pageY - pos.y;
     
       $(document).on('mousemove.global', this.drag);
       $(document).one('mouseup', this.dragStop);
@@ -104,17 +106,17 @@ module.exports = View.extend({
   },
 
   drag: function(event){ 
-    var dx = (event.pageX - this.position.left - this.startX) / this.editor.zoom.value;
-    var dy = (event.pageY - this.position.top - this.startY) / this.editor.zoom.value;
+    var pos = this.model.get('pos');
     
-    this.position.top += dy;
-    this.position.left += dx;
+    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
+    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
     this.editor.dragGroup(dx, dy);
   },
   
   updatePosition: function(){
     var pos = this.model.get('pos');
+    
     this.$el.css({
       left: pos.x,
       top: pos.y
@@ -128,30 +130,37 @@ module.exports = View.extend({
   
   snapToGrid: function(){
     //make drag available along a simple grid
-    var gridSize = this.editor.gridSize;      
+    var gridSize = this.editor.gridSize;
+    var pos =  this.model.get('pos');     
 
-    //move the actor to the nearest grid point if it is inside the tolerance
-    var x = Math.round(this.position.left / gridSize) * gridSize;
-    var y = Math.round(this.position.top / gridSize) * gridSize;
+    //move the actor to the nearest grid point
+    var x = Math.round(pos.x / gridSize) * gridSize;
+    var y = Math.round(pos.y / gridSize) * gridSize;
     
-    var dx = x - this.position.left;
-    var dy = this.position.top - y;
+    var dx = x - pos.x;
+    var dy = y - pos.y;
     
-    var editor = this.editor;
+    if(dx !== 0 || dy !== 0){
+      var editor = this.editor;
 
-    $({percent: 0}).animate({percent: 1}, {
-      step: function(){
-        var stepX = this.percent * dx;
-        var stepY = this.percent * dy;
-        
-        editor.dragGroup(stepX, stepY);
-        
-        dx -= stepX;
-        dy -= stepY;
-      },
-      duration: 500,
-      complete: this.editor.saveGroup
-    });
+      $({percent: 0}).animate({percent: 1}, {
+        step: function(){
+          var stepX = this.percent * dx;
+          var stepY = this.percent * dy;
+
+          editor.dragGroup(stepX, stepY);
+
+          dx -= stepX;
+          dy -= stepY;
+        },
+        duration: 100,
+        complete: function(){
+          editor.saveGroup();
+        }
+      });
+    } else {
+      this.editor.saveGroup();
+    }
   },
   
   getRenderData : function(){
@@ -160,12 +169,7 @@ module.exports = View.extend({
 
   afterRender: function(){
     var name = this.model.get('name');
-
-    var pos = this.model.get('pos');
-    this.position = {
-      left : pos.x,
-      top : pos.y
-    };
+    
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
