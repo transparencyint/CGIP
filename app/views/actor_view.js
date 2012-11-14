@@ -12,20 +12,23 @@ module.exports = View.extend({
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
     'mousedown .inner': 'select',
-    'contextmenu .inner': 'showContextMenu'
+    'contextmenu .inner': 'showContextMenu',
+    'mousedown': 'dragStart'
   },
   
   initialize: function(options){
-    _.bindAll(this, 'stopMoving', 'drag');
+    _.bindAll(this, 'dragStop', 'drag');
 
     this.editor = options.editor;
+    this.width = this.editor.radius*2;
+    this.height = this.editor.radius*2;
+    this.dontDrag = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
-    this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
 
@@ -39,11 +42,11 @@ module.exports = View.extend({
   },
 
   disableDraggable: function(){
-    this.$el.draggable('disable');
+    this.dontDrag = true;
   },
 
   enableDraggable: function(){
-    this.$el.draggable('enable');
+    this.dontDrag = false;
   },
 
   select: function(event){
@@ -55,7 +58,7 @@ module.exports = View.extend({
 
   startEditName: function(){
     this.$el.addClass('editingName');
-    this.$el.draggable('disable');
+    this.dontDrag = true;
     this.$('.nameInput').focus();
   },
   
@@ -63,11 +66,13 @@ module.exports = View.extend({
     this.$el.removeClass('editingName');
     var newValue = this.$('.nameInput').val();
     var oldName = this.model.get('name');
+    
     // this is needed here because enter and blur
     // trigger the event both
     if(oldName !== newValue)
       this.model.save({name: newValue});
-    this.$el.draggable('enable');
+    
+    this.dontDrag = false;
   },
 
   updateName: function(){
@@ -85,53 +90,61 @@ module.exports = View.extend({
     this.$el.remove();
   },
   
-  stopMoving : function(){
-    this.model.save(this.getPosition());
+  dragStart: function(event){
+    if(!this.dontDrag){
+      event.stopPropagation();
+      
+      this.startX = event.pageX - this.offset.left;
+      this.startY = event.pageY - this.offset.top;
+    
+      $(document).on('mousemove.global', this.drag);
+      $(document).one('mouseup', this.dragStop);
+    }
   },
 
-  drag: function(event){
-    var pos = this.model.get('pos');
-    var newPos = this.getPosition();
-    var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
-    this.editor.dragGroup(delta);
+  drag: function(event){ 
+    var dx = (event.pageX - this.offset.left - this.startX) / this.editor.zoom.value;
+    var dy = (event.pageY - this.offset.top - this.startY) / this.editor.zoom.value;
+    
+    this.offset.top += dy;
+    this.offset.left += dx;
+    
+    this.editor.dragGroup(dx, dy);
+    this.reposition();
   },
-
-  getPosition : function(event){
-    return { 
-      'pos' : {
-        x : this.$el.offset().left + this.$el.outerWidth()/2,
-        y : this.$el.offset().top + this.$el.outerWidth()/2
-      }
-    };
-  },
-
-  updatePosition: function(){
-    var pos = this.model.get('pos');
+  
+  reposition: function(){
     this.$el.css({
-      left : pos.x,
-      top : pos.y
+      left: this.offset.left,
+      top: this.offset.top
     });
+  },
+  
+  dragStop : function(){
+    this.model.save({
+      'pos' : { 
+        x: this.offset.left,
+        y: this.offset.top 
+    }});
+    
+    $(document).unbind('mousemove.global');
   },
   
   getRenderData : function(){
     return this.model.toJSON();
   },
 
-
   afterRender: function(){
     var name = this.model.get('name');
 
-    this.updatePosition();
+    var pos = this.model.get('pos');
+    this.offset = {
+      left : pos.x,
+      top : pos.y
+    };
+    this.reposition();
 
     this.$el.attr('id', this.model.id);
-
-    // only add the draggable if it's not already set
-    if(!this.$el.hasClass('ui-draggable'))
-      this.$el.draggable({
-        stop: this.stopMoving,
-        drag: this.drag,
-        zIndex: 2
-      });
 
     this.nameElement = this.$el.find('.name');
     
