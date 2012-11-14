@@ -46,6 +46,8 @@ module.exports = View.extend({
     this.zoom = 1;
     this.maxZoom = 1.75;
     this.zoomStep = 0.25;
+
+    this.gridSize = this.radius/2;  
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -63,14 +65,6 @@ module.exports = View.extend({
       this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
       
       this.$el.addClass('zoom' + (this.zoom*100));
-    }
-  },
-
-  deleteOnDelKey: function(){
-    if(this.selectedActors != []) {
-      _.each(this.selectedActors, function(actor){
-        actor.destroy();
-      });
     }
   },
   
@@ -174,15 +168,9 @@ module.exports = View.extend({
     this.workspace.selectable('enable');
   },
 
-  _keyUp: function(event){
+  _keyUp: function(){
     if(this.mode)
       this.deactivateMode();
-
-    //On del key remove selected actors
-    if(event.keyCode === 46){
-      event.preventDefault();
-      this.deleteOnDelKey();
-    }
   },
   
   toggleVisibility: function(event){
@@ -285,6 +273,30 @@ module.exports = View.extend({
       },
       unselected: editor.unselect
     });
+
+    //draw simple grid for help
+    var windowHeight = $(window).height();
+    var windowWidth = $(window).width();
+
+    var lineHolder = $('<div id="gridlines"></div>');
+
+    for(i=0; i<windowHeight; i++){
+      if(i % this.gridSize == 0) {
+        var obj = $('<div class="line-horizontal"></div>');
+        obj.css({'top': i+'px'});
+        lineHolder.append(obj);
+      }
+    }
+    for(i=0; i<windowWidth; i++){
+      if(i % this.gridSize == 0) {
+        var obj = $('<div class="line-vertical"></div>');
+        obj.css({'left': i+'px'});
+        lineHolder.append(obj);
+      }
+    } 
+
+    this.workspace.append(lineHolder);
+
   },
 
   destroy: function(){
