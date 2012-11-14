@@ -1,18 +1,18 @@
 var View = require('./view');
-var ContextMenuView = require('./contextmenu_view');
+var LightboxView = require('./lightbox_view');
 
 module.exports = View.extend({
   
   template : require('./templates/actor'),
   
-  className : 'actor hasContextMenu',
+  className : 'actor',
 
   events: {
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
     'mousedown .inner': 'select',
-    'contextmenu .inner': 'showContextMenu',
+    'dblclick' : 'showMetadataForm',
     'mousedown': 'dragStart'
   },
   
@@ -31,14 +31,11 @@ module.exports = View.extend({
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
-  
-  showContextMenu: function(event){
-    event.preventDefault();
-    this.contextmenu.show(event);
+  showMetadataForm: function(event){
+    this.lightboxView = new LightboxView({model : this.model});
+    $(document.body).append(this.lightboxView.render().el);
   },
 
   disableDraggable: function(){
@@ -175,8 +172,6 @@ module.exports = View.extend({
     this.$el.attr('id', this.model.id);
 
     this.nameElement = this.$el.find('.name');
-    
-    this.$el.append(this.contextmenu.render().el);
 
     this.drawRoleBorders();
   },
