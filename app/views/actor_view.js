@@ -94,8 +94,8 @@ module.exports = View.extend({
     if(!this.dontDrag){
       event.stopPropagation();
       
-      this.startX = event.pageX - this.offset.left;
-      this.startY = event.pageY - this.offset.top;
+      this.startX = event.pageX - this.position.left;
+      this.startY = event.pageY - this.position.top;
     
       $(document).on('mousemove.global', this.drag);
       $(document).one('mouseup', this.dragStop);
@@ -103,30 +103,54 @@ module.exports = View.extend({
   },
 
   drag: function(event){ 
-    var dx = (event.pageX - this.offset.left - this.startX) / this.editor.zoom.value;
-    var dy = (event.pageY - this.offset.top - this.startY) / this.editor.zoom.value;
+    var dx = (event.pageX - this.position.left - this.startX) / this.editor.zoom.value;
+    var dy = (event.pageY - this.position.top - this.startY) / this.editor.zoom.value;
     
-    this.offset.top += dy;
-    this.offset.left += dx;
+    this.position.top += dy;
+    this.position.left += dx;
     
     this.editor.dragGroup(dx, dy);
   },
   
   updatePosition: function(){
+    var pos = this.model.get('pos');
     this.$el.css({
-      left: this.offset.left,
-      top: this.offset.top
+      left: pos.x,
+      top: pos.y
     });
   },
   
   dragStop : function(){
-    this.model.save({
-      'pos' : { 
-        x: this.offset.left,
-        y: this.offset.top 
-    }});
-    
+    this.snapToGrid();    
     $(document).unbind('mousemove.global');
+  },
+  
+  snapToGrid: function(){
+    //make drag available along a simple grid
+    var gridSize = this.editor.gridSize;      
+
+    //move the actor to the nearest grid point if it is inside the tolerance
+    var x = Math.round(this.position.left / gridSize) * gridSize;
+    var y = Math.round(this.position.top / gridSize) * gridSize;
+    
+    var dx = x - this.position.left;
+    var dy = this.position.top - y;
+    
+    var editor = this.editor;
+
+    $({percent: 0}).animate({percent: 1}, {
+      step: function(){
+        var stepX = this.percent * dx;
+        var stepY = this.percent * dy;
+        
+        editor.dragGroup(stepX, stepY);
+        
+        dx -= stepX;
+        dy -= stepY;
+      },
+      duration: 500,
+      complete: this.editor.saveGroup
+    });
   },
   
   getRenderData : function(){
@@ -137,64 +161,13 @@ module.exports = View.extend({
     var name = this.model.get('name');
 
     var pos = this.model.get('pos');
-    this.offset = {
+    this.position = {
       left : pos.x,
       top : pos.y
     };
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
-
-    var nextGridY, nextGridX;
-
-    // only add the draggable if it's not already set
-    if(!this.$el.hasClass('ui-draggable'))
-      this.$el.draggable({
-        drag: function(event, ui){
-          var pos = actorView.model.get('pos');
-          var newPos = actorView.getPosition();
-          var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
-          actorView.editor.dragGroup(delta);
-          
-        },
-        stop: function(event, ui){
-          //make drag available along a simple grid
-          var gridSize = actorView.editor.gridSize;      
-
-          //move the actor to the nearest grid point if it is inside the tolerance
-          var currentDistanceX = Math.round(ui.position.left / gridSize);
-          var currentDistanceY = Math.round(ui.position.top / gridSize);
-
-          //move to next largest gridPoint
-          if(ui.position.top % gridSize > gridSize/2) {
-            nextGridY = currentDistanceY * gridSize;
-          }
-          else {
-            nextGridY = currentDistanceY * gridSize;
-          }
-
-          if(ui.position.left % gridSize > gridSize/2) {
-            nextGridX = currentDistanceX * gridSize;
-          }
-          else {
-            nextGridX = currentDistanceX * gridSize;
-          }
-
-          var pos = actorView.model.get('pos');
-
-          $(this).animate({'left': nextGridX, 'top': nextGridY}, 100, function(){
-            var delta = { x: nextGridX - pos.x, y: nextGridY - pos.y };
-            actorView.editor.dragGroup(delta);
-            
-            //save dragged actors      
-            _.each(actorView.editor.selectedActors, function(actor){
-              actor.save();
-            });
-          });
-        
-        },
-        zIndex: 2
-      });
 
     this.nameElement = this.$el.find('.name');
     

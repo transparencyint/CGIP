@@ -52,12 +52,14 @@ module.exports = View.extend({
       max: 1.75
     };
     
+    this.gridSize = this.radius/2;
+    
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'stopPropagation', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'zoomIn', 'zoomOut', 'slideZoom', 'dragStop', 'drag', 'dragStart');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag');
   },
   
   stopPropagation: function(event){
@@ -100,6 +102,12 @@ module.exports = View.extend({
   dragGroup: function(dx, dy){
     _.each(this.selectedActors, function(actor){
       actor.moveByDelta(dx, dy);
+    });
+  },
+  
+  saveGroup: function(dx, dy){
+    _.each(this.selectedActors, function(actor){
+      actor.save();
     });
   },
   
