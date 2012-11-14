@@ -1,5 +1,4 @@
 var ConnectionView = require('views/connection_view');
-var ConnectionFormView = require('views/connection_form_view');
 
 var ConnectionMode = function(workspace, collection, connectionType, editor){
   this.workspace = workspace;

@@ -94,7 +94,6 @@ module.exports = View.extend({
   },
   
   unselect: function(){
-    this.workspace.find('.contextMenu').removeClass('visible');
     if(this.mode) this.mode.unselect();
     this.selectedActors = [];
   },
@@ -365,7 +364,6 @@ module.exports = View.extend({
 
   destroy: function(){
     View.prototype.destroy.call(this);
-
     $(document).unbind('keyup', this.keyUp);
   }
 });

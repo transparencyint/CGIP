@@ -1,8 +1,8 @@
+<div class="close">&times;</div>
 <div class="movable"></div>
 <form class="connection-form">
 	<label for="amount"> Amount: 
 	<input type="text" class="amount" name="amount"/></label>
-	<input type="submit" value="Save">
+	<button type="submit">Save</button>
+	<button class="delete">Delete</button>
 </form>
-
-

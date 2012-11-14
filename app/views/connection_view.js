@@ -1,5 +1,4 @@
 var View = require('./view');
-var ContextMenuView = require('./contextmenu_view');
 var ConnectionFormView = require('views/connection_form_view');
 
 module.exports = View.extend({
@@ -7,13 +6,12 @@ module.exports = View.extend({
   template: require('./templates/connection'),
 
   tagName : 'div',
-  className : 'connection hasContextMenu',
+  className : 'connection',
 
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
     'dblclick path' : 'showMetadataForm',
-    'contextmenu': 'showContextMenu'
   },
 
   initialize: function(options){
@@ -30,18 +28,10 @@ module.exports = View.extend({
 
     this.model.on('change:amount', this.updateStrokeWidth, this);
     this.model.on('change:amount', this.updateAmount, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
-    this.contextmenu.deletableOnly();
   },
 
   getRenderData : function(){
     return this.model.toJSON();
-  },
-
-  showContextMenu: function(event){
-    event.preventDefault();
-    this.contextmenu.show(event);
   },
 
   select: function(event){
@@ -79,11 +69,7 @@ module.exports = View.extend({
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
 
-    this.$el.append(this.contextmenu.render().el);
-    
     this.$el.addClass( this.model.get("connectionType") );
-
-    var amount = this.model.get("amount");
   },
 
   hasBothConnections: function(){
@@ -349,20 +335,15 @@ module.exports = View.extend({
     var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = this.model.get('amount');
+    var amount = this.model.get('amount') || 0;
 
-    if(typeof(amount) !== 'undefined')
-    {
-      var percent = amount * 100 / maxAmount;
-      var strokeWidth = percent * maxStroke / 100;
+    var percent = amount * 100 / maxAmount;
+    var strokeWidth = percent * maxStroke / 100;
 
-      if(strokeWidth < minStroke)
-        strokeWidth = minStroke;
+    if(strokeWidth < minStroke)
+      strokeWidth = minStroke;
 
-      this.strokeWidth = strokeWidth;
-    }
-    else
-      this.strokeWidth = minStroke;
+    this.strokeWidth = strokeWidth;
 
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
@@ -376,11 +357,13 @@ module.exports = View.extend({
   },
 
   showMetadataForm: function(){
-    //Remove all other forms
-    $('.connection-form-container').remove();
-    var model = this.model;
-    var cfw = new ConnectionFormView({ model: model });
-    $(document.body).append(cfw.render().el);  
+    if(this.model.get('connectionType') === "money"){
+      //Remove all other forms
+      $('.connection-form-container').remove();
+      var model = this.model;
+      var cfw = new ConnectionFormView({ model: model });
+      $(document.body).append(cfw.render().el);  
+    }
 
     //remove all activeClasses from the connections
     $('.connection').each(function(){ $(this).removeClass('activeConnection') });
