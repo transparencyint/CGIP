@@ -335,20 +335,15 @@ module.exports = View.extend({
     var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = Number(this.model.get('amount'));
+    var amount = this.model.get('amount') || 0;
 
-    if(typeof(amount) !== 'undefined')
-    {
-      var percent = amount * 100 / maxAmount;
-      var strokeWidth = percent * maxStroke / 100;
+    var percent = amount * 100 / maxAmount;
+    var strokeWidth = percent * maxStroke / 100;
 
-      if(strokeWidth < minStroke)
-        strokeWidth = minStroke;
+    if(strokeWidth < minStroke)
+      strokeWidth = minStroke;
 
-      this.strokeWidth = strokeWidth;
-    }
-    else
-      this.strokeWidth = minStroke;
+    this.strokeWidth = strokeWidth;
 
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },

@@ -75,8 +75,7 @@ module.exports = View.extend({
 
   submitMetadataInput: function(e){
     e.preventDefault();
-    var _amount = this.$el.find('.amount').val();
-
+    var _amount = Number(this.$el.find('.amount').val());
     this.model.save({
       amount: _amount
     });
