@@ -2,13 +2,13 @@
 <div class="inner">
   <div class="flexbox center">
     <div class="name">
-      <% if @name.length == 0: %>
-        New Actor
+      <% if @abbreviation != "": %>
+        <%= @abbreviation %>
       <% else: %>
-        <%= @name %>
+        New Actor
       <% end %>
     </div>
-    <input type="text" value="<%= @name %>" placeholder="Name" class='nameInput' />
+    <input type="text" value="<%= @abbreviation %>" placeholder="Abbrev." class='nameInput' />
   </div>
 </div>
 
