@@ -21,7 +21,7 @@ module.exports = View.extend({
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
-    this.model.on('change:name', this.updateName, this);
+    this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('change:role', this.drawRoleBorders, this);
@@ -60,16 +60,19 @@ module.exports = View.extend({
   stopEditName: function(event){
     this.$el.removeClass('editingName');
     var newValue = this.$('.nameInput').val();
-    var oldName = this.model.get('name');
+    var oldName = this.model.get('abbreviation');
     // this is needed here because enter and blur
     // trigger the event both
-    if(oldName !== newValue)
-      this.model.save({name: newValue});
+    if(oldName !== newValue){
+      if(!newValue)
+        newValue = "New Actor";
+      this.model.save({abbreviation: newValue});
+    }
     this.$el.draggable('enable');
   },
 
   updateName: function(){
-    this.$('.name').text(this.model.get('name'));
+    this.$('.name').text(this.model.get('abbreviation'));
   },
   
   saveOnEnter: function(event){

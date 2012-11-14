@@ -19,6 +19,12 @@ module.exports = View.extend({
   initialize: function(){
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleEscape');
+
+    this.model.on('change:abbreviation', this.updateName, this);
+  },
+
+  updateName: function(){
+    this.$('#title').text(this.model.get('abbreviation'));
   },
 
   saveData: function(event){
@@ -87,7 +93,8 @@ module.exports = View.extend({
     event.preventDefault();
 
     var _abbreviation = $('#abbreviation').val();
-
+    if(!_abbreviation)
+      _abbreviation = "New Actor"; 
     var _fullname = $('#name').val();
 
     var _organizationType = $('#organizationType').val();
