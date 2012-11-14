@@ -8,7 +8,7 @@
         New Actor
       <% end %>
     </div>
-    <input type="text" value="<%= @abbreviation %>" placeholder="Name" class='nameInput' />
+    <input type="text" value="<%= @abbreviation %>" placeholder="Abbrev." class='nameInput' />
   </div>
 </div>
 

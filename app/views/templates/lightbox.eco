@@ -1,10 +1,12 @@
 <div id="metadataClose">&times;</div>
 
-<h1 id="title"><% if @abbreviation.length == 0: %>
-        New Actor
-      <% else: %>
-        <%= @abbreviation %>
-      <% end %></h1>
+<h1 id="title">
+  <% if @abbreviation.length == 0: %>
+    New Actor
+  <% else: %>
+    <%= @abbreviation %>
+  <% end %>
+</h1>
 
 <% selected = 'selected="selected"' %>
 <% otherType = true %>
