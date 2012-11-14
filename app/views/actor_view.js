@@ -186,7 +186,8 @@ module.exports = View.extend({
     el.find('.svg-holder circle, .svg-holder path').remove();
     
     if(roles && roles.length > 0){
-      var width = height = 120;
+      var width =  130;
+      var height = 130;
       
       el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
       var svg = el.find('.svg-holder').svg('get'); 
@@ -196,7 +197,7 @@ module.exports = View.extend({
         var drawnPath = svg.circle(width/2, width/2, width/2, {
             strokeWidth: 1
           });
-        $(drawnPath).attr('class', roles[0]);
+        $(drawnPath).attr({'class': roles[0], transform: 'translate(-5 -5)'});
       } else {
         var percent = 100 / roles.length;
         var angles = percent * 360 / 100;
@@ -220,7 +221,7 @@ module.exports = View.extend({
             arc((width/2), (height/2), 0, 0, true, x2, y2).
             close(), {
               strokeWidth: 1,
-              transform: 'rotate(90, 60, 60)'
+              transform: 'translate(5 -5), rotate(90, 60, 60)'
             });
 
           $(drawnPath).attr('class', roleValue);
