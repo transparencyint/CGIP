@@ -24,9 +24,10 @@ ConnectionMode.prototype.reset = function(){
   $(document).unbind('keyup', this._keyUp);
 };
 
-ConnectionMode.prototype.actorSelected = function(actor){
+ConnectionMode.prototype.actorSelected = function(actor){  
 
-  if(this.connection.from  !== actor.model){
+  //connection to the same actor (itself) is not possible
+  if(this.connection.from !== actor.model){
     this.selectedActors.push(actor.model);
   }else
     return;
@@ -42,26 +43,40 @@ ConnectionMode.prototype.actorSelected = function(actor){
   
   }else if(this.selectedActors.length === 2){
 
-    var newConnection = new this.collection.model({
-      country: this.selectedActors[0].get('country'),
-      from: this.selectedActors[0].id,
-      to: this.selectedActors[1].id
-    });
-
+    this.connection.to = actor.model;
     var mode = this;
-
-    if(newConnection.get('connectionType') === 'money')
-      newConnection.showMetadataForm = true;
-
-    newConnection.save(null, {
-      success: function(){
-        mode.collection.add(newConnection);
+    //check whether or not same from-to connection already exists
+    var connectionAlreadyExists = false;
+    this.collection.each(function(connection){
+      if(connection.from === mode.connection.from && connection.to === mode.connection.to){
+        connectionAlreadyExists = true;
+        return false;
       }
     });
+
+    if(!connectionAlreadyExists){
+      var newConnection = new this.collection.model({
+        country: this.selectedActors[0].get('country'),
+        from: this.selectedActors[0].id,
+        to: this.selectedActors[1].id
+      });
+
+      if(newConnection.get('connectionType') === 'money')
+        newConnection.showMetadataForm = true;
+
+      newConnection.save(null, {
+        success: function(){
+          mode.collection.add(newConnection);
+        }
+      });
+    }
 
     this.editor.deactivateMode()
     this.connectionView.destroy();
     this.reset();
+
+    //if(connectionAlreadyExists)
+      //alert('This connection already exist!');
   }
 };
 
