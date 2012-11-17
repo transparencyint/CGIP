@@ -1,4 +1,12 @@
 <% for actor in @actors: %>
-  <option value="<%= actor._id %>"><%= actor.name %></option>
+  <option value="<%= actor._id %>">
+	<% if actor.abbreviation && actor.abbreviation!="New Actor": %>
+		<%= actor.abbreviation %>
+	<% else if actor.name: %>
+		<%= actor.name %>
+	<% else: %>
+	  	<%= "Unknown" %>
+	<% end %>
+  </option>
 <% end %>
 <option value="none">--none--</option>

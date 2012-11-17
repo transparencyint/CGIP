@@ -25,7 +25,11 @@ ConnectionMode.prototype.reset = function(){
 };
 
 ConnectionMode.prototype.actorSelected = function(actor){
-  this.selectedActors.push(actor.model);
+
+  if(this.connection.from  !== actor.model){
+    this.selectedActors.push(actor.model);
+  }else
+    return;
   
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
