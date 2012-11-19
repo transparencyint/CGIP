@@ -59,10 +59,20 @@
       background-image url(/images/document-import.png)
 
 #add-country
+  float right
+  margin-top 10px
+
+  input
+    visibility hidden
+    margin-right 5px
+
   ul
     list-style none
+    padding-left 0px
+    margin-top 0px
     li
       padding 5px
+      cursor pointer
       
-      &.active
+      &:hover, &.active
         background: rgba(255, 255, 255, .3)

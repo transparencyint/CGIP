@@ -7,11 +7,13 @@ module.exports = View.extend({
   className : 'countrySelection',
 
   events: {
-    'keyup #add-country input': 'handleKeys'
+    'keyup #add-country input': 'handleKeys',
+    'click #add-country button': 'toggleAddForm'
   },
 
   initialize: function(){
     this.searchAndAddToList = _.debounce(this.searchAndAddToList, 100);
+    this.options.countries.on('add', this.render, this);
   },
 
   getRenderData: function(){
@@ -34,6 +36,7 @@ module.exports = View.extend({
         var activeIndex = activeElement.index();
         var nextIndex = key == 38 ? activeIndex-1 : activeIndex+1;
         countryElements.removeClass('active');
+        // -1 -> end of list; list+1 -> 0
         nextIndex = nextIndex < 0 ? countryElements.length-1 : (nextIndex >= countryElements.length ? 0 : nextIndex)
         countryElements.eq(nextIndex).addClass('active');
       }
@@ -75,11 +78,30 @@ module.exports = View.extend({
 
   addCountry: function(country){
     this.clearSearch();
+    this.options.countries.create({
+      abbreviation: country['alpha-2'],
+      name: country.name,
+      type: 'country'
+    });
     console.log('add', country)
   },
 
   clearSearch: function(){
     this.$('#add-country ul li').remove();
     this.$('#add-country input').val('');
+  },
+
+  toggleAddForm: function(){
+    var input = this.$('#add-country input');
+    var button = this.$('#add-country button');
+    if(input.css('visibility') == 'visible'){
+      this.clearSearch();
+      input.css('visibility', 'hidden');
+      button.text('Add Country');
+    }else{
+      input.css('visibility', 'visible');
+      input.focus();
+      button.text('Close');
+    }
   }
 });

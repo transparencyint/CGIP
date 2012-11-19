@@ -203,6 +203,13 @@ app.get('/countries', function(req, res){
   });
 });
 
+app.post('/countries', auth.ensureAuthenticated, function(req, res){
+  Country.create(req.body, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
+});
+
 //error handling
 app.error(function(error, request, response, next){
   console.dir(error);
