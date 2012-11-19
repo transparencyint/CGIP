@@ -39,13 +39,12 @@ module.exports = View.extend({
       }
     }else if(key == 27){ // ESC
       // clear all the proposals
-      this.$('#add-country ul li').remove();
-      this.$('#add-country input').val('');
+      this.clearSearch();
     }else if(key == 13){ // ENTER
       var currentSelectedCountry = this.$('#add-country ul li.active');
       if(currentSelectedCountry.length > 0){
         var country = currentSelectedCountry.data('country');
-        console.log('add:', country);
+        this.addCountry(country);
       }
     }else if(key == 37 || key == 39){ // LEFT, RIGHT
       // DO NOTHING ;)
@@ -68,9 +67,19 @@ module.exports = View.extend({
     _.each(countries, function(country){
       var newLi = $('<li>').text(country.name).data('country', country);
       newLi.click(function(){
-        console.log($(this).data('country'));
+        countrySelection.addCountry($(this).data('country'));
       });
       countryList.append(newLi);
     });
+  },
+
+  addCountry: function(country){
+    this.clearSearch();
+    console.log('add', country)
+  },
+
+  clearSearch: function(){
+    this.$('#add-country ul li').remove();
+    this.$('#add-country input').val('');
   }
 });
