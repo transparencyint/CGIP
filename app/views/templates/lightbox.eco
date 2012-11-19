@@ -1,10 +1,12 @@
 <div id="metadataClose">&times;</div>
 
 <h1 id="title">
-  <% if @abbreviation.length == 0: %>
-    New Actor
-  <% else: %>
+  <% if @abbreviation != "": %>
     <%= @abbreviation %>
+  <% else if @name != "": %>
+    <%= @name %>
+  <% else: %>
+    New Actor
   <% end %>
 </h1>
 

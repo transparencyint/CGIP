@@ -1,6 +1,6 @@
 <% for actor in @actors: %>
   <option value="<%= actor._id %>">
-	<% if actor.abbreviation && actor.abbreviation!="New Actor": %>
+	<% if actor.abbreviation: %>
 		<%= actor.abbreviation %>
 	<% else if actor.name: %>
 		<%= actor.name %>

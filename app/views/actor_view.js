@@ -28,12 +28,13 @@ module.exports = View.extend({
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:abbreviation', this.updateName, this);
+    this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
   },
 
-  showMetadataForm: function(event){
+  showMetadataForm: function(){
     this.lightboxView = new LightboxView({model : this.model});
     $(document.body).append(this.lightboxView.render().el);
   },
@@ -53,7 +54,8 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(){
+  startEditName: function(event){
+    event.stopPropagation();
     this.$el.addClass('editingName');
     this.dontDrag = true;
     this.$('.nameInput').focus();
@@ -61,20 +63,46 @@ module.exports = View.extend({
   
   stopEditName: function(event){
     this.$el.removeClass('editingName');
-    var newValue = this.$('.nameInput').val();
-    var oldName = this.model.get('abbreviation');
+    var input = this.$('.nameInput');
+    var newValue = input.val();
+    var oldValue;
+
+    var isAbbrev = input.attr('placeholder') === "Abbrev.";
+    if(isAbbrev){
+      oldValue = this.model.get('abbreviation');
+    }else{
+      oldValue = this.model.get('name');
+    }
+
     // this is needed here because enter and blur
     // trigger the event both
-    if(oldName !== newValue){
-      if(!newValue)
-        newValue = "New Actor";
-      this.model.save({abbreviation: newValue});
+    if(oldValue !== newValue){
+      if(isAbbrev)
+        this.model.save({abbreviation: newValue});
+      else
+        this.model.save({name : newValue});
     }
     this.dontDrag = false;
   },
 
+
+
   updateName: function(){
-    this.$('.name').text(this.model.get('abbreviation'));
+    var abbrev = this.model.get('abbreviation');
+    var name = this.model.get('name');
+    var div = this.$('.name');
+    var input = this.$('.nameInput');
+    if(abbrev !== ""){
+      div.text(abbrev);
+      input.attr('placeholder', 'Abbrev.');
+    }else if(name !== ""){
+      div.text(name);
+      input.attr('placeholder', 'Name');
+    }else {
+      div.text("New Actor");
+      input.attr('placeholder', 'Abbrev.');
+    }
+    console.log(input.attr('placeholder'));
   },
   
   saveOnEnter: function(event){

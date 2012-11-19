@@ -4,18 +4,20 @@
     <div class="name">
       <% if @abbreviation != "": %>
         <%= @abbreviation %>
+      <% else if @name != "": %>
+        <%= @name %>
       <% else: %>
         New Actor
       <% end %>
     </div>
-    <input type="text" value="<%= @abbreviation %>" placeholder="Abbrev." class='nameInput' />
+    <input type="text" value="<%= @abbreviation %>" placeholder="<% if @abbreviation != '' || @name == '': %>Abbrev. <% else: %>Name <% end %>" class='nameInput' />
   </div>
 </div>
 
 <!--
 <ul class="overlay list">
 	<% if @organizationType: %>
-  	<li>The Actor is a <i><%= @organizationType %></i>
+  	<li>The Actor is a <i><%= @organifzationType %></i>
   <% end %>
 	<% if @corruptionRisk: %>
   	<li><%= @corruptionRisk %>
