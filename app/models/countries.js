@@ -7,5 +7,14 @@ module.exports = Collection.extend({
   
   comparator: function(country){
     return country.get('name');
+  },
+
+  containsCountry: function(iso){
+    var contains = false;
+    this.each(function(country){
+      if(country.get('abbreviation') == iso)
+        contains = true;
+    });
+    return contains;
   }
 });

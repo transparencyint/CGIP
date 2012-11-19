@@ -81,12 +81,12 @@ module.exports = View.extend({
 
   addCountry: function(country){
     this.clearSearch();
-    this.options.countries.create({
-      abbreviation: country['alpha-2'],
-      name: country.name,
-      type: 'country'
-    });
-    console.log('add', country)
+    if(!this.options.countries.containsCountry(country['alpha-2']))
+      this.options.countries.create({
+        abbreviation: country['alpha-2'],
+        name: country.name,
+        type: 'country'
+      });
   },
 
   clearSearch: function(){
