@@ -75,8 +75,8 @@ ConnectionMode.prototype.actorSelected = function(actor){
     this.connectionView.destroy();
     this.reset();
 
-    //if(connectionAlreadyExists)
-      //alert('This connection already exist!');
+    //TODO 
+    //add a nice feedback notification to tell that this connection already Exists 
   }
 };
 
