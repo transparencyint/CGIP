@@ -3,5 +3,9 @@ var Collection = require('./collection');
 
 module.exports = Collection.extend({
   model: Country,
-  url: '/countries'
+  url: '/countries',
+  
+  comparator: function(country){
+    return country.get('name');
+  }
 });
