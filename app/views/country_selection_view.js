@@ -28,9 +28,11 @@ module.exports = View.extend({
       var countryList = this.$('#add-country ul');
       var countryElements = this.$('#add-country ul li');
       var activeElement = countryList.find('.active');
+      var input = this.$('#add-country input');
 
       if(activeElement.length == 0){ // select the first element
-        countryElements.first().addClass('active')
+        countryElements.first().addClass('active');
+        input.val(countryList.first().text())
       }else{
         // move the active class up / down
         var activeIndex = activeElement.index();
@@ -39,6 +41,7 @@ module.exports = View.extend({
         // -1 -> end of list; list+1 -> 0
         nextIndex = nextIndex < 0 ? countryElements.length-1 : (nextIndex >= countryElements.length ? 0 : nextIndex)
         countryElements.eq(nextIndex).addClass('active');
+        input.val(countryElements.eq(nextIndex).text())
       }
     }else if(key == 27){ // ESC
       // clear all the proposals
