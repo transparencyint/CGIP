@@ -13,3 +13,8 @@
     </li>
   <% end %>
 </ul>
+
+<div id="add-country">
+  <input type="text" placeholder="type to add country..." /><button>Add Country</button>
+  <ul></ul>
+</div>

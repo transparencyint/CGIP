@@ -20,13 +20,6 @@ module.exports = View.extend({
   getRenderData: function(){
     var currentLocation = this.currentLocation;
 
-    /*
-    // Almost fuzzy search
-    _.select(country_list, function(country){
-      return (country.name.toLowerCase().indexOf('Ko'.toLowerCase()) != -1);
-    })
-    */
-
     // find the country in the country list
     var currentCountry = _.find(country_list, function(country){
       return country['alpha-2'] === currentLocation;
