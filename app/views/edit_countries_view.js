@@ -25,9 +25,8 @@ module.exports = View.extend({
   deleteCountry: function(event){
     var countryId = $(event.currentTarget).data('country-id');
     var country = this.options.countries.get(countryId);
-    country.destroy();
-    console.log(countryId, country.toJSON())
-    //this.options.first()
+    if(confirm('Are you sure you want to remove ' + country.get('name') + '?'))
+      country.destroy();
   },
 
   handleKeys: function(event){
@@ -95,7 +94,6 @@ module.exports = View.extend({
     var results = this.$('#add-country ul')
     var input = this.$('#add-country input')
     var inputPos = input.offset();
-    console.log(inputPos)
     results.css({
       top: inputPos.top + input.height(),
       left: inputPos.left
@@ -104,12 +102,17 @@ module.exports = View.extend({
 
   addCountry: function(country){
     this.clearSearch();
-    if(!this.options.countries.containsCountry(country['alpha-2']))
-      this.options.countries.create({
+    if(!this.options.countries.containsCountry(country['alpha-2'])){
+      var countryModel = new this.options.countries.model({
         abbreviation: country['alpha-2'],
         name: country.name,
         type: 'country'
       });
+      var countries = this.options.countries;
+      countryModel.save().done(function(){
+        countries.add(countryModel);
+      });
+    }
   },
 
   clearSearch: function(){

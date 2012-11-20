@@ -13,4 +13,4 @@
     </li>
   <% end %>
 </ul>
-<a href="/edit/countries">Edit Countries</a>
+<a href="/edit/countries" class="edit-countries">Edit Countries</a>
