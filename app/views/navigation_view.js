@@ -9,14 +9,6 @@ module.exports = View.extend({
   
   currentRoute: '',
   currentLocation: '',
-  countryTable: {
-    'pe': 'Peru',
-    'do': 'Dom. Republic',
-    'mx': 'Mexico',
-    'bd': 'Bangladesh',
-    'ke': 'Kenya',
-    'mv': 'Maldives'
-  },
   locationTable: {
     'money_connections_list': 'Money List'
   },
@@ -26,8 +18,16 @@ module.exports = View.extend({
   },
   
   getRenderData: function(){
+    var currentLocation = this.currentLocation;
+
+    // find the country in the country list
+    var currentCountry = _.find(country_list, function(country){
+      return country['alpha-2'] === currentLocation;
+    });
+    var name = currentCountry ? currentCountry.name : '';
+
     return { 
-      locationName: this.countryTable[ this.currentLocation ],
+      locationName: name,
       locationType: this.locationTable[ this.currentRoute ],
       isoLocation: this.currentLocation
     };

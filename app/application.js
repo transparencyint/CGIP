@@ -1,22 +1,31 @@
+var Countries = require('models/countries');
+
 // Application bootstrapper.
 Application = {
-  initialize: function() {
+  initialize: function(start) {
+    var app = this;
     var Router = require('lib/router');
     var NavigationView = require('views/navigation_view');
     
-    // initiate the routers
+    // initiate the router
     this.router = new Router();
+    this.router.app = this;
     
     // hijack link clicks
     this.hijackLinks(this.router);
-    
-    // render navigation view
-    var nav = new NavigationView({ router: this.router });
-    nav.render();
-    
-    $(document.body).append(nav.el);
 
-    if (typeof Object.freeze === 'function') Object.freeze(this);
+    // singleton for country-list
+    this.countries = new Countries();
+
+    // render navigation view
+    this.nav = new NavigationView({ router: this.router, countries: this.countries });
+
+    // fetch the countries and start the app
+    $.when(this.countries.fetch()).done(function(){
+      app.nav.render();
+      $(document.body).append(app.nav.el);
+      start();
+    });
   },
 
   hijackLinks: function(router){

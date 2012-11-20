@@ -41,7 +41,7 @@ module.exports = AsyncRouter.extend({
   },
 
   country_selection: function(){
-    this.switchToView(new CountrySelectionView());
+    this.switchToView(new CountrySelectionView({countries: this.app.countries}));
   },
 
   country_edit_index: function(country){
