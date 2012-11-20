@@ -95,6 +95,7 @@ app.get('/', routeHandler.checkLogin);
 /* Push state URLs */
 app.get('/login', routeHandler.redirectWhenLoggedIn);
 app.get('/edit', routeHandler.checkLogin);
+app.get('/edit/countries', routeHandler.checkLogin);
 app.get('/edit/:country', routeHandler.checkLogin);
 app.get('/edit/:country/actors', routeHandler.checkLogin);
 app.get('/edit/:country/money/list', routeHandler.checkLogin);
