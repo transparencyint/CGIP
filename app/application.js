@@ -1,11 +1,11 @@
 var Countries = require('models/countries');
+var Router = require('lib/router');
+var NavigationView = require('views/navigation_view');
 
 // Application bootstrapper.
 Application = {
   initialize: function(start) {
     var app = this;
-    var Router = require('lib/router');
-    var NavigationView = require('views/navigation_view');
     
     // initiate the router
     this.router = new Router();
