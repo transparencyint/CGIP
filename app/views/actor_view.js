@@ -67,13 +67,18 @@ module.exports = View.extend({
   },
   
   stopEditName: function(event){
+    //event.preventDefault();
+    //event.stopPropagation();
+    console.log("Event: " + event.type);
+    console.log("Event: " + event.currentTarget);
+    console.log("stopEditName");
     this.$el.removeClass('editingName');
     var input = this.$('.nameInput');
     var newValue = input.val();
     var oldValue;
     
     var isAbbrev = (input.attr('placeholder') === "Abbrev");
-
+    console.log("isAbbrev " + isAbbrev);
     if(isAbbrev){
       oldValue = this.model.get('abbreviation');
     }else{
@@ -113,9 +118,16 @@ module.exports = View.extend({
   
   saveOnEnter: function(event){
     if(event.keyCode === 13){
-      event.preventDefault();
-      if(this.$el.hasClass('editingName'))
-        this.stopEditName(event);
+      //event.preventDefault();
+      //event.stopPropagation();
+      if(this.$el.hasClass('editingName')){
+        console.log("saveOnEnter");
+        //this.stopEditName(event);
+        
+        $(this.$('.nameInput')).blur();
+        //this.unbind('blur .nameInput');
+        //$(this.$('.nameInput')).focusout();
+      }
     }
   },
 
