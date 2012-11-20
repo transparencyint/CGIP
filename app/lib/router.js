@@ -1,6 +1,7 @@
 var AsyncRouter = require('./async_router');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
+var EditCountriesView = require('views/edit_countries_view');
 var CountryEditIndexView = require('views/country_edit_index_view');
 var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
@@ -19,6 +20,8 @@ module.exports = AsyncRouter.extend({
     'login/': 'login',
     'edit' : 'country_selection',
     'edit/' : 'country_selection',
+    'edit/countries': 'edit_countries',
+    'edit/countries/': 'edit_countries',
     'edit/:country': 'country_edit_index',
     'edit/:country/': 'country_edit_index',
     'edit/:country/actors': 'actor_editor',
@@ -42,6 +45,10 @@ module.exports = AsyncRouter.extend({
 
   country_selection: function(){
     this.switchToView(new CountrySelectionView({countries: this.app.countries}));
+  },
+
+  edit_countries: function(){
+    this.switchToView(new EditCountriesView({countries: this.app.countries}));
   },
 
   country_edit_index: function(country){
