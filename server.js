@@ -210,6 +210,13 @@ app.post('/countries', auth.ensureAuthenticated, function(req, res){
   });
 });
 
+app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
+  Country.remove(req.params.id, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
+});
+
 //error handling
 app.error(function(error, request, response, next){
   console.dir(error);
