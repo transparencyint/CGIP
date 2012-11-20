@@ -1,4 +1,5 @@
 .connection
+  z-index 1
   &.ui-selected
     path
       stroke hsl(205,100%,55%)
@@ -33,7 +34,17 @@
   border-radius 5px
   box-shadow 0 1px 5px rgba(0,0,0,.13)
 
+  .close
+    position absolute
+    top 0
+    right 0
+    cursor pointer
+    font-size 30px
+    line-height 1
+    padding 5px
+
   .movable
+    width 250px
     height 10px
     background #eee
     cursor move
@@ -41,13 +52,13 @@
   input[type=text]
     width 100%
     border 1px solid #999
-
-  input[type=submit]
+    
+  button
     margin 10px 0
     padding 10px 15px
     
-
 .activeConnection path
   stroke #a00000
 .activeConnection use
   fill #a00000
+
