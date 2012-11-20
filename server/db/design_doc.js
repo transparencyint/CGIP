@@ -22,4 +22,12 @@ ddoc.views.actorsByCountry = {
   }"
 };
 
+ddoc.views.allCountries = {
+  map: "function(doc) {\
+    if (doc.type && doc.type === 'country') {\
+      emit(null, doc);\
+    }\
+  }"
+};
+
 exports.design_doc = ddoc;

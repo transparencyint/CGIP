@@ -7,7 +7,7 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
-  application.initialize();
-  
-  Backbone.history.start({pushState: true});
+  application.initialize(function(){
+    Backbone.history.start({pushState: true});
+  });
 });
