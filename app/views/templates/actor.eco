@@ -10,7 +10,7 @@
         New Actor
       <% end %>
     </div>
-    <input type="text" value="<%= @abbreviation %>" placeholder="<% if @abbreviation != '' || @name == '': %>Abbrev. <% else: %>Name <% end %>" class='nameInput' />
+    <input type="text" placeholder="<% if @abbreviation != '' || @name == '': %>Abbrev<% else: %>Name <% end %>" class='nameInput' />
   </div>
 </div>
 

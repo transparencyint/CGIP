@@ -23,6 +23,7 @@ module.exports = View.extend({
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
+    this.updateName();
   },
 
   updateName: function(){

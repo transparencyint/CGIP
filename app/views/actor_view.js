@@ -58,7 +58,12 @@ module.exports = View.extend({
     event.stopPropagation();
     this.$el.addClass('editingName');
     this.dontDrag = true;
-    this.$('.nameInput').focus();
+
+    var input = this.$('.nameInput');
+    var divText = $(this.$('.name')).text();
+    input.val($.trim(divText));
+    input.focus();
+    input.select();
   },
   
   stopEditName: function(event){
@@ -66,8 +71,9 @@ module.exports = View.extend({
     var input = this.$('.nameInput');
     var newValue = input.val();
     var oldValue;
+    
+    var isAbbrev = (input.attr('placeholder') === "Abbrev");
 
-    var isAbbrev = input.attr('placeholder') === "Abbrev.";
     if(isAbbrev){
       oldValue = this.model.get('abbreviation');
     }else{
@@ -83,32 +89,33 @@ module.exports = View.extend({
         this.model.save({name : newValue});
     }
     this.dontDrag = false;
+    console.log(oldValue + " o-n " + newValue);
   },
-
-
 
   updateName: function(){
     var abbrev = this.model.get('abbreviation');
     var name = this.model.get('name');
     var div = this.$('.name');
     var input = this.$('.nameInput');
+  
     if(abbrev !== ""){
+      input.attr('placeholder', 'Abbrev');
       div.text(abbrev);
-      input.attr('placeholder', 'Abbrev.');
     }else if(name !== ""){
-      div.text(name);
       input.attr('placeholder', 'Name');
+      div.text(name);
     }else {
+      input.attr('placeholder', 'Abbrev');
       div.text("New Actor");
-      input.attr('placeholder', 'Abbrev.');
     }
-    console.log(input.attr('placeholder'));
+    console.log(abbrev + " abb-name " + name);
   },
   
   saveOnEnter: function(event){
     if(event.keyCode === 13){
       event.preventDefault();
-      this.stopEditName(event);
+      if(this.$el.hasClass('editingName'))
+        this.stopEditName(event);
     }
   },
 
