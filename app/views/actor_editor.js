@@ -19,6 +19,7 @@ module.exports = View.extend({
     'click .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
+    'click .fit.screen': 'fitToScreen',
     'mousedown': 'dragStart',
     'mousedown .bar': 'stopPropagation'
   },
@@ -36,6 +37,9 @@ module.exports = View.extend({
     this.radius = 60;
     this.smallRadius = 40;
     
+    // padding for fit-to-screen
+    this.padding = 5;
+    
     this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
     // initialize the collections
@@ -52,7 +56,12 @@ module.exports = View.extend({
       max: 1.75
     };
     
-    this.gridSize = this.radius/2;
+    this.offset = {
+      left: 0,
+      top: 0
+    };
+    
+    this.gridSize = this.radius;
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -82,15 +91,79 @@ module.exports = View.extend({
     this.zoom.value = ui.value;
 
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
-    this.$el.addClass('zoom' + (this.zoom.value*100));
+    //this.$el.addClass('zoom' + (this.zoom.value*100));
+    this.$el.css('background-size', this.zoom.value*10);
+  },
+  
+  zoomTo: function(value){
+    this.slider.slider("value", value);
   },
   
   zoomIn: function(){
-    this.slider.slider("value", this.zoom.value + this.zoom.step);
+    this.zoomTo(this.zoom.value + this.zoom.step);
   },
   
   zoomOut: function(){
-    this.slider.slider("value", this.zoom.value - this.zoom.step);
+    this.zoomTo(this.zoom.value - this.zoom.step);
+  },
+  
+  fitToScreen: function(){
+    var boundingBox = this.getBoundingBox();
+    
+    // center workspace
+    this.moveTo(0, 0);
+    
+    // check if the actors as a whole are not yet centered
+    // if thats the case, move them to the left
+    if(boundingBox.left !== boundingBox.width/2){
+      
+      // calculate center offset
+      var dx = boundingBox.left + boundingBox.width/2;
+      
+      this.actors.each(function(actor){
+        actor.moveByDelta(-dx, 0);
+        actor.save();
+      });
+    }
+    
+    var horizontalRatio = this.$el.width() / (boundingBox.width + this.padding*2);
+    var verticalRatio = this.$el.height() / (boundingBox.height + this.padding*2);
+    
+    // use the smaller ratio
+    var fitZoom = Math.min(horizontalRatio, verticalRatio);
+    
+    // round it to our zoom.step
+    fitZoom = Math.floor( fitZoom / this.zoom.step ) * this.zoom.step;
+    
+    // keep it inside our zoom boundaries
+    fitZoom = Math.max(this.zoom.min, Math.min(this.zoom.max, fitZoom));
+    
+    this.zoomTo(fitZoom);
+  },
+  
+  getBoundingBox: function(){
+    var left = Infinity;
+    var right = 0;
+    var top = Infinity;
+    var bottom = 0;
+    
+    this.actors.each(function(actor){
+      var pos = actor.get('pos');
+      
+      if(pos.y < top) top = pos.y;
+      if(pos.y > bottom) bottom = pos.y;
+      if(pos.x < left) left = pos.x;
+      if(pos.x > right) right = pos.x;
+    });
+    
+    return {
+      left: left,
+      top: top,
+      width: right - left,
+      height: bottom - top,
+      bottom: bottom,
+      right: right
+    };
   },
   
   unselect: function(){
@@ -250,8 +323,8 @@ module.exports = View.extend({
   },
   
   panBy: function(x, y){
-    this.offset.top += (y / this.zoom.value);
     this.offset.left += (x / this.zoom.value);
+    this.offset.top += (y / this.zoom.value);
     
     // dont let the user pan above y = 0
     if(this.offset.top >= 0){
@@ -260,20 +333,29 @@ module.exports = View.extend({
     }
     
     // snap to center
-    if(x !== 0 && Math.abs(this.offset.left - this.center) < 10)
-      this.offset.left = this.center;
+    if(x !== 0 && Math.abs(this.offset.left) < 10)
+      this.offset.left = 0;
+      
+    this.moveTo(this.offset.left, this.offset.top);
+  },
+  
+  moveTo: function(x, y){
+    this.offset.left = x;
+    this.offset.top = y;
+    
+    x += this.center;
     
     this.workspace.css({
-      left: this.offset.left,
-      top: this.offset.top
+      left: x,
+      top: y
     });
     
     this.$el.css({
-      backgroundPositionX: this.offset.left,
-      backgroundPositionY: this.offset.top
+      backgroundPositionX: x,
+      backgroundPositionY: y
     });
     
-    this.$('.centerLine').css('left', this.offset.left);
+    this.$('.centerLine').css('left', x);
   },
   
   dragStop : function(){
@@ -283,9 +365,9 @@ module.exports = View.extend({
   alignCenter: function(){
     var nextCenter = this.$el.width()/2;
     var dx = nextCenter - this.center;
-    this.panBy(dx, 0);
-    
     this.center = nextCenter;
+    
+    this.panBy(0, 0);
   },
   
   render: function(){
@@ -311,12 +393,6 @@ module.exports = View.extend({
   
   initializeDimensions: function(){
     this.center = this.$el.width()/2;
-    
-    // store current workspace offset
-    this.offset = {
-      left: this.center,
-      top: 0
-    };
   },
   
   afterRender: function(){
