@@ -84,7 +84,8 @@ module.exports = View.extend({
 
     this.model.save({abbreviation : this.$('.abbrev-input').val()});
     this.$('.abbrev-input').hide();
-
+    this.showProperName();
+    
     this.dontDrag = false;
   },
   
@@ -93,6 +94,7 @@ module.exports = View.extend({
 
     this.model.save({name : this.$('.name-input').val()});
     this.$('.name-input').hide();
+    this.showProperName();
 
     this.dontDrag = false;
   },
