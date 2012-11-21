@@ -1,29 +1,16 @@
 <div class="svg-holder"></div>
 <div class="inner">
   <div class="flexbox center">
-    <div class="name">
-      <% if @abbreviation != "": %>
+
+    <div class="abbrev">
         <%= @abbreviation %>
-      <% else if @name != "": %>
-        <%= @name %>
-      <% else: %>
-        New Actor
-      <% end %>
     </div>
-    <input type="text" placeholder="<% if @abbreviation != '' || @name == '': %>Abbrev<% else: %>Name <% end %>" class='nameInput' />
+    <input type="text" placeholder="Abbrev" class='abbrev-input' />
+
+    <div class="name">
+        <%= @name %>
+    </div>
+    <input type="text" placeholder="Name" class='name-input' />
+
   </div>
 </div>
-
-<!--
-<ul class="overlay list">
-	<% if @organizationType: %>
-  	<li>The Actor is a <i><%= @organifzationType %></i>
-  <% end %>
-	<% if @corruptionRisk: %>
-  	<li><%= @corruptionRisk %>
-  <% end %>
-	<% if @description: %>
-	 <li><%= @description %>
-	<% end %>
-</ul>
--->

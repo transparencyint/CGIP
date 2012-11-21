@@ -6,7 +6,7 @@
   <% else if @name != "": %>
     <%= @name %>
   <% else: %>
-    New Actor
+    Unknown
   <% end %>
 </h1>
 

@@ -34,7 +34,7 @@ module.exports = View.extend({
     else if(name !== "")
       this.$('#title').text(name);
     else
-      this.$('#title').text("New Actor");
+      this.$('#title').text("Unknown");
   },
 
   deleteActor: function(){
