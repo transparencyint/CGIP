@@ -52,7 +52,7 @@ module.exports = View.extend({
       max: 1.75
     };
     
-    this.gridSize = this.radius/2;
+    this.gridSize = this.radius;
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
