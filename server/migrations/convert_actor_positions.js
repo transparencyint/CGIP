@@ -45,14 +45,21 @@ var migrateCountry = function(country, callback){
     }
     
     console.log('Calculating bounding box...');
+    
     var minX = _.min(actors, function(actor){ return actor.pos.x; }).pos.x;
     var maxX = _.max(actors, function(actor){ return actor.pos.x; }).pos.x;
     var subsctract = minX + ((maxX - minX) / 2);
+    var gridSize = 60;
+
     console.log('minX:', minX, 'maxX:', maxX);
     console.log('Starting')
     _.each(actors, function(actor){
       if(!migrationHelper.hasBeenMigrated(actor, migrationID)){
         actor.pos.x -= subsctract;
+        var x = Math.round(actor.pos.x / gridSize) * gridSize;
+        var y = Math.round(actor.pos.x / gridSize) * gridSize;
+        actor.pos.x = x;
+        actor.pos.y = y;
         Actor.edit(actor._id, actor, countDown);
       }else{
         countDown();
