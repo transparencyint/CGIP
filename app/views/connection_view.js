@@ -53,7 +53,14 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
+    var connectionType = this.model.get("connectionType");
+    if(connectionType === 'accountability')
+      this.strokeStyle = 'white';
+    else if(connectionType === 'monitoring')
+      this.strokeStyle = 'black';
+    else 
+      this.strokeStyle = '#f8df47';
+
     this.selectStyle = 'hsl(205,100%,55%)';
     
     this.updateStrokeWidth();
