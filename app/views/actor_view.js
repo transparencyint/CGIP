@@ -9,8 +9,10 @@ module.exports = View.extend({
 
   events: {
     'dblclick .name': 'startEditName',
-    'blur .nameInput': 'stopEditName',
-    'keydown .nameInput': 'saveOnEnter',
+    'dblclick .abbrev': 'startEditName',
+    'blur .abbrev-input': 'stopEditAbbrev',
+    'blur .name-input': 'stopEditName',
+    'keydown input': 'saveOnEnter',
     'mousedown .inner': 'select',
     'dblclick' : 'showMetadataForm',
     'mousedown': 'dragStart'
@@ -27,13 +29,14 @@ module.exports = View.extend({
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
-    this.model.on('change:abbreviation', this.updateName, this);
+    this.model.on('change:abbreviation', this.updateAbbrev, this);
+    this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
   },
 
-  showMetadataForm: function(event){
+  showMetadataForm: function(){
     this.lightboxView = new LightboxView({model : this.model});
     $(document.body).append(this.lightboxView.render().el);
   },
@@ -53,34 +56,82 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(){
+  startEditName: function(event){
+    event.stopPropagation();
     this.$el.addClass('editingName');
     this.dontDrag = true;
-    this.$('.nameInput').focus();
+    var current = $(event.currentTarget);
+    var input;
+    if(current.hasClass('name')){
+      input = this.$('.name-input');
+      this.$('.abbrev-input').hide();
+      this.$('.name-input').show();
+    }else if(current.hasClass('abbrev')){
+      input = this.$('.abbrev-input');
+      this.$('.name-input').hide();
+      this.$('.abbrev-input').show();
+    }
+
+    var divText = current.text();
+    current.hide();
+    input.val($.trim(divText));
+    input.focus();
+    input.select();
+  },
+
+  stopEditAbbrev: function(event){
+    this.$el.removeClass('editingName');
+
+    this.model.save({abbreviation : this.$('.abbrev-input').val()});
+    this.$('.abbrev-input').hide();
+
+    this.dontDrag = false;
   },
   
   stopEditName: function(event){
     this.$el.removeClass('editingName');
-    var newValue = this.$('.nameInput').val();
-    var oldName = this.model.get('abbreviation');
-    // this is needed here because enter and blur
-    // trigger the event both
-    if(oldName !== newValue){
-      if(!newValue)
-        newValue = "New Actor";
-      this.model.save({abbreviation: newValue});
-    }
+
+    this.model.save({name : this.$('.name-input').val()});
+    this.$('.name-input').hide();
+
     this.dontDrag = false;
   },
 
+  showProperName: function(event){
+    var abbrev = this.model.get('abbreviation');
+    var name = this.model.get('name');
+    if(abbrev.length !== 0){
+      this.$('.name').hide();
+      this.$('.abbrev').show();
+    }else if(name.length !== 0){
+      this.$('.abbrev').hide();
+      this.$('.name').show();
+    }else{
+      this.$('.name').hide();
+      this.$('.abbrev').show();
+    }
+  },
+
+  updateAbbrev: function(){
+    var abbrev = this.model.get('abbreviation');
+    if(abbrev.length == 0){
+      this.$('.abbrev').text('Unknown');
+    }else
+      this.$('.abbrev').text(abbrev);
+    this.showProperName();
+  },
+
   updateName: function(){
-    this.$('.name').text(this.model.get('abbreviation'));
+    var name = this.model.get('name');
+    this.$('.name').text(name);
+    this.showProperName();
   },
   
   saveOnEnter: function(event){
     if(event.keyCode === 13){
-      event.preventDefault();
-      this.stopEditName(event);
+      if(this.$el.hasClass('editingName')){
+        $(event.currentTarget).blur();
+      }
     }
   },
 
@@ -165,13 +216,15 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    var name = this.model.get('name');
-    
+
+    this.updateAbbrev();
+    this.updateName();
+
+    this.showProperName();
+
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
-
-    this.nameElement = this.$el.find('.name');
 
     this.drawRoleBorders();
   },
