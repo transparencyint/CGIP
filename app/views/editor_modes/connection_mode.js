@@ -34,8 +34,9 @@ ConnectionMode.prototype.actorSelected = function(actor){
   
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
-    this.connection.to.set('pos', this.connection.from.get('pos'));
+    this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
     this.connectionView = new ConnectionView({model: this.connection, noClick: true});
+    this.connectionView.actorRadius = 0;
     this.connectionView.render();
     this.workspace.append(this.connectionView.el);
     $(document).bind('mousemove', this._moveDummy);
@@ -97,10 +98,14 @@ ConnectionMode.prototype.unselect = function(){
 };
 
 ConnectionMode.prototype._moveDummy = function(event){
+  var pos = this.connection.to.get('pos');
+  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.center) / this.editor.zoom.value;
+  var dy = (event.pageY - pos.y - this.editor.offset.top) / this.editor.zoom.value;
+
   this.connection.to.set({
     pos: {
-      x: event.clientX,
-      y: event.clientY
+      x: pos.x + dx,
+      y: pos.y + dy
     }
   });
 };

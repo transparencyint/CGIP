@@ -8,7 +8,7 @@
 <ul class="countrys clearfix">
   <% for country in @countries: %>
     <li>
-      <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.png);"></span>
+      <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
       <span class="name"><%= country.name %></span>
       <span class="delete" data-country-id="<%= country._id %>">Delete</span>
     </li>
