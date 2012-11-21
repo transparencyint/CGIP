@@ -21,6 +21,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('./server/models/user').User;
 var Actor = require('./server/models/actor').Actor;
 var Connection = require('./server/models/connection').Connection;
+var Country = require('./server/models/country').Country;
 
 var app = express.createServer();
 
@@ -63,7 +64,7 @@ app.configure(function(){
 /** TODO: find out why res.redirect('/') is not working on uberhost */
 var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
 
-/** Is able to perform general routing actions */
+/** Performs general routing actions */
 var routeHandler = {
 
   /** Redirects to the login when the user is not logged in */
@@ -94,6 +95,7 @@ app.get('/', routeHandler.checkLogin);
 /* Push state URLs */
 app.get('/login', routeHandler.redirectWhenLoggedIn);
 app.get('/edit', routeHandler.checkLogin);
+app.get('/edit/countries', routeHandler.checkLogin);
 app.get('/edit/:country', routeHandler.checkLogin);
 app.get('/edit/:country/actors', routeHandler.checkLogin);
 app.get('/edit/:country/money/list', routeHandler.checkLogin);
@@ -192,6 +194,28 @@ app.post('/:country/connections/:connection_type/destroyAll', auth.ensureAuthent
     });
   else
     res.json({ ok: true });
+});
+
+// Countries CRUD
+app.get('/countries', function(req, res){
+  Country.all(function(err, docs){
+    if(err) return res.json(err, 404);
+    res.json(docs);
+  });
+});
+
+app.post('/countries', auth.ensureAuthenticated, function(req, res){
+  Country.create(req.body, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
+});
+
+app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
+  Country.remove(req.params.id, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
 });
 
 //error handling
