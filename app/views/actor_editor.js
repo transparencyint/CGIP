@@ -113,10 +113,13 @@ module.exports = View.extend({
     // center workspace
     this.moveTo(0, 0);
     
-    // center actors as a whole
-    var dx = boundingBox.left + boundingBox.width/2;
-    
+    // check if the actors as a whole are not yet centered
+    // if thats the case, move them to the left
     if(boundingBox.left !== boundingBox.width/2){
+      
+      // calculate center offset
+      var dx = boundingBox.left + boundingBox.width/2;
+      
       this.actors.each(function(actor){
         actor.moveByDelta(-dx, 0);
         actor.save();
