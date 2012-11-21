@@ -81,7 +81,7 @@ module.exports = View.extend({
     var countryList = this.$('#add-country ul');
     var countrySelection = this;
     _.each(countries, function(country){
-      var newLi = $('<li>').text(country.name).data('country', country);
+      var newLi = $('<li>').css('background-image', 'url(/images/flags/' + country['alpha-2'] + '.svg)').text(country.name).data('country', country);
       newLi.click(function(){
         countrySelection.addCountry($(this).data('country'));
       });
