@@ -13,7 +13,7 @@
 <% selected = 'selected="selected"' %>
 <% otherType = true %>
 
-<form class="standardForm">
+<div class="form">
 
   <div>
     <label for="name">Full name:</label>
