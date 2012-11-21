@@ -13,12 +13,36 @@ module.exports = View.extend({
     'submit .standardForm': 'formSubmit',
     'change input': 'saveData',
     'change select': 'saveData',
-    'change textarea': 'saveData'
+    'change textarea': 'saveData',
+    'click .delete': 'deleteActor'
   }, 
 
   initialize: function(){
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleEscape');
+
+    this.model.on('change:abbreviation', this.updateName, this);
+    this.model.on('change:name', this.updateName, this);
+    this.updateName();
+  },
+
+  updateName: function(){
+    var abbrev = this.model.get('abbreviation');
+    var name = this.model.get('name');
+    if(abbrev !== "")
+      this.$('#title').text(abbrev);
+    else if(name !== "")
+      this.$('#title').text(name);
+    else
+      this.$('#title').text("Unknown");
+  },
+
+  deleteActor: function(){
+    if(this.model) 
+      this.model.destroy();
+
+    this.destroy();
+    return false;
   },
 
   saveData: function(event){
@@ -87,7 +111,6 @@ module.exports = View.extend({
     event.preventDefault();
 
     var _abbreviation = $('#abbreviation').val();
-
     var _fullname = $('#name').val();
 
     var _organizationType = $('#organizationType').val();

@@ -7,6 +7,6 @@ module.exports = View.extend({
   className : 'countrySelection',
 
   getRenderData: function(){
-    return { user: user.toJSON() };
+    return { countries: this.options.countries.toJSON(), user: user.toJSON() };
   }
 });

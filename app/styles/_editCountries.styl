@@ -1,0 +1,35 @@
+.edit-countries
+  h1
+    display inline-block
+  
+  .countrys
+    span.delete
+      float right
+      padding 15px
+      cursor pointer
+      color red
+      visibility hidden
+
+    li:hover
+      span.delete
+        visibility visible
+
+  #add-country
+    float right
+    margin-top 10px
+
+    input
+      visibility hidden
+      margin-right 5px
+
+    ul
+      list-style none
+      position absolute
+      padding 0px
+      
+      li
+        padding 5px
+        cursor pointer
+        
+        &:hover, &.active
+          background: rgba(255, 255, 255, .3)

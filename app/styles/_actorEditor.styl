@@ -4,9 +4,12 @@
   right 0
   bottom 0
   position absolute
-  background #2e5aaa
-  background url(/images/bluegrid.png) center top
-  background-size 99px
+  background #2C57A7 url(/images/bluegrid.svg) center top
+  background-size 10px
+  overflow hidden
+  cursor url(/images/openhand_8_8.cur) 8 8, default;
+  &:active
+    cursor url(/images/closedhand_8_8.bmp) 8 8, move;
   &.zoom200
     background-size 200px
   &.zoom175
@@ -24,12 +27,19 @@
   &.connectionMode
     .actor
       cursor default
+  .centerLine
+    top 0
+    left 50%
+    width 0
+    bottom 0
+    border-right 1px solid rgba(0,0,0,.21)
+    border-left 1px solid rgba(255,255,255,.08)
+    position fixed
     
 .workspace
   position absolute
-  width 100%
-  height 100%
-  overflow auto
+  left 50%
+  top 0
   &.hide-money
     .money
       display none

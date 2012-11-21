@@ -4,7 +4,7 @@ module.exports = View.extend({
   
   template : require('./templates/metadata'),
   
-  className : 'actor hasContextMenu',
+  className : 'actor',
 
   events: {
     'click': 'showMetadata',
@@ -14,16 +14,12 @@ module.exports = View.extend({
   initialize: function(options){
     this.editor = options.editor;
     this.model.on('change', this.metadataChanged, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
   /**
     Model hase been changed
   */
   metadataChanged: function(){ 
-    if(this.contextmenu && this.contextmenu.$el)
-      this.contextmenu.destroy();
     this.render();
   },
   
@@ -49,8 +45,6 @@ module.exports = View.extend({
       });
 
     this.nameElement = this.$el.find('.name');
-
-    this.$el.append(this.contextmenu.render().el);
   },
 
   showMetadata: function(event){ 

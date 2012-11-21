@@ -27,8 +27,9 @@ exports.config =
           'vendor/scripts/backbone-0.9.2.js',
           'vendor/scripts/jquery.csv-0-6.js',
           'vendor/scripts/jquery.svg.min.js',
-          'vendor/scripts/jquery-draggable-input.js'
-          'vendor/scripts/jquery.autosize.js'
+          'vendor/scripts/jquery-draggable-input.js',
+          'vendor/scripts/jquery.autosize.js',
+          'vendor/scripts/jquery.numeric.js'
         ]
 
     stylesheets:

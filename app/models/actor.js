@@ -10,14 +10,14 @@ module.exports = Backbone.Model.extend({
 
   defaults : {
     name: '',
+    abbreviation: '',
     type: 'actor'
   },
 
-  moveByDelta: function(delta){
+  moveByDelta: function(dx, dy){
     var thisPos = _.clone(this.get('pos'));
-    thisPos.x += delta.x;
-    thisPos.y += delta.y;
+    thisPos.x += dx;
+    thisPos.y += dy;
     this.set('pos', thisPos);
   }
-
 });

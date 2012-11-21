@@ -1,6 +1,14 @@
 <div id="metadataClose">&times;</div>
 
-<h1><%= @name %></h1>
+<h1 id="title">
+  <% if @abbreviation != "": %>
+    <%= @abbreviation %>
+  <% else if @name != "": %>
+    <%= @name %>
+  <% else: %>
+    Unknown
+  <% end %>
+</h1>
 
 <% selected = 'selected="selected"' %>
 <% otherType = true %>
@@ -257,5 +265,5 @@
 		<textarea cols="70" id="description" name="description"><%= @description%></textarea>
     <span class="saved">saved</span>
 	</div>
-
+  <button class="delete">Delete</button>
 </form>

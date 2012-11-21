@@ -17,8 +17,11 @@ module.exports = View.extend({
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .connection': 'toggleMode',
     'click .connection .eye': 'toggleVisibility',
-    'mousedown .zoom.in': 'zoomIn',
-    'mousedown .zoom.out': 'zoomOut'
+    'click .zoom.in': 'zoomIn',
+    'click .zoom.out': 'zoomOut',
+    'click .fit.screen': 'fitToScreen',
+    'mousedown': 'dragStart',
+    'mousedown .bar': 'stopPropagation'
   },
   
   transEndEventNames: {
@@ -34,6 +37,9 @@ module.exports = View.extend({
     this.radius = 60;
     this.smallRadius = 40;
     
+    // padding for fit-to-screen
+    this.padding = 5;
+    
     this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
     // initialize the collections
@@ -43,29 +49,32 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.selectedActors = [];
-    this.zoom = 1;
-    this.maxZoom = 1.75;
-    this.zoomStep = 0.25;
+    this.zoom = {
+      value: 1,
+      step: 0.25,
+      min: 0.25,
+      max: 1.75
+    };
+    
+    this.offset = {
+      left: 0,
+      top: 0
+    };
+    
+    this.gridSize = this.radius;
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'appendActor', 'createActorAt', 'appendConnection', '_keyUp', 'unselect', 'zoomIn', 'zoomOut');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag');
   },
   
-  zoomIn: function(){
-    if ( (this.zoom + this.zoomStep) <= this.maxZoom ) {
-      this.$el.removeClass('zoom'+ (this.zoom*100));
-      
-      this.zoom += this.zoomStep;
-      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
-      
-      this.$el.addClass('zoom' + (this.zoom*100));
-    }
+  stopPropagation: function(event){
+    event.stopPropagation();
   },
-
+  
   deleteOnDelKey: function(){
     if(this.selectedActors != []) {
       _.each(this.selectedActors, function(actor){
@@ -74,26 +83,98 @@ module.exports = View.extend({
     }
   },
   
+  slideZoom: function(event, ui){
+    event.stopPropagation();
+    
+    this.$el.removeClass('zoom'+ (this.zoom.value*100));
+
+    this.zoom.value = ui.value;
+
+    this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
+    //this.$el.addClass('zoom' + (this.zoom.value*100));
+    this.$el.css('background-size', this.zoom.value*10);
+  },
+  
+  zoomTo: function(value){
+    this.slider.slider("value", value);
+  },
+  
+  zoomIn: function(){
+    this.zoomTo(this.zoom.value + this.zoom.step);
+  },
+  
   zoomOut: function(){
-    if ( (this.zoom - this.zoomStep) >= this.zoomStep ) {
-      this.$el.removeClass('zoom'+ (this.zoom*100));
+    this.zoomTo(this.zoom.value - this.zoom.step);
+  },
+  
+  fitToScreen: function(){
+    var boundingBox = this.getBoundingBox();
+    
+    // center workspace
+    this.moveTo(0, 0);
+    
+    // center actors as a whole
+    var dx = - (boundingBox.left + boundingBox.width/2);
+    
+    this.actors.each(function(actor){
+      actor.moveByDelta(dx, 0);
+      actor.save();
+    });
+    
+    var horizontalRatio = this.$el.width() / (boundingBox.width + this.padding*2);
+    var verticalRatio = this.$el.height() / (boundingBox.height + this.padding*2);
+    
+    // use the smaller ratio
+    var fitZoom = Math.min(horizontalRatio, verticalRatio);
+    
+    // round it to our zoom.step
+    fitZoom = Math.floor( fitZoom / this.zoom.step ) * this.zoom.step;
+    
+    // keep it inside our zoom boundaries
+    fitZoom = Math.max(this.zoom.min, Math.min(this.zoom.max, fitZoom));
+    
+    this.zoomTo(fitZoom);
+  },
+  
+  getBoundingBox: function(){
+    var left = Infinity;
+    var right = 0;
+    var top = Infinity;
+    var bottom = 0;
+    
+    this.actors.each(function(actor){
+      var pos = actor.get('pos');
       
-      this.zoom -= this.zoomStep;
-      this.workspace.css('webkitTransform', 'scale('+ this.zoom +')');
-      
-      this.$el.addClass('zoom' + (this.zoom*100));
-    }
+      if(pos.y < top) top = pos.y;
+      if(pos.y > bottom) bottom = pos.y;
+      if(pos.x < left) left = pos.x;
+      if(pos.x > right) right = pos.x;
+    });
+    
+    return {
+      left: left,
+      top: top,
+      width: right - left,
+      height: bottom - top,
+      bottom: bottom,
+      right: right
+    };
   },
   
   unselect: function(){
-    this.workspace.find('.contextMenu').removeClass('visible');
     if(this.mode) this.mode.unselect();
     this.selectedActors = [];
   },
 
-  dragGroup: function(delta){
+  dragGroup: function(dx, dy){
     _.each(this.selectedActors, function(actor){
-      actor.moveByDelta(delta);
+      actor.moveByDelta(dx, dy);
+    });
+  },
+  
+  saveGroup: function(dx, dy){
+    _.each(this.selectedActors, function(actor){
+      actor.save();
     });
   },
   
@@ -159,22 +240,18 @@ module.exports = View.extend({
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
-    // disable the select mode
-    this.workspace.selectable('disable');
   },
 
   deactivateMode: function(){
-    this.$('.connections li').removeClass('active');
+    this.$('.connection').removeClass('active');
     this.mode.abort();
     this.mode = null;
 
     // re-enable draggables
     this.trigger('enableDraggable');
-    // re-enable select mode
-    this.workspace.selectable('enable');
   },
 
-  _keyUp: function(event){
+  keyUp: function(event){
     if(this.mode)
       this.deactivateMode();
 
@@ -223,13 +300,78 @@ module.exports = View.extend({
     newActor.addClass('slideIn');
   },
   
+  dragStart: function(event){
+    event.stopPropagation();
+    
+    this.startX = event.pageX - this.offset.left;
+    this.startY = event.pageY - this.offset.top;
+    
+    $(document).on('mousemove.global', this.drag);
+    $(document).one('mouseup', this.dragStop);
+  },
+
+  drag: function(event){ 
+    var x = (event.pageX - this.offset.left - this.startX);
+    var y = (event.pageY - this.offset.top - this.startY);
+    
+    this.panBy(x, y);
+  },
+  
+  panBy: function(x, y){
+    this.offset.left += (x / this.zoom.value);
+    this.offset.top += (y / this.zoom.value);
+    
+    // dont let the user pan above y = 0
+    if(this.offset.top >= 0){
+      this.offset.top = 0;
+      this.startY += y;
+    }
+    
+    // snap to center
+    if(x !== 0 && Math.abs(this.offset.left) < 10)
+      this.offset.left = 0;
+      
+    this.moveTo(this.offset.left, this.offset.top);
+  },
+  
+  moveTo: function(x, y){
+    this.offset.left = x;
+    this.offset.top = y;
+    
+    x += this.center;
+    
+    this.workspace.css({
+      left: x,
+      top: y
+    });
+    
+    this.$el.css({
+      backgroundPositionX: x,
+      backgroundPositionY: y
+    });
+    
+    this.$('.centerLine').css('left', x);
+  },
+  
+  dragStop : function(){
+    $(document).unbind('mousemove.global');
+  },
+  
+  alignCenter: function(){
+    var nextCenter = this.$el.width()/2;
+    var dx = nextCenter - this.center;
+    this.center = nextCenter;
+    
+    this.panBy(0, 0);
+  },
+  
   render: function(){
     var editor = this;
     
     this.$el.html( this.template() );
-    this.workspace = this.$el.find('.workspace');
-    this.newActor = this.$el.find('.controls .actor');
-    this.cancel = this.$el.find('.controls .cancel');
+    this.workspace = this.$('.workspace');
+    this.newActor = this.$('.controls .actor');
+    this.cancel = this.$('.controls .cancel');
     
     this.actors.each(this.appendActor);
 
@@ -237,12 +379,22 @@ module.exports = View.extend({
     this.connections.each(this.appendConnection);
 
     this.afterRender();
+    
+    // call this slightly delayed to give the browser
+    // time to layout the html changes
+    // source: http://stackoverflow.com/questions/8225869/how-can-i-get-size-height-width-information-in-backbone-views
+    _.defer(this.initializeDimensions);
+  },
+  
+  initializeDimensions: function(){
+    this.center = this.$el.width()/2;
   },
   
   afterRender: function(){
     var editor = this;
 
-    $(document).bind('keyup', this._keyUp);
+    $(document).bind('keyup', this.keyUp);
+    $(window).resize(this.alignCenter);
 
     this.newActor.draggable({
       stop : function(){ $(this).data('stopped', null); },
@@ -261,7 +413,7 @@ module.exports = View.extend({
       drop : function(event, ui){
         var draggable = $(ui.draggable);
         if(draggable.hasClass('new') && !draggable.data('stopped')){
-          /* TODO: fix after implementing pan&zoom */
+          // TODO: fix after implementing pan&zoom
           var x = draggable.offset().left + editor.smallRadius;
           var y = draggable.offset().top + editor.smallRadius;
 
@@ -269,27 +421,20 @@ module.exports = View.extend({
         }
       }
     });
-
-    this.workspace.selectable({
-      filter: '.actor',
-      cancel: 'path',
-      selected: function(event, ui){
-        var selectedElements = $('.ui-selected');
-        var selectedActors = [];
-        selectedElements.each(function(index, el){
-          var actor = editor.actors.get(el.id);
-          if(actor)
-            selectedActors.push(actor);
-        });
-        editor.selectedActors = selectedActors;
-      },
-      unselected: editor.unselect
+    
+    this.slider = this.$('.bar').slider({ 
+      orientation: "vertical",
+      min: this.zoom.min,
+      max: this.zoom.max,
+      step: this.zoom.step,
+      value: this.zoom.value,
+      slide: this.slideZoom,
+      change: this.slideZoom
     });
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
-
-    $(document).unbind('keyup', this._keyUp);
+    $(document).unbind('keyup', this.keyUp);
   }
 });

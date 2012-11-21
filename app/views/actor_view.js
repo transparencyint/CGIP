@@ -1,49 +1,52 @@
 var View = require('./view');
-var ContextMenuView = require('./contextmenu_view');
+var LightboxView = require('./lightbox_view');
 
 module.exports = View.extend({
   
   template : require('./templates/actor'),
   
-  className : 'actor hasContextMenu',
+  className : 'actor',
 
   events: {
     'dblclick .name': 'startEditName',
-    'blur .nameInput': 'stopEditName',
-    'keydown .nameInput': 'saveOnEnter',
+    'dblclick .abbrev': 'startEditName',
+    'blur .abbrev-input': 'stopEditAbbrev',
+    'blur .name-input': 'stopEditName',
+    'keydown input': 'saveOnEnter',
     'mousedown .inner': 'select',
-    'contextmenu .inner': 'showContextMenu'
+    'dblclick' : 'showMetadataForm',
+    'mousedown': 'dragStart'
   },
   
   initialize: function(options){
-    _.bindAll(this, 'stopMoving', 'drag');
+    _.bindAll(this, 'dragStop', 'drag');
 
     this.editor = options.editor;
+    this.width = this.editor.radius*2;
+    this.height = this.editor.radius*2;
+    this.dontDrag = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
+    this.model.on('change:abbreviation', this.updateAbbrev, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
-    this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
-  
-  showContextMenu: function(event){
-    event.preventDefault();
-    this.contextmenu.show(event);
+  showMetadataForm: function(){
+    this.lightboxView = new LightboxView({model : this.model});
+    $(document.body).append(this.lightboxView.render().el);
   },
 
   disableDraggable: function(){
-    this.$el.draggable('disable');
+    this.dontDrag = true;
   },
 
   enableDraggable: function(){
-    this.$el.draggable('enable');
+    this.dontDrag = false;
   },
 
   select: function(event){
@@ -53,31 +56,82 @@ module.exports = View.extend({
     this.editor.actorSelected(this);
   },
 
-  startEditName: function(){
+  startEditName: function(event){
+    event.stopPropagation();
     this.$el.addClass('editingName');
-    this.$el.draggable('disable');
-    this.$('.nameInput').focus();
+    this.dontDrag = true;
+    var current = $(event.currentTarget);
+    var input;
+    if(current.hasClass('name')){
+      input = this.$('.name-input');
+      this.$('.abbrev-input').hide();
+      this.$('.name-input').show();
+    }else if(current.hasClass('abbrev')){
+      input = this.$('.abbrev-input');
+      this.$('.name-input').hide();
+      this.$('.abbrev-input').show();
+    }
+
+    var divText = current.text();
+    current.hide();
+    input.val($.trim(divText));
+    input.focus();
+    input.select();
+  },
+
+  stopEditAbbrev: function(event){
+    this.$el.removeClass('editingName');
+
+    this.model.save({abbreviation : this.$('.abbrev-input').val()});
+    this.$('.abbrev-input').hide();
+
+    this.dontDrag = false;
   },
   
   stopEditName: function(event){
     this.$el.removeClass('editingName');
-    var newValue = this.$('.nameInput').val();
-    var oldName = this.model.get('name');
-    // this is needed here because enter and blur
-    // trigger the event both
-    if(oldName !== newValue)
-      this.model.save({name: newValue});
-    this.$el.draggable('enable');
+
+    this.model.save({name : this.$('.name-input').val()});
+    this.$('.name-input').hide();
+
+    this.dontDrag = false;
+  },
+
+  showProperName: function(event){
+    var abbrev = this.model.get('abbreviation');
+    var name = this.model.get('name');
+    if(abbrev.length !== 0){
+      this.$('.name').hide();
+      this.$('.abbrev').show();
+    }else if(name.length !== 0){
+      this.$('.abbrev').hide();
+      this.$('.name').show();
+    }else{
+      this.$('.name').hide();
+      this.$('.abbrev').show();
+    }
+  },
+
+  updateAbbrev: function(){
+    var abbrev = this.model.get('abbreviation');
+    if(abbrev.length == 0){
+      this.$('.abbrev').text('Unknown');
+    }else
+      this.$('.abbrev').text(abbrev);
+    this.showProperName();
   },
 
   updateName: function(){
-    this.$('.name').text(this.model.get('name'));
+    var name = this.model.get('name');
+    this.$('.name').text(name);
+    this.showProperName();
   },
   
   saveOnEnter: function(event){
     if(event.keyCode === 13){
-      event.preventDefault();
-      this.stopEditName(event);
+      if(this.$el.hasClass('editingName')){
+        $(event.currentTarget).blur();
+      }
     }
   },
 
@@ -85,57 +139,92 @@ module.exports = View.extend({
     this.$el.remove();
   },
   
-  stopMoving : function(){
-    this.model.save(this.getPosition());
+  dragStart: function(event){
+    if(!this.dontDrag){
+      event.stopPropagation();
+      
+      var pos = this.model.get('pos');
+      
+      this.startX = event.pageX - pos.x;
+      this.startY = event.pageY - pos.y;
+    
+      $(document).on('mousemove.global', this.drag);
+      $(document).one('mouseup', this.dragStop);
+    }
   },
 
-  drag: function(event){
+  drag: function(event){ 
     var pos = this.model.get('pos');
-    var newPos = this.getPosition();
-    var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
-    this.editor.dragGroup(delta);
+    
+    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
+    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
+    
+    this.editor.dragGroup(dx, dy);
   },
-
-  getPosition : function(event){
-    return { 
-      'pos' : {
-        x : this.$el.offset().left + this.$el.outerWidth()/2,
-        y : this.$el.offset().top + this.$el.outerWidth()/2
-      }
-    };
-  },
-
+  
   updatePosition: function(){
     var pos = this.model.get('pos');
+    
     this.$el.css({
-      left : pos.x,
-      top : pos.y
+      left: pos.x,
+      top: pos.y
     });
+  },
+  
+  dragStop : function(){
+    this.snapToGrid();    
+    $(document).unbind('mousemove.global');
+  },
+  
+  snapToGrid: function(){
+    //make drag available along a simple grid
+    var gridSize = this.editor.gridSize;
+    var pos =  this.model.get('pos');     
+
+    //move the actor to the nearest grid point
+    var x = Math.round(pos.x / gridSize) * gridSize;
+    var y = Math.round(pos.y / gridSize) * gridSize;
+    
+    var dx = x - pos.x;
+    var dy = y - pos.y;
+    
+    if(dx !== 0 || dy !== 0){
+      var editor = this.editor;
+
+      $({percent: 0}).animate({percent: 1}, {
+        step: function(){
+          var stepX = this.percent * dx;
+          var stepY = this.percent * dy;
+
+          editor.dragGroup(stepX, stepY);
+
+          dx -= stepX;
+          dy -= stepY;
+        },
+        duration: 100,
+        complete: function(){
+          editor.saveGroup();
+        }
+      });
+    } else {
+      this.editor.saveGroup();
+    }
   },
   
   getRenderData : function(){
     return this.model.toJSON();
   },
 
-
   afterRender: function(){
-    var name = this.model.get('name');
+
+    this.updateAbbrev();
+    this.updateName();
+
+    this.showProperName();
 
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
-
-    // only add the draggable if it's not already set
-    if(!this.$el.hasClass('ui-draggable'))
-      this.$el.draggable({
-        stop: this.stopMoving,
-        drag: this.drag,
-        zIndex: 2
-      });
-
-    this.nameElement = this.$el.find('.name');
-    
-    this.$el.append(this.contextmenu.render().el);
 
     this.drawRoleBorders();
   },
@@ -148,7 +237,8 @@ module.exports = View.extend({
     el.find('.svg-holder circle, .svg-holder path').remove();
     
     if(roles && roles.length > 0){
-      var width = height = 120;
+      var width =  130;
+      var height = 130;
       
       el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
       var svg = el.find('.svg-holder').svg('get'); 
@@ -158,7 +248,7 @@ module.exports = View.extend({
         var drawnPath = svg.circle(width/2, width/2, width/2, {
             strokeWidth: 1
           });
-        $(drawnPath).attr('class', roles[0]);
+        $(drawnPath).attr({'class': roles[0], transform: 'translate(-5 -5)'});
       } else {
         var percent = 100 / roles.length;
         var angles = percent * 360 / 100;
@@ -169,20 +259,20 @@ module.exports = View.extend({
           startAngle = endAngle;
           endAngle = startAngle + angles;
 
-          x1 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*startAngle/180));
-          y1 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*startAngle/180));
+          x1 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*startAngle/180));
+          y1 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*startAngle/180));
 
-          x2 = parseInt(width/2 + ((width/2)-1)*Math.cos(Math.PI*endAngle/180));
-          y2 = parseInt(height/2 + ((height/2)-1)*Math.sin(Math.PI*endAngle/180));                
+          x2 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*endAngle/180));
+          y2 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*endAngle/180));                
 
           var path = svg.createPath();
           var drawnPath = svg.path(
             path.move(width/2, height/2).
             line(x1, y1).
-            arc((width/2)-1, (height/2)-1, 0, 0, true, x2, y2).
+            arc((width/2), (height/2), 0, 0, true, x2, y2).
             close(), {
               strokeWidth: 1,
-              transform: 'rotate(90, 60, 60)'
+              transform: 'translate(5 -5), rotate(90, 60, 60)'
             });
 
           $(drawnPath).attr('class', roleValue);
