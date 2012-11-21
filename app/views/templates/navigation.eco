@@ -1,7 +1,7 @@
 <% if @locationName: %> 
 <a href="/edit">Dashboard</a>
 <span class="location label">
-  <span class="flag" style="background-image: url(/images/flags/<%= @isoLocation %>.png);"></span>
+  <span class="flag" style="background-image: url(/images/flags/<%= @isoLocation %>.svg);"></span>
   <%= @locationName %>
 </span>
 <% end %>
