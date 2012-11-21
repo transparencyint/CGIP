@@ -9,7 +9,7 @@ module.exports = View.extend({
 
   events: {
     'dblclick .name': 'startEditName',
-    'dblclick .abbrev': 'startEditName',
+    'dblclick .abbrev': 'startEditAbbrev',
     'blur .abbrev-input': 'stopEditAbbrev',
     'blur .name-input': 'stopEditName',
     'keydown input': 'saveOnEnter',
@@ -57,20 +57,35 @@ module.exports = View.extend({
   },
 
   startEditName: function(event){
-    event.stopPropagation();
+    if(event) event.stopPropagation();
     this.$el.addClass('editingName');
     this.dontDrag = true;
-    var current = $(event.currentTarget);
-    var input;
-    if(current.hasClass('name')){
-      input = this.$('.name-input');
-      this.$('.abbrev-input').hide();
-      this.$('.name-input').show();
-    }else if(current.hasClass('abbrev')){
-      input = this.$('.abbrev-input');
-      this.$('.name-input').hide();
-      this.$('.abbrev-input').show();
-    }
+    
+    var current = this.$('.name');
+    var input = this.$('.name-input');
+    
+    this.$('.abbrev-input').hide();
+    this.$('.abbrev').hide();
+    this.$('.name-input').show();
+
+    var divText = current.text();
+    current.hide();
+    input.val($.trim(divText));
+    input.focus();
+    input.select();
+  },
+
+  startEditAbbrev: function(event){
+    if(event) event.stopPropagation();
+    this.$el.addClass('editingName');
+    this.dontDrag = true;
+    
+    var current = this.$('.abbrev');
+    var input = this.$('.abbrev-input');
+    
+    this.$('.name-input').hide();
+    this.$('.name').hide();
+    this.$('.abbrev-input').show();
 
     var divText = current.text();
     current.hide();
