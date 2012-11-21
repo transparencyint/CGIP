@@ -335,6 +335,9 @@ module.exports = View.extend({
   },
   
   moveTo: function(x, y){
+    this.offset.left = x;
+    this.offset.top = y;
+    
     x += this.center;
     
     this.workspace.css({
