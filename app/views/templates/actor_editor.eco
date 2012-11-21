@@ -32,7 +32,7 @@
   <div class="connection monitoring control" data-connectionType="monitoring">
     <div class="eye"></div>
     <div class="description button" title="New Monitoring Connection">
-      <img src="/images/accountabilityflow.png">
+      <img src="/images/monitoringflow.png">
       <span class="name">Monitoring</span>
     </div>
   </div>
