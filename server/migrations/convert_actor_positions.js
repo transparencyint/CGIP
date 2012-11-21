@@ -57,7 +57,7 @@ var migrateCountry = function(country, callback){
       if(!migrationHelper.hasBeenMigrated(actor, migrationID)){
         actor.pos.x -= subsctract;
         var x = Math.round(actor.pos.x / gridSize) * gridSize;
-        var y = Math.round(actor.pos.x / gridSize) * gridSize;
+        var y = Math.round(actor.pos.y / gridSize) * gridSize;
         actor.pos.x = x;
         actor.pos.y = y;
         Actor.edit(actor._id, actor, countDown);
