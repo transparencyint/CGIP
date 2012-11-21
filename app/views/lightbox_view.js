@@ -22,10 +22,19 @@ module.exports = View.extend({
     _.bindAll(this, 'handleEscape');
 
     this.model.on('change:abbreviation', this.updateName, this);
+    this.model.on('change:name', this.updateName, this);
+    this.updateName();
   },
 
   updateName: function(){
-    this.$('#title').text(this.model.get('abbreviation'));
+    var abbrev = this.model.get('abbreviation');
+    var name = this.model.get('name');
+    if(abbrev !== "")
+      this.$('#title').text(abbrev);
+    else if(name !== "")
+      this.$('#title').text(name);
+    else
+      this.$('#title').text("Unknown");
   },
 
   deleteActor: function(){
@@ -102,8 +111,6 @@ module.exports = View.extend({
     event.preventDefault();
 
     var _abbreviation = $('#abbreviation').val();
-    if(!_abbreviation)
-      _abbreviation = "New Actor"; 
     var _fullname = $('#name').val();
 
     var _organizationType = $('#organizationType').val();
