@@ -114,12 +114,14 @@ module.exports = View.extend({
     this.moveTo(0, 0);
     
     // center actors as a whole
-    var dx = - (boundingBox.left + boundingBox.width/2);
+    var dx = boundingBox.left + boundingBox.width/2;
     
-    this.actors.each(function(actor){
-      actor.moveByDelta(dx, 0);
-      actor.save();
-    });
+    if(boundingBox.left !== boundingBox.width/2){
+      this.actors.each(function(actor){
+        actor.moveByDelta(-dx, 0);
+        actor.save();
+      });
+    }
     
     var horizontalRatio = this.$el.width() / (boundingBox.width + this.padding*2);
     var verticalRatio = this.$el.height() / (boundingBox.height + this.padding*2);
