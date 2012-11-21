@@ -38,7 +38,7 @@ module.exports = View.extend({
     this.smallRadius = 40;
     
     // padding for fit-to-screen
-    this.padding = 5;
+    this.padding = this.radius;
     
     this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
