@@ -1,47 +1,49 @@
 var View = require('./view');
-var ContextMenuView = require('./contextmenu_view');
+var LightboxView = require('./lightbox_view');
 
 module.exports = View.extend({
   
   template : require('./templates/actor'),
   
-  className : 'actor hasContextMenu',
+  className : 'actor',
 
   events: {
     'dblclick .name': 'startEditName',
     'blur .nameInput': 'stopEditName',
     'keydown .nameInput': 'saveOnEnter',
     'mousedown .inner': 'select',
-    'contextmenu .inner': 'showContextMenu'
+    'dblclick' : 'showMetadataForm',
+    'mousedown': 'dragStart'
   },
   
   initialize: function(options){
+    _.bindAll(this, 'dragStop', 'drag');
+
     this.editor = options.editor;
+    this.width = this.editor.radius*2;
+    this.height = this.editor.radius*2;
+    this.dontDrag = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
-    this.model.on('change:zoom', this.updateZoom, this);
     this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.modelDestroyed, this);
-
-    this.contextmenu = new ContextMenuView({model: this.model});
   },
 
-  
-  showContextMenu: function(event){
-    event.preventDefault();
-    this.contextmenu.show(event);
+  showMetadataForm: function(event){
+    this.lightboxView = new LightboxView({model : this.model});
+    $(document.body).append(this.lightboxView.render().el);
   },
 
   disableDraggable: function(){
-    this.$el.draggable('disable');
+    this.dontDrag = true;
   },
 
   enableDraggable: function(){
-    this.$el.draggable('enable');
+    this.dontDrag = false;
   },
 
   select: function(event){
@@ -53,7 +55,7 @@ module.exports = View.extend({
 
   startEditName: function(){
     this.$el.addClass('editingName');
-    this.$el.draggable('disable');
+    this.dontDrag = true;
     this.$('.nameInput').focus();
   },
   
@@ -68,7 +70,7 @@ module.exports = View.extend({
         newValue = "New Actor";
       this.model.save({abbreviation: newValue});
     }
-    this.$el.draggable('enable');
+    this.dontDrag = false;
   },
 
   updateName: function(){
@@ -86,97 +88,90 @@ module.exports = View.extend({
     this.$el.remove();
   },
   
-  drag: function(event){
+  dragStart: function(event){
+    if(!this.dontDrag){
+      event.stopPropagation();
+      
+      var pos = this.model.get('pos');
+      
+      this.startX = event.pageX - pos.x;
+      this.startY = event.pageY - pos.y;
+    
+      $(document).on('mousemove.global', this.drag);
+      $(document).one('mouseup', this.dragStop);
+    }
+  },
+
+  drag: function(event){ 
     var pos = this.model.get('pos');
-    var newPos = this.getPosition();
-    var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
-    this.editor.dragGroup(delta);
+    
+    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
+    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
+    
+    this.editor.dragGroup(dx, dy);
   },
-
-  getPosition : function(event){
-    return { 
-      'pos' : {
-        x : this.$el.offset().left + this.$el.outerWidth()/2,
-        y : this.$el.offset().top + this.$el.outerWidth()/2
-      }
-    };
-  },
-
+  
   updatePosition: function(){
     var pos = this.model.get('pos');
+    
     this.$el.css({
-      left : pos.x,
-      top : pos.y
+      left: pos.x,
+      top: pos.y
     });
+  },
+  
+  dragStop : function(){
+    this.snapToGrid();    
+    $(document).unbind('mousemove.global');
+  },
+  
+  snapToGrid: function(){
+    //make drag available along a simple grid
+    var gridSize = this.editor.gridSize;
+    var pos =  this.model.get('pos');     
+
+    //move the actor to the nearest grid point
+    var x = Math.round(pos.x / gridSize) * gridSize;
+    var y = Math.round(pos.y / gridSize) * gridSize;
+    
+    var dx = x - pos.x;
+    var dy = y - pos.y;
+    
+    if(dx !== 0 || dy !== 0){
+      var editor = this.editor;
+
+      $({percent: 0}).animate({percent: 1}, {
+        step: function(){
+          var stepX = this.percent * dx;
+          var stepY = this.percent * dy;
+
+          editor.dragGroup(stepX, stepY);
+
+          dx -= stepX;
+          dy -= stepY;
+        },
+        duration: 100,
+        complete: function(){
+          editor.saveGroup();
+        }
+      });
+    } else {
+      this.editor.saveGroup();
+    }
   },
   
   getRenderData : function(){
     return this.model.toJSON();
   },
 
-
   afterRender: function(){
     var name = this.model.get('name');
-    var actorView = this;
-
+    
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
 
-    var nextGridY, nextGridX;
-
-    // only add the draggable if it's not already set
-    if(!this.$el.hasClass('ui-draggable'))
-      this.$el.draggable({
-        drag: function(event, ui){
-          var pos = actorView.model.get('pos');
-          var newPos = actorView.getPosition();
-          var delta = { x: newPos.pos.x - pos.x, y: newPos.pos.y - pos.y };
-          actorView.editor.dragGroup(delta);
-          
-        },
-        stop: function(event, ui){
-          //make drag available along a simple grid
-          var gridSize = actorView.editor.gridSize;      
-
-          //move the actor to the nearest grid point if it is inside the tolerance
-          var currentDistanceX = Math.round(ui.position.left / gridSize);
-          var currentDistanceY = Math.round(ui.position.top / gridSize);
-
-          //move to next largest gridPoint
-          if(ui.position.top % gridSize > gridSize/2) {
-            nextGridY = currentDistanceY * gridSize;
-          }
-          else {
-            nextGridY = currentDistanceY * gridSize;
-          }
-
-          if(ui.position.left % gridSize > gridSize/2) {
-            nextGridX = currentDistanceX * gridSize;
-          }
-          else {
-            nextGridX = currentDistanceX * gridSize;
-          }
-
-          var pos = actorView.model.get('pos');
-
-          $(this).animate({'left': nextGridX, 'top': nextGridY}, 100, function(){
-            var delta = { x: nextGridX - pos.x, y: nextGridY - pos.y };
-            actorView.editor.dragGroup(delta);
-            
-            //save dragged actors      
-            _.each(actorView.editor.selectedActors, function(actor){
-              actor.save();
-            });
-          });
-        
-        },
-        zIndex: 2
-      });
-
     this.nameElement = this.$el.find('.name');
-    
-    this.$el.append(this.contextmenu.render().el);
 
     this.drawRoleBorders();
   },

@@ -33,11 +33,10 @@
 <div class="view controls">
   <div class="zoom in"></div>
   <div class="range">
-    <div class="bar">
-      <div class="slider"></div>
-    </div>
+    <div class="bar"></div>
   </div>
   <div class="zoom out"></div>
 </div>
 
+<div class="centerLine"></div>
 <div class="workspace"></div>
