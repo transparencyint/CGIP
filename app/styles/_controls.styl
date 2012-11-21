@@ -1,11 +1,13 @@
 .controls
   z-index 3
-  position absolute
   text-shadow 0 -1px hsl(213,55%,34%)
   background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,50%))
   border 1px solid hsl(213,55%,28%)
   border-radius 3px
   box-shadow 0 0 1px rgba(0,0,0,.34), 0 0 5px rgba(0,0,0,.13)
+  .control
+    &:active, &.active
+      background-color hsl(219,55%,36%)
   .label
     text-shadow none
     color hsl(217,60%,27%)
@@ -33,9 +35,28 @@
       left 0
       border-bottom-left-radius 0
 
+.controls.top
+  .control
+    &:first-child
+      border-radius 3px 0 0 3px
+    &:last-child
+      border-radius 0 3px 3px 0
+    &:only-child
+      border-radius 3px
+    
+.controls.vertical
+  .control
+    &:first-child
+      border-radius 3px 3px 0 0
+    &:last-child
+      border-radius 0 0 3px 3px
+    &:only-child
+      border-radius 3px
+
 .tool.controls
   left 50%
   margin-left -150px
+  position absolute
   > *
     float left
   .newActor  
@@ -139,8 +160,7 @@
     cursor pointer
     border-right 1px solid hsl(213,55%,28%)
     box-shadow 1px 0 hsl(213,55%,60%)
-    &.active
-      background linear-gradient(top, hsl(218,55%,40%), hsl(218,55%,41%))
+    &.active, &:active
       .description
         position relative
         top 1px
@@ -159,12 +179,18 @@
       display none
     &.invisible .eye
       background none
-      
-.view.controls
+
+.sidebar  
+  z-index 3
+  position absolute
   left 0
   top 50%
   margin -125px 34px
+
+.view.controls
   background linear-gradient(top, hsl(213,55%,50%), hsl(218,55%,48%))
+  &:not(:last-child)
+    margin-bottom 13px
   .range
     height 144px
     .ui-slider-vertical
@@ -191,12 +217,14 @@
         border none
         box-shadow 0 1px 3px black
         outline none
-  .zoom
+  .icon
     width 40px
     height 40px
     background-position center
     background-repeat no-repeat
     cursor pointer
+    &.fit
+      background-image url(../images/fit_screen.png)
     &.in
       background-image url(../images/zoom_in.png)
     &.out
