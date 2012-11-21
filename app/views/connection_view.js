@@ -74,7 +74,7 @@ module.exports = View.extend({
     var defs = this.svg.defs();
     var marker = this.svg.marker(defs, this.model.id, 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize});
     this.svg.use(marker, 0, 0, this.markerSize, this.markerSize, '#trianglePath', { fill: this.strokeStyle });
-    
+
     this.g = this.svg.group();
     createDefs(this.markerSize, this.strokeStyle, this.selectStyle);
     this.update();
