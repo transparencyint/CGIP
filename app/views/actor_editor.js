@@ -215,7 +215,6 @@ module.exports = View.extend({
     connView.render();  
     this.workspace.append(connView.el);
 
-    console.log(connection.showMetadataForm);
     if(connection.showMetadataForm)
       connView.showMetadataForm();
   },

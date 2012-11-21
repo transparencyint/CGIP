@@ -56,7 +56,6 @@ ConnectionMode.prototype.actorSelected = function(actor){
     });
 
     if(!connectionAlreadyExists){
-      console.log("aaa");
       var newConnection = new this.collection.model({
         country: this.selectedActors[0].get('country'),
         from: this.selectedActors[0].id,
