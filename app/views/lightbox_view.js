@@ -10,7 +10,7 @@ module.exports = View.extend({
     'click #metadataClose': 'closeMetaData',
     'change .hasOther': 'showInputOther',
     'change input#mitigation': 'showMitigationType',
-    'submit .standardForm': 'formSubmit',
+    'submit .form': 'formSubmit',
     'change input': 'saveData',
     'change select': 'saveData',
     'change textarea': 'saveData',
@@ -38,6 +38,8 @@ module.exports = View.extend({
   },
 
   deleteActor: function(){
+
+    console.log("delete");
     if(this.model) 
       this.model.destroy();
 
