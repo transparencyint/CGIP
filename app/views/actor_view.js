@@ -58,8 +58,6 @@ module.exports = View.extend({
 
   startEditName: function(event){
     event.stopPropagation();
-    console.log("start");
-    console.log($(event.currentTarget).text());
     this.$el.addClass('editingName');
     this.dontDrag = true;
     var current = $(event.currentTarget);
@@ -72,8 +70,7 @@ module.exports = View.extend({
       input = this.$('.abbrev-input');
       this.$('.name-input').hide();
       this.$('.abbrev-input').show();
-    }else
-      console.log("ERRROR");
+    }
 
     var divText = current.text();
     current.hide();
@@ -116,7 +113,6 @@ module.exports = View.extend({
   },
 
   updateAbbrev: function(){
-    console.log("updateAbbrev");
     var abbrev = this.model.get('abbreviation');
     if(abbrev.length == 0){
       this.$('.abbrev').text('Unknown');
@@ -126,7 +122,6 @@ module.exports = View.extend({
   },
 
   updateName: function(){
-    console.log("updateName");
     var name = this.model.get('name');
     this.$('.name').text(name);
     this.showProperName();
