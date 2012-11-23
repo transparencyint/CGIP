@@ -25,7 +25,6 @@ ConnectionMode.prototype.reset = function(){
 };
 
 ConnectionMode.prototype.actorSelected = function(actor){  
-
   //connection to the same actor (itself) is not possible
   if(this.connection.from !== actor.model){
     this.selectedActors.push(actor.model);

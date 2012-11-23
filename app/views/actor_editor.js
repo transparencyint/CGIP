@@ -15,8 +15,8 @@ module.exports = View.extend({
   
   events: {
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
-    'click .connection': 'toggleMode',
-    'click .connection .eye': 'toggleVisibility',
+    'click .tool .connection': 'toggleMode',
+    'click .tool .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
