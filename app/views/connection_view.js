@@ -15,6 +15,12 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+    this.actorRadius = 60;
+    this.markerSize = 4;
+    this.edgeRadius = 10;
+    this.offsetDistance = 15;
+    this.edgeRadius = 10;
+    
     if(options.noClick)
       this.$el.unbind('click')
 
@@ -47,16 +53,18 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    this.strokeStyle = this.model.get("connectionType") === 'accountability' ? 'white' : '#f8df47'; // yellow
+    var connectionType = this.model.get("connectionType");
+    if(connectionType === 'accountability')
+      this.strokeStyle = 'white';
+    else if(connectionType === 'monitoring')
+      this.strokeStyle = 'black';
+    else 
+      this.strokeStyle = '#f8df47';
+
     this.selectStyle = 'hsl(205,100%,55%)';
     
     this.updateStrokeWidth();
 
-    this.actorRadius = 60;
-    this.markerSize = 4;
-    this.edgeRadius = 10;
-    this.offsetDistance = 15;
-    this.edgeRadius = 10;
     this.path = "";
     this.$el.css('margin', -(this.strokeWidth/2 + this.offsetDistance) + 'px 0 0 '+ -(this.strokeWidth/2 + this.offsetDistance) + 'px');
     this.$el.svg();

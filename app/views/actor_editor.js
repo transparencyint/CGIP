@@ -14,9 +14,9 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .newActor:not(.sliding, .slideUp) .description': 'slideInActor',
-    'click .connection': 'toggleMode',
-    'click .connection .eye': 'toggleVisibility',
+    'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
+    'click .tool .connection': 'toggleMode',
+    'click .tool .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
@@ -48,6 +48,7 @@ module.exports = View.extend({
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
+    this.monitoringConnections = filteredConnections.monitoring;
     this.selectedActors = [];
     this.zoom = {
       value: 1,
@@ -66,6 +67,7 @@ module.exports = View.extend({
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
+    this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
     _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
@@ -91,7 +93,7 @@ module.exports = View.extend({
     this.zoom.value = ui.value;
 
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
-    //this.$el.addClass('zoom' + (this.zoom.value*100));
+    
     this.$el.css('background-size', this.zoom.value*10);
   },
   
@@ -281,7 +283,7 @@ module.exports = View.extend({
     };
   },
   
-  slideInActor: function(){
+  slideActorIn: function(){
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
     
     // triggere animation

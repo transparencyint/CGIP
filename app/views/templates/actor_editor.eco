@@ -30,6 +30,15 @@
       <span class="name">Accountability</span>
     </div>
   </div>
+
+  <div class="connection monitoring control" data-connectionType="monitoring">
+    <div class="eye"></div>
+    <div class="description button" title="New Monitoring Connection">
+      <img src="/images/monitoringflow.png">
+      <span class="name">Monitoring</span>
+    </div>
+  </div>
+
 </div>
 
 <div class="sidebar">

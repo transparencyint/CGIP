@@ -9,7 +9,7 @@ module.exports = View.extend({
 
   events: {
     'submit .connection-form' : 'submitMetadataInput',
-    'change .amount': 'updateAmount', 
+    'input .amount': 'updateAmount', 
     'click': 'dontClose',
     'click .close': 'closeConnectionForm',
     'click .delete': 'deleteConnection'
@@ -41,14 +41,6 @@ module.exports = View.extend({
     var model = this.model;    
 
     this.$('.amount').numeric();
-
-    this.$('.amount').draggableInput({
-      type: 'integer',
-      min: 0,
-      max: 10000000,
-      scrollPrecision: 100000
-    });
-
     this.$el.draggable({handle: '.movable'});
     this.$el.css('position', 'absolute');
 
