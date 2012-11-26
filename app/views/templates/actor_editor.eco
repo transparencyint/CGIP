@@ -8,7 +8,9 @@
     <div class="dock">
       <div class="actor new">
         <div class="inner">
-          <div class="name">Unknown</div>
+          <div class="flexbox center">
+            <div class="name">Unknown</div>
+          </div>
         </div>
       </div>
       <div class="cancel"><span>Drop here to cancel</span></div>

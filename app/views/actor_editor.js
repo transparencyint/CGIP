@@ -14,7 +14,7 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
-    'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
+    'click .newActor:not(.sliding, .slideUp) .description': 'slideInActor',
     'click .connection': 'toggleMode',
     'click .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
@@ -68,7 +68,7 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -281,28 +281,38 @@ module.exports = View.extend({
     };
   },
   
-  slideActorIn: function(){
-    var editor = this;
-    var newActor = this.$el.find('.newActor');
+  slideInActor: function(){
+    this.addActor.one(this.transEndEventName, this.placeActorDouble);
     
-    newActor.one(this.transEndEventName, function(){
-      var offset = $(this).find('.actor').offset();
-      var x = offset.left + editor.radius;
-      var y = offset.top + editor.radius;
-      editor.createActorAt(x, y);
-      
-      _.delay(function(){
-        newActor.addClass('curtainDown');
-        newActor.removeClass('slideIn').addClass('slideUp');
-
-        document.redraw();
-
-        newActor.removeClass('curtainDown');
-        newActor.removeClass('slideUp');
-      }, 100);
-    });
+    // triggere animation
+    var diameter = 2 * this.radius * this.zoom.value;
+    var marginLeft = this.smallRadius - diameter/2;
     
-    newActor.addClass('slideIn');
+    this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
+    this.addActor.addClass('slideIn');
+  },
+  
+  placeActorDouble: function(){
+    var offset = this.actorDouble.offset();
+    var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
+    
+    this.createActorAt(x, y);
+    
+    // move actorDouble back to its origin by sliding it in from the top
+    _.delay(this.slideInDouble, 100);
+  },
+  
+  slideInDouble: function(){
+    this.addActor.addClass('curtainDown');
+    this.addActor.removeClass('slideIn').addClass('slideUp');
+    // reset css
+    this.actorDouble.css({ marginLeft: "", width: "", height: "" });
+
+    document.redraw();
+
+    this.addActor.removeClass('curtainDown');
+    this.addActor.removeClass('slideUp');
   },
   
   dragStart: function(event){
@@ -375,7 +385,8 @@ module.exports = View.extend({
     
     this.$el.html( this.template() );
     this.workspace = this.$('.workspace');
-    this.newActor = this.$('.controls .actor');
+    this.addActor = this.$('.controls .newActor');
+    this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
     
     this.actors.each(this.appendActor);
@@ -401,7 +412,7 @@ module.exports = View.extend({
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.alignCenter);
 
-    this.newActor.draggable({
+    this.actorDouble.draggable({
       stop : function(){ $(this).data('stopped', null); },
       revert : true,
       revertDuration : 1
