@@ -57,7 +57,7 @@
             checked
           <% end %>
         <%end%>>
-        <label for="funding">funding climate sector projects</label>
+        <label for="funding">funding</label>
       </p>
       <p>
         <input type="checkbox" name="role" value="coordination" id="coordination" 
@@ -66,28 +66,10 @@
             checked
           <% end %>
         <% end %>>
-        <label for="coordination">coordination of other organizations</label>
-      </p>
-      <p>
-        <input type="checkbox" name="role" value="accreditation" id="accreditation" 
-        <% if @role: %> 
-          <% if 'accreditation' in @role: %> 
-            checked
-          <% end %>
-        <% end %>>
-        <label for="accreditation">accreditation and requirements verification</label>
+        <label for="coordination">coordination</label>
       </p>
     </div>
     <div>
-      <p>
-        <input type="checkbox" name="role" value="approval" id="approval" 
-        <% if @role: %> 
-          <% if 'approval' in @role: %> 
-            checked
-          <% end %>
-        <% end %>>
-        <label for="approval">projects approval/rejection</label>
-      </p>
       <p>
         <input type="checkbox" name="role" value="implementation" id="implementation" 
         <% if @role: %> 
@@ -104,41 +86,9 @@
             checked
           <% end %>
         <% end%>>
-        <label for="monitoring">monitoring, reviewing and verification</label>
+        <label for="monitoring">monitoring, oversight</label>
       </p>
     </div>
-
-    <% otherRole = false %>
-    <% if @role: %>
-      <% for value in @role: %>
-        <% if value != 'funding' && value != 'coordination' && value != 'accreditation' && value != 'approval' && value != 'implementation' && value != 'monitoring': %>
-          <% otherRole = true %>
-          
-          <div>
-            <p>
-              <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther" checked>
-              <label for="roleCheckboxOther">Other roles</label>
-            </p>
-            <input type="text" id="typeOther" value="<%= value %>" name="roleOther" />
-            <span class="saved">saved</span>
-
-          </div>
-
-        <% end %>
-      <% end %>
-    <% end %>   
-    <% if !otherRole: %>
-
-        <div>
-          <p>
-            <input type="checkbox" name="role" value="other" id="roleCheckboxOther" class="hasOther">
-            <label for="roleCheckboxOther">Other roles</label>
-          </p>
-          <input type="text" id="typeOther" class="hidden" name="roleOther" />
-          <span class="saved">saved</span>
-        </div>
-
-    <% end %>
 
   </div>
  
