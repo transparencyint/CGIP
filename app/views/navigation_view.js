@@ -26,11 +26,6 @@ module.exports = View.extend({
       return country['alpha-2'] === currentLocation;
     });
     var name = currentCountry ? currentCountry.name : '';
-    console.log({ 
-      locationName: name,
-      locationType: this.locationTable[ this.currentRoute ],
-      isoLocation: this.currentLocation
-    })
     return { 
       locationName: name,
       locationType: this.locationTable[ this.currentRoute ],
@@ -44,7 +39,7 @@ module.exports = View.extend({
 
     // return if it wasn't a 'route:' event
     if(!route) return;
-    console.log(route)
+
     // remove the current location
     if(this.currentLocation) this.$el.removeClass( this.currentLocation );    
     
