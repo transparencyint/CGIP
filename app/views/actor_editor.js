@@ -64,8 +64,8 @@ module.exports = View.extend({
     
     this.gridSize = this.radius;
     
-    this.minMoneyAmount = 0;
-    this.maxMoneyAmount = this.getMaxMoneyConnection();
+    this.minConnection = this.getMinConnection();
+    this.maxConnection = this.getMaxConnection();
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -222,14 +222,33 @@ module.exports = View.extend({
       connView.showMetadataForm();
   },
 
-  getMaxMoneyConnection: function(){
-    var maxAmount = 0;
+  getMaxConnection: function(){
+    var maxConnection;
+    var maxVal = 0;
     $.each(this.moneyConnections.models, function(key, value){
-      if(maxAmount < value.attributes.amount)
-        maxAmount = value.attributes.amount;
+      if(maxVal < value.attributes.amount){
+        maxVal = value.attributes.amount;
+        maxConnection = value;
+      }
+        
     });
-    return maxAmount;
+    return maxConnection;
   },
+
+  getMinConnection: function(){
+    var minConnection;
+    var minVal = Number.MAX_VALUE;
+    console.log(minVal);
+    $.each(this.moneyConnections.models, function(key, value){
+      if(minVal > value.attributes.amount){
+        minVal = value.attributes.amount;
+        minConnection = value;
+      }
+        
+    });
+    return minConnection;
+  },
+  
 
   actorSelected: function(actorView){
     if(this.selectedActors.length <= 1)

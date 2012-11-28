@@ -9,7 +9,7 @@
 <?xml version="1.0"?>
 <svg style="display: block;" width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <linearGradient id="moneyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="moneyGradient" x1="0" y1="0" x2="100%" y2="0">
       <stop stop-color="#fbd54d" offset="0%"/>
       <stop stop-color="#fae167" offset="25%"/>
       <stop stop-color="#fcd852" offset="50%"/>
@@ -19,7 +19,7 @@
       <stop stop-color="white" offset="0%"/>
       <stop stop-color="white" offset="50%" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="blackToWhite" x1="25%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="blackToWhite" x1="25%" y1="0" x2="100%" y2="0">
       <stop stop-color="black" offset="0%"/>
       <stop stop-color="white" offset="100%"/>
     </linearGradient>
@@ -31,6 +31,7 @@
     </pattern>
     <mask id="coinHighlightMask" width="6" height="11">
       <rect x="1" y="1" rx="1.5" ry="1.5" width="6" height="11" fill="white"/>
+      <rect x="-2" y="1" rx="1.5" ry="1.5" width="6" height="11" fill="black"/>
     </mask>
     <marker id="coin" viewBox="0 0 7 12" refX="3.5" refY="6" markerWidth="7" markerHeight="12" orient="auto">  
       <rect x="0.5" y="0.5" rx="2" ry="2" width="6" height="11" style="fill:url(#moneyGradient); stroke:#eaab51; stroke-width:1;"/>
@@ -50,6 +51,7 @@
   <path d="M0,155 C0,0 232,155 232,0" fill="none" stroke="black" stroke-width="5"></path>
 
   <path d="M 10 25 H 14 18 22 26 30 34 38 42 46 50" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
+  <path d="M 54 55 H 50 46 42 38 34 30 26 22 18 14" fill="none" marker-mid="url(#coin)" marker-end="url(#coin)" marker-start="url(#coin)"/>
 </svg>
 <svg width="200" height="200">
   <path d="M0,0 100,100" fill="none" stroke="white" stroke-width="2" marker-end="url(#triangle)"></path>
