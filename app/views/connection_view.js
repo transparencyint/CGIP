@@ -21,6 +21,11 @@ module.exports = View.extend({
     this.offsetDistance = 15;
     this.edgeRadius = 10;
     
+    this.editor = options.editor;
+
+    this.minStrokeWidth = 6;
+    this.maxStrokeWidth = 40;
+
     if(options.noClick)
       this.$el.unbind('click')
 
@@ -408,23 +413,23 @@ module.exports = View.extend({
    * Define the thickness of the money line.
    */
   updateStrokeWidth: function(){
-
-    var minAmount = 0;
-    var maxAmount = 20000000;
-
-    var minStroke = 6;
-    var maxStroke = 40;
-
     var amount = this.model.get('amount') || 0;
 
-    var percent = amount * 100 / maxAmount;
-    var strokeWidth = percent * maxStroke / 100;
+    if(amount > this.editor.maxMoneyAmount)
+      this.editor.maxMoneyAmount = amount;
 
-    if(strokeWidth < minStroke)
-      strokeWidth = minStroke;
+    var percent = amount * 100 / this.editor.maxMoneyAmount;
+    console.log(percent);
+    var strokeWidth = percent * this.maxStrokeWidth / 100;
 
+    if(strokeWidth < this.minStrokeWidth)
+      strokeWidth = this.minStrokeWidth;
+
+    else if(strokeWidth > this.maxStrokeWidth){
+      strokeWidth = this.maxStrokeWidth;
+    }
+      
     this.strokeWidth = strokeWidth;
-
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
