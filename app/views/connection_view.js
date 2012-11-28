@@ -16,10 +16,10 @@ module.exports = View.extend({
 
   initialize: function(options){
     this.actorRadius = 60;
-    this.markerSize = 4;
     this.edgeRadius = 10;
-    this.offsetDistance = 15;
-    this.edgeRadius = 10;
+    this.coinSizeFactor = 1;
+    this.strokeWidth = 6;
+    this.markerRatio = 2.5;
     
     if(options.noClick)
       this.$el.unbind('click')
@@ -52,10 +52,18 @@ module.exports = View.extend({
       View.prototype.render.call(this)
   },
   
+  destroy: function(){
+    if(this.model.from)
+      this.model.from.off('change:pos', this.update, this);
+      
+    if(this.model.to)
+      this.model.to.off('change:pos', this.update, this);
+      
+    View.prototype.destroy.call(this);
+  },
+  
   afterRender: function(){
     this.selectStyle = 'hsl(205,100%,55%)';
-    
-    this.updateStrokeWidth();
 
     this.path = "";
     this.$el.svg();
@@ -74,9 +82,15 @@ module.exports = View.extend({
       case 'money':
         // yellow
         //this.strokeStyle = '#f8df47';
-        this.createCoinDefinitions();
+        this.isMoney = true;
         break;
     }
+    
+    // also creates something crucial for the other connections
+    this.createCoinDefinitions();
+    
+    if(this.isMoney)
+      this.updateStrokeWidth();
     
     if(this.model.get("connectionType") === 'money'){
       this.pathSettings = {
@@ -85,38 +99,42 @@ module.exports = View.extend({
         'marker-mid': "url(#"+ this.coinReference +")",
         'stroke-width': this.strokeWidth
       };
+      
+      this.strokeWidth = 1;
+      this.markerSize = 0;
     } else {
       this.pathSettings = {
         'marker-end': 'url(#'+ this.model.id +')',
         'stroke': this.strokeStyle,
         'stroke-width': this.strokeWidth
       };
+      
+      this.markerSize = this.strokeWidth/2 * this.markerRatio;
+      var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
+      this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle });
     }
-    
-    var arrow = this.svg.marker(this.defs, this.model.id, 1, this.markerSize/2, this.markerSize/2, this.markerSize/2, 'auto', { viewBox: '0 0 ' + this.markerSize + ' ' + this.markerSize});
-    this.svg.use(arrow, 0, 0, this.markerSize, this.markerSize, '#trianglePath', { fill: this.strokeStyle });
 
     this.g = this.svg.group();
-    createGlobalDefs(this.markerSize, this.strokeStyle, this.selectStyle);
+    createGlobalDefs();
     this.update();
     
-    // offset svg
-    this.$el.css('margin', -(this.strokeWidth/2 + this.offsetDistance) + 'px 0 0 '+ -(this.strokeWidth/2 + this.offsetDistance) + 'px');
     this.$el.addClass( this.model.get("connectionType") );
   },
   
   createCoinDefinitions: function(){
+    // case: coin size gets changed
+    // then: remove coinMarker if its already there
+    if(this.coinMarker)
+      this.svg.remove(this.coinMarker);
+    
     // coin definition
-    this.coinSizeFactor = 1;
     this.coinDistance = 4 * this.coinSizeFactor;
     this.coinReference = this.model.id + "-coin";
   
-    var coinWidth = 7 * this.coinSizeFactor;
-    var coinHeight = 12 * this.coinSizeFactor;
-    var coin = this.svg.marker(this.defs, this.coinReference, coinWidth/2, coinHeight/2, coinWidth, coinHeight, "auto");
-    this.svg.use(coin, 0, 0, 6, 11, '#coinSymbol');
-    
-    this.strokeWidth = 1;
+    this.coinWidth = 7 * this.coinSizeFactor;
+    this.coinHeight = 12 * this.coinSizeFactor;
+    this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
+    this.svg.use(this.coinMarker, 0, 0, 6, 11, '#coinSymbol');
   },
 
   hasBothConnections: function(){
@@ -126,35 +144,48 @@ module.exports = View.extend({
   update: function(){
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
-    this.edgeRadius = 10;
     
+    this.edgeRadius = 10;
+    this.offset = 2*(this.strokeWidth + this.markerSize);
+    
+    if(this.isMoney)
+      this.offset = this.coinHeight*2;
     
     var pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
-    }    
+    }
+    
     // round because our positions are float, not integer
     var start = {
-      x : Math.round(from.x - pos.x) + this.strokeWidth/2 + this.offsetDistance,
-      y : Math.round(from.y - pos.y) + this.strokeWidth/2 + this.offsetDistance
+      x : Math.round(from.x - pos.x),
+      y : Math.round(from.y - pos.y)
     };
     var end = {
-      x : Math.round(to.x - pos.x) + this.strokeWidth/2 + this.offsetDistance,
-      y : Math.round(to.y - pos.y) + this.strokeWidth/2 + this.offsetDistance
+      x : Math.round(to.x - pos.x),
+      y : Math.round(to.y - pos.y)
     };
     
-    var width = Math.abs(from.x - to.x) + this.strokeWidth;
-    var height = Math.abs(from.y - to.y) + this.strokeWidth;
-      
+    //var alpha = Math.atan2(end.y - start.y, end.x - start.x);
+    
+    var width = Math.abs(from.x - to.x)  + this.offset;
+    var height = Math.abs(from.y - to.y) + this.offset;
+    
+    // resize it
     this.svg.configure({
-      'width' : width+ this.strokeWidth + this.offsetDistance,
-      'height' : height + this.strokeWidth + this.offsetDistance
+      'width' : width,
+      'height' : height
     }, true);
+    
+    this.$('g').attr('transform', 'translate('+ this.offset/2 +' '+ this.offset/2 +')');
+    
     this.$el.css({
-      'left': pos.x + "px",
-      'top': pos.y + "px",
-      'width': width+this.strokeWidth,
-      'height': height+this.strokeWidth
+      'left': pos.x,
+      'top': pos.y,
+      'marginTop': -this.offset/2,
+      'marginLeft': -this.offset/2,
+      'width': width,
+      'height': height
     });
 
     var halfX;
@@ -168,24 +199,18 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
-        start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x + this.edgeRadius,
-          y : end.y
-        };
-        this.definePath1Line(start2, end2);
+        start.x += this.actorRadius;
+        end.x -= this.actorRadius + this.markerSize;
+        this.definePath1Line(start, end);
       }
       //case 1c
       //
       // ──┐
       //   └──➝
       //  
-      else if(end.y - start.y <= this.actorRadius){
+      else if(end.y - start.y <= this.actorRadius+this.edgeRadius){
         start.x += this.actorRadius;
-        end.x -= this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x -= this.actorRadius + this.markerSize;
         halfX = (end.x - start.x)/2 + start.x;
         if(end.y - start.y < 2* this.edgeRadius)
           this.edgeRadius = (end.y - start.y) / 2;
@@ -199,7 +224,6 @@ module.exports = View.extend({
         };
         var halfX2 = halfX - this.edgeRadius;
         var halfX3 = halfX + this.edgeRadius;
-        console.log("case 1c");
         this.definePath3LinesX(start, halfX, end, start2, end2, halfX2, halfX3, 1, 0, this.edgeRadius);
       }
       //case 1d
@@ -208,9 +232,9 @@ module.exports = View.extend({
       //  └┐
       //   ↓
       //
-      else if(end.x - start.x <= this.actorRadius){
+      else if(end.x - start.x <= this.actorRadius+this.edgeRadius){
         start.y += this.actorRadius;
-        end.y -= this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y -= this.actorRadius + this.markerSize;
         halfY = (end.y - start.y)/2 + start.y;
         if(end.x - start.x < 2 * this.edgeRadius)
           this.edgeRadius = (end.x - start.x) / 2;
@@ -233,7 +257,7 @@ module.exports = View.extend({
       //
       else {
         start.x += this.actorRadius;
-        end.y -= this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y -= this.actorRadius + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -249,28 +273,22 @@ module.exports = View.extend({
     else if(start.x <= end.x && start.y > end.y){
       //case 2f
       //  
+      //  ↑
       //  │
-      //  ↓
       //
       if(start.x == end.x){
-        start2 = {
-          x : start.x,
-          y : start.y - this.edgeRadius
-        };
-        end2 = {
-          x : end.x,
-          y : end.y + this.edgeRadius
-        };
-        this.definePath1Line(start2, end2);
+        start.y -= this.actorRadius;
+        end.y += this.actorRadius + this.markerSize;
+        this.definePath1Line(start, end);
       }
       //case 2c
       //
       //   ┌──➝
       // ──┘
       //
-      else if(start.y - end.y < this.actorRadius){
+      else if(start.y - end.y < this.actorRadius+this.edgeRadius){
         start.x += this.actorRadius;
-        end.x -= this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x -= this.actorRadius + this.markerSize;
         halfX = (end.x - start.x)/2 + start.x;
         if (start.y - end.y < 2 * this.edgeRadius)
           this.edgeRadius = (start.y - end.y) / 2;
@@ -284,7 +302,6 @@ module.exports = View.extend({
         };
         var halfX2 = halfX - this.edgeRadius;
         var halfX3 = halfX + this.edgeRadius;
-        console.log("case 2c");
         this.definePath3LinesX(start, halfX, end, start2, end2, halfX2, halfX3, 0, 1, this.edgeRadius);
       }
       //case 2d
@@ -293,9 +310,9 @@ module.exports = View.extend({
       //  ┌┘
       //  │
       //
-      else if(end.x - start.x < this.actorRadius){
+      else if(end.x - start.x < this.actorRadius+this.edgeRadius){
         start.y -= this.actorRadius;
-        end.y += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y += this.actorRadius + this.markerSize;
         halfY = (start.y - end.y)/2 + end.y;
         if (end.x - start.x < 2 * this.edgeRadius)
           this.edgeRadius = (end.x - start.x) / 2;
@@ -318,7 +335,7 @@ module.exports = View.extend({
       //  
       else {
         start.x += this.actorRadius;
-        end.y += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y += this.actorRadius + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -337,21 +354,18 @@ module.exports = View.extend({
       //  ←──
       //
       if(start.y == end.y){
-        start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x + this.edgeRadius,
-          y : end.y
-        };
-        console.log("case 3f");
-        this.definePath1Line(start2, end2);
+        start.x -= this.actorRadius;
+        end.x += this.actorRadius + this.markerSize;
+        this.definePath1Line(start, end);
       }
       //case 3c
-      else if(end.y - start.y < this.actorRadius){
+      //
+      //    ┌──
+      //  ←─┘
+      //
+      else if(end.y - start.y < this.actorRadius+this.edgeRadius){
         start.x -= this.actorRadius;
-        end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x += this.actorRadius + this.markerSize;
         halfX = (start.x - end.x)/2 + end.x;
         if (end.y - start.y < 2 * this.edgeRadius)
           this.edgeRadius = (end.y - start.y) / 2;
@@ -365,13 +379,17 @@ module.exports = View.extend({
         };
         var halfX2 = halfX + this.edgeRadius;
         var halfX3 = halfX - this.edgeRadius;
-        console.log("case 3c");
         this.definePath3LinesX(start, halfX, end, start2, end2, halfX2, halfX3, 0, 1, this.edgeRadius);
       }
       //case 3d
-      else if(start.x - end.x < this.actorRadius){
+      //
+      //    │
+      //  ┌─┘
+      //  ↓
+      //
+      else if(start.x - end.x < this.actorRadius+this.edgeRadius){
         start.y += this.actorRadius;
-        end.y -= this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y -= this.actorRadius + this.markerSize;
         halfY = (end.y - start.y)/2 + start.y;
         if (start.x - end.x < 2 * this.edgeRadius)
           this.edgeRadius = (start.x - end.x) / 2;
@@ -388,9 +406,13 @@ module.exports = View.extend({
         this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 1, 0, this.edgeRadius);
       }
       //case 3a+b
+      //
+      //    │
+      //  ←─┘
+      //
       else {
         start.y += this.actorRadius;
-        end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x += this.actorRadius + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -403,24 +425,25 @@ module.exports = View.extend({
       }
     }
     //case 4
-    else{
+    else {
       //case 1f
-      //connections are on the same line
+      //
+      //  │
+      //  ↓
+      //
       if(start.x == end.x){
-        start2 = {
-          x : start.x,
-          y : start.y + this.edgeRadius
-        };
-        end2 = {
-          x : end.x,
-          y : end.y - this.edgeRadius
-        };
-        this.definePath1Line(start2, end2);
+        start.y += this.actorRadius;
+        end.y -= this.actorRadius + this.markerSize;
+        this.definePath1Line(start, end);
       }
       //case 4c
-      else if(start.y - end.y < this.actorRadius){
+      //
+      //  ←─┐
+      //    └──
+      //
+      else if(start.y - end.y < this.actorRadius+this.edgeRadius){
         start.x -= this.actorRadius;
-        end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x += this.actorRadius + this.markerSize;
         halfX = (start.x - end.x)/2 + end.x;
         if (start.y - end.y < 2 * this.edgeRadius)
           this.edgeRadius = (start.y - end.y) / 2;
@@ -434,13 +457,17 @@ module.exports = View.extend({
         };
         var halfX2 = halfX + this.edgeRadius;
         var halfX3 = halfX - this.edgeRadius;
-        console.log("case 4c");
         this.definePath3LinesX(start, halfX, end, start2, end2, halfX2, halfX3, 1, 0, this.edgeRadius);
       }
       //case 4d
-      else if(start.x - end.x < this.actorRadius){
+      //
+      //    ↑
+      //    └┐
+      //     │
+      //
+      else if(start.x - end.x < this.actorRadius+this.edgeRadius){
         start.y -= this.actorRadius;
-        end.y += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.y += this.actorRadius + this.markerSize;
         halfY = (start.y - end.y)/2 + end.y;
         if (start.x - end.x < 2 * this.edgeRadius)
           this.edgeRadius = (start.x - end.x) / 2;
@@ -457,9 +484,13 @@ module.exports = View.extend({
         this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 0, 1, this.edgeRadius);
       }
       //case 4a+b
+      //
+      //  ←─┐
+      //    │
+      //
       else {
         start.y -= this.actorRadius;
-        end.x += this.actorRadius + this.markerSize + this.strokeWidth/2;
+        end.x += this.actorRadius + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -481,11 +512,10 @@ module.exports = View.extend({
    * Define the thickness of the money line.
    */
   updateStrokeWidth: function(){
-
     var minAmount = 0;
     var maxAmount = 20000000;
 
-    var minStroke = 6;
+    var minStroke = 1;
     var maxStroke = 40;
 
     var amount = this.model.get('amount') || 0;
@@ -541,7 +571,9 @@ module.exports = View.extend({
   },
   
   // slices a line from a to b into segments
-  // returns a space seperated string of numbers
+  // returns 
+  //    segments: a space seperated string of numbers
+  //    endPosition: the last position on the path (rest)
   slicedPathSegments: function(a, b, distance){
     var length = Math.abs(b - a);
     var sign = a > b ? -1 : 1;
@@ -552,60 +584,72 @@ module.exports = View.extend({
       segments.push(a + sign*i*distance);
     }
     
+    segments.push(b);
+    
     return segments.join(" ");
+  },
+  
+  slicedCurveSegments: function(){
+    
   },
 
   definePath1Line: function(start, end){
     console.log("definePath1Line");
-    this.path = 'M ' + start.x + ',' + start.y;
+    // start path
+    this.path = 'M ' + start.x + ' ' + start.y;
 
     if(start.y === end.y){
       // path goes horizontal
-      this.path += " H " + this.slicedPathSegments(start.x, end.x, this.coinDistance);
+      this.path += ' H ' + this.slicedPathSegments(start.x, end.x, this.coinDistance);
     } else {
       // path goes vertical
-      this.path += " V "  + this.slicedPathSegments(start.y, end.y, this.coinDistance);
+      this.path += ' V '  + this.slicedPathSegments(start.y, end.y, this.coinDistance);
     }
   },
   
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
     console.log("definePath2Lines");
+    // start path
+    this.path = 'M ' + start.x + ' ' + start.y;
+    
     if(start.x < end.x){
-      //this.path = 'M' + start.x + ',' + start.y + ' L' + end.x + ',' + start.y + ' L' + end.x + ',' + end.y;
-      this.path = 'M ' + start.x + ',' + start.y + ' L ' + end2.x + ',' + start.y + ' A ' + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ',' + start2.y + ' L ' + end.x + ',' + end.y;
+      this.path += ' H ' + this.slicedPathSegments(start.x, end2.x, this.coinDistance);
+    
+      this.path += ' A ' + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ',' + start2.y;
+    
+      this.path += ' V ' + this.slicedPathSegments(start2.y, end.y, this.coinDistance);
     }
     else{
-      //this.path = 'M' + start.x + ',' + start.y + ' L' + start.x + ',' + end.y + ' L' + end.x + ',' + end.y;
-      this.path = 'M ' + start.x + ',' + start.y + ' L ' + start.x + ',' + end2.y + ' A ' + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ',' + end.y + ' L ' + end.x + ',' + end.y;
+      this.path += ' L ' + start.x + ',' + end2.y + ' A ' + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ',' + end.y + ' L ' + end.x + ',' + end.y;
     }
   },
 
   definePath3LinesX: function(start, halfX, end, start2, end2, halfX2, halfX3, sweepFlag1, sweepFlag2, edgeRadius){
     console.log("definePath3LinesX");
-    //this.path = 'M' + start.x + ',' + start.y + ' L' + halfX + ',' + start.y +  'L' + halfX + ',' + end.y + ' L' + end.x + ',' + end.y;
-    this.path = 'M ' + start.x + ',' + start.y + ' L ' + halfX2 + ',' + start.y + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ',' + start2.y + ' L ' + halfX + ',' + end2.y + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag2 + ' ' + halfX3 + ',' + end.y + ' L ' + end.x + ',' + end.y; 
+    // start path
+    this.path = 'M ' + start.x + ' ' + start.y;
+    
+    this.path += ' L ' + halfX2 + ',' + start.y + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ',' + start2.y + ' L ' + halfX + ',' + end2.y + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag2 + ' ' + halfX3 + ',' + end.y + ' L ' + end.x + ',' + end.y; 
   },
 
   definePath3LinesY: function(start, halfY, end, start2, end2, halfY2, halfY3, sweepFlag1, sweepFlag2, edgeRadius){
     console.log("definePath3LinesY");
-    //this.path = 'M' + start.x + ',' + start.y + ' L' + start.x + ',' + halfY +  'L' + end.x + ',' + halfY + ' L' + end.x + ',' + end.y;
-    this.path = 'M ' + start.x + ',' + start.y + ' L ' + start.x + ',' + halfY2 + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag1 + ' ' + start2.x + ',' + halfY + ' L ' + end2.x + ',' + halfY + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ',' + halfY3 + ' L ' + end.x + ',' + end.y; 
+    // start path
+    this.path = 'M ' + start.x + ' ' + start.y;
+    
+    this.path += ' L ' + start.x + ',' + halfY2 + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag1 + ' ' + start2.x + ',' + halfY + ' L ' + end2.x + ',' + halfY + ' A '  + edgeRadius + ',' + edgeRadius + ' ' + 0 + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ',' + halfY3 + ' L ' + end.x + ',' + end.y; 
   }
 });
 
-function createGlobalDefs(markerSize, strokeStyle, selectStyle){
+function createGlobalDefs(){
   if(this.svg === undefined){
     $('body').svg().find('> svg').attr('id', 'svgDefinitions');
     this.svg = $('body').svg('get');
     var defs = this.svg.defs();
     
     // marker definition
-    var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, markerSize, markerSize);
-    this.svg.path(markerSymbol, 'M 0 0 L '+ markerSize +' '+ markerSize/2 +' L 0 '+ markerSize +' z');
-
-    // selected marker definition
-    var selectedMarker = this.svg.marker(defs, 'selectedTriangle', 1, markerSize/2, markerSize/2, markerSize/2, 'auto', { viewBox: '0 0 ' + markerSize + ' ' + markerSize });
-    this.svg.use(selectedMarker, 0, 0, markerSize, markerSize, '#trianglePath', { fill: selectStyle });
+    var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, 1, 1);
+    this.svg.path(markerSymbol, 'M 0 0 L 1 0.5 L 0 1 z');
     
     // coin definition
     var yellowStops = [['0%', '#fbd54d'], ['25%', '#fae167'], ['50%', '#fcd852'], ['100%', '#f7eb7a']];
@@ -618,7 +662,7 @@ function createGlobalDefs(markerSize, strokeStyle, selectStyle){
     this.svg.rect(highlightMask, 1, 1, 6, 11, 1.5, 1.5, { fill: 'white' });
     this.svg.rect(highlightMask, -2, 1, 6, 11, 1.5, 1.5, { fill: 'black' });
     
-    var coinSymbol = this.svg.symbol(defs, 'coinSymbol', 0, 0, markerSize, markerSize);
+    var coinSymbol = this.svg.symbol(defs, 'coinSymbol', 0, 0, 6, 11);
     this.svg.rect(coinSymbol, 0.5, 0.5, 6, 11, 2, 2, { fill: 'url(#moneyGradient)', stroke: '#eaab51', 'stroke-width': 1 });
     this.svg.rect(coinSymbol, -1, 1, 6, 11, 1.5, 1.5, { fill: 'url(#whiteToTransparent)',  mask: 'url(#coinHighlightMask)' }); 
   }
