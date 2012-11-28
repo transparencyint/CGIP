@@ -79,11 +79,8 @@ module.exports = View.extend({
     var hiddenBrother;
 
     if(event.srcElement.type == 'checkbox'){
-      if(event.srcElement.name == 'role')
-        hiddenBrother = $('input[name=roleOther]'); 
-      else if(event.srcElement.name == 'purpose')
+      if(event.srcElement.name == 'purpose')
         hiddenBrother = $('input[name=purposeOther]'); 
-
       if(event.target.value === "other" && $(event.target).is(':checked')){
           hiddenBrother.removeClass('hidden');
       } else {
@@ -127,9 +124,6 @@ module.exports = View.extend({
 
 
     $("input[name='role']:checked").each(function() { 
-      if($(this).val() == 'other' && $('#roleOther').val() != '')
-        _role.push($('#roleOther').val());
-      else
         _role.push($(this).val());
     });
 
