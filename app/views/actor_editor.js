@@ -223,7 +223,7 @@ module.exports = View.extend({
   },
 
   getMaxConnection: function(){
-    var maxConnection;
+    var maxConnection = null;
     var maxVal = 0;
     $.each(this.moneyConnections.models, function(key, value){
       if(maxVal < value.attributes.amount){
@@ -236,9 +236,8 @@ module.exports = View.extend({
   },
 
   getMinConnection: function(){
-    var minConnection;
+    var minConnection = null;
     var minVal = Number.MAX_VALUE;
-    console.log(minVal);
     $.each(this.moneyConnections.models, function(key, value){
       if(minVal > value.attributes.amount){
         minVal = value.attributes.amount;

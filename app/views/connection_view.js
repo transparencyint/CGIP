@@ -91,7 +91,7 @@ module.exports = View.extend({
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
     
-    if(this.isMoney)
+    if(this.isMoney && this.editor)
       this.updateStrokeWidth();
     
     if(this.model.get("connectionType") === 'money'){
@@ -517,10 +517,20 @@ module.exports = View.extend({
 
     var editor = this.editor;
     var amount = this.model.get('amount') || 0;
-    var maxMoneyAmount = editor.maxConnection.attributes.amount;
-    var minMoneyAmount = editor.minConnection.attributes.amount;
 
-    vra isMinOrMax = false;
+
+    var maxMoneyAmount = amount;
+    var minMoneyAmount = 0;
+    if(editor.maxConnection === null || editor.minConnection === null){
+      editor.maxConnection = this.model;
+      editor.minConnection = this.model;
+
+    }else {
+      maxMoneyAmount = editor.maxConnection.attributes.amount;
+      minMoneyAmount = editor.minConnection.attributes.amount;
+    }
+
+    var isMinOrMax = false;
     if(this.id === editor.maxConnection.id){
       isMinOrMax = true;
       if(amount > maxMoneyAmount)
@@ -537,21 +547,31 @@ module.exports = View.extend({
         minMoneyAmount = editor.getMinConnection();
     }
 
+    console.log("minMoneyAmount"+minMoneyAmount);
+    console.log("maxMoneyAmount"+maxMoneyAmount);
+
     this.minCoinSizeFactor = 1;
     this.maxCoinSizeFactor = 4;
 
     var factorRange = this.maxCoinSizeFactor - this.minCoinSizeFactor; 
     var moneyRange = maxMoneyAmount - minMoneyAmount;
 
+    console.log("factorRange"+factorRange);
+    console.log("moneyRange"+moneyRange);
+
+
     minCoinFactor =  this.minCoinSizeFactor;
     if(isMinOrMax) {
       $.each(editor.moneyConnections.models, function(key, value){
         var amountDif = value.attributes.amount - minMoneyAmount;
         value.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
+        console.log("value.coinSizeFactor"+value.coinSizeFactor);
       });
     } else {
+       console.log(amount);
       var amountDif = amount - minMoneyAmount;
       this.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
+      console.log("this.coinSizeFactor"+this.coinSizeFactor);
     } 
 
     //this.coinSizeFactor = amount * maxCoinSizeFactor / editor.maxMoneyAmount;
@@ -623,7 +643,7 @@ module.exports = View.extend({
   },
 
   definePath1Line: function(start, end){
-    console.log("definePath1Line");
+//    console.log("definePath1Line");
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
 
@@ -637,7 +657,7 @@ module.exports = View.extend({
   },
   
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
-    console.log("definePath2Lines");
+//    console.log("definePath2Lines");
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     
@@ -654,7 +674,7 @@ module.exports = View.extend({
   },
 
   definePath3LinesX: function(start, halfX, end, start2, end2, halfX2, halfX3, sweepFlag1, sweepFlag2, edgeRadius){
-    console.log("definePath3LinesX");
+//    console.log("definePath3LinesX");
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     
@@ -662,7 +682,7 @@ module.exports = View.extend({
   },
 
   definePath3LinesY: function(start, halfY, end, start2, end2, halfY2, halfY3, sweepFlag1, sweepFlag2, edgeRadius){
-    console.log("definePath3LinesY");
+//    console.log("definePath3LinesY");
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     
