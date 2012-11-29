@@ -521,6 +521,8 @@ module.exports = View.extend({
 
     var maxMoneyAmount = amount;
     var minMoneyAmount = 0;
+
+    //eg no connections yet on the map so no max/minConnection
     if(editor.maxConnection === null || editor.minConnection === null){
       editor.maxConnection = this.model;
       editor.minConnection = this.model;
@@ -535,16 +537,16 @@ module.exports = View.extend({
       isMinOrMax = true;
       if(amount > maxMoneyAmount)
         maxMoneyAmount = amount;
-      else
-        maxMoneyAmount = editor.getMaxConnection();
+      else //set maxMoneyAmount: another connection could be the new maxConnection
+        maxMoneyAmount = editor.getMaxConnection().attributes.amount;
     }
 
     if(this.id === editor.minConnection.id){
       isMinOrMax = true;
       if(amount < minMoneyAmount)
         minMoneyAmount = amount;
-      else
-        minMoneyAmount = editor.getMinConnection();
+      else //another connection could be the new minConnection
+        minMoneyAmount = editor.getMinConnection().attributes.amount;
     }
 
     console.log("minMoneyAmount"+minMoneyAmount);
@@ -553,6 +555,7 @@ module.exports = View.extend({
     this.minCoinSizeFactor = 1;
     this.maxCoinSizeFactor = 4;
 
+
     var factorRange = this.maxCoinSizeFactor - this.minCoinSizeFactor; 
     var moneyRange = maxMoneyAmount - minMoneyAmount;
 
@@ -560,14 +563,15 @@ module.exports = View.extend({
     console.log("moneyRange"+moneyRange);
 
 
-    minCoinFactor =  this.minCoinSizeFactor;
-    if(isMinOrMax) {
+    var minCoinFactor =  this.minCoinSizeFactor;
+    if(isMinOrMax) { 
+      // go through all moneyConnections and recalc all coinSizeFactors
       $.each(editor.moneyConnections.models, function(key, value){
         var amountDif = value.attributes.amount - minMoneyAmount;
         value.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
         console.log("value.coinSizeFactor"+value.coinSizeFactor);
       });
-    } else {
+    } else { //otherwise just calc for the current connection 
        console.log(amount);
       var amountDif = amount - minMoneyAmount;
       this.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
