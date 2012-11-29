@@ -517,68 +517,77 @@ module.exports = View.extend({
 
     var editor = this.editor;
     var amount = this.model.get('amount') || 0;
-
-
-    var maxMoneyAmount = amount;
-    var minMoneyAmount = 0;
-
-    //eg no connections yet on the map so no max/minConnection
-    if(editor.maxConnection === null || editor.minConnection === null){
-      editor.maxConnection = this.model;
-      editor.minConnection = this.model;
-
-    }else {
-      maxMoneyAmount = editor.maxConnection.attributes.amount;
-      minMoneyAmount = editor.minConnection.attributes.amount;
-    }
-
-    var isMinOrMax = false;
-    if(this.id === editor.maxConnection.id){
-      isMinOrMax = true;
-      if(amount > maxMoneyAmount)
-        maxMoneyAmount = amount;
-      else //set maxMoneyAmount: another connection could be the new maxConnection
-        maxMoneyAmount = editor.getMaxConnection().attributes.amount;
-    }
-
-    if(this.id === editor.minConnection.id){
-      isMinOrMax = true;
-      if(amount < minMoneyAmount)
-        minMoneyAmount = amount;
-      else //another connection could be the new minConnection
-        minMoneyAmount = editor.getMinConnection().attributes.amount;
-    }
-
-    console.log("minMoneyAmount"+minMoneyAmount);
-    console.log("maxMoneyAmount"+maxMoneyAmount);
-
+    console.log("amount"+amount);
     this.minCoinSizeFactor = 1;
     this.maxCoinSizeFactor = 4;
+    var maxMoneyAmount = 0;
+    var minMoneyAmount = 0;
 
+    //var size = _.size(editor.moneyConnections.models);
+    var size = editor.moneyConnections.models.length;
 
-    var factorRange = this.maxCoinSizeFactor - this.minCoinSizeFactor; 
-    var moneyRange = maxMoneyAmount - minMoneyAmount;
+    //there is at least 1 other money connection on the map already
+    if(size > 1){
+      maxMoneyAmount = editor.maxMoneyConnection.attributes.amount;
+      minMoneyAmount = editor.minMoneyConnection.attributes.amount;
 
-    console.log("factorRange"+factorRange);
-    console.log("moneyRange"+moneyRange);
+      //current connection will influence others only if it is the min or maxConnection
+      var isMinOrMax = false; 
+      if(this.id === editor.maxMoneyConnection.id){
+        isMinOrMax = true;
+        if(amount > maxMoneyAmount)
+          maxMoneyAmount = amount;
+        else if(amount < maxMoneyAmount) //another connection could be the new maxConnection
+          maxMoneyAmount = editor.getMaxConnection().attributes.amount;
+      }else if(this.id === editor.minMoneyConnection.id){
+        isMinOrMax = true;
+        if(amount < minMoneyAmount)
+          minMoneyAmount = amount;
+        else if(amount > minMoneyAmount)//another connection could be the new minMoneyConnection
+          minMoneyAmount = editor.getMinConnection().attributes.amount;
+      }
 
+      console.log("minMoneyAmount"+minMoneyAmount);
+      console.log("maxMoneyAmount"+maxMoneyAmount);
 
-    var minCoinFactor =  this.minCoinSizeFactor;
-    if(isMinOrMax) { 
-      // go through all moneyConnections and recalc all coinSizeFactors
-      $.each(editor.moneyConnections.models, function(key, value){
-        var amountDif = value.attributes.amount - minMoneyAmount;
-        value.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
-        console.log("value.coinSizeFactor"+value.coinSizeFactor);
-      });
-    } else { //otherwise just calc for the current connection 
-       console.log(amount);
-      var amountDif = amount - minMoneyAmount;
-      this.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
-      console.log("this.coinSizeFactor"+this.coinSizeFactor);
-    } 
+      var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
 
-    //this.coinSizeFactor = amount * maxCoinSizeFactor / editor.maxMoneyAmount;
+      var minCoinFactor = this.minCoinSizeFactor;
+
+      //connections have at least 1 different money value
+      //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
+      if(!isMinMaxEqual){
+        var factorRange = this.maxCoinSizeFactor - this.minCoinSizeFactor; 
+        var moneyRange = maxMoneyAmount - minMoneyAmount;
+
+        console.log("factorRange"+factorRange);
+        console.log("moneyRange"+moneyRange);
+
+        if(isMinOrMax) {
+          // go through all moneyConnections and recalc all coinSizeFactors
+          $.each(editor.moneyConnections.models, function(key, value){
+            var amountDif = value.attributes.amount - minMoneyAmount;
+            value.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
+            console.log("value.coinSizeFactor"+value.coinSizeFactor);
+          });
+        } else { //otherwise just calc for the current connection 
+          var amountDif = amount - minMoneyAmount;
+          this.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
+          console.log("this.coinSizeFactor"+this.coinSizeFactor);
+        } 
+
+      } else { //there is at least 2 connection and all with the same money Amount
+        $.each(editor.moneyConnections.models, function(key, value){
+          value.coinSizeFactor = minCoinFactor;
+          console.log("value.coinSizeFactor"+value.coinSizeFactor);
+        });
+      }
+
+    } else { // set minCoinSize for the first money connection
+      editor.maxMoneyConnection = this.model;
+      editor.minMoneyConnection = this.model;
+      this.coinSizeFactor = this.minCoinSizeFactor;
+    }
 
     this.createCoinDefinitions();
     this.update();
@@ -586,6 +595,16 @@ module.exports = View.extend({
 
   updateAmount: function(){
     this.$('.connection-metadata').text(this.model.get('amount'));
+  },
+
+  getAverageMoneyAmount: function(){
+    var sum = 0;
+    var i = 0;
+    $.each(this.editor.moneyConnections.models, function(key, value){
+      sum += value.attributes.amount;
+      i++;
+    });
+    return sum / i;
   },
 
   showMetadataInput: function(){   
@@ -597,7 +616,8 @@ module.exports = View.extend({
       //Remove all other forms
       $('.connection-form-container').remove();
       var model = this.model;
-      var cfw = new ConnectionFormView({ model: model });
+      var averageMoneyAmount = this.getAverageMoneyAmount();
+      var cfw = new ConnectionFormView({ model: model, averageAmount: averageMoneyAmount});
       $(document.body).append(cfw.render().el);  
     }
 

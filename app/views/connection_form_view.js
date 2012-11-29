@@ -22,7 +22,8 @@ module.exports = View.extend({
   initialize: function(options){
     _.bindAll(this, 'destroy');
     this.saveAmount = _.debounce(this.saveAmount, 500);
-    this.oldAmount = this.model.get('amount');
+    this.oldAmount = options.averageAmount;
+    //this.oldAmount = this.model.get('amount');
   },
 
   getRenderData : function(){
@@ -33,7 +34,7 @@ module.exports = View.extend({
     this.$el.attr('rel', this.model.id);
     this.$el.fadeIn(100);
 
-    var amount = this.model.get('amount');
+    var amount = this.oldAmount;
     if(typeof(amount) !== 'undefined')
       this.$('.amount').val(amount);
 

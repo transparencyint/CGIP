@@ -64,8 +64,8 @@ module.exports = View.extend({
     
     this.gridSize = this.radius;
     
-    this.minConnection = this.getMinConnection();
-    this.maxConnection = this.getMaxConnection();
+    this.minMoneyConnection = this.getMinConnection();
+    this.maxMoneyConnection = this.getMaxConnection();
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -229,8 +229,7 @@ module.exports = View.extend({
       if(maxVal < value.attributes.amount){
         maxVal = value.attributes.amount;
         maxConnection = value;
-      }
-        
+      } 
     });
     return maxConnection;
   },
@@ -243,7 +242,6 @@ module.exports = View.extend({
         minVal = value.attributes.amount;
         minConnection = value;
       }
-        
     });
     return minConnection;
   },
