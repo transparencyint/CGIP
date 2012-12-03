@@ -1,1 +1,3 @@
-<%= @abbreviation %>
+<span class="caption">
+  <%= @abbreviation %>
+</span>
