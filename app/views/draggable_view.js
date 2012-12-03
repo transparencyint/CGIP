@@ -2,7 +2,7 @@ var View = require('./view');
 
 module.exports = View.extend({
   events: {
-      'mousedown': 'dragStart'
+    'mousedown': 'dragStart'
   },
 
   initialize: function(){
@@ -27,6 +27,7 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
+
     if(!this.dontDrag){
       event.stopPropagation();
       
@@ -61,6 +62,13 @@ module.exports = View.extend({
   dragStop : function(){
     this.snapToGrid();    
     $(document).unbind('mousemove.global');
+  },
+
+  select: function(event){
+    if(!this.$el.hasClass("ui-selected")){
+      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
+    }
+    this.editor.actorSelected(this);
   },
 
   snapToGrid: function(){
