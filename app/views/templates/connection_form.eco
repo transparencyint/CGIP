@@ -1,8 +1,12 @@
 <div class="close">&times;</div>
 <div class="movable"></div>
 <form class="connection-form">
-	<label for="amount"> Amount: 
-	<input type="text" class="amount" name="amount"/></label>
+	<label for="disbursed"> Disbursed: 
+	<input type="text" id="disbursed" name="disbursed"/></label>
+
+	<label for="pledged"> Pledged: 
+	<input type="text" id="pledged" name="pledged"/></label>
+
 	<button type="submit">Save</button>
 	<button class="delete">Delete</button>
 </form>
