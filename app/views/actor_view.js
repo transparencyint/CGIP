@@ -11,13 +11,13 @@ module.exports = DraggableView.extend({
     var parentEvents = DraggableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
-      'dblclick .name': 'startEditName',
-      'dblclick .abbrev': 'startEditAbbrev',
+      'dblclick .name'    : 'startEditName',
+      'dblclick .abbrev'  : 'startEditAbbrev',
       'blur .abbrev-input': 'stopEditAbbrev',
-      'blur .name-input': 'stopEditName',
-      'keydown input': 'saveOnEnter',
-      'mousedown .inner': 'select',
-      'dblclick' : 'showMetadataForm'
+      'blur .name-input'  : 'stopEditName',
+      'keydown input'     : 'saveOnEnter',
+      'mousedown .inner'  : 'select',
+      'dblclick'          : 'showMetadataForm'
     }, parentEvents);
   },
   
