@@ -390,7 +390,7 @@ module.exports = View.extend({
       this.gridlineH.hide();
   },
 
-  hideGridLine: function(x, y){
+  hideGridLine: function(){
     this.gridlineV.fadeOut(400);
     this.gridlineH.fadeOut(400);
   },
