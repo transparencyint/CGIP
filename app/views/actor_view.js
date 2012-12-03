@@ -159,7 +159,7 @@ module.exports = View.extend({
     if(!this.dontDrag){
       event.stopPropagation();
 
-      this.select(); //in case we drag an unselected actor at the corner
+      this.select(); //always select actor before dragging
 
       var pos = this.model.get('pos');
       
