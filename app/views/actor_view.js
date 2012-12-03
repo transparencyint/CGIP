@@ -159,7 +159,9 @@ module.exports = View.extend({
   dragStart: function(event){
     if(!this.dontDrag){
       event.stopPropagation();
-      
+
+      this.select(); //in case we drag an unselected actor at the corner
+
       var pos = this.model.get('pos');
       
       this.startX = event.pageX - pos.x;
