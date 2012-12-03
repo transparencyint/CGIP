@@ -368,6 +368,7 @@ module.exports = View.extend({
     });
     
     this.$('.centerLine').css('left', x);
+    this.gridlineV.css('left', x);
   },
   
   dragStop : function(){
@@ -375,10 +376,10 @@ module.exports = View.extend({
   },
 
   showGridLine: function(x, y){
-    this.gridlineV.css({'left': x});
-    this.gridlineH.css({'top': y});
-    this.gridlineV.fadeIn(0).delay(500).fadeOut(400);
-    this.gridlineH.fadeIn(0).delay(500).fadeOut(400);
+    this.gridlineV.css({'left': this.offset.left + this.center + x});
+    this.gridlineH.css({'top': this.offset.top + y});
+    this.gridlineV.stop().show().delay(500).fadeOut(400);
+    this.gridlineH.stop().show().delay(500).fadeOut(400);
   },
   
   alignCenter: function(){
