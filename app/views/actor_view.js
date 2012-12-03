@@ -221,6 +221,9 @@ module.exports = View.extend({
         duration: 100,
         complete: function(){
           editor.saveGroup();
+
+          //show current gridline
+          editor.showGridLine(x, y);
         }
       });
     } else {

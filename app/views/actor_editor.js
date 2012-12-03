@@ -373,6 +373,13 @@ module.exports = View.extend({
   dragStop : function(){
     $(document).unbind('mousemove.global');
   },
+
+  showGridLine: function(x, y){
+    this.gridlineV.css({'left': x});
+    this.gridlineH.css({'top': y});
+    this.gridlineV.fadeIn(0).delay(500).fadeOut(400);
+    this.gridlineH.fadeIn(0).delay(500).fadeOut(400);
+  },
   
   alignCenter: function(){
     var nextCenter = this.$el.width()/2;
@@ -390,7 +397,9 @@ module.exports = View.extend({
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
-    
+    this.gridlineV = this.$('#gridlineV');
+    this.gridlineH = this.$('#gridlineH');
+
     this.actors.each(this.appendActor);
 
     //this.accountabilityConnections.each(this.appendAccountabilityConnection);
