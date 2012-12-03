@@ -14,6 +14,7 @@ module.exports = Collection.extend({
   filterGroups: function(){
     // todo: create custom collection
     var actorGroups = new Backbone.Collection();
+    actorGroups.model = ActorGroup;
     var actorCollection = this;
 
     // 1) iterate over all actors to filter out the groups
@@ -27,11 +28,11 @@ module.exports = Collection.extend({
 
     // 2) iterate over the actor groups and fill them with their actors
     actorGroups.each(function(actorGroup){
+      // todo: create custom collection
+      actorGroup.actors = new Backbone.Collection();
+      actorGroup.actors.model = ActorGroup;
       // if the group has actors, find and add them
       if(actorGroup.has('actors') && actorGroup.get('actors').length > 0){
-        // todo: create custom collection
-        actorGroup.actors = new Backbone.Collection();
-        actorGroup.actors.model = ActorGroup;
         // find the actors, remove them from the normal collection and
         // add them to the actor group
         _.each(actorGroup.get('actors'), function(actorId){

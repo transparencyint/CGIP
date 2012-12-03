@@ -216,7 +216,6 @@ module.exports = View.extend({
   appendActorGroup: function(actorGroup){
     var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
     actorGroupView.render();
-    console.log(actorGroupView.el)
     this.workspace.append(actorGroupView.el);
   },
 
