@@ -1,5 +1,6 @@
 var View = require('./view');
 var Actor = require('models/actor');
+var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
@@ -63,6 +64,9 @@ module.exports = View.extend({
     };
     
     this.gridSize = this.radius;
+
+    // filter the actor groups
+    this.actorGroups = this.actors.filterGroups();
     
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
@@ -70,7 +74,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -207,6 +211,13 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     if(startEdit === true) actorView.startEditName();
+  },
+
+  appendActorGroup: function(actorGroup){
+    var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
+    actorGroupView.render();
+    console.log(actorGroupView.el)
+    this.workspace.append(actorGroupView.el);
   },
 
   appendConnection: function(connection){
@@ -392,6 +403,7 @@ module.exports = View.extend({
     this.cancel = this.$('.controls .cancel');
     
     this.actors.each(this.appendActor);
+    this.actorGroups.each(this.appendActorGroup);
 
     //this.accountabilityConnections.each(this.appendAccountabilityConnection);
     this.connections.each(this.appendConnection);
