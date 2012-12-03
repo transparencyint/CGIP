@@ -378,8 +378,8 @@ module.exports = View.extend({
   showGridLine: function(x, y){
     this.gridlineV.css({'left': this.offset.left + this.center + x});
     this.gridlineH.css({'top': this.offset.top + y});
-    this.gridlineV.stop().show().delay(500).fadeOut(400);
-    this.gridlineH.stop().show().delay(500).fadeOut(400);
+    this.gridlineV.stop(true, true).show().delay(500).fadeOut(400);
+    this.gridlineH.stop(true, true).show().delay(500).fadeOut(400);
   },
   
   alignCenter: function(){
