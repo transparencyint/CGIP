@@ -374,16 +374,25 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global');
   },
 
-  showGridLine: function(x, y){
-    this.gridlineV.css({'left': this.offset.left + this.center + x});
-    this.gridlineH.css({'top': this.offset.top + y});
-    this.gridlineV.stop(true, true).show().delay(500).fadeOut(0);
-    this.gridlineH.stop(true, true).show().delay(500).fadeOut(0);
+  showGridLine: function(x, y, gridX, gridY){
+    if(gridX){
+      this.gridlineV.css({'left': this.offset.left + this.center + x});
+      this.gridlineV.show();
+    }
+    else if(!gridX)
+      this.gridlineV.hide();
+
+    if(gridY){
+      this.gridlineH.css({'top': this.offset.top + y});
+      this.gridlineH.show();
+    }
+    else if(!gridY)
+      this.gridlineH.hide();
   },
 
   hideGridLine: function(x, y){
-    this.gridlineV.fadeOut(250);
-    this.gridlineH.fadeOut(250);
+    this.gridlineV.fadeOut(400);
+    this.gridlineH.fadeOut(400);
   },
   
   alignCenter: function(){

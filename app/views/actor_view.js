@@ -221,19 +221,7 @@ module.exports = View.extend({
       }
     });
 
-    if(foundGridX){
-      editor.gridlineV.css({'left': editor.offset.left + editor.center + x});
-      editor.gridlineV.show();
-    }
-    else if(!foundGridX)
-      editor.gridlineV.hide();
-
-    if(foundGridY){
-      editor.gridlineH.css({'top': editor.offset.top + y});
-      editor.gridlineH.show();
-    }
-    else if(!foundGridY)
-      editor.gridlineH.hide();
+    editor.showGridLine(x, y, foundGridX, foundGridY);
   },
 
   snapToGrid: function(){
@@ -265,7 +253,7 @@ module.exports = View.extend({
         complete: function(){
           editor.saveGroup();
 
-          //hide grid lien
+          //hide grid line
           editor.hideGridLine();
         }
       });
