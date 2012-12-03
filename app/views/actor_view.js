@@ -13,9 +13,8 @@ module.exports = View.extend({
     'blur .abbrev-input': 'stopEditAbbrev',
     'blur .name-input': 'stopEditName',
     'keydown input': 'saveOnEnter',
-    'mousedown .inner': 'select',
     'dblclick' : 'showMetadataForm',
-    'mousedown': 'dragStart'
+    'mousedown .inner': 'dragStart'
   },
   
   initialize: function(options){
