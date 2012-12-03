@@ -13,9 +13,8 @@ module.exports = View.extend({
     'blur .abbrev-input': 'stopEditAbbrev',
     'blur .name-input': 'stopEditName',
     'keydown input': 'saveOnEnter',
-    'mousedown .inner': 'select',
     'dblclick' : 'showMetadataForm',
-    'mousedown': 'dragStart'
+    'mousedown .inner': 'dragStart'
   },
   
   initialize: function(options){
@@ -159,7 +158,9 @@ module.exports = View.extend({
   dragStart: function(event){
     if(!this.dontDrag){
       event.stopPropagation();
-      
+
+      this.select(); //always select actor before dragging
+
       var pos = this.model.get('pos');
       
       this.startX = event.pageX - pos.x;
