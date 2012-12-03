@@ -62,6 +62,7 @@ module.exports = View.extend({
 
   closeConnectionForm:function(event){
     this.model.set({amount: this.oldAmount});
+    $('#'+this.model.id).removeClass('activeConnection')
     this.destroy();
   },
 
