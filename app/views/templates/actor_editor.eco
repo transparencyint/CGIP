@@ -55,4 +55,7 @@
 </div>
 
 <div class="centerLine"></div>
-<div class="workspace"></div>
+<div class="workspace">
+  <div class="gridline" id="gridlineV"></div>
+  <div class="gridline" id="gridlineH"></div>
+</div>
