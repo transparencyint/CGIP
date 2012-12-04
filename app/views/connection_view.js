@@ -33,7 +33,7 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.model.on('change:disbursed', this.updateStrokeWidth, this);
-    this.model.on('change:disbursed', this.updateAmount, this);
+    this.model.on('change:disbursed', this.updateDisbursed, this);
   },
 
   getRenderData : function(){
@@ -428,8 +428,8 @@ module.exports = View.extend({
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
-  updateAmount: function(){
-    this.$('.connection-metadata').text(this.model.get('disbursed'));
+  updateDisbursed: function(){ 
+    this.$('.connection-metadata').text(this.model.get('disbursed') + ' $');
   },
 
   showMetadataInput: function(){   
