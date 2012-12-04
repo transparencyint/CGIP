@@ -16,6 +16,8 @@ module.exports = View.extend({
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
+
+    this.$document = $(document);
   },
 
   disableDraggable: function(){
@@ -36,8 +38,8 @@ module.exports = View.extend({
       this.startX = event.pageX - pos.x;
       this.startY = event.pageY - pos.y;
     
-      $(document).on('mousemove.global', this.drag);
-      $(document).one('mouseup', this.dragStop);
+      this.$document.on('mousemove.global', this.drag);
+      this.$document.one('mouseup', this.dragStop);
     }
   },
 
@@ -48,6 +50,9 @@ module.exports = View.extend({
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
     this.editor.dragGroup(dx, dy);
+
+    // emit a global drag event
+    this.$document.trigger('viewdrag', { view: this, posX: event.pageX, posY: event.pageY });
   },
   
   updatePosition: function(){
@@ -104,5 +109,11 @@ module.exports = View.extend({
     } else {
       this.editor.saveGroup();
     }
+  },
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+    this.$document.off('mousemove.global', this.drag);
+    this.$document.off('mouseup', this.dragStop);
   }
 });

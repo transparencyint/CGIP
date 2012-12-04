@@ -217,7 +217,7 @@ module.exports = DraggableView.extend({
   },
 
   destroy: function(){
-    View.prototype.destroy.call(this);
+    DraggableView.prototype.destroy.call(this);
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
     this.editor.off('enableDraggable', this.enableDraggable, this);
