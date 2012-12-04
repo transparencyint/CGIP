@@ -429,7 +429,7 @@ module.exports = View.extend({
   },
 
   updateDisbursed: function(){ 
-    this.$('.connection-metadata').text(this.model.get('disbursed') + ' $');
+    this.$('.connection-metadata').text('$' + this.model.get('disbursed'));
   },
 
   showMetadataInput: function(){   

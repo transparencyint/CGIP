@@ -38,10 +38,8 @@ module.exports = View.extend({
     var _disbursed = this.model.get('disbursed');
     var _pledged = this.model.get('pledged');
 
-    if(typeof(_disbursed) !== 'undefined')
-      this.$('#disbursed').val(_disbursed);
-    if(typeof(_pledged) !== 'undefined')
-      this.$('#pledged').val(_pledged);
+    this.$('#disbursed').val(_disbursed);
+    this.$('#pledged').val(_pledged);
 
     var elem = this.$el;
     var model = this.model;    
