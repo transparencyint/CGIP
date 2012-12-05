@@ -14,7 +14,8 @@ module.exports = View.extend({
     'blur .name-input': 'stopEditName',
     'keydown input': 'saveOnEnter',
     'dblclick' : 'showMetadataForm',
-    'mousedown .inner': 'dragStart'
+    'mousedown .inner': 'dragStart',
+    'click': 'stopPropagation'
   },
   
   initialize: function(options){
@@ -39,6 +40,10 @@ module.exports = View.extend({
     this.lightboxView = new LightboxView({model : this.model});
     $(document.body).append(this.lightboxView.render().el);
   },
+
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },  
 
   disableDraggable: function(){
     this.dontDrag = true;
@@ -156,10 +161,10 @@ module.exports = View.extend({
   },
   
   dragStart: function(event){
+    this.select(); //always select actor before dragging
+
     if(!this.dontDrag){
       event.stopPropagation();
-
-      this.select(); //always select actor before dragging
 
       var pos = this.model.get('pos');
       

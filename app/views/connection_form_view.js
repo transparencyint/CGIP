@@ -81,6 +81,6 @@ module.exports = View.extend({
   destroy: function(){
     View.prototype.destroy.call(this);
 
-    $(document).unbind('click', this.destory);
+    $(document).off('click', this.destory);
   }
 });
