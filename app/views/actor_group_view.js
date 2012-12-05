@@ -28,26 +28,34 @@ module.exports = DraggableView.extend({
     this.updatePosition();
   },
 
-  checkHover: function(event, eventData){
-    if(eventData.view.$el.hasClass('actor')){
+  checkHover: function(event, view){
+    if(view.$el.hasClass('actor')){
       var myPos = this.$el.offset();
-      var view = eventData.view;
       var viewPos = view.$el.offset();
-
       var myWidth = this.$el.outerWidth();
       var myHeight = this.$el.outerHeight();
+
+      // check if have an intersection
       var overlaps =   (viewPos.left < myPos.left + myWidth)
                     && (viewPos.left + view.width > myPos.left)
                     && (viewPos.top < myPos.top + myHeight)
                     && (viewPos.top + view.height > myPos.top);
-                    
-      console.log(overlaps)
-      
+
+      // if it overlaps, give feedback
+      if(overlaps)
+        this.$el.addClass('hovered');
+      else
+        // remove hover feedback
+        if(this.$el.hasClass('hovered')){
+          this.$el.removeClass('hovered');
+        }else{
+
+        }
     }
   },
 
   checkDrop: function(event){
-    //this.$el.removeClass('hovered');
+    this.$el.removeClass('hovered');
   },
 
   highlightGroup: function(){

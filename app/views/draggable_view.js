@@ -52,7 +52,7 @@ module.exports = View.extend({
     this.editor.dragGroup(dx, dy);
 
     // emit a global drag event
-    this.$document.trigger('viewdrag', { view: this, posX: event.pageX, posY: event.pageY });
+    this.$document.trigger('viewdrag', this);
   },
   
   updatePosition: function(){
@@ -66,7 +66,7 @@ module.exports = View.extend({
   
   dragStop : function(){
     this.snapToGrid();    
-    $(document).unbind('mousemove.global');
+    $(document).off('mousemove.global', this.drag);
   },
 
   select: function(event){
