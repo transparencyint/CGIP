@@ -1,9 +1,7 @@
 var View = require('./view');
 
 module.exports = View.extend({
-  events: {
-    'mousedown': 'dragStart'
-  },
+  events: {},
 
   initialize: function(){
     View.prototype.initialize.call(this);
@@ -29,6 +27,7 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
+    this.select(); // always select actor before dragging
 
     if(!this.dontDrag){
       event.stopPropagation();
@@ -49,6 +48,7 @@ module.exports = View.extend({
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
+    this.findNearestGridPoint();
     this.editor.dragGroup(dx, dy);
 
     // emit a global drag event
@@ -76,6 +76,36 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
     this.editor.actorSelected(this);
+  },
+
+  findNearestGridPoint: function(){
+    var gridSize = this.editor.gridSize;
+    var pos = this.model.get('pos');
+
+    var x = Math.round(pos.x / gridSize) * gridSize;
+    var y = Math.round(pos.y / gridSize) * gridSize;
+
+    var editor = this.editor;
+    var currentActor =  this;
+    var foundGridX = false;
+    var foundGridY = false;
+
+    //check if there is an actor at the nearest grid point
+    var actors = this.editor.actors.models;
+
+    _.each(actors, function(actor){
+      var actorX = Math.round(actor.attributes.pos.x);
+      var actorY = Math.round(actor.attributes.pos.y);
+
+      if(currentActor.model.id != actor.id){
+        if(actorX == x)
+          foundGridX = true;
+        if(actorY == y)
+          foundGridY = true;
+      }
+    });
+
+    editor.showGridLine(x, y, foundGridX, foundGridY);
   },
 
   snapToGrid: function(){
@@ -106,6 +136,9 @@ module.exports = View.extend({
         duration: 100,
         complete: function(){
           editor.saveGroup();
+
+          // hide grid line
+          editor.hideGridLine();
         }
       });
     } else {

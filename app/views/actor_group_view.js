@@ -21,6 +21,7 @@ module.exports = DraggableView.extend({
     var parentEvents = DraggableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
+      'mousedown'         : 'dragStart',
       'mousedown .caption': 'select',
       'mouseover'         : 'showActors'
     }, parentEvents);
