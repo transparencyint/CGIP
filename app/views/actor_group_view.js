@@ -15,6 +15,8 @@ module.exports = DraggableView.extend({
 
     this.$document.on('viewdrag', this.checkHover);
     this.$document.on('viewdragstop', this.checkDrop);
+
+    this.model.actors.on('add remove', this.render);
   },
 
   events: function(){
@@ -23,7 +25,7 @@ module.exports = DraggableView.extend({
     return _.defaults({
       'mousedown'         : 'dragStart',
       'mousedown .caption': 'select',
-      'mouseover'         : 'showActors'
+      'hover'             : 'showActors'
     }, parentEvents);
   },
 
@@ -80,13 +82,23 @@ module.exports = DraggableView.extend({
   },
 
   checkDrop: function(event, view){
-    if(this.overlapsWith(view))
-      console.log('overlap');
+    if(this.overlapsWith(view)){
+      // remove it from the current collection
+      this.editor.actors.remove(view.model);
+      this.model.addToGroup(view.model);
+      this.model.save();
+    }
     this.dragOut();      
   },
 
-  showActors: function(){
-
+  showActors: function(event){
+    if(this.hovered) return;
+    
+    if(event.type == 'mouseenter'){
+      this.$('.actors').css('display', 'block');
+    }else{
+      this.$('.actors').css('display', 'none');
+    }
   },
 
   destroy: function(){
