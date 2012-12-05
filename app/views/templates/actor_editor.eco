@@ -54,5 +54,12 @@
   </div>
 </div>
 
+<div id="roleHolder">
+  <div class="roleArea" id="funding"></div>
+  <div class="roleArea" id="coordination"></div>
+  <div class="roleArea" id="implementation"></div>
+  <div class="roleArea" id="monitoring"></div>
+</div>
+
 <div class="centerLine"></div>
 <div class="workspace"></div>

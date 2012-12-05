@@ -34,6 +34,7 @@ module.exports = View.extend({
   
   initialize: function(options){
     this.country = options.country;
+
     this.radius = 60;
     this.smallRadius = 40;
     
@@ -63,7 +64,7 @@ module.exports = View.extend({
     };
     
     this.gridSize = this.radius;
-    
+
     // subscribe to add events
     this.actors.on('add', this.appendNewActor, this);
     this.accountabilityConnections.on('add', this.appendConnection, this);
@@ -354,9 +355,11 @@ module.exports = View.extend({
   moveTo: function(x, y){
     this.offset.left = x;
     this.offset.top = y;
-    
+
+    this.calculateRoleDimensions(x);
+
     x += this.center;
-    
+
     this.workspace.css({
       left: x,
       top: y
@@ -384,13 +387,22 @@ module.exports = View.extend({
   
   render: function(){
     var editor = this;
-    
+
     this.$el.html( this.template() );
     this.workspace = this.$('.workspace');
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
+
+    $.each(this.country.attributes.roles, function(role, data){
+      editor.$('#'+role).css({
+        'left': data.x,
+        'width': data.width
+      });
+    });
+
     
+
     this.actors.each(this.appendActor);
 
     //this.accountabilityConnections.each(this.appendAccountabilityConnection);
@@ -406,8 +418,20 @@ module.exports = View.extend({
   
   initializeDimensions: function(){
     this.center = this.$el.width()/2;
+    this.calculateRoleDimensions(null);
   },
-  
+
+  calculateRoleDimensions: function(x){
+    var fundingWidth = this.$('#funding').width();
+    var coordinationWidth = this.$('#coordination').width();
+    var roleAreaDiff = this.center - fundingWidth - coordinationWidth;
+
+    if(x == null)
+      this.$('#roleHolder').css({left: roleAreaDiff});
+    else
+      this.$('#roleHolder').css({left: x + roleAreaDiff});
+  },
+
   afterRender: function(){
     var editor = this;
 

@@ -57,16 +57,23 @@ module.exports = AsyncRouter.extend({
 
   actor_editor: function(country) {
     var router = this;
+    var countries = this.app.countries;
+    var selectedCountry;
     var actors = new Actors();
     actors.country = country;
-
+    
+    _.each(countries.models, function(country){
+      if(country.attributes.abbreviation == actors.country){
+        selectedCountry = country;
+      }
+    });
     var connections = new Connections();
     connections.country = country;
 
     // fetch all actors and all connections
     $.when(actors.fetch(), connections.fetch()).done(function(){
       // instantiate the editor
-      router.switchToView(new ActorEditor({connections: connections, actors: actors, country: country}));
+      router.switchToView(new ActorEditor({connections: connections, actors: actors, country: selectedCountry}));
     });
   },
 
