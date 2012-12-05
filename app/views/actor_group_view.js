@@ -9,10 +9,12 @@ module.exports = DraggableView.extend({
 
     _.bindAll(this, 'checkHover', 'checkDrop');
 
+    // the current hover state
+    this.hovered = false;
     this.$document = $(document);
 
     this.$document.on('viewdrag', this.checkHover);
-    this.$document.on('mouseup', this.checkDrop);
+    this.$document.on('viewdragstop', this.checkDrop);
   },
 
   events: function(){
@@ -28,34 +30,52 @@ module.exports = DraggableView.extend({
     this.updatePosition();
   },
 
+  overlapsWith: function(view){
+    var myPos = this.$el.offset();
+    var viewPos = view.$el.offset();
+    var myWidth = this.$el.outerWidth();
+    var myHeight = this.$el.outerHeight();
+
+    // check if have an intersection
+    var overlaps =   (viewPos.left < myPos.left + myWidth)
+                  && (viewPos.left + view.width > myPos.left)
+                  && (viewPos.top < myPos.top + myHeight)
+                  && (viewPos.top + view.height > myPos.top);
+    return overlaps;
+  },
+
   checkHover: function(event, view){
     if(view.$el.hasClass('actor')){
-      var myPos = this.$el.offset();
-      var viewPos = view.$el.offset();
-      var myWidth = this.$el.outerWidth();
-      var myHeight = this.$el.outerHeight();
-
-      // check if have an intersection
-      var overlaps =   (viewPos.left < myPos.left + myWidth)
-                    && (viewPos.left + view.width > myPos.left)
-                    && (viewPos.top < myPos.top + myHeight)
-                    && (viewPos.top + view.height > myPos.top);
-
       // if it overlaps, give feedback
-      if(overlaps)
-        this.$el.addClass('hovered');
+      if(this.overlapsWith(view))
+        this.dragHover(view);
       else
-        // remove hover feedback
-        if(this.$el.hasClass('hovered')){
-          this.$el.removeClass('hovered');
-        }else{
-
+        if(this.hovered){
+          this.dragOut()
         }
     }
   },
 
-  checkDrop: function(event){
+  dragHover: function(view){
+    this.hovered = true;
+    this.hoveredView = view;
+    this.hoveredView.$el.css('opacity', .5);
+    this.$el.addClass('hovered');
+  },
+
+  dragOut: function(){
+    this.hovered = false;
     this.$el.removeClass('hovered');
+    if(this.hoveredView){
+      this.hoveredView.$el.css('opacity', 1);
+      this.hoveredView = null;  
+    }
+  },
+
+  checkDrop: function(event, view){
+    if(this.overlapsWith(view))
+      console.log('overlap')
+    this.dragOut();      
   },
 
   highlightGroup: function(){
@@ -66,6 +86,6 @@ module.exports = DraggableView.extend({
     DraggableView.prototype.destroy.call(this);
 
     this.$document.off('viewdrag', this.checkHover);
-    this.$document.off('mouseup', this.checkDrop);
+    this.$document.off('viewdragstop', this.checkDrop);
   }
 });

@@ -65,7 +65,9 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
-    this.snapToGrid();    
+    this.snapToGrid();
+    // emit a global dragstop event
+    this.$document.trigger('viewdragstop', this);
     $(document).off('mousemove.global', this.drag);
   },
 
