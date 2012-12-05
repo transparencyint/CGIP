@@ -73,6 +73,11 @@ module.exports = View.extend({
   afterRender: function() {
     $(document).keydown(this.handleEscape);
     this.$('textarea').autosize({className:'mirroredText'});
+
+    var connectionFormView = this;
+    _.defer(function(){
+      connectionFormView.$('input#name').focus();
+    });
   },
 
   showInputOther: function(event){

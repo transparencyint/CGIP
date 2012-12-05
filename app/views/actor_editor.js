@@ -398,6 +398,27 @@ module.exports = View.extend({
   dragStop : function(){
     $(document).unbind('mousemove.global');
   },
+
+  showGridLine: function(x, y, gridX, gridY){
+    if(gridX){
+      this.gridlineV.css({'left': this.offset.left + this.center + x});
+      this.gridlineV.show();
+    }
+    else if(!gridX)
+      this.gridlineV.hide();
+
+    if(gridY){
+      this.gridlineH.css({'top': this.offset.top + y});
+      this.gridlineH.show();
+    }
+    else if(!gridY)
+      this.gridlineH.hide();
+  },
+
+  hideGridLine: function(){
+    this.gridlineV.fadeOut(400);
+    this.gridlineH.fadeOut(400);
+  },
   
   alignCenter: function(){
     var nextCenter = this.$el.width()/2;
@@ -415,7 +436,9 @@ module.exports = View.extend({
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
-    
+    this.gridlineV = this.$('#gridlineV');
+    this.gridlineH = this.$('#gridlineH');
+
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 

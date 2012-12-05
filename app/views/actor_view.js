@@ -16,8 +16,9 @@ module.exports = DraggableView.extend({
       'blur .abbrev-input': 'stopEditAbbrev',
       'blur .name-input'  : 'stopEditName',
       'keydown input'     : 'saveOnEnter',
-      'mousedown .inner'  : 'select',
-      'dblclick'          : 'showMetadataForm'
+      'mousedown .inner'  : 'dragStart',
+      'dblclick'          : 'showMetadataForm',
+      'click'             : 'stopPropagation'
     }, parentEvents);
   },
   
@@ -37,6 +38,10 @@ module.exports = DraggableView.extend({
     this.lightboxView = new LightboxView({model : this.model});
     $(document.body).append(this.lightboxView.render().el);
   },
+
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },  
 
   select: function(event){
     if(!this.$el.hasClass("ui-selected")){
