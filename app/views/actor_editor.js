@@ -222,6 +222,7 @@ module.exports = View.extend({
 
   // when an actor is removed, destroy its view
   removeActor: function(actor){
+    console.log('remove actor', actor);
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
   },
@@ -249,7 +250,7 @@ module.exports = View.extend({
     else{
       var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
       if(!found)
-        this.selectedActors = [actorView.model]
+        this.selectedActors = [actorView.model];
     }
     if(this.mode)
       this.mode.actorSelected(actorView);
