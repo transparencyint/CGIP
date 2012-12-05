@@ -21,9 +21,15 @@ module.exports = DraggableView.extend({
     var parentEvents = DraggableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
-      'click'             : 'highlightGroup',
-      'mousedown .caption': 'select'
+      'mousedown .caption': 'select',
+      'mouseover'         : 'showActors'
     }, parentEvents);
+  },
+
+  getRenderData: function(){
+    var data = DraggableView.prototype.getRenderData.call(this);
+    data.actors = this.model.actors.toJSON();
+    return data;
   },
 
   afterRender: function(){
@@ -51,7 +57,7 @@ module.exports = DraggableView.extend({
         this.dragHover(view);
       else
         if(this.hovered){
-          this.dragOut()
+          this.dragOut();
         }
     }
   },
@@ -60,12 +66,12 @@ module.exports = DraggableView.extend({
     this.hovered = true;
     this.hoveredView = view;
     this.hoveredView.$el.css('opacity', .5);
-    this.$el.addClass('hovered');
+    this.$el.addClass('show-actors');
   },
 
   dragOut: function(){
     this.hovered = false;
-    this.$el.removeClass('hovered');
+    this.$el.removeClass('show-actors');
     if(this.hoveredView){
       this.hoveredView.$el.css('opacity', 1);
       this.hoveredView = null;  
@@ -74,12 +80,12 @@ module.exports = DraggableView.extend({
 
   checkDrop: function(event, view){
     if(this.overlapsWith(view))
-      console.log('overlap')
+      console.log('overlap');
     this.dragOut();      
   },
 
-  highlightGroup: function(){
-    alert('This group contains ' + this.model.actors.length + ' valid actor(s): ' + this.model.get('actors').join(','));
+  showActors: function(){
+
   },
 
   destroy: function(){
