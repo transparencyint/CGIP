@@ -182,6 +182,7 @@ module.exports = View.extend({
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
+    this.findNearestGridPoint();
     this.editor.dragGroup(dx, dy);
   },
   
@@ -199,6 +200,36 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global');
   },
   
+  findNearestGridPoint: function(){
+    var gridSize = this.editor.gridSize;
+    var pos = this.model.get('pos');
+
+    var x = Math.round(pos.x / gridSize) * gridSize;
+    var y = Math.round(pos.y / gridSize) * gridSize;
+
+    var editor = this.editor;
+    var currentActor =  this;
+    var foundGridX = false;
+    var foundGridY = false;
+
+    //check if there is an actor at the nearest grid point
+    var actors = this.editor.actors.models;
+
+    _.each(actors, function(actor){
+      var actorX = Math.round(actor.attributes.pos.x);
+      var actorY = Math.round(actor.attributes.pos.y);
+
+      if(currentActor.model.id != actor.id){
+        if(actorX == x)
+          foundGridX = true;
+        if(actorY == y)
+          foundGridY = true;
+      }
+    });
+
+    editor.showGridLine(x, y, foundGridX, foundGridY);
+  },
+
   snapToGrid: function(){
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
@@ -227,6 +258,9 @@ module.exports = View.extend({
         duration: 100,
         complete: function(){
           editor.saveGroup();
+
+          //hide grid line
+          editor.hideGridLine();
         }
       });
     } else {

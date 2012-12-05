@@ -32,8 +32,8 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    this.model.on('change:amount', this.updateStrokeWidth, this);
-    this.model.on('change:amount', this.updateAmount, this);
+    this.model.on('change:disbursed', this.updateStrokeWidth, this);
+    this.model.on('change:disbursed', this.updateDisbursed, this);
   },
 
   getRenderData : function(){
@@ -415,7 +415,7 @@ module.exports = View.extend({
     var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = this.model.get('amount') || 0;
+    var amount = this.model.get('disbursed') || 0;
 
     var percent = amount * 100 / maxAmount;
     var strokeWidth = percent * maxStroke / 100;
@@ -428,8 +428,8 @@ module.exports = View.extend({
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
-  updateAmount: function(){
-    this.$('.connection-metadata').text(this.model.get('amount'));
+  updateDisbursed: function(){ 
+    this.$('.connection-metadata').text('$' + this.model.get('disbursed'));
   },
 
   showMetadataInput: function(){   
@@ -455,7 +455,7 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-    if(this.model.get('amount')){
+    if(this.model.get('disbursed')){
       var metadata = this.$el.find('.connection-metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
       metadata.fadeIn(0);
