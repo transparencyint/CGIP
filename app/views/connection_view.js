@@ -38,7 +38,6 @@ module.exports = View.extend({
     this.model.on('change:disbursed', this.updateDisbursed, this);
     this.model.on('change:pledged', this.updateStrokeWidth, this);
     this.editor.on('change:moneyConnectionMode', this.updateStrokeWidth, this);
-    //this.editor.moneyConnectionMode.on('change', this.updateStrokeWidth, this);
   },
 
   getRenderData : function(){
