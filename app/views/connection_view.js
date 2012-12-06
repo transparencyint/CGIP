@@ -21,6 +21,8 @@ module.exports = View.extend({
     this.offsetDistance = 15;
     this.edgeRadius = 10;
     
+    this.editor = options.editor;
+
     if(options.noClick)
       this.$el.unbind('click')
 
@@ -34,6 +36,9 @@ module.exports = View.extend({
 
     this.model.on('change:disbursed', this.updateStrokeWidth, this);
     this.model.on('change:disbursed', this.updateDisbursed, this);
+    this.model.on('change:pledged', this.updateStrokeWidth, this);
+    this.editor.on('change:moneyConnectionMode', this.updateStrokeWidth, this);
+    //this.editor.moneyConnectionMode.on('change', this.updateStrokeWidth, this);
   },
 
   getRenderData : function(){
@@ -415,7 +420,12 @@ module.exports = View.extend({
     var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = this.model.get('disbursed') || 0;
+    var amount;
+    if(this.editor.moneyConnectionMode === 'pledgedMode')
+      amount = this.model.get('pledged') || 0;
+    else
+      amount = this.model.get('disbursed') || 0;
+      
 
     var percent = amount * 100 / maxAmount;
     var strokeWidth = percent * maxStroke / 100;
@@ -441,7 +451,7 @@ module.exports = View.extend({
       //Remove all other forms
       $('.connection-form-container').remove();
       var model = this.model;
-      var cfw = new ConnectionFormView({ model: model });
+      var cfw = new ConnectionFormView({ model: model, editor: this.editor });
       $(document.body).append(cfw.render().el);  
     }
 

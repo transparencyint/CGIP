@@ -16,7 +16,8 @@ ConnectionMode.prototype.reset = function(){
   this.connection.id = 1337;
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
-  this.connection.amount = 0;
+  this.connection.disbursed = 0;
+  this.connection.pledged = 0;
   this.isActive = true;
   this.connection.set('connectionType', this.connectionType);
 
