@@ -1,31 +1,147 @@
-#lightbox
-  width 100%
-  height 100%
-  padding 20px
+.modal
+  width 360px
+  height 515px
   position absolute
-  left 0
-  top 0
-  overflow auto
-  z-index 4
-  background-color #000
-  h1
-    color #fff    
+  z-index 3
+  background #eee
+  border-radius 5px
+  box-shadow 0 0 0 1px white inset, 0 0 0 1px rgba(0,0,0,.34), 0 1px 5px rgba(0,0,0,.34)
+  &.leftAligned
+    .arrow
+      left auto
+      right -41px
+      width 42px
+      &:after
+        right auto
+        left -15px
+  .arrow
+    width 50px
+    left -49px
+    height 42px
+    position absolute
+    top 236px
+    overflow hidden
+    &:after
+      content ""
+      top 6px
+      right -15px
+      position absolute
+      width 30px
+      height 30px
+      background #eee
+      box-shadow 0 0 0 1px white inset, 0 0 0 1px rgba(0,0,0,.34), 0 1px 5px rgba(0,0,0,.34)
+      transform rotate(45deg)
+  &.moved .arrow
+    display none
   textarea
-    font-size 13px
     min-height 80px
     max-height 300px
-#metadataClose
-  float right
-  margin 0 30px 0 0
-  cursor pointer
-  width 5px
-  font-size 30px
-.action-saved
-  .saved
-    opacity 1
-    transition opacity 1s
-.saved
-  opacity 0
-  transition opacity 1s
-button
-    margin 10px 0
+  
+  .holder
+    position absolute
+    top 0
+    right 0
+    bottom 46px
+    left 0
+    overflow auto
+    padding 13px 8px 8px
+    > div
+      padding 5px 8px
+    > div:not(:last-child)  
+      border-bottom 1px solid #ddd
+      box-shadow 0 1px hsl(0,0%,97%)
+  
+  .two-column
+    margin-bottom 3px
+    .column
+      width 48%
+      &:first-child
+        float left
+      &:last-child
+        float right
+  
+  select, input 
+    margin 0
+    padding 4px 5px 3px
+    vertical-align middle
+
+  input[type=checkbox] 
+    margin 5px
+
+  select 
+    color #333
+    display inline
+    
+  .organizationType
+    display inline
+    
+  /* optional input field next to the select */
+  select + .additionalInfo:not(.hidden)
+    display inline
+    input
+      display inline
+      margin 0 0 0 5px
+      padding 1px 3px
+    
+  input[type=text], textarea
+    margin-bottom 5px
+
+  input[type=text],
+  textarea
+    font-size 13px
+    width 100%
+    display block
+    border-radius 3px
+    border 1px solid rgba(0,0,0,.34)
+    box-shadow 0 1px rgba(0,0,0,.05) inset, 0 1px white
+    &.hidden
+      display none
+    &.big
+      font-size 21px
+    &.small
+      width 133px
+
+  label 
+    margin-right 8px
+    font-size 15px
+    line-height 1.75
+    color #333
+    display inline-block
+
+  input[type=checkbox] + label 
+    padding 0
+    font-size 13px
+    color black
+    display inline
+    
+  .corruptionRisk
+    padding 7px 13px 11px
+    background hsl(0, 0%, 91%)
+    border 1px solid hsl(0, 0%, 75%)
+    border-top-color hsl(0, 0%, 65%)
+    border-radius 5px
+    box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.05) inset
+  
+  .controls
+    bottom 0
+    left 0
+    right 0
+    height 46px
+    position absolute
+    background linear-gradient(top, hsl(205,8%,75%), hsl(205,3%,50%))
+    border-radius 0 0 3.5px 3.5px
+    border none
+    border-top 1px solid hsl(205,5%,55%)
+    box-shadow 0 1px hsl(205,5%,90%) inset, 0 -1px rgba(0,0,0,.05), 0 -2px rgba(0,0,0,.03)
+    cursor move
+    .row
+      margin 10px 7px
+      button  
+        margin 0 3px
+        width 65px
+      &.right
+        float right
+        button
+          float right
+      &.left
+        float left
