@@ -16,7 +16,7 @@ module.exports = DraggableView.extend({
     this.$document.on('viewdrag', this.checkHover);
     this.$document.on('viewdragstop', this.checkDrop);
 
-    this.model.actors.on('add remove', this.render);
+    this.model.actors.on('add remove', this.render, this);
   },
 
   events: function(){
@@ -93,11 +93,11 @@ module.exports = DraggableView.extend({
 
   showActors: function(event){
     if(this.hovered) return;
-    
+
     if(event.type == 'mouseenter'){
-      this.$('.actors').css('display', 'block');
+      this.$el.addClass('show-actors');
     }else{
-      this.$('.actors').css('display', 'none');
+      this.$el.removeClass('show-actors');
     }
   },
 

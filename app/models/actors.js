@@ -28,9 +28,6 @@ module.exports = Collection.extend({
 
     // 2) iterate over the actor groups and fill them with their actors
     actorGroups.each(function(actorGroup){
-      // todo: create custom collection
-      actorGroup.actors = new Backbone.Collection();
-      actorGroup.actors.model = ActorGroup;
       // if the group has actors, find and add them
       if(actorGroup.has('actors') && actorGroup.get('actors').length > 0){
         // find the actors, remove them from the normal collection and
