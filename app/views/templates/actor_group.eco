@@ -1,0 +1,8 @@
+<span class="caption">
+  <%= @abbreviation %>
+</span>
+<ul class="actors">
+  <% for actor in @actors: %>
+    <li data-id="<%= actor._id %>"><%= actor.abbreviation or actor.name %></li>
+  <% end %>
+</ul>

@@ -87,6 +87,9 @@ module.exports = View.extend({
   },
 
   update: function(){
+    // return if not a valid connection
+    if(!this.hasBothConnections()) return
+
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
     this.edgeRadius = 10;

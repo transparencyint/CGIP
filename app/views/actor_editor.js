@@ -1,5 +1,6 @@
 var View = require('./view');
 var Actor = require('models/actor');
+var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
@@ -44,6 +45,12 @@ module.exports = View.extend({
 
     // initialize the collections
     this.actors = options.actors;
+    this.actorViews = {};
+
+    // filter the actor groups
+    this.actorGroups = this.actors.filterGroups();
+    this.actorGroupViews = {};
+
     this.connections = options.connections;
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
@@ -64,13 +71,16 @@ module.exports = View.extend({
     
     this.gridSize = this.radius;
     
-    // subscribe to add events
+    // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
+    // remove actor view when actor is removed
+    this.actors.on('remove', this.removeActor, this);
+
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -206,7 +216,22 @@ module.exports = View.extend({
     var actorView = new ActorView({ model : actor, editor: this});
     actorView.render();
     this.workspace.append(actorView.el);
+    this.actorViews[actor.id] = actorView;
     if(startEdit === true) actorView.startEditName();
+  },
+
+  // when an actor is removed, destroy its view
+  removeActor: function(actor){
+    console.log('remove actor', actor);
+    var view = this.actorViews[actor.id];
+    if(view) view.destroy();
+  },
+
+  appendActorGroup: function(actorGroup){
+    var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
+    actorGroupView.render();
+    this.workspace.append(actorGroupView.el);
+    this.actorGroupViews[actorGroup.id] = actorGroupView;
   },
 
   appendConnection: function(connection){
@@ -225,7 +250,7 @@ module.exports = View.extend({
     else{
       var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
       if(!found)
-        this.selectedActors = [actorView.model]
+        this.selectedActors = [actorView.model];
     }
     if(this.mode)
       this.mode.actorSelected(actorView);
@@ -415,6 +440,7 @@ module.exports = View.extend({
     this.gridlineH = this.$('#gridlineH');
 
     this.actors.each(this.appendActor);
+    this.actorGroups.each(this.appendActorGroup);
 
     //this.accountabilityConnections.each(this.appendAccountabilityConnection);
     this.connections.each(this.appendConnection);
@@ -476,6 +502,17 @@ module.exports = View.extend({
 
   destroy: function(){
     View.prototype.destroy.call(this);
+    
+    // remove all actor views
+    _.each(this.actorViews, function(view){
+      view.destroy();
+    });
+
+    // remove all actor group views
+    _.each(this.actorGroupViews, function(view){
+      view.destroy();
+    });
+
     $(document).unbind('keyup', this.keyUp);
   }
 });
