@@ -1,5 +1,3 @@
-<h1>All money connections for <%= @country %></h1>
-
 <table id="money-connection-list" class="moneyList">
   <thead>
     <tr>
