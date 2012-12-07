@@ -1,5 +1,5 @@
 var View = require('./view');
-var LightboxView = require('./lightbox_view');
+var ActorDetailsView = require('./actor_details');
 
 module.exports = View.extend({
   
@@ -33,12 +33,12 @@ module.exports = View.extend({
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
-    this.model.on('destroy', this.modelDestroyed, this);
+    this.model.on('destroy', this.destroy, this);
   },
 
   showMetadataForm: function(){
-    this.lightboxView = new LightboxView({model : this.model});
-    $(document.body).append(this.lightboxView.render().el);
+    this.modal = new ActorDetailsView({ model: this.model, actor: this });
+    this.editor.$el.append(this.modal.render().el);
   },
 
   stopPropagation: function(event){
@@ -154,10 +154,6 @@ module.exports = View.extend({
         $(event.currentTarget).blur();
       }
     }
-  },
-
-  modelDestroyed: function(){
-    this.$el.remove();
   },
   
   dragStart: function(event){
@@ -339,7 +335,7 @@ module.exports = View.extend({
     }
   },
 
-  destroy: function(){
+  destroy: function(){    
     View.prototype.destroy.call(this);
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
