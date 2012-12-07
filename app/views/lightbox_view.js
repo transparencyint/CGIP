@@ -59,7 +59,7 @@ module.exports = View.extend({
     
     // debounce form realtime updates 
     // http://underscorejs.org/#debounce
-    this.submitForm = _.debounce(this.submitForm, 100);
+    this.saveFormData = _.debounce(this.saveFormData, 500);
     
     this.updateName();
   },
@@ -125,7 +125,7 @@ module.exports = View.extend({
 
   submitAndClose: function(){
     
-    this.submitForm();
+    this.saveFormData();
     this.destroy();
     
     // prevent form forwarding
@@ -292,7 +292,13 @@ module.exports = View.extend({
     
     cleanedData.hasCorruptionRisk = hasCorruptionRisk;
     
-    this.model.save(cleanedData);
+    this.model.set(cleanedData);
+    this.saveFormData();
+  },
+  
+  // don't sync in realtime but just every 500ms
+  saveFormData: function(){
+    this.model.save();
   },
 
   getRenderData : function(){
