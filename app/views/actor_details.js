@@ -3,8 +3,8 @@ var View = require('./view');
 // Base class for all views.
 module.exports = View.extend({
 
-  template: require('./templates/lightbox'),
-  className: 'modal lightbox',
+  template: require('./templates/actor_details'),
+  className: 'modal actorDetails',
 
   events: {
     // live updates on the input fields
@@ -42,8 +42,8 @@ module.exports = View.extend({
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleEscape', 'dragStop', 'drag', 'submitAndClose');
     
-    this.editor = options.editor;
     this.actor = options.actor;
+    this.editor = this.actor.editor;
     this.width = 360;
     this.height = 515;
     this.arrowHeight = 42;
@@ -136,7 +136,7 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     
     // remove autosize helper (maybe not enough)
-    $('.lightBoxAutosizeHelper').remove();
+    $('.actorDetailsAutosizeHelper').remove();
     
     this.clickCatcher.remove();
     
@@ -156,7 +156,7 @@ module.exports = View.extend({
     var arrow = this.$('.arrow');
     var arrowPos;
     
-    // we want to place the lightbox next to the actor
+    // we want to place the modal next to the actor
     // on the right
     pos.left += this.actor.width + this.distanceToActor;
     
@@ -167,7 +167,7 @@ module.exports = View.extend({
       this.$el.addClass('leftAligned');
     }
     
-    // vertically, we want to place the lightbox centered
+    // vertically, we want to place the modal centered
     pos.top += this.actor.height/2  - this.height/2;
     
     // if the position is too far up
@@ -206,7 +206,7 @@ module.exports = View.extend({
     this.addClickCatcher();
     
     $(document).keydown(this.handleEscape);
-    this.autosize = this.$('textarea').autosize({ className: 'lightBoxAutosizeHelper' });
+    this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     
     // focus first input field
     var self = this;

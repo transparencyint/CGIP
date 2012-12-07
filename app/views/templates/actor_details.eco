@@ -149,7 +149,7 @@
   	  <label>Corruption Risk</label>
   	  <input class="hasAdditionalInfo" type="checkbox" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
   	  <label for="hasCorruptionRisk">Yes</label>
-  	  <div class="additionalInfo corruptionRisk <% if @hasCorruptionRisk == false: %> hidden <% end %>">
+  	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
     	  <label for="corruptionRisk">Description</label>
     	  <textarea id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
     	  <label>Source</label>

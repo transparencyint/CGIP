@@ -1,5 +1,5 @@
 var View = require('./view');
-var LightboxView = require('./lightbox_view');
+var ActorDetailsView = require('./actor_details');
 
 module.exports = View.extend({
   
@@ -37,8 +37,8 @@ module.exports = View.extend({
   },
 
   showMetadataForm: function(){
-    this.lightboxView = new LightboxView({ model: this.model, editor: this.editor, actor: this });
-    this.editor.$el.append(this.lightboxView.render().el);
+    this.modal = new ActorDetailsView({ model: this.model, actor: this });
+    this.editor.$el.append(this.modal.render().el);
   },
 
   stopPropagation: function(event){
