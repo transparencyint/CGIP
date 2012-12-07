@@ -1,17 +1,19 @@
-<table id="money-connection-list" class="moneyList">
-  <thead>
-    <tr>
-      <th>From
-      <th>To
-      <th>Disbursed
-      <th>Pledged
-      <th>Source
-      <th>Action
-    </tr>
-  </thead>
-  <tbody>
+<div class="inner">
+  <table id="money-connection-list" class="darkTable moneyList">
+    <thead>
+      <tr>
+        <th>From
+        <th>To
+        <th>Disbursed
+        <th>Pledged
+        <th>Source
+        <th>Action
+      </tr>
+    </thead>
+    <tbody>
 
-  </tbody>
-</table>
-<div id="new-connection-container"></div>
-<button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label">Add Connection</span></button>
+    </tbody>
+  </table>
+  <div id="new-connection-container"></div>
+  <button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label">Add Connection</span></button>
+</div>
