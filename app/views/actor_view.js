@@ -1,5 +1,5 @@
 var DraggableView = require('./draggable_view');
-var LightboxView = require('./lightbox_view');
+var ActorDetailsView = require('./actor_details');
 
 module.exports = DraggableView.extend({
   
@@ -31,12 +31,12 @@ module.exports = DraggableView.extend({
     this.model.on('change:abbreviation', this.updateAbbrev, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:role', this.drawRoleBorders, this);
-    this.model.on('destroy', this.modelDestroyed, this);
+    this.model.on('destroy', this.destroy, this);
   },
 
   showMetadataForm: function(){
-    this.lightboxView = new LightboxView({model : this.model});
-    $(document.body).append(this.lightboxView.render().el);
+    this.modal = new ActorDetailsView({ model: this.model, actor: this });
+    this.editor.$el.append(this.modal.render().el);
   },
 
   stopPropagation: function(event){
@@ -145,12 +145,6 @@ module.exports = DraggableView.extend({
       }
     }
   },
-
-  modelDestroyed: function(){
-    // TODO: call the proper destroy method and clean up the editor's view instances
-    // TODO: call lightbox destroy as well
-    this.$el.remove();
-  },
   
   getRenderData : function(){
     return this.model.toJSON();
@@ -224,7 +218,11 @@ module.exports = DraggableView.extend({
   },
 
   destroy: function(){
+    // TODO: call the proper destroy method and clean up the editor's view instances
+    // TODO: call lightbox destroy as well
     DraggableView.prototype.destroy.call(this);
+
+    if(this.modal) this.modal.destroy()
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
     this.editor.off('enableDraggable', this.enableDraggable, this);

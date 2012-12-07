@@ -14,8 +14,8 @@
 @import '_controls'
 @import '_importView'
 @import '_roles'
-@import '_lightbox'
-@import '_metadataForm'
+@import '_modal'
+@import '_actorDetails'
 @import '_login'
 @import '_navigation'
 @import '_connectionsList'
@@ -35,6 +35,7 @@ html
 body
   height 100%
   overflow hidden
+  position relative
   
 #container
   padding 21px
@@ -69,15 +70,16 @@ button
   border-radius 3px
   color #333
   text-shadow 0 1px white
-  background linear-gradient(top, hsl(0,0%,93%), hsl(0,0%,89%))
+  background linear-gradient(top, hsl(205,8%,90%), hsl(205,8%,85%))
   border none
-  box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34), 0 -1px rgba(0,0,0,.34) inset
+  box-shadow 0 1px white inset, 0 2px rgba(0,0,0,.03), 0 0 0 1px rgba(0,0,0,.34), 0 -1px rgba(0,0,0,.13) inset
   &:hover
-    background linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,93%))
+    background linear-gradient(top, hsl(205,8%,100%), hsl(205,8%,93%))
   &:active
-    padding-top 6px
-    padding-bottom 4px
-    box-shadow 0 1px white inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
+    color hsl(0,0%,26%)
+    text-shadow 0 1px hsl(0,0%,87%)
+    background linear-gradient(top, hsl(205,5%,75%), hsl(205,8%,85%))
+    box-shadow 0 1px rgba(0,0,0,.13) inset, 0 0 0 1px rgba(0,0,0,.40), 0 2px rgba(255,255,255,.21)
   &.callToAction
     color white
     text-shadow 0 -1px hsl(19,89%,40%)
@@ -87,6 +89,11 @@ button
       background linear-gradient(top, hsl(23,100%,60%), hsl(23,100%,50%))
     &:active
       box-shadow 0 1px hsl(19,89%,65%) inset, 0 1px rgba(0,0,0,.13), 0 0 0 1px rgba(0,0,0,.34)
+  &.danger
+    color white
+    text-shadow none
+    background linear-gradient(top, hsl(0,100%,53%), hsl(0,100%,43%))
+    box-shadow 0 1px hsl(0,100%,80%) inset, 0 1px rgba(0,0,0,0.13), 0 0 0 1px hsl(0,100%,21%), 0 -1px rgba(0,0,0,0.21) inset
   &.small
     padding 2px 4px
     border-radius 2px
@@ -109,3 +116,8 @@ nav
   box-align center
   box-pack center
   box-orient vertical
+  
+.hidden
+  display none
+  &.visible
+    display block
