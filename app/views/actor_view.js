@@ -147,6 +147,8 @@ module.exports = DraggableView.extend({
   },
 
   modelDestroyed: function(){
+    // TODO: call the proper destroy method and clean up the editor's view instances
+    // TODO: call lightbox destroy as well
     this.$el.remove();
   },
   
