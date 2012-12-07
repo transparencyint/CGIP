@@ -32,12 +32,12 @@ module.exports = View.extend({
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
-    this.model.on('destroy', this.modelDestroyed, this);
+    this.model.on('destroy', this.destroy, this);
   },
 
   showMetadataForm: function(){
-    this.lightboxView = new LightboxView({model : this.model});
-    $(document.body).append(this.lightboxView.render().el);
+    this.lightboxView = new LightboxView({ model: this.model, editor: this.editor, actor: this });
+    this.editor.$el.append(this.lightboxView.render().el);
   },
 
   disableDraggable: function(){
@@ -149,10 +149,6 @@ module.exports = View.extend({
         $(event.currentTarget).blur();
       }
     }
-  },
-
-  modelDestroyed: function(){
-    this.$el.remove();
   },
   
   dragStart: function(event){
@@ -300,7 +296,7 @@ module.exports = View.extend({
     }
   },
 
-  destroy: function(){
+  destroy: function(){    
     View.prototype.destroy.call(this);
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
