@@ -161,10 +161,6 @@
 					ta.value = value;
 				}
 
-        // this is a binding we don't need because
-        // our textarea's are not dependend on the window size
-				// $(window).resize(adjust);
-
 				// Allow for manual triggering if needed.
 				$ta.bind('autosize', adjust);
 
