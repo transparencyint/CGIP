@@ -7,6 +7,7 @@ module.exports = View.extend({
   id: 'import_table',
   
   tagName : 'table',
+  className : 'darkTable',
 
   /**
     Shows the table from the CSV data and make droppable table headlines 
