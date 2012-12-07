@@ -4,26 +4,86 @@ var View = require('./view');
 module.exports = View.extend({
 
   template: require('./templates/lightbox'),
-  id: 'lightbox',
+  className: 'modal lightbox',
 
   events: {
-    'click #metadataClose': 'closeMetaData',
-    'change .hasOther': 'showInputOther',
-    'change input#mitigation': 'showMitigationType',
-    'submit .form': 'formSubmit',
-    'change input': 'saveData',
-    'change select': 'saveData',
-    'change textarea': 'saveData',
-    'click .delete': 'deleteActor'
+    // live updates on the input fields
+    // input gets triggered everytime 
+    // the input's content changes
+    'input [type=text]': 'submitForm',
+    'change [type=checkbox]': 'submitForm',
+    'change select': 'submitForm',
+    'change textarea': 'submitForm',
+    
+    // show/hide the 'other' input field on 'Type'
+    // and the Corruption Risk details
+    'change .hasAdditionalInfo': 'toggleAdditionalInfo',
+    
+    // the buttons at the bottom
+    'click .delete': 'delete',
+    'click .revert': 'revert',
+    'click .done': 'submitAndClose',
+    
+    // make the whole thing draggable
+    'mousedown': 'dragStart',
+    
+    // except all the text, buttons and inputs
+    'mousedown label': 'stopPropagation',
+    'mousedown input': 'stopPropagation',
+    'mousedown textarea': 'stopPropagation',
+    'mousedown select': 'stopPropagation',
+    'mousedown button': 'stopPropagation'
   }, 
 
-  initialize: function(){
+  initialize: function(options){
     View.prototype.initialize.call(this);
-    _.bindAll(this, 'handleEscape');
+    _.bindAll(this, 'handleEscape', 'dragStop', 'drag', 'submitAndClose');
+    
+    this.editor = options.editor;
+    this.actor = options.actor;
+    this.width = 360;
+    this.height = 515;
+    this.arrowHeight = 42;
+    this.borderRadius = 5;
+    this.distanceToActor = 10;
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
+    
+    // backup data for revert
+    this.backup = this.model.toJSON();
+    delete this.backup._rev;
+    
     this.updateName();
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },
+  
+  dragStart: function(event){
+    event.stopPropagation();
+
+    var pos = this.$el.offset();
+    
+    this.$el.addClass('moved');
+    
+    this.startX = event.pageX - pos.left;
+    this.startY = event.pageY - pos.top;
+  
+    $(document).on('mousemove.global', this.drag);
+    $(document).one('mouseup', this.dragStop);
+  },
+
+  drag: function(event){ 
+    this.$el.css({
+      left: event.pageX - this.startX,
+      top: event.pageY - this.startY
+    })
+  },
+  
+  dragStop : function(){
+    $(document).unbind('mousemove.global');
   },
 
   updateName: function(){
@@ -37,30 +97,33 @@ module.exports = View.extend({
       this.$('#title').text("Unknown");
   },
 
-  deleteActor: function(){
+  delete: function(){
 
-    console.log("delete");
     if(this.model) 
       this.model.destroy();
 
     this.destroy();
     return false;
   },
-
-  saveData: function(event){
-    $(event.currentTarget).parent().addClass('action-saved');
-    this.formSubmit(event);
-    setTimeout(function() {
-       $(event.currentTarget).parent().removeClass('action-saved');
-    }, 2000);
+  
+  revert: function(){
+    this.model.save(this.backup);
+    this.destroy();
   },
 
-  closeMetaData: function(){ 
+  submitAndClose: function(event){ 
+    this.submitForm(event);
     this.destroy();
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
+    
+    // remove autosize helper (maybe not enough)
+    $('.lightBoxAutosizeHelper').remove();
+    
+    this.clickCatcher.remove();
+    
     $(document).unbind('keydown', this.handleEscape);
   },
 
@@ -69,89 +132,154 @@ module.exports = View.extend({
       this.closeMetaData();
     }
   },
-
-  afterRender: function() {
-    $(document).keydown(this.handleEscape);
-    this.$('textarea').autosize({className:'mirroredText'});
-  },
-
-  showInputOther: function(event){
-    var hiddenBrother;
-
-    if(event.srcElement.type == 'checkbox'){
-      if(event.srcElement.name == 'purpose')
-        hiddenBrother = $('input[name=purposeOther]'); 
-      if(event.target.value === "other" && $(event.target).is(':checked')){
-          hiddenBrother.removeClass('hidden');
-      } else {
-        hiddenBrother.addClass('hidden').val("");
-      }
-    } else {
-      if(event.target.value === "other"){
-          hiddenBrother.removeClass('hidden');
-      }
+  
+  placeNextToActor: function(){
+    // absolute position inside the window
+    var pos = this.actor.$el.offset();
+    var padding = this.editor.padding;
+    var arrow = this.$('.arrow');
+    var arrowPos;
+    
+    // we want to place the lightbox next to the actor
+    // on the right
+    pos.left += this.actor.width + this.distanceToActor;
+    
+    // if the space on the right is not big enough
+    // place it on the left hand side
+    if(pos.left + padding + this.width > this.editor.$el.width()){
+      pos.left -= (this.actor.width + 2*this.distanceToActor + this.width);
+      this.$el.addClass('leftAligned');
+    }
+    
+    // vertically, we want to place the lightbox centered
+    pos.top += this.actor.height/2  - this.height/2;
+    
+    // if the position is too far up
+    // or too down low, adjust the position AND the arrow
+    if(pos.top - padding < 0){
+      arrowPos = this.height/2 - Math.abs(padding - pos.top);
+      pos.top = padding;
+    }
+    else if(pos.top + this.height + padding > this.editor.$el.height()){      
+      arrowPos = this.height/2 + Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
+      pos.top = this.editor.$el.height() - padding - this.height;
+    }
+    
+    if(arrowPos){
+      // keep the arrow positon inside the boundaries
+      var max = this.height-this.arrowHeight/2-this.borderRadius;
+      var min = this.borderRadius+this.arrowHeight/2;
+      
+      arrowPos = Math.min(max, Math.max(min, arrowPos));
+      arrow.css('top', arrowPos - this.arrowHeight/2);
     }
 
+    this.$el.css({
+      left: pos.left,
+      top: pos.top
+    });
+  },
+  
+  addClickCatcher: function(){
+    this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
+    this.clickCatcher.on('click', this.submitAndClose);
   },
 
-  showMitigationType: function(event){
-    if($(event.target).is(':checked'))
-      $('#mitigationType').removeClass('hidden');
-    else if(!$('#mitigationType').hasClass('hidden'))
-      $('#mitigationType').addClass('hidden');
+  afterRender: function() {
+    this.placeNextToActor();
+    this.addClickCatcher();
+    
+    $(document).keydown(this.handleEscape);
+    this.autosize = this.$('textarea').autosize({ className: 'lightBoxAutosizeHelper' });
+    
+    // focus first input field
+    var self = this;
+    _.defer(function(){ self.$('input').first().focus(); });
+  },
+
+  toggleAdditionalInfo: function(event){
+    var additionalInfo = $(event.target).nextAll('.additionalInfo');
+    var toggle = $(event.target);
+    var shouldSelectFirst = false;
+    
+    if(toggle.attr('type') == 'checkbox'){
+      //
+      // Case: Corruption Risk checkbox
+      // Does: show/hide the textarea and input field for description and source
+      //
+      if(toggle.prop('checked')){
+        additionalInfo.slideDown();
+        shouldSelectFirst = true;
+      } else {
+        additionalInfo.slideUp();
+      }
+    }
+    else {
+      //
+      // Case: dropdown 'Type' when chaning the value
+      // Does: show/hide the input field when type is 'other
+      //
+      var shouldHide = toggle.val() === 'other' ? false : true;
+      additionalInfo.toggleClass('hidden', shouldHide);
+      
+      shouldSelectFirst = !shouldHide;
+    }
+    
+    // Does: focus the first input inside the additonal info
+    if(shouldSelectFirst)
+      additionalInfo.find('textarea, input').first().select();
   },
 
   /**
     Gather all the data given by the user through inputs and save the addional Information to the actor model
   */
-  formSubmit: function(event){
-
-    //avoids taking Browser to a new URL
+  submitForm: function(event){
+    
+    // prevent navigation on form:submit
     event.preventDefault();
-
-    var _abbreviation = $('#abbreviation').val();
-    var _fullname = $('#name').val();
-
-    var _organizationType = $('#organizationType').val();
-    var _otherType = $('#otherType').val();
-
-    var _role = new Array();
-    var _purposeOfProject = new Array(); 
-
-    var _mitigation = $('#typeOfMitigation').val(); 
-    var _corruptionRisk = $('#corruptionRisk').val(); 
-    var _description = $('#description').val(); 
-
-
-    $("input[name='role']:checked").each(function() { 
-        _role.push($(this).val());
-    });
-
-    $("input[name='purpose']:checked").each(function() { 
-      if($(this).val() == 'other' && $('#purposeOther').val() != '')
-        _purposeOfProject.push($('#purposeOther').val());
-      else
-        _purposeOfProject.push($(this).val());
-    });
-
-    if(_purposeOfProject == 'other')
-      _purposeOfProject = $('#purposeOther').val();
-    else if(_purposeOfProject == 'mitigation')
-      _purposeOfProject = $('#purposeOther').val();
-
-    if(_otherType != '' && _organizationType == 'other')
-      _organizationType = this.$('#typeOther').val();
-
-    this.model.save({
-      abbreviation : _abbreviation,
-      name : _fullname,
-      organizationType : _organizationType,
-      role : _role,
-      purposeOfProject : _purposeOfProject,
-      mitigation : _mitigation,
-      corruptionRisk : _corruptionRisk,
-      description : _description
-    });
+    
+    var formData = this.$('form').serializeArray();
+    var cleanedData = {};
+    var sets = [ 'role', 'purpose'];
+    var checkboxes = [ 'hasCorruptionRisk' ];
+    var hasCorruptionRisk = false;
+    
+    for(var i=0; i<formData.length; i++){
+      var name = formData[i].name;
+      var value = formData[i].value;
+      
+      // save typeOther only when option 'other' is set
+      if(name === 'typeOther'){
+        if(cleanedData.organizationType === 'other')
+          cleanedData[name] = value;
+      }
+      // for our multiple checkbox: create an array of the name and add values to it
+      else if(sets.indexOf(name) !== -1){
+        if(cleanedData[name] === undefined)
+          cleanedData[name] = [];
+        
+        cleanedData[name].push(value);
+      } 
+      // otherwise save as string (name: value)
+      else {
+        if(checkboxes.indexOf(name) !== -1){
+          // save 'on' and 'off' as true and false
+          value = 'on' ? true : false;
+        }
+        
+        // handle hasCorruptionRisk seperately
+        // because it doesn't get listed when its false
+        // but we need it all the time
+        if(name === 'hasCorruptionRisk')
+          hasCorruptionRisk = value;
+        
+        cleanedData[name] = value;
+      }
+    }
+    
+    cleanedData.hasCorruptionRisk = hasCorruptionRisk;
+    
+    this.model.save(cleanedData);
   },
 
   getRenderData : function(){
