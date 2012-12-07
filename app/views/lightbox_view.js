@@ -20,9 +20,12 @@ module.exports = View.extend({
     'change .hasAdditionalInfo': 'toggleAdditionalInfo',
     
     // the buttons at the bottom
-    'click .delete': 'delete',
+    'click .delete': 'deleteActor',
     'click .revert': 'revert',
     'click .done': 'submitAndClose',
+    
+    // submit on enter
+    'form submit': 'submitAndClose',
     
     // make the whole thing draggable
     'mousedown': 'dragStart',
@@ -53,6 +56,10 @@ module.exports = View.extend({
     // backup data for revert
     this.backup = this.model.toJSON();
     delete this.backup._rev;
+    
+    // debounce form realtime updates 
+    // http://underscorejs.org/#debounce
+    this.submitForm = _.debounce(this.submitForm, 100);
     
     this.updateName();
   },
@@ -97,23 +104,32 @@ module.exports = View.extend({
       this.$('#title').text("Unknown");
   },
 
-  delete: function(){
+  deleteActor: function(){
 
     if(this.model) 
       this.model.destroy();
 
     this.destroy();
+    
+    // prevent form forwarding
     return false;
   },
   
   revert: function(){
     this.model.save(this.backup);
     this.destroy();
+    
+    // prevent form forwarding
+    return false;
   },
 
-  submitAndClose: function(event){ 
-    this.submitForm(event);
+  submitAndClose: function(){
+    
+    this.submitForm();
     this.destroy();
+    
+    // prevent form forwarding
+    return false;
   },
 
   destroy: function(){
@@ -129,7 +145,7 @@ module.exports = View.extend({
 
   handleEscape: function(event){
     if (event.keyCode === 27) {
-      this.closeMetaData();
+      this.revert();
     }
   },
   
@@ -233,10 +249,7 @@ module.exports = View.extend({
   /**
     Gather all the data given by the user through inputs and save the addional Information to the actor model
   */
-  submitForm: function(event){
-    
-    // prevent navigation on form:submit
-    event.preventDefault();
+  submitForm: function(){
     
     var formData = this.$('form').serializeArray();
     var cleanedData = {};
