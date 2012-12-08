@@ -120,12 +120,17 @@ module.exports = View.extend({
   },
   
   fitToScreen: function(){
+    
+    // don't do anything when there are no actors
+    if(this.actors.length === 0)
+      return false;
+    
     var boundingBox = this.getBoundingBox();
     
     // center workspace
     this.moveTo(0, 0);
     
-    // check if the actors as a whole are not yet centered
+    // check if the actors as a whole are not centered
     // if thats the case, move them to the left
     if(boundingBox.left !== boundingBox.width/2){
       
@@ -138,8 +143,8 @@ module.exports = View.extend({
       });
     }
     
-    var horizontalRatio = this.$el.width() / (boundingBox.width + this.padding*2);
-    var verticalRatio = this.$el.height() / (boundingBox.height + this.padding*2);
+    var horizontalRatio = this.$el.width() / (boundingBox.width + this.radius*2 + this.padding*2);
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
