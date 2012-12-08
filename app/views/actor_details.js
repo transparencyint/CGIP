@@ -46,6 +46,7 @@ module.exports = View.extend({
     this.editor = this.actor.editor;
     this.width = 360;
     this.height = 515;
+    this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToActor = 10;
@@ -156,19 +157,22 @@ module.exports = View.extend({
     var arrow = this.$('.arrow');
     var arrowPos;
     
+    var actorWidth = this.actor.width * this.editor.zoom.value;
+    var actorHeight = this.actor.height * this.editor.zoom.value;
+    
     // we want to place the modal next to the actor
     // on the right
-    pos.left += this.actor.width + this.distanceToActor;
+    pos.left += actorWidth + this.distanceToActor;
     
     // if the space on the right is not big enough
     // place it on the left hand side
     if(pos.left + padding + this.width > this.editor.$el.width()){
-      pos.left -= (this.actor.width + 2*this.distanceToActor + this.width);
+      pos.left -= (actorWidth + 2*this.distanceToActor + this.width);
       this.$el.addClass('leftAligned');
     }
     
     // vertically, we want to place the modal centered
-    pos.top += this.actor.height/2  - this.height/2;
+    pos.top += actorHeight/2  - this.height/2;
     
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
@@ -182,8 +186,8 @@ module.exports = View.extend({
     }
     
     if(arrowPos){
-      // keep the arrow positon inside the boundaries
-      var max = this.height-this.arrowHeight/2-this.borderRadius;
+      // keep the arrow positonend inside the boundaries
+      var max = this.height-this.controlsHeight-this.arrowHeight/2;
       var min = this.borderRadius+this.arrowHeight/2;
       
       arrowPos = Math.min(max, Math.max(min, arrowPos));
