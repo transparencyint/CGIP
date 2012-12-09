@@ -36,7 +36,7 @@ module.exports = View.extend({
   initialize: function(options){
     this.country = options.country;
     this.radius = 60;
-    this.smallRadius = 40;
+    this.smallRadius = 44;
     
     // padding for fit-to-screen
     this.padding = this.radius/2;

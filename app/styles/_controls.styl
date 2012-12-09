@@ -75,24 +75,31 @@
     &.curtainDown .actor.new 
       transition none
     .description
-      height 34px
+      height 33px
       padding-top 9px
       background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,52%))
       position relative
       z-index 3
-      &:after, &:before
+      &:after, 
+      &:before
         content ""
         position absolute
         bottom 0
-        left 4px
-        right 4px
+        left 5px
+        right 5px
         height 1px
         box-shadow 0 1px #20436F, 0 2px rgba(0, 0, 0, 0.34), 0 3px rgba(0, 0, 0, 0.13), 0 4px rgba(0, 0, 0, 0.05)
+      /* 
+        draws a background behind with blue, dark blue, blue 
+        behind the top border of the actor box to not show a 
+        transparent line next to the border left and right
+        when the actor slides down
+      */
       &:before
         left 0
         right 0
         bottom -1px
-        background hsl(218,55%,52%)
+        background linear-gradient(left, hsl(218,55%,52%) 4px, #20436F 4px, #20436F 96px, hsl(218,55%,52%) 96px)
         box-shadow none
     .plus
       font-size 16px
@@ -109,9 +116,9 @@
       border-top 1px solid hsl(213,55%,28%)
       &:before
         content ""
-        height 8px
+        height 9px
         right 0
-        top 65px
+        top 64px
         left 0
         position absolute
         background linear-gradient(top, rgba(0,0,0,.21), rgba(255,255,255,.05))
@@ -119,8 +126,7 @@
         border-bottom-color hsl(213,55%,25%)
         border-top none
     .actor.new
-      margin 0
-      left 2px
+      margin -4px 2px 0
       width 88px
       height 88px
       border-radius 50%
