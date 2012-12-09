@@ -4,7 +4,7 @@ module.exports = View.extend({
   
   template : require('./templates/country_selection'),
   
-  className : 'countrySelection',
+  className : 'countrySelection center',
 
   getRenderData: function(){
     return { countries: this.options.countries.toJSON(), user: user.toJSON() };
