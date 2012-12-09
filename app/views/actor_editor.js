@@ -387,10 +387,7 @@ module.exports = View.extend({
       top: y
     });
     
-    this.$el.css({
-      backgroundPositionX: x,
-      backgroundPositionY: y
-    });
+    this.$el.css('background-position', x +'px, '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
   },
