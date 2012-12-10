@@ -1,57 +1,47 @@
-var View = require('./view');
-var LightboxView = require('./lightbox_view');
+var DraggableView = require('./draggable_view');
+var ActorDetailsView = require('./actor_details');
 
-module.exports = View.extend({
+module.exports = DraggableView.extend({
   
   template : require('./templates/actor'),
   
   className : 'actor',
 
-  events: {
-    'dblclick .name': 'startEditName',
-    'dblclick .abbrev': 'startEditAbbrev',
-    'blur .abbrev-input': 'stopEditAbbrev',
-    'blur .name-input': 'stopEditName',
-    'keydown input': 'saveOnEnter',
-    'dblclick' : 'showMetadataForm',
-    'mousedown .inner': 'dragStart',
-    'click': 'stopPropagation'
+  events: function(){
+    var parentEvents = DraggableView.prototype.events;
+    // merge the parent events and the current events
+    return _.defaults({
+      'dblclick .name'    : 'startEditName',
+      'dblclick .abbrev'  : 'startEditAbbrev',
+      'blur .abbrev-input': 'stopEditAbbrev',
+      'blur .name-input'  : 'stopEditName',
+      'keydown input'     : 'saveOnEnter',
+      'mousedown .inner'  : 'dragStart',
+      'dblclick'          : 'showMetadataForm',
+      'click'             : 'stopPropagation'
+    }, parentEvents);
   },
   
   initialize: function(options){
-    _.bindAll(this, 'dragStop', 'drag');
+    DraggableView.prototype.initialize.call(this, options);
 
-    this.editor = options.editor;
     this.width = this.editor.radius*2;
-    this.height = this.editor.radius*2;
-    this.dontDrag = false;
-
-    this.editor.on('disableDraggable', this.disableDraggable, this);
-    this.editor.on('enableDraggable', this.enableDraggable, this);
+    this.height = this.editor.radius*2;    
 
     this.model.on('change:abbreviation', this.updateAbbrev, this);
     this.model.on('change:name', this.updateName, this);
-    this.model.on('change:pos', this.updatePosition, this);
     this.model.on('change:role', this.drawRoleBorders, this);
-    this.model.on('destroy', this.modelDestroyed, this);
+    this.model.on('destroy', this.destroy, this);
   },
 
   showMetadataForm: function(){
-    this.lightboxView = new LightboxView({model : this.model});
-    $(document.body).append(this.lightboxView.render().el);
+    this.modal = new ActorDetailsView({ model: this.model, actor: this });
+    this.editor.$el.append(this.modal.render().el);
   },
 
   stopPropagation: function(event){
     event.stopPropagation();
   },  
-
-  disableDraggable: function(){
-    this.dontDrag = true;
-  },
-
-  enableDraggable: function(){
-    this.dontDrag = false;
-  },
 
   select: function(event){
     if(!this.$el.hasClass("ui-selected")){
@@ -155,118 +145,6 @@ module.exports = View.extend({
       }
     }
   },
-
-  modelDestroyed: function(){
-    this.$el.remove();
-  },
-  
-  dragStart: function(event){
-    this.select(); //always select actor before dragging
-
-    if(!this.dontDrag){
-      event.stopPropagation();
-
-      var pos = this.model.get('pos');
-      
-      this.startX = event.pageX - pos.x;
-      this.startY = event.pageY - pos.y;
-    
-      $(document).on('mousemove.global', this.drag);
-      $(document).one('mouseup', this.dragStop);
-    }
-  },
-
-  drag: function(event){ 
-    var pos = this.model.get('pos');
-    
-    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
-    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
-    
-    this.findNearestGridPoint();
-    this.editor.dragGroup(dx, dy);
-  },
-  
-  updatePosition: function(){
-    var pos = this.model.get('pos');
-    
-    this.$el.css({
-      left: pos.x,
-      top: pos.y
-    });
-  },
-  
-  dragStop : function(){
-    this.snapToGrid();    
-    $(document).unbind('mousemove.global');
-  },
-  
-  findNearestGridPoint: function(){
-    var gridSize = this.editor.gridSize;
-    var pos = this.model.get('pos');
-
-    var x = Math.round(pos.x / gridSize) * gridSize;
-    var y = Math.round(pos.y / gridSize) * gridSize;
-
-    var editor = this.editor;
-    var currentActor =  this;
-    var foundGridX = false;
-    var foundGridY = false;
-
-    //check if there is an actor at the nearest grid point
-    var actors = this.editor.actors.models;
-
-    _.each(actors, function(actor){
-      var actorX = Math.round(actor.attributes.pos.x);
-      var actorY = Math.round(actor.attributes.pos.y);
-
-      if(currentActor.model.id != actor.id){
-        if(actorX == x)
-          foundGridX = true;
-        if(actorY == y)
-          foundGridY = true;
-      }
-    });
-
-    editor.showGridLine(x, y, foundGridX, foundGridY);
-  },
-
-  snapToGrid: function(){
-    //make drag available along a simple grid
-    var gridSize = this.editor.gridSize;
-    var pos =  this.model.get('pos');     
-
-    //move the actor to the nearest grid point
-    var x = Math.round(pos.x / gridSize) * gridSize;
-    var y = Math.round(pos.y / gridSize) * gridSize;
-    
-    var dx = x - pos.x;
-    var dy = y - pos.y;
-    
-    if(dx !== 0 || dy !== 0){
-      var editor = this.editor;
-
-      $({percent: 0}).animate({percent: 1}, {
-        step: function(){
-          var stepX = this.percent * dx;
-          var stepY = this.percent * dy;
-
-          editor.dragGroup(stepX, stepY);
-
-          dx -= stepX;
-          dy -= stepY;
-        },
-        duration: 100,
-        complete: function(){
-          editor.saveGroup();
-
-          //hide grid line
-          editor.hideGridLine();
-        }
-      });
-    } else {
-      this.editor.saveGroup();
-    }
-  },
   
   getRenderData : function(){
     return this.model.toJSON();
@@ -340,7 +218,11 @@ module.exports = View.extend({
   },
 
   destroy: function(){
-    View.prototype.destroy.call(this);
+    // TODO: call the proper destroy method and clean up the editor's view instances
+    // TODO: call lightbox destroy as well
+    DraggableView.prototype.destroy.call(this);
+
+    if(this.modal) this.modal.destroy()
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
     this.editor.off('enableDraggable', this.enableDraggable, this);
