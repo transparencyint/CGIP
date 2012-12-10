@@ -1,16 +1,18 @@
-<h1>CGIP Countrys</h1>
-<p>Logged in as: <%= @user._id %> <a href="/logout" external><button class="small">Logout</button></a></p>
-<ul class="countrys clearfix">
-  <% for country in @countries: %>
-    <li>
-      <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
-      <span class="name"><%= country.name %></span>
-      <div class="actions">
-        <a href="/edit/<%= country.abbreviation %>/actors" class="map">Edit Map</a>
-        <a href="/edit/<%= country.abbreviation %>/money/list" class="moneyConnections">Edit Money Connections</a>
-        <a href="/import/<%= country.abbreviation %>/money" class="importCSV">Import CSV</a>
-      </div>
-    </li>
-  <% end %>
-</ul>
-<a href="/edit/countries" class="edit-countries">Edit Countries</a>
+<div class="inner">
+  <h1>CGIP Countrys</h1>
+  <p>Logged in as: <%= @user._id %> <a href="/logout" external><button class="small">Logout</button></a></p>
+  <ul class="countrys clearfix">
+    <% for country in @countries: %>
+      <li>
+        <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
+        <span class="name"><%= country.name %></span>
+        <div class="actions">
+          <a href="/edit/<%= country.abbreviation %>/actors" class="map">Edit Map</a>
+          <a href="/edit/<%= country.abbreviation %>/money/list" class="moneyConnections">Edit Money Connections</a>
+          <a href="/import/<%= country.abbreviation %>/money" class="importCSV">Import CSV</a>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <a href="/edit/countries" class="edit-countries">Edit Countries</a>
+</div>
