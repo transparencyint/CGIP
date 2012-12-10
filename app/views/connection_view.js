@@ -425,7 +425,6 @@ module.exports = View.extend({
     var minAmount = 0;
     var maxAmount = 20000000;
 
-    //var minStroke = 6;
     var maxStroke = 40;
 
     var amount;
