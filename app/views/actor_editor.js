@@ -59,6 +59,7 @@ module.exports = View.extend({
     this.selectedActors = [];
     this.zoom = {
       value: 1,
+      sqrt: 1,
       step: 0.25,
       min: 0.25,
       max: 1.75
@@ -80,7 +81,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -101,6 +102,7 @@ module.exports = View.extend({
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
     this.zoom.value = ui.value;
+    this.zoom.sqrt = Math.sqrt(ui.value);
 
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
     
@@ -109,6 +111,7 @@ module.exports = View.extend({
   
   zoomTo: function(value){
     this.slider.slider("value", value);
+    this.moveTo(this.offset.left, this.offset.top);
   },
   
   zoomIn: function(){
@@ -357,33 +360,31 @@ module.exports = View.extend({
     $(document).one('mouseup', this.dragStop);
   },
 
-  drag: function(event){ 
-    var x = (event.pageX - this.offset.left - this.startX);
-    var y = (event.pageY - this.offset.top - this.startY);
+  drag: function(event, silent){
+    if(silent === undefined) 
+      silent = true;
     
-    this.panBy(x, y);
+    var x = (event.pageX - this.startX) * this.zoom.sqrt;
+    var y = (event.pageY - this.startY) * this.zoom.sqrt;
+    
+    this.moveTo(x, y, silent);
   },
   
-  panBy: function(x, y){
-    this.offset.left += (x / this.zoom.value);
-    this.offset.top += (y / this.zoom.value);
-    
+  moveTo: function(x, y, silent){
     // dont let the user pan above y = 0
-    if(this.offset.top >= 0){
-      this.offset.top = 0;
-      this.startY += y;
-    }
+    if(y >= 0)
+      y = 0;
     
     // snap to center
-    if(x !== 0 && Math.abs(this.offset.left) < 10)
-      this.offset.left = 0;
-      
-    this.moveTo(this.offset.left, this.offset.top);
-  },
-  
-  moveTo: function(x, y){
-    this.offset.left = x;
-    this.offset.top = y;
+    if(x !== 0 && Math.abs(x) < 10)
+      x = 0;
+    
+    // save new offset  
+    // but not when panning (only when we finished panning)
+    if(!silent){
+      this.offset.left = x / this.zoom.sqrt;
+      this.offset.top =  y / this.zoom.sqrt;
+    }
     
     x += this.center;
     
@@ -400,7 +401,9 @@ module.exports = View.extend({
     this.$('.centerLine').css('left', x);
   },
   
-  dragStop : function(){
+  dragStop : function(event){
+    this.drag(event, false);
+    
     $(document).unbind('mousemove.global');
   },
 
@@ -425,12 +428,10 @@ module.exports = View.extend({
     this.gridlineH.fadeOut(400);
   },
   
-  alignCenter: function(){
-    var nextCenter = this.$el.width()/2;
-    var dx = nextCenter - this.center;
-    this.center = nextCenter;
+  realignCenter: function(){
+    this.center = this.$el.width()/2;
     
-    this.panBy(0, 0);
+    this.moveTo(0, 0);
   },
   
   render: function(){
@@ -455,18 +456,14 @@ module.exports = View.extend({
     // call this slightly delayed to give the browser
     // time to layout the html changes
     // source: http://stackoverflow.com/questions/8225869/how-can-i-get-size-height-width-information-in-backbone-views
-    _.defer(this.initializeDimensions);
-  },
-  
-  initializeDimensions: function(){
-    this.center = this.$el.width()/2;
+    _.defer(this.realignCenter);
   },
   
   afterRender: function(){
     var editor = this;
 
     $(document).bind('keyup', this.keyUp);
-    $(window).resize(this.alignCenter);
+    $(window).resize(this.realignCenter);
 
     this.actorDouble.draggable({
       stop : function(){ $(this).data('stopped', null); },
@@ -519,5 +516,6 @@ module.exports = View.extend({
     });
 
     $(document).unbind('keyup', this.keyUp);
+    $(window).unbind('resize', this.realignCenter);
   }
 });
