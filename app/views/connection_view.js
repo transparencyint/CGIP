@@ -429,7 +429,6 @@ module.exports = View.extend({
 
     var amount;
     if(this.editor.moneyConnectionMode === 'pledgedMode'){
-      console.log(this.$el.attr('class'));
       amount = this.model.get('pledged') || 0;
       this.$el.removeClass('disbursedMode');
       this.$el.addClass('pledgedMode');
