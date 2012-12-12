@@ -21,6 +21,8 @@ module.exports = View.extend({
     this.offsetDistance = 15;
     this.edgeRadius = 10;
     
+    this.editor = options.editor;
+
     if(options.noClick)
       this.$el.unbind('click')
 
@@ -32,8 +34,12 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    this.model.on('change:disbursed', this.updateStrokeWidth, this);
-    this.model.on('change:disbursed', this.updateDisbursed, this);
+    if(this.model.get("connectionType") === 'money') { 
+      this.model.on('change:disbursed', this.updateStrokeWidth, this);
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:pledged', this.updateStrokeWidth, this);
+      this.editor.on('change:moneyConnectionMode', this.updateStrokeWidth, this);
+    }
   },
 
   getRenderData : function(){
@@ -54,16 +60,20 @@ module.exports = View.extend({
   
   afterRender: function(){
     var connectionType = this.model.get("connectionType");
+    this.minStroke = 6;
+    this.strokeWidth = this.minStroke;
+
     if(connectionType === 'accountability')
       this.strokeStyle = 'white';
     else if(connectionType === 'monitoring')
       this.strokeStyle = 'black';
-    else 
+    else { //money
+      this.$el.addClass(this.editor.moneyConnectionMode);
       this.strokeStyle = '#f8df47';
+      this.updateStrokeWidth();
+    }
 
     this.selectStyle = 'hsl(205,100%,55%)';
-    
-    this.updateStrokeWidth();
 
     this.path = "";
     this.$el.css('margin', -(this.strokeWidth/2 + this.offsetDistance) + 'px 0 0 '+ -(this.strokeWidth/2 + this.offsetDistance) + 'px');
@@ -415,16 +425,25 @@ module.exports = View.extend({
     var minAmount = 0;
     var maxAmount = 20000000;
 
-    var minStroke = 6;
     var maxStroke = 40;
 
-    var amount = this.model.get('disbursed') || 0;
+    var amount;
+    if(this.editor.moneyConnectionMode === 'pledgedMode'){
+      console.log(this.$el.attr('class'));
+      amount = this.model.get('pledged') || 0;
+      this.$el.removeClass('disbursedMode');
+      this.$el.addClass('pledgedMode');
+    } else {
+      amount = this.model.get('disbursed') || 0;
+      this.$el.removeClass('pledgedMode');
+      this.$el.addClass('disbursedMode');
+    }
 
     var percent = amount * 100 / maxAmount;
     var strokeWidth = percent * maxStroke / 100;
 
-    if(strokeWidth < minStroke)
-      strokeWidth = minStroke;
+    if(strokeWidth < this.minStroke)
+      strokeWidth = this.minStroke;
 
     this.strokeWidth = strokeWidth;
 
@@ -444,7 +463,7 @@ module.exports = View.extend({
       //Remove all other forms
       $('.connection-form-container').remove();
       var model = this.model;
-      var cfw = new ConnectionFormView({ model: model });
+      var cfw = new ConnectionFormView({ model: model, editor: this.editor });
       $(document.body).append(cfw.render().el);  
     }
 

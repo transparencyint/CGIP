@@ -11,6 +11,7 @@ module.exports = View.extend({
     'submit .connection-form' : 'submitMetadataInput',
     'input #disbursed': 'updateDisbursed', 
     'input #pledged': 'updatePledged', 
+    'change input[type=radio]': 'updateMoneyConnections',
     'click': 'dontClose',
     'click .close': 'closeConnectionForm',
     'click .delete': 'deleteConnection'
@@ -25,6 +26,12 @@ module.exports = View.extend({
     this.saveAmount = _.debounce(this.saveAmount, 500);
     this.oldDisbursed = this.model.get('disbursed');
     this.oldPledged = this.model.get('pledged');
+
+    this.editor = options.editor;
+  },
+
+  currentMoneyMode: function () {
+    this.$('#' + this.editor.moneyConnectionMode).attr('checked', 'checked');
   },
 
   getRenderData : function(){
@@ -51,6 +58,8 @@ module.exports = View.extend({
 
     $(document).on('click', this.destroy);
 
+    this.currentMoneyMode();
+    this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
 
     var connectionFormView = this;
     _.defer(function(){
@@ -66,6 +75,11 @@ module.exports = View.extend({
   updatePledged: function () {
     var newPledged = this.$('#pledged').val();
     this.model.set({pledged: Number(newPledged)});
+  },
+
+  updateMoneyConnections: function (event) {
+    this.editor.moneyConnectionMode = event.currentTarget.id;
+    this.editor.trigger('change:moneyConnectionMode');
   },
 
   deleteConnection: function(){

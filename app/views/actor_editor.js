@@ -37,6 +37,8 @@ module.exports = View.extend({
     this.country = options.country;
     this.radius = 60;
     this.smallRadius = 44;
+
+    this.moneyConnectionMode = 'disbursedMode'; //default
     
     // padding for fit-to-screen
     this.padding = this.radius/2;
@@ -244,7 +246,7 @@ module.exports = View.extend({
 
   appendConnection: function(connection){
     connection.pickOutActors(this.actors);
-    var connView = new ConnectionView({ model : connection });
+    var connView = new ConnectionView({ model : connection, editor: this});
     connView.render();  
     this.workspace.append(connView.el);
 
@@ -326,6 +328,7 @@ module.exports = View.extend({
     this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
     this.addActor.addClass('slideIn');
   },
+
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
