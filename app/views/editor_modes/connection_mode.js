@@ -16,7 +16,8 @@ ConnectionMode.prototype.reset = function(){
   this.connection.id = 1337;
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
-  this.connection.amount = 0;
+  this.connection.disbursed = 0;
+  this.connection.pledged = 0;
   this.isActive = true;
   this.connection.set('connectionType', this.connectionType);
 
@@ -34,7 +35,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
-    this.connectionView = new ConnectionView({model: this.connection, noClick: true});
+    this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
     this.connectionView.actorRadius = 0;
     this.connectionView.render();
     this.workspace.append(this.connectionView.el);

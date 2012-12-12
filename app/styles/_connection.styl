@@ -1,4 +1,11 @@
 .connection
+  
+  &.pledgedMode
+    path
+      stroke #FFFF44
+      opacity 0.5
+    use
+      fill #FFFF44
   &.ui-selected
     path
       stroke hsl(205,100%,55%)
@@ -14,17 +21,22 @@
   	border 1px solid rgba(0,0,0,.13)
   	border-radius 5px
   	box-shadow 0 1px 5px rgba(0,0,0,.13)
-
+.connection-form
+  div
+    margin 10px 0 
+  .mode
+      position absolute
+      right 20px
 .connection-form-container
   width 300px
-  height 200px
+  height 240px
   position absolute
   left 50%
   top 50%
   margin-left: -150px
-  margin-top: -100px
+  margin-top: -120px
   display none
-  padding 20px
+  padding 15px 20px 20px 20px 
   color #000
   background white
   z-index 10
@@ -32,7 +44,6 @@
   border 1px solid rgba(0,0,0,.13)
   border-radius 5px
   box-shadow 0 1px 5px rgba(0,0,0,.13)
-
   .close
     position absolute
     top 0
@@ -40,18 +51,21 @@
     cursor pointer
     font-size 30px
     line-height 1
-    padding 5px
+    padding 5px 8px
 
   .movable
-    width 250px
+    width 240px
     height 10px
     background #eee
     cursor move
+    margin-bottom 20px
 
   input[type=text]
+    margin 5px 0
     width 100%
     border 1px solid #999
-    
+  input[type=radio]
+    margin-right 3px
   button
     margin 10px 0
     padding 10px 15px
