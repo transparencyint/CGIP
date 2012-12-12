@@ -11,7 +11,7 @@ module.exports = View.extend({
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
-    'dblclick svg' : 'showMetadataForm',
+    'dblclick path' : 'showMetadataForm',
   },
 
   initialize: function(options){

@@ -84,6 +84,8 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
+    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+
     _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
@@ -287,7 +289,26 @@ module.exports = View.extend({
 
   toggleMoneyMode: function(event){
     var target = $(event.target);
-    target.addClass("active").siblings().removeClass("active");
+
+    //target.addClass("active").siblings().removeClass("active");
+
+    var currentID = target.attr('id');
+    if(currentID === 'disbursedMoney')
+      this.moneyConnectionMode = 'disbursedMode';
+    else if(currentID === 'pledgedMoney')
+      this.moneyConnectionMode = 'pledgedMode';
+
+    this.trigger('change:moneyConnectionMode');
+    console.log(this.moneyConnectionMode);
+  },
+
+  toggleActiveMoneyMode: function(){
+
+    if(this.moneyConnectionMode === 'disbursedMode')
+      this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
+    else if(this.moneyConnectionMode === 'pledgedMode')
+      this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
+
   },
 
   deactivateMode: function(){
@@ -467,6 +488,8 @@ module.exports = View.extend({
   
   afterRender: function(){
     var editor = this;
+
+    this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignCenter);

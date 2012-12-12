@@ -39,16 +39,13 @@
       <span class="name">Money</span>
       <img src="/images/moneyflow.png">
     </div>
-
   </div>
-
      
     <div class="moneyMode">
       <span class="name">Money mode</span>
-         <span class="small">Disbursed</span>
-         <span class="small">Pledged</span>
+         <span id="disbursedMoney" class="small">Disbursed</span>
+         <span id="pledgedMoney" class="small">Pledged</span>
     </div>
-
     
 </div>
 
