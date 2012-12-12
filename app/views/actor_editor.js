@@ -17,6 +17,7 @@ module.exports = View.extend({
   events: {
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
+    'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
@@ -282,6 +283,11 @@ module.exports = View.extend({
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
+  },
+
+  toggleMoneyMode: function(event){
+    var target = $(event.target);
+    target.addClass("active").siblings().removeClass("active");
   },
 
   deactivateMode: function(){

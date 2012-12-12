@@ -16,13 +16,7 @@
       <div class="cancel"><span>Drop here to cancel</span></div>
     </div>
   </div>
-  <div class="connection money control" data-connectionType="money">
-    <div class="eye"></div>
-    <div class="description button" title="New Money Connection">
-      <span class="name">Money</span>
-      <img src="/images/moneyflow.png">
-    </div>
-  </div>
+
   <div class="connection accountability control" data-connectionType="accountability">
     <div class="eye"></div>
     <div class="description button" title="New Accountability Connection">
@@ -39,6 +33,23 @@
     </div>
   </div>
 
+  <div class="connection money control" data-connectionType="money">
+    <div class="eye"></div>
+    <div class="description button" title="New Money Connection">
+      <span class="name">Money</span>
+      <img src="/images/moneyflow.png">
+    </div>
+
+  </div>
+
+     
+    <div class="moneyMode">
+      <span class="name">Money mode</span>
+         <span class="small">Disbursed</span>
+         <span class="small">Pledged</span>
+    </div>
+
+    
 </div>
 
 <div class="sidebar">
