@@ -109,8 +109,10 @@ module.exports = View.extend({
       };
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
-      var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
-      this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle });
+      if(!this.isMoney){
+        var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
+        this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle, overflow:"visible" });
+      }
     }
 
     this.g = this.svg.group();
@@ -132,8 +134,11 @@ module.exports = View.extend({
   
     this.coinWidth = 7 * this.coinSizeFactor;
     this.coinHeight = 12 * this.coinSizeFactor;
-    this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
-    this.svg.use(this.coinMarker, 0, 0, this.coinWidth, this.coinHeight, '#coinSymbol');
+    //only set the marker if it is a money connection
+    if(this.isMoney){
+      this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
+      this.svg.use(this.coinMarker, 0, 0, this.coinWidth, this.coinHeight, '#coinSymbol');
+    }
   },
 
   hasBothConnections: function(){
@@ -220,20 +225,7 @@ module.exports = View.extend({
       else if(end.x - start.x <= this.editor.radius+this.edgeRadius){
         start.y += this.editor.radius;
         end.y -= this.editor.radius + this.markerSize;
-        halfY = (end.y - start.y)/2 + start.y;
-        if(end.x - start.x < 2 * this.edgeRadius)
-          this.edgeRadius = (end.x - start.x) / 2;
-        start2 = {
-          x : start.x + this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x - this.edgeRadius,
-          y : end.y
-        };
-        var halfY2 = halfY - this.edgeRadius;
-        var halfY3 = halfY + this.edgeRadius;
-        this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 0, 1, this.edgeRadius);
+        this.definePath3LinesY(start, end, 0, 1);
       }
       //case 1a+b
       //  
@@ -251,7 +243,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, false);
       }
     }
     //case 2
@@ -285,20 +277,7 @@ module.exports = View.extend({
       else if(end.x - start.x < this.editor.radius+this.edgeRadius){
         start.y -= this.editor.radius;
         end.y += this.editor.radius + this.markerSize;
-        halfY = (start.y - end.y)/2 + end.y;
-        if (end.x - start.x < 2 * this.edgeRadius)
-          this.edgeRadius = (end.x - start.x) / 2;
-        start2 = {
-          x : start.x + this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x - this.edgeRadius,
-          y : end.y
-        };
-        var halfY2 = halfY + this.edgeRadius;
-        var halfY3 = halfY - this.edgeRadius;
-        this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 1, 0, this.edgeRadius);
+        this.definePath3LinesY(start, end, 1, 0);
       }
       //case 2a+b
       //  
@@ -316,7 +295,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - 10
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, false);
       }
     }
     //case 3
@@ -349,20 +328,7 @@ module.exports = View.extend({
       else if(start.x - end.x < this.editor.radius+this.edgeRadius){
         start.y += this.editor.radius;
         end.y -= this.editor.radius + this.markerSize;
-        halfY = (end.y - start.y)/2 + start.y;
-        if (start.x - end.x < 2 * this.edgeRadius)
-          this.edgeRadius = (start.x - end.x) / 2;
-        start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x + this.edgeRadius,
-          y : end.y
-        };
-        var halfY2 = halfY - this.edgeRadius;
-        var halfY3 = halfY + this.edgeRadius;
-        this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 1, 0, this.edgeRadius);
+        this.definePath3LinesY(start, end, 1, 0);
       }
       //case 3a+b
       //
@@ -380,7 +346,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, true);
       }
     }
     //case 4
@@ -414,20 +380,7 @@ module.exports = View.extend({
       else if(start.x - end.x < this.editor.radius+this.edgeRadius){
         start.y -= this.editor.radius;
         end.y += this.editor.radius + this.markerSize;
-        halfY = (start.y - end.y)/2 + end.y;
-        if (start.x - end.x < 2 * this.edgeRadius)
-          this.edgeRadius = (start.x - end.x) / 2;
-        start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
-        };
-        end2 = {
-          x : end.x + this.edgeRadius,
-          y : end.y
-        };
-        var halfY2 = halfY + this.edgeRadius;
-        var halfY3 = halfY - this.edgeRadius;
-        this.definePath3LinesY(start, halfY, end, start2, end2, halfY2, halfY3, 0, 1, this.edgeRadius);
+        this.definePath3LinesY(start, end, 0, 1);
       }
       //case 4a+b
       //
@@ -445,7 +398,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y + this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true);
       }
     }
 
@@ -540,7 +493,7 @@ module.exports = View.extend({
       0: anti-clockwise
       1: clockwise
   */
-  slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance){
+  slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
     var length = Math.PI/2 * radius;
     var count = Math.floor(length / distance);
     var segments = [];
@@ -550,35 +503,35 @@ module.exports = View.extend({
     var dx, dy;
     var sumX = 0;
     var sumY = 0;
-    
+ 
     if(x1 < x0){
       signX *= -1;
     }
-    
     if(y1 < y0){
       signY *= -1;
     }
-    
+
     var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
     
-    //console.log("A(%i,%i), B(%i,%i)", x0, y0, x1, y1, sweepFlag);
-    
     for(var i=1; i<=count; i++){  
-      
-      dx = radius * (1 - Math.cos(i*alpha)) - sumX;
-      dy = radius * Math.sin(i*alpha) - sumY;
-      
+
+      if(hasRightDirection){
+        dx = radius * (1-Math.cos (i*alpha)) - sumX;
+        dy = radius * Math.sin (i*alpha) - sumY;
+      }
+      else{
+        dx = radius * Math.sin (i*alpha) - sumX;
+        dy = radius * (1-Math.cos (i*alpha)) - sumY;
+      }
+
       sumX += dx;
       sumY += dy;
-      
-      //console.log(dx.toFixed(2), dy.toFixed(2), sumX.toFixed(2), sumY.toFixed(2));
       
       segments.push(path + signX*dx + ' ' + signY*dy);
     }
     
     // move back to last
     segments.push(path + signX*(radius-sumX) + ' ' + signY*(radius-sumY));
-    //console.log(segments.join(" "));
     
     return segments.join(" ");
   },
@@ -596,17 +549,17 @@ module.exports = View.extend({
     }
   },
   
-  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
+  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection){
     this.path = 'M ' + start.x + ' ' + start.y;
     
     if(start.x < end.x){
       this.path += ' H ' + this.slicedPathSegments(start.x, end2.x, this.coinDistance);
-      this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance);
+      this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
       this.path += ' V ' + this.slicedPathSegments(start2.y, end.y, this.coinDistance);
     }
     else{
       this.path += ' V ' + this.slicedPathSegments(start.y, end2.y, this.coinDistance);
-      this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance);
+      this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
       this.path += ' H ' + this.slicedPathSegments(start2.x, end.x, this.coinDistance);
     }
   },
@@ -639,19 +592,46 @@ module.exports = View.extend({
     this.path = 'M ' + start.x + ' ' + start.y;
     
     this.path += ' H ' + this.slicedPathSegments(start.x, firstX, this.coinDistance);
-    this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance);
+    this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
     this.path += ' V ' + this.slicedPathSegments(firstY, secondY, this.coinDistance);
-    this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance);
+    this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
     this.path += ' H ' + this.slicedPathSegments(secondX, end.x, this.coinDistance);
   },
 
-  definePath3LinesY: function(start, halfY, end, start2, end2, halfY2, halfY3, sweepFlag1, sweepFlag2, edgeRadius){
+  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
+    var edgeRadius = this.edgeRadius;
+    var halfY = start.y + (end.y - start.y)/2;
+    var firstX, secondX, firstY, secondY;
+    var dx = Math.abs(end.x - start.x);
+
+    if(dx/2 < edgeRadius)
+      edgeRadius = dx/2;
+
+    if(end.x - start.x > 0){
+      firstX = start.x + edgeRadius;
+      secondX = end.x - edgeRadius;
+    }
+    else{
+      firstX = start.x - edgeRadius;
+      secondX = end.x + edgeRadius;
+    }
+
+    if(end.y - start.y > 0){
+      firstY = halfY - edgeRadius;
+      secondY = halfY + edgeRadius;
+    }
+    else{
+      firstY = halfY + edgeRadius;
+      secondY = halfY - edgeRadius;
+    }
+
     this.path = 'M ' + start.x + ' ' + start.y;
-    this.path += ' V ' + this.slicedPathSegments(start.y, halfY2, this.coinDistance);
-    this.path += this.slicedQuarterCircleSegments(0,0,0,0,edgeRadius, sweepFlag1, this.coinDistance);
-    this.path += ' H ' + this.slicedPathSegments(start2.x, end2.x, this.coinDistance);
-    this.path += this.slicedQuarterCircleSegments(0,0,0,0,edgeRadius, sweepFlag2, this.coinDistance);
-    this.path += ' V ' + this.slicedPathSegments(halfY3, end.y, this.coinDistance);
+
+    this.path += ' V ' + this.slicedPathSegments(start.y, firstY, this.coinDistance);
+    this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
+    this.path += ' H ' + this.slicedPathSegments(firstX, secondX, this.coinDistance);
+    this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
+    this.path += ' V ' + this.slicedPathSegments(secondY, end.y, this.coinDistance);
   }
 });
 
