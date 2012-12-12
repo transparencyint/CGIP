@@ -55,7 +55,7 @@
 
 .tool.controls
   left 50%
-  margin-left -150px
+  margin-left -201px
   position absolute
   > *
     float left
@@ -64,24 +64,43 @@
     border-right 1px solid hsl(213,55%,28%)
     box-shadow 1px 0 hsl(213,55%,60%)
     cursor pointer
+    position relative
     &.slideUp
       .actor.new
         margin-top -18px
     &.slideIn
       .actor.new
         margin-top 100px
-        width 120px
-        height 120px
-        margin-left -20px
         transition width 500ms, height 500ms, margin 500ms
     &.curtainDown .actor.new 
       transition none
     .description
-      height 37px
-      padding-top 10px
+      height 33px
+      padding-top 9px
       background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,52%))
       position relative
       z-index 3
+      &:after, 
+      &:before
+        content ""
+        position absolute
+        bottom 0
+        left 5px
+        right 5px
+        height 1px
+        box-shadow 0 1px #20436F, 0 2px rgba(0, 0, 0, 0.34), 0 3px rgba(0, 0, 0, 0.13), 0 4px rgba(0, 0, 0, 0.05)
+      /* 
+        draws a background behind with blue, dark blue, blue 
+        behind the top border of the actor box to not show a 
+        transparent line next to the border left and right
+        when the actor slides down
+      */
+      &:before
+        left 0
+        right 0
+        bottom -1px
+        background linear-gradient(left, hsl(218,55%,52%) 4px, #20436F 4px, #20436F 96px, hsl(218,55%,52%) 96px)
+        box-shadow none
     .plus
       font-size 16px
       font-weight bold
@@ -91,37 +110,29 @@
       display inline-block
     .dock
       position absolute
-      top -28px
-      left 6px
-      width 84px
+      top -31px
+      left 4px
+      right 4px
       border-top 1px solid hsl(213,55%,28%)
       &:before
         content ""
-        height 8px
-        width 82px
-        top 65px
-        left -2px
+        height 9px
+        right 0
+        top 64px
+        left 0
         position absolute
         background linear-gradient(top, rgba(0,0,0,.21), rgba(255,255,255,.05))
         border 1px solid hsl(213,55%,28%)
         border-bottom-color hsl(213,55%,25%)
         border-top none
-      &:after
-        content ""
-        position absolute
-        top 64px
-        height 2px
-        left -2px
-        width 100%
-        box-shadow 0 1px 1px hsl(213,55%,28%) inset
-        z-index 1
     .actor.new
-      margin 0
-      width 80px
-      height 80px
+      margin -4px 2px 0
+      width 88px
+      height 88px
+      border-radius 50%
       font-size 13px
       text-shadow none
-      position relative !important
+      position relative
       transition width 250ms, height 250ms, margin 250ms
       cursor move
     .cancel
@@ -145,11 +156,12 @@
         vertical-align middle
         text-align center        
   .description
-    float left
-    padding 13px 13px 8px
+    width 100px
+    height 50px
+    padding 11px 13px 0
     font-size 13px
     img
-      margin-bottom 3px
+      margin-top 4px
       display block
     .name
       font-size 11px

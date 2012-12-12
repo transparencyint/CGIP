@@ -15,11 +15,17 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+
     this.editor = options.editor;
     this.edgeRadius = 10;
     this.coinSizeFactor = 1;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
+
+    this.actorRadius = 60;
+    this.markerSize = 4;
+    this.offsetDistance = 15;
+
     
     if(options.noClick)
       this.$el.unbind('click')
@@ -32,8 +38,8 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    this.model.on('change:amount', this.updateStrokeWidth, this);
-    this.model.on('change:amount', this.updateAmount, this);
+    this.model.on('change:disbursed', this.updateStrokeWidth, this);
+    this.model.on('change:disbursed', this.updateDisbursed, this);
   },
 
   getRenderData : function(){
@@ -63,6 +69,15 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+
+    var connectionType = this.model.get("connectionType");
+    if(connectionType === 'accountability')
+      this.strokeStyle = 'white';
+    else if(connectionType === 'monitoring')
+      this.strokeStyle = 'black';
+    else 
+      this.strokeStyle = '#f8df47';
+
     this.selectStyle = 'hsl(205,100%,55%)';
 
     this.path = "";
@@ -146,6 +161,9 @@ module.exports = View.extend({
   },
 
   update: function(){
+    // return if not a valid connection
+    if(!this.hasBothConnections()) return
+
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
     
@@ -417,7 +435,7 @@ module.exports = View.extend({
     var minStroke = 1;
     var maxStroke = 40;
 
-    var amount = this.model.get('amount') || 0;
+    var amount = this.model.get('disbursed') || 0;
 
     var percent = amount * 100 / maxAmount;
     var strokeWidth = percent * maxStroke / 100;
@@ -430,8 +448,8 @@ module.exports = View.extend({
     this.$el.find('path').attr('stroke-width', this.strokeWidth);
   },
 
-  updateAmount: function(){
-    this.$('.connection-metadata').text(this.model.get('amount'));
+  updateDisbursed: function(){ 
+    this.$('.connection-metadata').text('$' + this.model.get('disbursed'));
   },
 
   showMetadataInput: function(){   
@@ -457,7 +475,7 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-    if(this.model.get('amount')){
+    if(this.model.get('disbursed')){
       var metadata = this.$el.find('.connection-metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
       metadata.fadeIn(0);

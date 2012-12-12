@@ -13,8 +13,6 @@ Country.all = function(done){
       if(err) return done(err);
       var parsedDocs = [];
 
-      console.log(docs);
-
       docs.forEach(function(doc){
         parsedDocs.push(doc);
       });

@@ -7,7 +7,12 @@ module.exports = Backbone.View.extend({
   },
 
   template: function() {},
-  getRenderData: function() {},
+  getRenderData: function() {
+    if(this.model)
+      return this.model.toJSON();
+    else
+      return {};
+  },
 
   render: function() {
     this.$el.html(this.template(this.getRenderData()));
