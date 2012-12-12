@@ -290,8 +290,6 @@ module.exports = View.extend({
   toggleMoneyMode: function(event){
     var target = $(event.target);
 
-    //target.addClass("active").siblings().removeClass("active");
-
     var currentID = target.attr('id');
     if(currentID === 'disbursedMoney')
       this.moneyConnectionMode = 'disbursedMode';
@@ -303,7 +301,6 @@ module.exports = View.extend({
   },
 
   toggleActiveMoneyMode: function(){
-
     if(this.moneyConnectionMode === 'disbursedMode')
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
     else if(this.moneyConnectionMode === 'pledgedMode')
