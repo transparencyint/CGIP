@@ -5,20 +5,9 @@
   border 1px solid hsl(213,55%,28%)
   border-radius 3px
   box-shadow 0 0 1px rgba(0,0,0,.34), 0 0 5px rgba(0,0,0,.13)
-  .moneyMode
-    padding 6px 13px 0 0
-    .name
-      font-size 11px
-      text-align center
-      display block
-    .small
-      padding 4px
-      font-size 8px
-      &:active, &.active
-        background-color hsl(219,55%,36%)
-      cursor pointer
+  cursor default
   .control
-    &.active
+    &.active, &:active
       background-color hsl(219,55%,36%)
   .label
     text-shadow none
@@ -185,7 +174,7 @@
     border-right 1px solid hsl(213,55%,28%)
     box-shadow 1px 0 hsl(213,55%,60%)
     &.money
-      border-right-width 0
+      border-right none
       box-shadow none
     &.active, &:active
       .description
@@ -206,6 +195,18 @@
       display none
     &.invisible .eye
       background none
+  .moneyMode
+    padding 6px 13px
+    .name
+      font-size 11px
+      text-align center
+      display block
+    .small
+      padding 4px
+      font-size 9px
+      &:active, &.active
+        background-color hsl(219,55%,36%)
+      cursor pointer
 
 .sidebar  
   z-index 3
