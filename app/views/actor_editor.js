@@ -365,8 +365,6 @@ module.exports = View.extend({
     this.offset.left = x;
     this.offset.top = y;
 
-    this.calculateRoleDimensions(x);
-
     x += this.center;
 
     this.workspace.css({
