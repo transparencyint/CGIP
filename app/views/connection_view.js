@@ -24,8 +24,6 @@ module.exports = View.extend({
 
     this.actorRadius = 60;
     this.markerSize = 4;
-    this.offsetDistance = 15;
-
     
     if(options.noClick)
       this.$el.unbind('click')
@@ -611,7 +609,9 @@ module.exports = View.extend({
     
     this.path += ' H ' + this.slicedPathSegments(start.x, firstX, this.coinDistance);
     this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
-    this.path += ' V ' + this.slicedPathSegments(firstY, secondY, this.coinDistance);
+    var circleSegments = this.slicedPathSegments(firstY, secondY, this.coinDistance);
+    if (circleSegments)
+      this.path += ' V ' + circleSegments;
     this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
     this.path += ' H ' + this.slicedPathSegments(secondX, end.x, this.coinDistance);
   },
@@ -647,7 +647,9 @@ module.exports = View.extend({
 
     this.path += ' V ' + this.slicedPathSegments(start.y, firstY, this.coinDistance);
     this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
-    this.path += ' H ' + this.slicedPathSegments(firstX, secondX, this.coinDistance);
+    var circleSegments = this.slicedPathSegments(firstX, secondX, this.coinDistance);
+    if (circleSegments)
+      this.path += ' H ' + circleSegments;
     this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
     this.path += ' V ' + this.slicedPathSegments(secondY, end.y, this.coinDistance);
   }
