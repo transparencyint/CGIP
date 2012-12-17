@@ -11,6 +11,7 @@
   		<label for="organizationType">Type</label>
   		<div class="organizationType clearfix">
   		  <select id="organizationType" class="hasAdditionalInfo" name="organizationType">
+  		    <option value="">Unknown</option>
     		  <optgroup label="Funding">
     		    <option value="Bank" <% if @organizationType == 'Bank': %> selected <% end%>>Bank</option>
     	  		<option value="Bilateral Organization" <% if @organizationType == 'Bilateral Organization': %> selected <% end%>>Bilateral Organization</option>

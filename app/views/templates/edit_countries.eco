@@ -1,16 +1,18 @@
-<h1>Edit Countries</h1>
+<div class="inner">
+  <h1>Edit Countries</h1>
 
-<div id="add-country">
-  <input type="text" placeholder="type to add country..." /><button>Add Country</button>
-  <ul></ul>
+  <div id="add-country">
+    <input type="text" placeholder="type to add country..." /><button>Add Country</button>
+    <ul></ul>
+  </div>
+
+  <ul class="countrys clearfix">
+    <% for country in @countries: %>
+      <li>
+        <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
+        <span class="name"><%= country.name %></span>
+        <span class="delete" data-country-id="<%= country._id %>">Delete</span>
+      </li>
+    <% end %>
+  </ul>
 </div>
-
-<ul class="countrys clearfix">
-  <% for country in @countries: %>
-    <li>
-      <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
-      <span class="name"><%= country.name %></span>
-      <span class="delete" data-country-id="<%= country._id %>">Delete</span>
-    </li>
-  <% end %>
-</ul>
