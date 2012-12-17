@@ -17,6 +17,7 @@ module.exports = View.extend({
   events: {
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
+    'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
@@ -37,6 +38,8 @@ module.exports = View.extend({
     this.country = options.country;
     this.radius = 60;
     this.smallRadius = 44;
+
+    this.moneyConnectionMode = 'disbursedMode'; //default
     
     // padding for fit-to-screen
     this.padding = this.radius/2;
@@ -80,6 +83,8 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
+
+    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
     _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
@@ -244,7 +249,7 @@ module.exports = View.extend({
 
   appendConnection: function(connection){
     connection.pickOutActors(this.actors);
-    var connView = new ConnectionView({ model : connection });
+    var connView = new ConnectionView({ model : connection, editor: this});
     connView.render();  
     this.workspace.append(connView.el);
 
@@ -280,6 +285,27 @@ module.exports = View.extend({
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
+  },
+
+  toggleMoneyMode: function(event){
+    var target = $(event.target);
+
+    var currentID = target.attr('id');
+    if(currentID === 'disbursedMoney')
+      this.moneyConnectionMode = 'disbursedMode';
+    else if(currentID === 'pledgedMoney')
+      this.moneyConnectionMode = 'pledgedMode';
+
+    this.trigger('change:moneyConnectionMode');
+    console.log(this.moneyConnectionMode);
+  },
+
+  toggleActiveMoneyMode: function(){
+    if(this.moneyConnectionMode === 'disbursedMode')
+      this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
+    else if(this.moneyConnectionMode === 'pledgedMode')
+      this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
+
   },
 
   deactivateMode: function(){
@@ -326,6 +352,7 @@ module.exports = View.extend({
     this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
     this.addActor.addClass('slideIn');
   },
+
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
@@ -458,6 +485,8 @@ module.exports = View.extend({
   
   afterRender: function(){
     var editor = this;
+
+    this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignCenter);

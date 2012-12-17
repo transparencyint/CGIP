@@ -16,7 +16,7 @@
   &.ui-selected
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   .inner
-    cursor move
+    cursor url(/images/openhand_8_8.cur) 8 8, default
     margin 8px
     padding 0 8px
     width 104px
@@ -24,6 +24,8 @@
     border-radius 50%
     position absolute
     background #f9f9f9
+  &:active .inner
+    cursor url(/images/closedhand_8_8.bmp) 8 8, move
   .name
     min-width 50%
     text-align center
