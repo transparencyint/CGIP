@@ -36,17 +36,17 @@
     border-left 1px solid rgba(255,255,255,.08)
     position fixed
     
-  #roleHolder
+  .roleHolder, .dragHandleBars
     width 100%
     height 100%
     position fixed   
-    z-index 2
+    z-index 3
     left 50%
     .roleArea
       width 25%
       height 100%
       position absolute
-      opacity 0.2
+      opacity 0.35
       &#funding
         background: blue;  
       &#coordination
@@ -68,7 +68,9 @@
       opacity 0.0
     .draghandle:hover
       opacity 0.1
-
+  .dragHandleBars
+    width auto
+    z-index 4
 
 .workspace
   position absolute
