@@ -9,7 +9,9 @@ module.exports = View.extend({
 
   events: {
     'submit .connection-form' : 'submitMetadataInput',
-    'input .amount': 'updateAmount', 
+    'input #disbursed': 'updateDisbursed', 
+    'input #pledged': 'updatePledged', 
+    'change input[type=radio]': 'updateMoneyConnections',
     'click': 'dontClose',
     'click .close': 'closeConnectionForm',
     'click .delete': 'deleteConnection'
@@ -22,8 +24,15 @@ module.exports = View.extend({
   initialize: function(options){
     _.bindAll(this, 'destroy');
     this.saveAmount = _.debounce(this.saveAmount, 500);
-    this.oldAmount = options.averageAmount;
-    //this.oldAmount = this.model.get('amount');
+
+    this.oldDisbursed = this.model.get('disbursed');
+    this.oldPledged = this.model.get('pledged');
+
+    this.editor = options.editor;
+  },
+
+  currentMoneyMode: function () {
+    this.$('#' + this.editor.moneyConnectionMode).prop("checked", true);
   },
 
   getRenderData : function(){
@@ -34,23 +43,45 @@ module.exports = View.extend({
     this.$el.attr('rel', this.model.id);
     this.$el.fadeIn(100);
 
-    var amount = this.oldAmount;
-    if(typeof(amount) !== 'undefined')
-      this.$('.amount').val(amount);
+
+    var _disbursed = this.model.get('disbursed');
+    var _pledged = this.model.get('pledged');
+
+    this.$('#disbursed').val(_disbursed);
+    this.$('#pledged').val(_pledged);
 
     var elem = this.$el;
     var model = this.model;    
 
-    this.$('.amount').numeric();
+    this.$('#disbursed').numeric();
+    this.$('#pledged').numeric();
     this.$el.draggable({handle: '.movable'});
     this.$el.css('position', 'absolute');
 
     $(document).on('click', this.destroy);
+
+    this.currentMoneyMode();
+    this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+
+    var connectionFormView = this;
+    _.defer(function(){
+      connectionFormView.$('input#disbursed').focus();
+    });
   },
 
-  updateAmount: function () {
-    var newAmount = this.$('.amount').val();
-    this.model.set({amount: Number(newAmount)});
+  updateDisbursed: function () {
+    var newDisbursed = this.$('#disbursed').val();
+    this.model.set({disbursed: Number(newDisbursed)});
+  },
+
+  updatePledged: function () {
+    var newPledged = this.$('#pledged').val();
+    this.model.set({pledged: Number(newPledged)});
+  },
+
+  updateMoneyConnections: function (event) {
+    this.editor.moneyConnectionMode = event.currentTarget.id;
+    this.editor.trigger('change:moneyConnectionMode');
   },
 
   deleteConnection: function(){
@@ -62,15 +93,22 @@ module.exports = View.extend({
   },
 
   closeConnectionForm:function(event){
-    this.model.set({amount: this.oldAmount});
+    this.model.set({
+      disbursed: this.oldDisbursed,
+      pledged: this.oldPledged
+    });
+    $('#'+this.model.id).removeClass('activeConnection')
     this.destroy();
   },
 
   submitMetadataInput: function(e){
     e.preventDefault();
-    var _amount = Number(this.$el.find('.amount').val());
+    var _disbursed = Number(this.$el.find('#disbursed').val());
+    var _pledged = Number(this.$el.find('#pledged').val());
+
     this.model.save({
-      amount: _amount
+      disbursed: _disbursed,
+      pledged: _pledged
     });
 
     var connectionID = this.$el.attr('rel');
@@ -81,7 +119,6 @@ module.exports = View.extend({
 
   destroy: function(){
     View.prototype.destroy.call(this);
-
-    $(document).unbind('click', this.destory);
+    $(document).off('click', this.destory);
   }
 });

@@ -4,7 +4,7 @@ module.exports = View.extend({
   
   template : require('./templates/edit_countries'),
   
-  className: 'edit-countries',
+  className: 'edit-countries center',
 
   events: {
     'keyup #add-country input': 'handleKeys',

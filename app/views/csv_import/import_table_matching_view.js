@@ -8,6 +8,7 @@ var TableHeadline = require('views/templates/csv_import/import_matched_headlines
 module.exports = View.extend({
   
   tagName : 'table',
+  className : 'darkTable',
 
   initialize: function(options){
     this.selectedColumns = options.selectedColumns;

@@ -7,9 +7,9 @@
   background #2C57A7 url(/images/bluegrid.svg) center top
   background-size 10px
   overflow hidden
-  cursor url(/images/openhand_8_8.cur) 8 8, default;
+  cursor url(/images/openhand_8_8.cur) 8 8, default
   &:active
-    cursor url(/images/closedhand_8_8.bmp) 8 8, move;
+    cursor url(/images/closedhand_8_8.bmp) 8 8, move
   &.zoom200
     background-size 200px
   &.zoom175
@@ -35,6 +35,14 @@
     border-right 1px solid rgba(0,0,0,.21)
     border-left 1px solid rgba(255,255,255,.08)
     position fixed
+  .clickCatcher
+    top 0
+    right 0
+    bottom 0
+    left 0
+    z-index 3
+    position absolute
+    cursor default
     
 .workspace
   position absolute
@@ -51,3 +59,17 @@
       display none
   .connection
     position absolute
+
+.gridline
+  position fixed
+  display none
+  background rgba(255,255,255,.55)
+.gridline#gridlineV
+  width 1px
+  top 0
+  bottom 0
+.gridline#gridlineH
+  height 1px
+  left 0
+  right 0
+

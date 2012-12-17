@@ -41,7 +41,6 @@ app.configure(function(){
   app.set('view options', {
     layout: false
   });
-  app.set('basepath')
   
   app.use(express.methodOverride());
   app.use(express.bodyParser());
@@ -58,7 +57,15 @@ app.configure(function(){
   }));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(express.csrf());
   app.use(app.router);
+});
+
+/* A template helper for csrf tokens */
+app.dynamicHelpers({
+  csrf_token: function(req, res) {
+    return req.session._csrf;
+  }
 });
 
 /** TODO: find out why res.redirect('/') is not working on uberhost */

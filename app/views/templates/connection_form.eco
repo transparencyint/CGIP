@@ -1,8 +1,16 @@
 <div class="close">&times;</div>
 <div class="movable"></div>
 <form class="connection-form">
-	<label for="amount"> Amount: 
-	<input type="text" class="amount" name="amount"/></label>
+	<div>
+	<label for="disbursed"> Disbursed (in $): </label>
+	<label class="mode" for="disbursedMode"><input type="radio" name="moneyType" id="disbursedMode">Show on the map</label>
+	<input type="text" id="disbursed" name="disbursed"/>
+	</div>
+	<div>
+	<label for="pledged"> Pledged (in $): </label>
+	<label class="mode" for="pledgedMode"><input type="radio" name="moneyType" id="pledgedMode"> Show on the map</label>
+	<input type="text" id="pledged" name="pledged"/>
 	<button type="submit">Save</button>
 	<button class="delete">Delete</button>
+</div>
 </form>
