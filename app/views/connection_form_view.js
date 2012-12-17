@@ -31,7 +31,7 @@ module.exports = View.extend({
   },
 
   currentMoneyMode: function () {
-    this.$('#' + this.editor.moneyConnectionMode).attr('checked', 'checked');
+    this.$('#' + this.editor.moneyConnectionMode).prop("checked", true);
   },
 
   getRenderData : function(){
