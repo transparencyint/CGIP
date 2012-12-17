@@ -21,6 +21,7 @@ module.exports = View.extend({
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
     'mousedown': 'dragStart',
+    'mousedown .draghandle': 'dragRoleHandle',
     'mousedown .bar': 'stopPropagation'
   },
   
@@ -62,6 +63,12 @@ module.exports = View.extend({
       left: 0,
       top: 0
     };
+
+    this.roleAreaOffsets = {
+      draghandleLeft: 0
+    }
+
+    this.roles = ['funding', 'coordination', 'implementation', 'monitoring'];
     
     this.gridSize = this.radius;
 
@@ -394,14 +401,35 @@ module.exports = View.extend({
     this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
 
-    $.each(this.country.attributes.roles, function(role, data){
-      editor.$('#'+role).css({
-        'left': data.x,
-        'width': data.width
-      });
-    });
+    this.roleDimensions = this.country.attributes.roleDimensions;
 
-    
+    for(i=0; i<this.roleDimensions.length; i++){
+      if(i != this.roleDimensions.length-1){
+        this.$('#'+this.roles[i]).css({
+          'width': this.roleDimensions[i+1] - this.roleDimensions[i],
+          'left': this.roleDimensions[i]
+        });
+      }
+      else{
+        this.$('div[rel=last]').css({'left': this.roleDimensions[i] - 4});
+      }
+      this.$('div[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i] - 4});
+    }
+   
+
+    /*
+    $.each(this.country.attributes.roleDimensions, function(roleSelector, data){
+
+      editor.$('#'+roleSelector).css({
+        'width': data.width,
+        'left': data.left
+      });
+
+      // add drag handles to the edges of the roles
+      editor.$('div[rel='+roleSelector+']').css({'left': data.left - 4});
+      editor.$('.draghandle.last').css({'left': data.left + data.width - 4});
+    });
+    */
 
     this.actors.each(this.appendActor);
 
@@ -416,6 +444,115 @@ module.exports = View.extend({
     _.defer(this.initializeDimensions);
   },
   
+  dragRoleHandle: function(event){
+    event.stopPropagation();
+
+    this.startX = event.pageX - this.roleAreaOffsets.draghandleLeft;
+    this.roleAreaOffsets.draghandleLeft = event.pageX;
+    
+    $(document).on('mousemove.draghandle', {editor: this, roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStart);
+    $(document).one('mouseup', {editor: this, roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStop);
+  },
+
+  dragRoleHandleStart: function(event){
+    // get the current drag x coordinate
+    var editor = event.data.editor;
+    var center = editor.center;
+    var fundingWidth = $('#funding').width();
+    var coordinationWidth = $('#coordination').width();
+    var deltaX = 0;
+    var deltaXAbsolute = 0;
+    var newWidth = 0;
+    var roleSelector = event.data.roleSelector;
+    var relatedRole = $('#'+roleSelector).attr('rel');
+    var relatedRoleWidth = $('#'+roleSelector).width(); 
+    var roleIndex = editor.roles.indexOf(roleSelector);
+
+    var minLeft = null;
+    var maxLeft = null;
+
+    if(event.pageX < center){
+      deltaXAbsolute = editor.roleAreaOffsets.draghandleLeft - event.pageX;
+    }
+    else{
+      deltaXAbsolute = editor.roleAreaOffsets.draghandleLeft - event.pageX;
+    }
+    var fixLeft = center - fundingWidth - coordinationWidth;   
+
+
+    editor.roleAreaOffsets.draghandleLeft = event.pageX;
+    editor.roleDimensions = [
+      $('.draghandle[rel=funding]').position().left,
+      $('.draghandle[rel=coordination]').position().left,
+      $('.draghandle[rel=implementation]').position().left,
+      $('.draghandle[rel=monitoring]').position().left,
+      $('.draghandle[rel=last]').position().left
+    ]
+
+
+    // check if there is a min and max value
+    var minLeft = null;
+    var maxLeft = editor.roleDimensions[roleIndex+1];
+
+    console.log(maxLeft);  
+
+    if(roleIndex == 0){
+
+      if(maxLeft <= 4)
+      {
+        return;
+      }
+
+      $('#roleHolder').css({'left': event.pageX});
+
+      //move all the others
+      $('.draghandle[rel=coordination]').css({'left': $('.draghandle[rel=coordination]').position().left + deltaXAbsolute});
+      $('.draghandle[rel=implementation]').css({'left': $('.draghandle[rel=implementation]').position().left + deltaXAbsolute});
+      $('.draghandle[rel=monitoring]').css({'left': $('.draghandle[rel=monitoring]').position().left + deltaXAbsolute});
+      $('.draghandle[rel=last]').css({'left': $('.draghandle[rel=last]').position().left + deltaXAbsolute});
+
+      $('#funding').css({'width': $('#funding').width() + deltaXAbsolute});
+      $('#coordination').css({'left': $('#coordination').position().left + deltaXAbsolute});
+      $('#implementation').css({'left': $('#implementation').position().left + deltaXAbsolute});
+      $('#monitoring').css({'left': $('#monitoring').position().left + deltaXAbsolute});
+    }
+    else if(roleIndex != -1){
+        newWidth = editor.roleDimensions[roleIndex] - editor.roleDimensions[roleIndex-1];
+        $('#'+editor.roles[roleIndex-1]).css({'width': newWidth});
+
+        newWidth = editor.roleDimensions[roleIndex+1] - editor.roleDimensions[roleIndex];
+        $('#'+roleSelector).css({'left': editor.roleDimensions[roleIndex], 'width': newWidth});     
+    }
+    else {
+      newWidth = $('#monitoring').width();
+      $('#monitoring').css({'width': newWidth -= deltaXAbsolute});
+    }
+
+    
+
+    // if the first draghandle is moved we need to move the whole roleHolder and recalculate positions
+    if(roleSelector == 'funding'){
+
+      var minLeft = null;
+      var maxLeft = editor.roleDimensions[1]+1;
+      
+    }else{
+
+      $('.draghandle[rel='+roleSelector+']').css({'left': $('.draghandle[rel='+roleSelector+']').position().left - deltaXAbsolute});
+
+    }
+  },
+
+  dragRoleHandleStop: function(event){
+    var editor = event.data.editor;
+
+    // set the new roleArea coordinates  
+    editor.country.set({'roleDimensions' : editor.roleDimensions});
+    editor.country.save();
+
+    $(document).unbind('mousemove.draghandle');
+  },
+
   initializeDimensions: function(){
     this.center = this.$el.width()/2;
     this.calculateRoleDimensions(null);
@@ -430,6 +567,7 @@ module.exports = View.extend({
       this.$('#roleHolder').css({left: roleAreaDiff});
     else
       this.$('#roleHolder').css({left: x + roleAreaDiff});
+
   },
 
   afterRender: function(){

@@ -55,6 +55,12 @@
 </div>
 
 <div id="roleHolder">
+  <div class="draghandle" rel="funding"></div>
+  <div class="draghandle" rel="coordination"></div>
+  <div class="draghandle" rel="implementation"></div>
+  <div class="draghandle" rel="monitoring"></div>
+  <div class="draghandle last" rel="last"></div>
+
   <div class="roleArea" id="funding"></div>
   <div class="roleArea" id="coordination"></div>
   <div class="roleArea" id="implementation"></div>

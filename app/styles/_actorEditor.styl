@@ -40,11 +40,12 @@
     width 100%
     height 100%
     position fixed   
+    z-index 2
     .roleArea
       width 25%
       height 100%
       position absolute
-      opacity 0.3
+      opacity 0.2
       &#funding
         background: blue;  
       &#coordination
@@ -56,6 +57,17 @@
       &#monitoring
         background: green;
         left 75%
+    .draghandle
+      width 8px
+      height 100%
+      z-index 5
+      cursor col-resize
+      position absolute
+      background #000
+      opacity 0.8
+    .draghandle:hover
+      opacity 1.0
+
 
 .workspace
   position absolute
