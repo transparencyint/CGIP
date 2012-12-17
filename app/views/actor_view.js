@@ -12,8 +12,8 @@ module.exports = DraggableView.extend({
     // merge the parent events and the current events
     return _.defaults({
       'dblclick .name'    : 'startEditName',
-      'dblclick .abbrev'  : 'startEditAbbrev',
-      'blur .abbrev-input': 'stopEditAbbrev',
+      'dblclick .abbrev'  : 'startEditName',
+      'blur .abbrev-input': 'stopEditName',
       'blur .name-input'  : 'stopEditName',
       'keydown input'     : 'saveOnEnter',
       'mousedown .inner'  : 'dragStart',
@@ -51,58 +51,47 @@ module.exports = DraggableView.extend({
   },
 
   startEditName: function(event){
-    if(event) event.stopPropagation();
+    var currentDiv;
+    if(event) {
+      event.stopPropagation();
+      currentDiv = $(event.currentTarget);
+    }else //a new actor is created
+      currentDiv = this.$('.name');
+
     this.$el.addClass('editingName');
     this.dontDrag = true;
-    
-    var current = this.$('.name');
-    var input = this.$('.name-input');
-    
-    this.$('.abbrev-input').hide();
-    this.$('.abbrev').hide();
-    this.$('.name-input').show();
 
-    var divText = current.text();
-    current.hide();
-    input.val($.trim(divText));
-    input.focus();
-    input.select();
-  },
+    var currentInput;
+    if(currentDiv.hasClass('name')) {
+      currentInput = this.$('.name-input');
+      this.$('.abbrev-input').hide();
+      this.$('.abbrev').hide();
+    } else if(currentDiv.hasClass('abbrev')) {
+      currentInput = this.$('.abbrev-input');
+      this.$('.name-input').hide();
+      this.$('.name').hide();
+    }
 
-  startEditAbbrev: function(event){
-    if(event) event.stopPropagation();
-    this.$el.addClass('editingName');
-    this.dontDrag = true;
-    
-    var current = this.$('.abbrev');
-    var input = this.$('.abbrev-input');
-    
-    this.$('.name-input').hide();
-    this.$('.name').hide();
-    this.$('.abbrev-input').show();
+    currentInput.show();
 
-    var divText = current.text();
-    current.hide();
-    input.val($.trim(divText));
-    input.focus();
-    input.select();
-  },
-
-  stopEditAbbrev: function(event){
-    this.$el.removeClass('editingName');
-
-    this.model.save({abbreviation : this.$('.abbrev-input').val()});
-    this.$('.abbrev-input').hide();
-    this.showProperName();
-    
-    this.dontDrag = false;
+    var divText = currentDiv.text();
+    currentDiv.hide();
+    currentInput.val($.trim(divText));
+    currentInput.focus();
+    currentInput.select();
   },
   
   stopEditName: function(event){
     this.$el.removeClass('editingName');
 
-    this.model.save({name : this.$('.name-input').val()});
-    this.$('.name-input').hide();
+    var currentInput = $(event.currentTarget);
+    if(currentInput.hasClass('name-input')){
+      this.model.save({name : currentInput.val()}); 
+    } else if(currentInput.hasClass('abbrev-input')){
+      this.model.save({abbreviation : currentInput.val()});
+    }
+
+    currentInput.hide();
     this.showProperName();
 
     this.dontDrag = false;
