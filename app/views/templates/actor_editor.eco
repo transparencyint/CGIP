@@ -63,10 +63,10 @@
   <div class="draghandle last" rel="last"></div>
 </div>
 <div class="roleHolder">
-  <div class="roleArea" id="funding"></div>
-  <div class="roleArea" id="coordination"></div>
-  <div class="roleArea" id="implementation"></div>
-  <div class="roleArea" id="monitoring"></div>
+  <div class="roleArea" id="funding"><span>Funding</span></div>
+  <div class="roleArea" id="coordination"><span>Coordination</span></div>
+  <div class="roleArea" id="implementation"><span>Implementation</span></div>
+  <div class="roleArea" id="monitoring"><span>Monitoring</span></div>
 </div>
 
 <div class="centerLine"></div>
