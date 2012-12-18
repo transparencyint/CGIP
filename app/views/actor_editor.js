@@ -413,15 +413,15 @@ module.exports = View.extend({
       y = 0;
     
     // snap to center
-    if(x !== 0 && Math.abs(this.offset.left) < 10)
-      this.offset.left = 0;
-      
-    this.moveTo(this.offset.left, this.offset.top);
-  },
-  
-  moveTo: function(x, y){
-    this.offset.left = x;
-    this.offset.top = y;
+    if(x !== 0 && Math.abs(x) < 10)
+      x = 0;
+    
+    // save new offset  
+    // but not when panning (only when we finished panning)
+    if(!silent){
+      this.offset.left = x / this.zoom.sqrt;
+      this.offset.top =  y / this.zoom.sqrt;
+    }
 
     x += this.center;
 
@@ -480,6 +480,8 @@ module.exports = View.extend({
     this.cancel = this.$('.controls .cancel');
     this.roleHolder = this.$('.roleHolder');
     this.dragHandleBars = this.$('.dragHandleBars');
+    this.gridlineV = this.$('#gridlineV');
+    this.gridlineH = this.$('#gridlineH');
 
     this.roleDimensions = this.country.get('roleDimensions');
 
