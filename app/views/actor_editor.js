@@ -91,8 +91,10 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
+    
+    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'dragRoleHandleStart', 'dragRoleHandleStop', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'initializeDimensions', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'dragRoleHandleStart', 'dragRoleHandleStop', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
