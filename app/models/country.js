@@ -7,5 +7,9 @@ module.exports = Model.extend({
     }else{
       return '/countries'
     }
+  },
+
+  defaults : {
+	 roleDimensions: [ -500, -250, 0, 250, 500 ]
   }
 });

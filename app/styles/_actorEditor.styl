@@ -44,6 +44,51 @@
     position absolute
     cursor default
     
+  .roleHolder, .dragHandleBars
+    width 100%
+    height 100%
+    position fixed   
+    z-index 3
+    left 50%
+    .roleArea
+      width 25%
+      height 100%
+      position absolute
+      opacity 0.5
+      &#funding
+        background: #9cb5de;  
+      &#coordination
+        background: #ffce7b;
+        left 25%
+      &#implementation
+        background: #ada0b9;
+        left 50%
+      &#monitoring
+        background: #bdce9c;
+        left 75%
+      span
+        width 100%
+        padding 60px 0 10px 0
+        display block
+        text-align center
+        color #fff
+        border 1px solid #444
+        border-left 0
+        background #888
+    .draghandle
+      width 8px
+      height 100%
+      z-index 5
+      cursor col-resize
+      position absolute
+      background #000
+      opacity 0.0
+    .draghandle:hover
+      opacity 0.1
+  .dragHandleBars
+    width auto
+    z-index 4
+
 .workspace
   position absolute
   left 50%
