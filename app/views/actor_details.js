@@ -45,7 +45,6 @@ module.exports = View.extend({
     this.actor = options.actor;
     this.editor = this.actor.editor;
     this.width = 360;
-    this.height = 515;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
@@ -136,7 +135,7 @@ module.exports = View.extend({
   destroy: function(){
     View.prototype.destroy.call(this);
     
-    // remove autosize helper (maybe not enough)
+    // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
     
     this.clickCatcher.remove();
@@ -155,6 +154,7 @@ module.exports = View.extend({
     var pos = this.actor.$el.offset();
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
+    this.height = this.$el.height();
     var arrowPos = this.height / 2;
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
@@ -209,7 +209,6 @@ module.exports = View.extend({
   },
 
   afterRender: function() {
-    this.placeNextToActor();
     this.addClickCatcher();
     
     $(document).keydown(this.handleEscape);
@@ -217,7 +216,10 @@ module.exports = View.extend({
     
     // focus first input field
     var self = this;
-    _.defer(function(){ self.$('input').first().focus(); });
+    _.defer(function(){ 
+      self.placeNextToActor();
+      self.$('input').first().focus();
+    });
   },
 
   toggleAdditionalInfo: function(event){
