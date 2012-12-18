@@ -164,7 +164,7 @@
   	</div> 
 	</div><!-- /.holder -->
 	
-	<div class="controls">
+	<div class="controls clearfix">
     <div class="row right">
       <button type="submit" class="done">Save</button>
       <button class="revert">Revert</button>

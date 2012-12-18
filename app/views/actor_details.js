@@ -27,10 +27,10 @@ module.exports = View.extend({
     // submit on enter
     'form submit': 'submitAndClose',
     
-    // make the whole thing draggable
+    // make the whole thing draggable..
     'mousedown': 'dragStart',
     
-    // except all the text, buttons and inputs
+    // ..except all the text, buttons and inputs
     'mousedown label': 'stopPropagation',
     'mousedown input': 'stopPropagation',
     'mousedown textarea': 'stopPropagation',
@@ -155,7 +155,7 @@ module.exports = View.extend({
     var pos = this.actor.$el.offset();
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
-    var arrowPos;
+    var arrowPos = this.height / 2;
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
     var actorHeight = this.actor.height * this.editor.zoom.value;
@@ -177,22 +177,25 @@ module.exports = View.extend({
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
     if(pos.top - padding < 0){
-      arrowPos = this.height/2 - Math.abs(padding - pos.top);
+      arrowPos -= Math.abs(padding - pos.top);
       pos.top = padding;
     }
     else if(pos.top + this.height + padding > this.editor.$el.height()){      
-      arrowPos = this.height/2 + Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
+      arrowPos += Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
       pos.top = this.editor.$el.height() - padding - this.height;
     }
     
-    if(arrowPos){
-      // keep the arrow positonend inside the boundaries
-      var max = this.height-this.controlsHeight-this.arrowHeight/2;
-      var min = this.borderRadius+this.arrowHeight/2;
-      
-      arrowPos = Math.min(max, Math.max(min, arrowPos));
-      arrow.css('top', arrowPos - this.arrowHeight/2);
-    }
+    // keep the arrow positonend inside the boundaries
+    var max = this.height-this.controlsHeight-this.arrowHeight/2;
+    var min = this.borderRadius+this.arrowHeight/2;
+    
+    arrowPos = Math.min(max, Math.max(min, arrowPos));
+    arrow.css('top', arrowPos - this.arrowHeight/2);
+    
+    // limit the maximum height to show scrollbars
+    // if the details would get too high
+    var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
+    this.$('.holder').css('maxHeight', maxHeight);
 
     this.$el.css({
       left: pos.left,

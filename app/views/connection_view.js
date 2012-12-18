@@ -1,5 +1,5 @@
 var View = require('./view');
-var ConnectionFormView = require('views/connection_form_view');
+var ConnectionDetailsView = require('views/connection_details');
 
 module.exports = View.extend({
 
@@ -462,8 +462,8 @@ module.exports = View.extend({
       //Remove all other forms
       $('.connection-form-container').remove();
       var model = this.model;
-      var cfw = new ConnectionFormView({ model: model, editor: this.editor });
-      $(document.body).append(cfw.render().el);  
+      var cfw = new ConnectionDetailsView({ model: model, editor: this.editor, connection: this });
+      this.editor.$el.append(cfw.render().el);  
     }
 
     //remove all activeClasses from the connections
