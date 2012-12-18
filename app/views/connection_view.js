@@ -583,6 +583,8 @@ module.exports = View.extend({
   */
   slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
     var length = Math.PI/2 * radius;
+    //REMOVE THE LINE BELOW TO GET THE ORIGINAL COIM DISTANCE, JUST A HACK TO MAKE BIG LINES NICER
+    distance /= 2;
     var count = Math.floor(length / distance);
     var segments = [];
     var signX = 1;
@@ -643,14 +645,14 @@ module.exports = View.extend({
     this.path = 'M ' + start.x + ' ' + start.y;
     
     if(start.x < end.x){
-      this.path += ' H ' + this.slicedPathSegments(start.x, end2.x, this.coinDistance);
+      this.addPathSegment(start.x, end2.x, this.coinDistance, ' H ');
       this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-      this.path += ' V ' + this.slicedPathSegments(start2.y, end.y, this.coinDistance);
+      this.addPathSegment(start2.y, end.y, this.coinDistance, ' V ');
     }
     else{
-      this.path += ' V ' + this.slicedPathSegments(start.y, end2.y, this.coinDistance);
+      this.addPathSegment(start.y, end2.y, this.coinDistance, ' V ');
       this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-      this.path += ' H ' + this.slicedPathSegments(start2.x, end.x, this.coinDistance);
+      this.addPathSegment(start2.x, end.x, this.coinDistance, ' H ');
     }
   },
 
@@ -680,17 +682,11 @@ module.exports = View.extend({
     }
       
     this.path = 'M ' + start.x + ' ' + start.y;
-    var circleSegments = this.slicedPathSegments(start.x, firstX, this.coinDistance);
-    if (circleSegments)
-      this.path += ' H ' + circleSegments;
+    this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
     this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
-    circleSegments = this.slicedPathSegments(firstY, secondY, this.coinDistance);
-    if (circleSegments)
-      this.path += ' V ' + circleSegments;
+    this.addPathSegment(firstY, secondY, this.coinDistance, ' V ');
     this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
-    circleSegments = this.slicedPathSegments(secondX, end.x, this.coinDistance)
-    if (circleSegments)
-      this.path += ' H ' + circleSegments;
+    this.addPathSegment(secondX, end.x, this.coinDistance, ' H ');
   },
 
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
@@ -721,18 +717,19 @@ module.exports = View.extend({
     }
 
     this.path = 'M ' + start.x + ' ' + start.y;
-
-    var circleSegments = this.slicedPathSegments(start.y, firstY, this.coinDistance);
-    if(circleSegments)
-      this.path += ' V ' + circleSegments;
+    this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
     this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
-    circleSegments = this.slicedPathSegments(firstX, secondX, this.coinDistance);
-    if (circleSegments)
-      this.path += ' H ' + circleSegments;
+    this.addPathSegment(firstX, secondX, this.coinDistance, ' H ');
     this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
-    circleSegments = this.slicedPathSegments(secondY, end.y, this.coinDistance)
-    if(circleSegments)
-      this.path += ' V ' + circleSegments;
+    this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
+  },
+
+  addPathSegment: function(start, end, distance, direction){
+    var pathSegments = this.slicedPathSegments(start, end, distance);
+    console.log("pathSegment", typeof pathSegments);
+    console.log(direction + " '" + pathSegments + "'");
+    if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
+      this.path += direction + pathSegments;
   }
 });
 
