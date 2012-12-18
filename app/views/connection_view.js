@@ -11,7 +11,7 @@ module.exports = View.extend({
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
-    'dblclick path' : 'showMetadataForm'
+    'dblclick svg' : 'showMetadataForm'
   },
 
   initialize: function(options){
@@ -21,8 +21,8 @@ module.exports = View.extend({
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
 
-    this.minCoinSizeFactor = 0.8;
-    this.maxCoinSizeFactor = 3;
+    this.minCoinSizeFactor = 1;
+    this.maxCoinSizeFactor = 4;
 
     this.actorRadius = 60;
     this.markerSize = 4;
@@ -102,8 +102,8 @@ module.exports = View.extend({
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
     
-    if(this.isMoney && this.editor)
-      this.updateStrokeWidth();
+    //if(this.isMoney && this.editor)
+      //this.updateStrokeWidth();
     
     if(this.model.get("connectionType") === 'money'){
       this.pathSettings = {
@@ -443,13 +443,12 @@ module.exports = View.extend({
       amountType = 'disbursed';
     }
 
+    console.log("--------------------");
     console.log("amount"+amount);
     var maxMoneyAmount = 0;
     var minMoneyAmount = 0;
 
-    //var size = _.size(editor.moneyConnections.models);
     var size = editor.moneyConnections.models.length;
-
     
     //there is at least 1 other money connection on the map already
     if(size > 1){
@@ -491,7 +490,7 @@ module.exports = View.extend({
         if(isMinOrMax) {
           // go through all moneyConnections and recalc all coinSizeFactors
           $.each(editor.moneyConnections.models, function(key, value){
-            var amountDif = value.attributes[ amountType ]; - minMoneyAmount;
+            var amountDif = value.attributes[ amountType ] - minMoneyAmount;
             value.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
             console.log("value.coinSizeFactor"+value.coinSizeFactor);
           });
@@ -726,8 +725,8 @@ module.exports = View.extend({
 
   addPathSegment: function(start, end, distance, direction){
     var pathSegments = this.slicedPathSegments(start, end, distance);
-    console.log("pathSegment", typeof pathSegments);
-    console.log(direction + " '" + pathSegments + "'");
+    //console.log("pathSegment", typeof pathSegments);
+    //console.log(direction + " '" + pathSegments + "'");
     if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
       this.path += direction + pathSegments;
   }
