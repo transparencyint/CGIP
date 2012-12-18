@@ -28,7 +28,6 @@
       <span class="name">Accountability</span>
     </div>
   </div>
-
   <div class="connection monitoring control" data-connectionType="monitoring">
     <div class="eye"></div>
     <div class="description button" title="New Monitoring Connection">
@@ -36,7 +35,11 @@
       <span class="name">Monitoring</span>
     </div>
   </div>
-
+  <div class="moneyMode">
+    <span class="name">Money mode</span>
+    <span id="disbursedMoney" class="small">Disbursed</span>
+    <span id="pledgedMoney" class="small">Pledged</span>
+  </div>
 </div>
 
 <div class="sidebar">
@@ -52,6 +55,14 @@
   </div>
 </div>
 
+<div class="centerLine"></div>
+
+<div class="roleHolder">
+  <div class="roleArea" id="funding"><span>Funding</span></div>
+  <div class="roleArea" id="coordination"><span>Coordination</span></div>
+  <div class="roleArea" id="implementation"><span>Implementation</span></div>
+  <div class="roleArea" id="monitoring"><span>Monitoring</span></div>
+</div>
 
 <div class="dragHandleBars">
   <div class="draghandle" rel="funding"></div>
@@ -60,12 +71,5 @@
   <div class="draghandle" rel="monitoring"></div>
   <div class="draghandle last" rel="last"></div>
 </div>
-<div class="roleHolder">
-  <div class="roleArea" id="funding"><span>Funding</span></div>
-  <div class="roleArea" id="coordination"><span>Coordination</span></div>
-  <div class="roleArea" id="implementation"><span>Implementation</span></div>
-  <div class="roleArea" id="monitoring"><span>Monitoring</span></div>
-</div>
 
-<div class="centerLine"></div>
 <div class="workspace"></div>
