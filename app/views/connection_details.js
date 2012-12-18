@@ -163,6 +163,7 @@ module.exports = View.extend({
     this.currentMoneyMode();
     this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
     
+    this.fillInActorNames();
     this.placeNextToConnection();
     this.addClickCatcher();
 
@@ -172,18 +173,23 @@ module.exports = View.extend({
     var self = this;
     _.defer(function(){ self.$('input').first().focus(); });
   },
+  
+  fillInActorNames: function(){
+    this.$('.actorA').text( this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown' );
+    this.$('.actorB').text( this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown' );
+  },
 
-  updateDisbursed: function () {
+  updateDisbursed: function() {
     var newDisbursed = this.$('#disbursed').val();
     this.model.set({disbursed: Number(newDisbursed)});
   },
 
-  updatePledged: function () {
+  updatePledged: function() {
     var newPledged = this.$('#pledged').val();
     this.model.set({pledged: Number(newPledged)});
   },
 
-  updateMoneyConnections: function (event) {
+  updateMoneyConnections: function(event) {
     this.editor.moneyConnectionMode = event.currentTarget.id;
     this.editor.trigger('change:moneyConnectionMode');
   },

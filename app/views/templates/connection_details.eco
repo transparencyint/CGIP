@@ -3,20 +3,27 @@
 <form>
 	<div class="holder">
 	  <div>
+	    <h3>
+	      <span class="actorName actorA">Unknown</span> 
+	      payes 
+	      <span class="actorName actorB">Unknown</span>
+	    </h3>
+	  </div>
+	  <div>
 	    <div class="money">
 	      <div class="clearfix">
     	    <label for="disbursed">Disbursed</label>
       	  <div class="dollar">
       	    <input type="text" class="noRightBorderRadius" id="disbursed" name="disbursed" />
-      	  </div>
-      	  <input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
+      	  </div>  
+      	  <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
       	</div>
       	<div class="clearfix">
       	  <label for="pledged">Pledged</label>
       	  <div class="dollar">
       	    <input type="text" class="noRightBorderRadius" id="pledged" name="pledged" />
       	  </div>
-      	  <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
+        	<input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
       	</div>
       </div>
     </div>
