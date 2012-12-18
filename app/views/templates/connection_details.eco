@@ -14,14 +14,14 @@
 	      <div class="clearfix">
     	    <label for="disbursed">Disbursed</label>
       	  <div class="dollar">
-      	    <input type="text" class="noRightBorderRadius" id="disbursed" name="disbursed" />
+      	    <input type="text" class="noRightBorderRadius" data-type="integer" id="disbursed" name="disbursed" />
       	  </div>  
       	  <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
       	</div>
       	<div class="clearfix">
       	  <label for="pledged">Pledged</label>
       	  <div class="dollar">
-      	    <input type="text" class="noRightBorderRadius" id="pledged" name="pledged" />
+      	    <input type="text" class="noRightBorderRadius" data-type="integer" id="pledged" name="pledged" />
       	  </div>
         	<input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
       	</div>
@@ -30,13 +30,13 @@
     
     <div>
   	  <label>Corruption Risk</label>
-  	  <input class="hasAdditionalInfo" type="checkbox" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
+  	  <input class="hasAdditionalInfo" type="checkbox" data-type="boolean" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
     	  <label for="corruptionRisk">Description</label>
-    	  <textarea id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
-    	  <label>Source</label>
-    	  <input type="text" name="corruptionRiskSource" placeholder="http://">
+    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="string"><%= @corruptionRisk %></textarea>
+    	  <label for="corruptionRiskSource">Source</label>
+    	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" data-type="string" placeholder="http://">
     	</div>
   	</div>
   </div>

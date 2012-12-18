@@ -7,9 +7,11 @@ module.exports = View.extend({
   className : 'modal connectionDetails',
 
   events: {
-    'input #disbursed'        : 'updateDisbursed', 
-    'input #pledged'          : 'updatePledged', 
+    // live updates on the input fields
+    'input .money [type=text]': 'updateValue', 
     'change input[type=radio]': 'updateMoneyConnections',
+    'input #corruptionRisk': 'updateValue',
+    'input #corruptionRiskSource': 'updateValue',
     
     // the controls buttons at the bottom
     'click .delete': 'deleteConnection',
@@ -46,7 +48,6 @@ module.exports = View.extend({
     this.editor = options.editor;
     
     this.width = 360;
-    this.height = 200;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
@@ -91,6 +92,7 @@ module.exports = View.extend({
     var pos = this.connection.$el.offset();
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
+    this.height = this.$el.height();
     var arrowPos = this.height / 2;
     
     var connectionWidth = this.connection.$('svg').width() * this.editor.zoom.value;
@@ -162,16 +164,19 @@ module.exports = View.extend({
 
     this.currentMoneyMode();
     this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+    this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     
     this.fillInActorNames();
-    this.placeNextToConnection();
     this.addClickCatcher();
 
     $(document).keydown(this.handleEscape);
     
     // focus first input field
     var self = this;
-    _.defer(function(){ self.$('input').first().focus(); });
+    _.defer(function(){ 
+      self.placeNextToConnection();
+      self.$('input').first().focus();
+    });
   },
   
   fillInActorNames: function(){
@@ -179,14 +184,26 @@ module.exports = View.extend({
     this.$('.actorB').text( this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown' );
   },
 
-  updateDisbursed: function() {
-    var newDisbursed = this.$('#disbursed').val();
-    this.model.set({disbursed: Number(newDisbursed)});
-  },
-
-  updatePledged: function() {
-    var newPledged = this.$('#pledged').val();
-    this.model.set({pledged: Number(newPledged)});
+  updateValue: function(event) {
+    var attributes = {};
+    var type = $(event.target).data('type');
+    var value;
+    
+    switch(type){
+      case 'integer':
+        value = parseInt(event.target.value, 10);
+        break;
+      case 'string':
+        value = event.target.value;
+        break;
+      case 'boolean':
+        value = event.target.checked ? true : false;
+        break
+    }
+    attributes[event.target.name] = value;
+     
+    console.log(attributes, event.target.checked);
+    this.model.set(attributes);
   },
 
   updateMoneyConnections: function(event) {
@@ -195,36 +212,20 @@ module.exports = View.extend({
   },
   
   toggleAdditionalInfo: function(event){
-    var additionalInfo = $(event.target).nextAll('.additionalInfo');
     var toggle = $(event.target);
-    var shouldSelectFirst = false;
+    var additionalInfo = toggle.nextAll('.additionalInfo');
     
-    if(toggle.attr('type') == 'checkbox'){
-      //
-      // Case: Corruption Risk checkbox
-      // Does: show/hide the textarea and input field for description and source
-      //
-      if(toggle.prop('checked')){
-        additionalInfo.slideDown();
-        shouldSelectFirst = true;
-      } else {
-        additionalInfo.slideUp();
-      }
-    }
-    else {
-      //
-      // Case: dropdown 'Type' when chaning the value
-      // Does: show/hide the input field when type is 'other
-      //
-      var shouldHide = toggle.val() === 'other' ? false : true;
-      additionalInfo.toggleClass('hidden', shouldHide);
-      
-      shouldSelectFirst = !shouldHide;
-    }
+    // show/hide the textarea and input field for description and source
+    if(toggle.prop('checked'))
+      additionalInfo.slideDown();
+    else
+      additionalInfo.slideUp();
     
     // Does: focus the first input inside the additonal info
-    if(shouldSelectFirst)
-      additionalInfo.find('textarea, input').first().select();
+    additionalInfo.find('textarea, input').first().select();
+    
+    // save state
+    this.updateValue(event);
   },
 
   deleteConnection: function(){
@@ -252,8 +253,8 @@ module.exports = View.extend({
   submitAndClose: function(e){
     e.preventDefault();
     
-    var _disbursed = Number(this.$el.find('#disbursed').val());
-    var _pledged = Number(this.$el.find('#pledged').val());
+    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10);
+    var _pledged = parseInt(this.$el.find('#pledged').val(), 10);
 
     this.model.save({
       disbursed: _disbursed,
@@ -270,6 +271,9 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     
     this.clickCatcher.remove();
+    
+    // remove autosize helper
+    $('.actorDetailsAutosizeHelper').remove();
     
     $(document).unbind('keydown', this.handleEscape);
   }
