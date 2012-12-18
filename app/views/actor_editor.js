@@ -78,7 +78,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'initializeDimensions', 'alignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'dragRoleHandleStart', 'dragRoleHandleStop', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -197,10 +197,10 @@ module.exports = View.extend({
   
   createActorAt: function(x, y){
     var editor = this;
-    
+  
     var actor = new Actor();
     actor.save({
-      country: editor.country,
+      country: editor.country.get('abbreviation'),
       pos : { x : x, y : y }
     },{
       success : function(){
@@ -405,9 +405,9 @@ module.exports = View.extend({
     this.roleHolder = this.$('.roleHolder');
     this.dragHandleBars = this.$('.dragHandleBars');
 
-    this.roleDimensions = this.country.attributes.roleDimensions;
+    this.roleDimensions = this.country.get('roleDimensions');
 
-    for(i=0; i<this.roleDimensions.length; i++){
+    for(var i=0; i<this.roleDimensions.length; i++){
       if(i != this.roleDimensions.length-1){
         this.$('#'+this.roles[i]).css({
           'width': this.roleDimensions[i+1] - this.roleDimensions[i],
@@ -439,25 +439,23 @@ module.exports = View.extend({
     this.startX = event.pageX - this.roleAreaOffsets.draghandleLeft;
     this.roleAreaOffsets.draghandleLeft = event.pageX;
     
-    $(document).on('mousemove.draghandle', {editor: this, roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStart);
-    $(document).one('mouseup', {editor: this, roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStop);
+    $(document).on('mousemove.draghandle', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStart);
+    $(document).one('mouseup', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStop);
   },
 
   dragRoleHandleStart: function(event){
     // get the current drag x coordinate
-    var editor = event.data.editor;
-    var center = editor.center;
     var fundingWidth = $('#funding').width();
     var coordinationWidth = $('#coordination').width();
     var newWidth = 0;
     var roleSelector = event.data.roleSelector;
-    var roleIndex = editor.roles.indexOf(roleSelector);
+    var roleIndex = this.roles.indexOf(roleSelector);
 
-    var deltaXAbsolute = editor.roleAreaOffsets.draghandleLeft - event.pageX;
+    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - event.pageX;
 
-    editor.roleAreaOffsets.draghandleLeft = event.pageX;
+    this.roleAreaOffsets.draghandleLeft = event.pageX;
 
-    editor.roleDimensions = [
+    this.roleDimensions = [
       $('.draghandle[rel=funding]').position().left,
       $('.draghandle[rel=coordination]').position().left,
       $('.draghandle[rel=implementation]').position().left,
@@ -469,11 +467,11 @@ module.exports = View.extend({
       $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
     }
     else if(roleIndex != -1){
-        newWidth = editor.roleDimensions[roleIndex] - editor.roleDimensions[roleIndex-1];
-        $('#'+editor.roles[roleIndex-1]).css({'width': newWidth});
+        newWidth = this.roleDimensions[roleIndex] - this.roleDimensions[roleIndex-1];
+        $('#'+this.roles[roleIndex-1]).css({'width': newWidth});
 
-        newWidth = editor.roleDimensions[roleIndex+1] - editor.roleDimensions[roleIndex];
-        $('#'+roleSelector).css({'left': editor.roleDimensions[roleIndex], 'width': newWidth});     
+        newWidth = this.roleDimensions[roleIndex+1] - this.roleDimensions[roleIndex];
+        $('#'+roleSelector).css({'left': this.roleDimensions[roleIndex], 'width': newWidth});     
     }
     else {
       newWidth = $('#monitoring').width();
@@ -485,11 +483,10 @@ module.exports = View.extend({
   },
 
   dragRoleHandleStop: function(event){
-    var editor = event.data.editor;
 
     // set the new roleArea coordinates  
-    editor.country.set({'roleDimensions' : editor.roleDimensions});
-    editor.country.save();
+    this.country.set({'roleDimensions' : this.roleDimensions});
+    this.country.save();
 
     $(document).unbind('mousemove.draghandle');
   },
