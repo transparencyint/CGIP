@@ -7,12 +7,6 @@ var MonitoringConnections = require('./monitoring_connections');
 var MoneyConnection = require('./money_connection');
 var MoneyConnections = require('./money_connections');
 
-var types = {
-  accountability: AccountabilityConnection,
-  monitoring: MonitoringConnection,
-  money: MoneyConnection
-};
-
 module.exports = Collection.extend({
   model: Connection,
   urlPart: '/connections',
@@ -36,8 +30,6 @@ module.exports = Collection.extend({
       filtered = this.filter(function(connection){
         return connection.get('connectionType') == connectionType;
       });
-      // set the correct model of the current collection
-      connections[connectionType].model = types[connectionType];
       // add the models to the collection
       connections[connectionType].reset(filtered);
     }

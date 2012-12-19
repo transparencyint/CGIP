@@ -17,7 +17,6 @@ module.exports = View.extend({
   initialize: function(options){
 
     this.edgeRadius = 10;
-    this.coinSizeFactor = 1;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
 
@@ -41,10 +40,11 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     if(this.model.get("connectionType") === 'money') { 
-      this.model.on('change:disbursed', this.updateStrokeWidth, this);
+      this.model.on('change:disbursed', this.updateCoinSize, this);
       this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:pledged', this.updateStrokeWidth, this);
-      config.on('change:moneyConnectionMode', this.updateStrokeWidth, this);
+      this.model.on('change:pledged', this.updateCoinSize, this);
+      config.on('change:moneyConnectionMode', this.updateCoinSize, this);
+      this.model.on('change:coinSizeFactor', this.createCoinDefinitions, this);
     }
   },
 
@@ -92,8 +92,8 @@ module.exports = View.extend({
         this.strokeStyle = 'black';
         break;
       case 'money':
-        this.$el.addClass(config.get('moneyConnectionMode');
-        this.updateStrokeWidth();
+        this.$el.addClass(config.get('moneyConnectionMode'));
+        this.updateCoinSize();
         this.isMoney = true;
         this.strokeWidth = 1;
         break;
@@ -103,7 +103,7 @@ module.exports = View.extend({
     this.createCoinDefinitions();
     
     //if(this.isMoney && this.editor)
-      //this.updateStrokeWidth();
+      //this.updateCoinSize();
     
     if(this.model.get("connectionType") === 'money'){
       this.pathSettings = {
@@ -143,11 +143,11 @@ module.exports = View.extend({
       this.svg.remove(this.coinMarker);
     
     // coin definition
-    this.coinDistance = 4 * this.coinSizeFactor;
+    this.coinDistance = 4 * this.model.coinSizeFactor;
     this.coinReference = this.model.id + "-coin";
   
-    this.coinWidth = 7 * this.coinSizeFactor;
-    this.coinHeight = 12 * this.coinSizeFactor;
+    this.coinWidth = 7 * this.model.coinSizeFactor;
+    this.coinHeight = 12 * this.model.coinSizeFactor;
     //only set the marker if it is a money connection
     if(this.isMoney){
       this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
@@ -427,80 +427,9 @@ module.exports = View.extend({
   /* 
    * Define the thickness of the money line.
    */
-  updateStrokeWidth: function(){
-
-    var editor = this.editor;
-
-    var amountType;
-    var amount = this.model.get('disbursed') || 0;
-
-    console.log("--------------------");
-    console.log("amount"+amount);
-    var maxMoneyAmount = 0;
-    var minMoneyAmount = 0;
-
-    var size = editor.moneyConnections.models.length;
-    
-    //there is at least 1 other money connection on the map already
-    if(size > 1){
-
-      maxMoneyAmount = editor.getMaxConnection().get('disbursed');
-      minMoneyAmount = editor.getMinConnection().get('disbursed');
-
-      console.log("minMoneyAmount"+minMoneyAmount);
-      console.log("maxMoneyAmount"+maxMoneyAmount);
-
-      var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
-
-      var minCoinFactor = this.minCoinSizeFactor;
-
-      //connections have at least 1 different money value
-      //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
-      if(!isMinMaxEqual){
-        var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
-        var moneyRange = maxMoneyAmount - minMoneyAmount;
-
-        console.log("factorRange"+factorRange);
-        console.log("moneyRange"+moneyRange);
-
-        this.connections.each(this.appendConnection);
-        //if(isMinOrMax) {
-          // go through all moneyConnections and recalc all coinSizeFactors
-          editor.moneyConnections.each(function(connection){
-            console.log("connection.parent " + connection.parent);
-            var amountDif = connection.get('disbursed') - minMoneyAmount;
-            connection.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
-            //console.log("connection.coinSizeFactor"+connection.coinSizeFactor);
-          });
-          /*_.each(editor.moneyConnections, function(connection){
-            connection.createCoinDefinitions();
-          });*/
-        /*} else { //otherwise just calc for the current connection 
-          var amountDif = amount - minMoneyAmount;
-          this.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
-          console.log("this.coinSizeFactor"+this.coinSizeFactor);
-        } */
-
-      } else { //there is at least 2 connection and all with the same money Amount
-        editor.moneyConnections.each(function(connection){
-          console.log("this.coinSizeFactor " + this.coinSizeFactor);
-          connection.coinSizeFactor = minCoinFactor;
-          //console.log("connection.coinSizeFactor"+connection.coinSizeFactor);
-        });
-        /*_.each(editor.moneyConnections, function(connection){
-          connection.createCoinDefinitions();
-        });*/
-      }
-
-    } else { // set minCoinSize for the first money connection
-      console.log("first connection");
-      editor.maxMoneyConnection = this.model;
-      editor.minMoneyConnection = this.model;
-      this.coinSizeFactor = this.minCoinSizeFactor;
-      this.createCoinDefinitions();
-    }
-
-    //this.createCoinDefinitions();
+  updateCoinSize: function(){
+    debugger
+    this.model.calculateCoinSize();
     this.update();
   },
 
