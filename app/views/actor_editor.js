@@ -94,7 +94,25 @@ module.exports = View.extend({
     
     this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'initializeDimensions', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'dragRoleHandleStart', 'dragRoleHandleStop', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(
+      this, 
+      'initializeDimensions', 
+      'appendActorGroup', 
+      'realignCenter', 
+      'appendActor', 
+      'createActorAt', 
+      'appendConnection', 
+      'keyUp', 
+      'unselect', 
+      'saveGroup', 
+      'slideZoom', 
+      'dragStop', 
+      'drag', 
+      'dragRoleHandleStart', 
+      'dragRoleHandleStop', 
+      'placeActorDouble', 
+      'slideInDouble'
+    );
   },
   
   stopPropagation: function(event){
@@ -307,7 +325,6 @@ module.exports = View.extend({
       this.moneyConnectionMode = 'pledgedMode';
 
     this.trigger('change:moneyConnectionMode');
-    console.log(this.moneyConnectionMode);
   },
 
   toggleActiveMoneyMode: function(){
