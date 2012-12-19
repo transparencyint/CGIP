@@ -38,8 +38,6 @@ module.exports = View.extend({
     this.country = options.country;
     this.radius = 60;
     this.smallRadius = 44;
-
-    this.moneyConnectionMode = 'disbursedMode'; //default
     
     // padding for fit-to-screen
     this.padding = this.radius/2;
@@ -75,9 +73,6 @@ module.exports = View.extend({
     
     this.gridSize = this.radius;
     
-    this.minMoneyConnection = this.getMinConnection();
-    this.maxMoneyConnection = this.getMaxConnection();
-    
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
     // remove actor view when actor is removed
@@ -87,7 +82,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
     _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
@@ -262,36 +257,6 @@ module.exports = View.extend({
       connView.showMetadataForm();
   },
 
-  getMaxConnection: function(){
-    var maxConnection = null;
-    var maxVal = 0;
-    $.each(this.moneyConnections.models, function(key, value){
-      var amountType = 'disbursed';
-      if(this.moneyConnectionMode === 'pledgedMode')
-        amountType = 'pledged';
-      if(maxVal < value.attributes[ amountType ]){
-        maxVal = value.attributes[ amountType ];
-        maxConnection = value;
-      }
-    });
-    return maxConnection;
-  },
-
-  getMinConnection: function(){
-    var minConnection = null;
-    var minVal = Number.MAX_VALUE;
-    $.each(this.moneyConnections.models, function(key, value){
-      var amountType = 'disbursed';
-      if(this.moneyConnectionMode === 'pledgedMode')
-        amountType = 'pledged';
-      if(minVal > value.attributes[ amountType ]){
-        minVal = value.attributes[ amountType ];
-        minConnection = value;
-      }
-    });
-    return minConnection;
-  },  
-
   actorSelected: function(actorView){
     if(this.selectedActors.length <= 1)
       this.selectedActors = [actorView.model];
@@ -327,18 +292,16 @@ module.exports = View.extend({
 
     var currentID = target.attr('id');
     if(currentID === 'disbursedMoney')
-      this.moneyConnectionMode = 'disbursedMode';
+      config.set('moneyConnectionMode','disbursedMode'); 
     else if(currentID === 'pledgedMoney')
-      this.moneyConnectionMode = 'pledgedMode';
+      config.set('moneyConnectionMode','pledgedMode'); 
 
-    this.trigger('change:moneyConnectionMode');
-    console.log(this.moneyConnectionMode);
   },
 
   toggleActiveMoneyMode: function(){
-    if(this.moneyConnectionMode === 'disbursedMode')
+    if(config.get('moneyConnectionMode') === 'disbursedMode')
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
-    else if(this.moneyConnectionMode === 'pledgedMode')
+    else 
       this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
   },
 

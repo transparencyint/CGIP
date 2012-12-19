@@ -32,7 +32,7 @@ module.exports = View.extend({
   },
 
   currentMoneyMode: function () {
-    this.$('#' + this.editor.moneyConnectionMode).prop("checked", true);
+    this.$('#' + config.get('moneyConnectionMode')).prop("checked", true);
   },
 
   getRenderData : function(){
@@ -61,7 +61,7 @@ module.exports = View.extend({
     $(document).on('click', this.destroy);
 
     this.currentMoneyMode();
-    this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+    config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
 
     var connectionFormView = this;
     _.defer(function(){
@@ -70,18 +70,17 @@ module.exports = View.extend({
   },
 
   updateDisbursed: function () {
-    var newDisbursed = this.$('#disbursed').val();
+    var newDisbursed = this.$('#disbursed').val() || 0;
     this.model.set({disbursed: Number(newDisbursed)});
   },
 
   updatePledged: function () {
-    var newPledged = this.$('#pledged').val();
+    var newPledged = this.$('#pledged').val() || 0;
     this.model.set({pledged: Number(newPledged)});
   },
 
   updateMoneyConnections: function (event) {
-    this.editor.moneyConnectionMode = event.currentTarget.id;
-    this.editor.trigger('change:moneyConnectionMode');
+    config.set('moneyConnectionMode', event.currentTarget.id);
   },
 
   deleteConnection: function(){
