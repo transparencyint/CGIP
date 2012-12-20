@@ -1,7 +1,6 @@
 var Connection = require('./connection');
 
 module.exports = Connection.extend({
-
   defaults: function(){
     // add the money connectiontype to the defaults
     var data = Connection.prototype.defaults.call(this);
@@ -10,11 +9,11 @@ module.exports = Connection.extend({
     data.disbursed = 0;
     return data;
   },
-a:3,
+
   calculateCoinSize: function(){
     debugger
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.model.get(amountType);
+    var amount = this.get(amountType);
 
     console.log("--------------------");
     console.log("amount"+amount);

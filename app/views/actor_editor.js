@@ -469,8 +469,10 @@ module.exports = View.extend({
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 
-    //this.accountabilityConnections.each(this.appendAccountabilityConnection);
-    this.connections.each(this.appendConnection);
+    // append all connections
+    this.accountabilityConnections.each(this.appendConnection);
+    this.moneyConnections.each(this.appendConnection);
+    this.monitoringConnections.each(this.appendConnection);
 
     this.afterRender();
     

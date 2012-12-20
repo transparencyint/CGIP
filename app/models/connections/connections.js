@@ -1,10 +1,7 @@
 var Collection = require('models/collection');
 var Connection = require('./connection');
-var AccountabilityConnection = require('./accountability_connection');
 var AccountabilityConnections = require('./accountability_connections');
-var MonitoringConnection = require('./monitoring_connection');
 var MonitoringConnections = require('./monitoring_connections');
-var MoneyConnection = require('./money_connection');
 var MoneyConnections = require('./money_connections');
 
 module.exports = Collection.extend({
@@ -24,16 +21,17 @@ module.exports = Collection.extend({
       money: new MoneyConnections()
     };
 
-    var filtered;
     for(connectionType in connections){
       // filter the current connections by its type
-      filtered = this.filter(function(connection){
+      var filtered = this.filter(function(connection){
         return connection.get('connectionType') == connectionType;
       });
-      // add the models to the collection
-      connections[connectionType].reset(filtered);
+
+      // add plain objects
+      _.each(filtered, function(connection){
+        connections[connectionType].add(connection.toJSON());
+      });      
     }
-    filtered = null;
     
     return connections;
   }
