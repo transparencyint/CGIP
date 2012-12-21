@@ -6,13 +6,6 @@
       <span class="name"><i class="plus">+</i> Add Actor</span>
     </div>
     <div class="dock">
-      <div class="actor new">
-        <div class="inner">
-          <div class="flexbox center">
-            <div class="name">Unknown</div>
-          </div>
-        </div>
-      </div>
       <div class="cancel"><span>Drop here to cancel</span></div>
     </div>
   </div>
