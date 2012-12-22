@@ -428,7 +428,6 @@ module.exports = View.extend({
    * Define the thickness of the money line.
    */
   updateCoinSize: function(){
-    debugger
     this.model.calculateCoinSize();
     this.update();
   },

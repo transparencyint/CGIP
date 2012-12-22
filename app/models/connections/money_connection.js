@@ -11,6 +11,9 @@ module.exports = Connection.extend({
   },
 
   calculateCoinSize: function(){
+    // Don't execute when the model hasn't been added to a collection yet
+    if(!this.collection) return
+
     debugger
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
     var amount = this.get(amountType);
@@ -19,6 +22,7 @@ module.exports = Connection.extend({
     console.log("amount"+amount);
     var maxMoneyAmount = 0;
     var minMoneyAmount = 0;
+
 
     var size = this.collection.length;
     
