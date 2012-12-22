@@ -94,8 +94,9 @@ module.exports = View.extend({
     var actors = this.editor.actors.models;
 
     _.each(actors, function(actor){
-      var actorX = Math.round(actor.attributes.pos.x);
-      var actorY = Math.round(actor.attributes.pos.y);
+      var currentPos = actor.get('pos');
+      var actorX = Math.round(currentPos.x);
+      var actorY = Math.round(currentPos.y);
 
       if(currentActor.model.id != actor.id){
         if(actorX == x)
