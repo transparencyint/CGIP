@@ -531,7 +531,8 @@ module.exports = View.extend({
     _.each(this.actorGroupViews, function(view){
       view.destroy();
     });
-
+    
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keyup', this.keyUp);
     $(document).unbind('viewdragstop', this.checkDrop)
     $(window).unbind('resize', this.realignCenter);
