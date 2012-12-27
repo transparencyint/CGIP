@@ -1,4 +1,5 @@
 var DraggableView = require('./draggable_view');
+var ActorGroupActor = require('./actor_group_actor');
 
 module.exports = DraggableView.extend({
   className: 'actor-group',
@@ -16,7 +17,8 @@ module.exports = DraggableView.extend({
     this.$document.on('viewdrag', this.checkHover);
     this.$document.on('viewdragstop', this.checkDrop);
 
-    this.model.actors.on('add remove', this.render, this);
+    this.model.actors.on('add', this.addSubActorView, this);
+    this.model.actors.on('remove', this.removeSubActorView, this);
   },
 
   events: function(){
@@ -25,7 +27,7 @@ module.exports = DraggableView.extend({
     return _.defaults({
       'mousedown'         : 'dragStart',
       'mousedown .caption': 'select',
-      'hover'             : 'showActors'
+      'click'             : 'showActors'
     }, parentEvents);
   },
 
@@ -35,8 +37,35 @@ module.exports = DraggableView.extend({
     return data;
   },
 
+  render: function(){
+    // call the super function
+    DraggableView.prototype.render.call(this);
+
+    // render the subactors
+    var actorViews = [];
+    var newView = null;
+    var container = this.$('.actors');
+    var editor = this.editor;
+    this.model.actors.each(function(actor){
+      newView = new ActorGroupActor({model: actor, editor: editor});
+      container.append(newView.render().el);
+      actorViews.push(newView);
+    });
+    this.actorViews = actorViews;
+
+    return this;
+  },
+
   afterRender: function(){
     this.updatePosition();
+  },
+
+  addSubActorView: function(){
+    debugger
+  },
+
+  removeSubActorView: function(actor){
+    debugger
   },
 
   overlapsWith: function(view){
@@ -54,6 +83,9 @@ module.exports = DraggableView.extend({
   },
 
   checkHover: function(event, view){
+    // return if it's this view
+    if(view === this) return
+
     if(view.$el.hasClass('actor')){
       // if it overlaps, give feedback
       if(this.overlapsWith(view))
@@ -82,27 +114,32 @@ module.exports = DraggableView.extend({
   },
 
   checkDrop: function(event, view){
+    // return if it's this view
+    if(view === this) return;
+
     if(this.overlapsWith(view)){
       // remove it from the current collection
       this.editor.actors.remove(view.model);
+      // and add it to the group
       this.model.addToGroup(view.model);
       this.model.save();
     }
-    this.dragOut();      
+
+    if(this.hovered)
+      this.dragOut();      
   },
 
   showActors: function(event){
     if(this.hovered) return;
 
-    if(event.type == 'mouseenter'){
-      this.$el.addClass('show-actors');
-    }else{
-      this.$el.removeClass('show-actors');
-    }
+    this.$el.toggleClass('show-actors');
   },
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);
+
+    // destroy all sub actors
+    _.each(this.actorViews, function(actorView){ actorView.destroy(); });
 
     this.$document.off('viewdrag', this.checkHover);
     this.$document.off('viewdragstop', this.checkDrop);
