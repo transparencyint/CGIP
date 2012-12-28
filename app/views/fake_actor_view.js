@@ -2,6 +2,9 @@ var DraggableView = require('./draggable_view');
 var Actor = require('models/actor');
 
 module.exports = DraggableView.extend({
+  noGridlines: true,
+  dontSnap: true,
+
   className: 'actor new',
   template: require('./templates/fake_actor'),
 
@@ -16,8 +19,6 @@ module.exports = DraggableView.extend({
     this.model.save = function(){};
 
     DraggableView.prototype.initialize.call(this);
-
-    this.dontSnap = true;
   },
 
   dragByDelta: function(dx, dy){
