@@ -356,13 +356,17 @@ module.exports = View.extend({
     this.addActor.addClass('slideIn');
   },
 
+  offsetToCoords: function(offset, radius){
+    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+    return { x: x, y: y };
+  },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
+    var coords = this.offsetToCoords(offsetToCoords, this.radius);
     
-    this.createActorAt(x, y);
+    this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
     _.delay(this.slideInDouble, 100);
