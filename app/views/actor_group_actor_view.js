@@ -2,6 +2,8 @@ var DraggableView = require('./draggable_view');
 
 module.exports = DraggableView.extend({
   noGridlines: true,
+  selectable: true,
+
   tagName: 'li',
   className: 'actor-group-actor',
   template : require('./templates/actor_group_actor'),
@@ -16,30 +18,36 @@ module.exports = DraggableView.extend({
   },
 
   dragStart: function(event){
+    this.originalElement = this.$el;
+    
+    this.$el = this.$el.clone();
     this.$el.addClass('dragging');
 
-    var offset = this.$el.offset();
+    var offset = this.originalElement.offset();
     var coords = this.editor.offsetToCoords(offset);
     this.model.set('pos', { x: coords.x, y: coords.y });
     
-    this.detached = this.$el.detach();
-    this.detached.appendTo($('.workspace'));
+    this.$el.appendTo($('.workspace'));
 
     DraggableView.prototype.dragStart.call(this, event);
   },
 
   dragStop: function(){
-    debugger
-    this.$el = this.detached;
+    this.$el.remove();
+    this.$el = this.originalElement;
 
     DraggableView.prototype.dragStop.call(this);
-    this.$el.removeClass('dragging');
   },
 
   showInfo: function(event){
     event.stopPropagation();
     console.log('info');
     return false;
+  },
+
+  destroy: function(){
+    DraggableView.prototype.destroy.call(this);
+    this.originalElement = null;
   }
 
 });
