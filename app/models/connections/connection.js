@@ -48,6 +48,7 @@ module.exports = Model.extend({
     this[field] = actor;
     this.set(field, actor.id);
     this[field].on('destroy', this._destroy, this);
+    this[field].on('moveToGroup', this._destroy, this);
   },
 
   _destroy: function(){

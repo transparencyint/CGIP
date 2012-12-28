@@ -118,9 +118,7 @@ module.exports = DraggableView.extend({
     if(view === this) return;
 
     if(this.overlapsWith(view)){
-      // remove it from the current collection
-      this.editor.actors.remove(view.model);
-      // and add it to the group
+      // add it to the group
       this.model.addToGroup(view.model);
       this.model.save();
     }
