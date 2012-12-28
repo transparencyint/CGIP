@@ -3,6 +3,7 @@ var Actor = require('models/actor');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
@@ -86,7 +87,7 @@ module.exports = View.extend({
 
     this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'checkDrop', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   },
   
   stopPropagation: function(event){
@@ -196,18 +197,6 @@ module.exports = View.extend({
     this.selectedActors = [];
   },
 
-  dragGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.moveByDelta(dx, dy);
-    });
-  },
-  
-  saveGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.save();
-    });
-  },
-  
   createActorAt: function(x, y){
     var editor = this;
     
@@ -341,6 +330,29 @@ module.exports = View.extend({
       this.workspace.removeClass( hideClass );
     };
   },
+
+  checkDrop: function(event, view){
+    if(event.isPropagationStopped()) return;
+
+    // only check for new actors now
+    if(!view.$el.hasClass('new')) return;
+    
+    // check if the new actor overlaps with one of the groups
+    var overlapsWithOthers = false;
+    _.each(this.actorGroupViews, function(groupView){
+      if(!overlapsWithOthers)
+        overlapsWithOthers = groupView.overlapsWith(view);
+    });
+
+    // create a new actor when it doesn't over lap with others
+    if(!overlapsWithOthers){
+      var offset = view.$el.offset();
+      var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
+      var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
+      this.createActorAt(x, y);
+      view.model.set({pos: {x: 0, y:0 }});
+    }
+  },
   
   slideActorIn: function(){
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
@@ -352,10 +364,9 @@ module.exports = View.extend({
     this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
     this.addActor.addClass('slideIn');
   },
-
   
   placeActorDouble: function(){
-    var offset = this.actorDouble.offset();
+    var offset = this.fakeActorView.$el.offset();;
     var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
     var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
     
@@ -460,8 +471,12 @@ module.exports = View.extend({
   
   render: function(){
     var editor = this;
-    
+
     this.$el.html( this.template() );
+    this.fakeActorView = new FakeActorView({editor: this});
+    this.fakeActorView.render();
+    this.$('.newActor .dock').append(this.fakeActorView.el);
+
     this.workspace = this.$('.workspace');
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
@@ -486,36 +501,12 @@ module.exports = View.extend({
   afterRender: function(){
     var editor = this;
 
+    $(document).on('viewdragstop', this.checkDrop);
+
     this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignCenter);
-
-    this.actorDouble.draggable({
-      stop : function(){ $(this).data('stopped', null); },
-      revert : true,
-      revertDuration : 1
-    });
-
-    this.cancel.droppable({
-      greedy: true,
-      drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
-    });
-
-    //this.workspace.draggable();
-
-    this.workspace.droppable({
-      drop : function(event, ui){
-        var draggable = $(ui.draggable);
-        if(draggable.hasClass('new') && !draggable.data('stopped')){
-          // TODO: fix after implementing pan&zoom
-          var x = draggable.offset().left + editor.smallRadius;
-          var y = draggable.offset().top + editor.smallRadius;
-
-          editor.createActorAt(x, y);
-        }
-      }
-    });
     
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
@@ -540,8 +531,10 @@ module.exports = View.extend({
     _.each(this.actorGroupViews, function(view){
       view.destroy();
     });
-
+    
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keyup', this.keyUp);
+    $(document).unbind('viewdragstop', this.checkDrop)
     $(window).unbind('resize', this.realignCenter);
   }
 });

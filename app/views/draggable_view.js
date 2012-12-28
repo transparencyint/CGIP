@@ -9,6 +9,7 @@ module.exports = View.extend({
 
     this.editor = this.options.editor;
     this.dontDrag = false;
+    this.dontSnap = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
@@ -49,12 +50,16 @@ module.exports = View.extend({
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
     this.findNearestGridPoint();
-    this.editor.dragGroup(dx, dy);
+    this.dragByDelta(dx, dy);
 
     // emit a global drag event
     this.$document.trigger('viewdrag', this);
   },
   
+  dragByDelta: function(dx, dy){
+    throw('dragByDelta is not implemented.')
+  },
+
   updatePosition: function(){
     var pos = this.model.get('pos');
     
@@ -76,6 +81,20 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
     this.editor.actorSelected(this);
+  },
+
+  overlapsWith: function(view){
+    var myPos = this.$el.offset();
+    var viewPos = view.$el.offset();
+    var myWidth = this.$el.outerWidth();
+    var myHeight = this.$el.outerHeight();
+
+    // check if have an intersection
+    var overlaps =   (viewPos.left < myPos.left + myWidth)
+                  && (viewPos.left + view.width > myPos.left)
+                  && (viewPos.top < myPos.top + myHeight)
+                  && (viewPos.top + view.height > myPos.top);
+    return overlaps;
   },
 
   findNearestGridPoint: function(){
@@ -110,6 +129,7 @@ module.exports = View.extend({
   },
 
   snapToGrid: function(){
+    if(this.dontSnap) return;
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
     var pos =  this.model.get('pos');     
@@ -123,27 +143,28 @@ module.exports = View.extend({
     
     if(dx !== 0 || dy !== 0){
       var editor = this.editor;
+      var view = this;
 
       $({percent: 0}).animate({percent: 1}, {
         step: function(){
           var stepX = this.percent * dx;
           var stepY = this.percent * dy;
 
-          editor.dragGroup(stepX, stepY);
+          view.dragByDelta(stepX, stepY);
 
           dx -= stepX;
           dy -= stepY;
         },
         duration: 100,
         complete: function(){
-          editor.saveGroup();
+          view.model.save();
 
           // hide grid line
           editor.hideGridLine();
         }
       });
     } else {
-      this.editor.saveGroup();
+      view.model.save();
     }
   },
 

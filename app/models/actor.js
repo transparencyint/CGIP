@@ -12,7 +12,8 @@ module.exports = Backbone.Model.extend({
     name: '',
     abbreviation: '',
     type: 'actor',
-    hasCorruptionRisk: false
+    hasCorruptionRisk: false,
+    pos: {x: 0, y: 0}
   },
 
   moveByDelta: function(dx, dy){
