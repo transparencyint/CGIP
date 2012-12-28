@@ -3,7 +3,7 @@ var ActorGroupActor = require('./actor_group_actor_view');
 
 module.exports = DraggableView.extend({
   selectable: true,
-  
+
   className: 'actor-group',
   template : require('./templates/actor_group'),
 
@@ -43,17 +43,12 @@ module.exports = DraggableView.extend({
     // call the super function
     DraggableView.prototype.render.call(this);
 
+    _.bindAll(this, 'addSubActorView');
+
     // render the subactors
-    var actorViews = [];
-    var newView = null;
-    var container = this.$('.actors');
-    var editor = this.editor;
-    this.model.actors.each(function(actor){
-      newView = new ActorGroupActor({model: actor, editor: editor});
-      container.append(newView.render().el);
-      actorViews.push(newView);
-    });
-    this.actorViews = actorViews;
+    this.actorViews = {};
+
+    this.model.actors.each(this.addSubActorView);
 
     return this;
   },
@@ -62,12 +57,14 @@ module.exports = DraggableView.extend({
     this.updatePosition();
   },
 
-  addSubActorView: function(){
-    debugger
+  addSubActorView: function(actor){
+    var newView = new ActorGroupActor({model: actor, editor: this.editor});
+    this.$('.actors').append(newView.render().el);
+    this.actorViews[actor.id] = newView;
   },
 
   removeSubActorView: function(actor){
-    debugger
+    this.actorViews[actor.id].destroy();
   },
 
   overlapsWith: function(view){
