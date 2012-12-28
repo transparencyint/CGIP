@@ -562,6 +562,8 @@ module.exports = View.extend({
     });
 
     $(document).unbind('keyup', this.keyUp);
+    $(document).off('viewdrag', this.calculateGridLines);
+    $(document).off('viewSelected', this.actorSelected);
     $(window).unbind('resize', this.realignCenter);
   }
 });
