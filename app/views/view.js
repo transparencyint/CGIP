@@ -2,6 +2,12 @@ require('lib/view_helper');
 
 // Base class for all views.
 module.exports = Backbone.View.extend({
+  // config fields //
+  // deactivated gridline-checking
+  noGridlines: false,
+  // is this view selectable
+  selectable: false,
+
   initialize: function() {
     this.render = _.bind(this.render, this);
   },
@@ -37,5 +43,14 @@ module.exports = Backbone.View.extend({
   leave: function(done){
     this.destroy();
     done();
+  },
+
+  select: function(event){
+    if(this.selectable){
+      $('.selected').removeClass('selected');
+      this.$el.addClass('selected');
+      $(document).trigger('viewSelected', this);
+    }
   }
+
 });

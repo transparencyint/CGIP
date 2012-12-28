@@ -2,6 +2,7 @@ var View = require('./view');
 var ConnectionFormView = require('views/connection_form_view');
 
 module.exports = View.extend({
+  selectable: true,
 
   template: require('./templates/connection'),
 
@@ -39,12 +40,6 @@ module.exports = View.extend({
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:pledged', this.updateStrokeWidth, this);
       this.editor.on('change:moneyConnectionMode', this.updateStrokeWidth, this);
-    }
-  },
-
-  select: function(event){
-    if(!this.$el.hasClass("ui-selected")){
-      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
 

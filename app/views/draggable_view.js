@@ -14,8 +14,6 @@ module.exports = View.extend({
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
-
-    this.$document = $(document);
   },
 
   disableDraggable: function(){
@@ -27,18 +25,17 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
-    this.select(); // always select actor before dragging
+    this.select();
 
     if(!this.dontDrag){
       event.stopPropagation();
-      
       var pos = this.model.get('pos');
       
       this.startX = event.pageX - pos.x;
       this.startY = event.pageY - pos.y;
     
-      this.$document.on('mousemove.global', this.drag);
-      this.$document.one('mouseup', this.dragStop);
+      $(document).on('mousemove.global', this.drag);
+      $(document).one('mouseup', this.dragStop);
     }
   },
 
@@ -47,11 +44,11 @@ module.exports = View.extend({
     
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
-    
+
     this.editor.dragGroup(dx, dy);
 
     // emit a global drag event
-    this.$document.trigger('viewdrag', this);
+    $(document).trigger('viewdrag', this);
   },
   
   updatePosition: function(){
@@ -66,15 +63,8 @@ module.exports = View.extend({
   dragStop : function(){
     this.snapToGrid();
     // emit a global dragstop event
-    this.$document.trigger('viewdragstop', this);
+    $(document).trigger('viewdragstop', this);
     $(document).off('mousemove.global', this.drag);
-  },
-
-  select: function(event){
-    if(!this.$el.hasClass("ui-selected")){
-      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
-    }
-    this.editor.actorSelected(this);
   },
 
   snapToGrid: function(){
@@ -117,7 +107,7 @@ module.exports = View.extend({
 
   destroy: function(){
     View.prototype.destroy.call(this);
-    this.$document.off('mousemove.global', this.drag);
-    this.$document.off('mouseup', this.dragStop);
+    $(document).off('mousemove.global', this.drag);
+    $(document).off('mouseup', this.dragStop);
   }
 });

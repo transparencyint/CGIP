@@ -2,6 +2,7 @@ var DraggableView = require('./draggable_view');
 var ActorDetailsView = require('./actor_details');
 
 module.exports = DraggableView.extend({
+  selectable: true,
   
   template : require('./templates/actor'),
   
@@ -41,13 +42,6 @@ module.exports = DraggableView.extend({
 
   stopPropagation: function(event){
     event.stopPropagation();
-  },  
-
-  select: function(event){
-    if(!this.$el.hasClass("ui-selected")){
-      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
-    }
-    this.editor.actorSelected(this);
   },
 
   startEditName: function(event){

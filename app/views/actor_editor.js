@@ -23,7 +23,8 @@ module.exports = View.extend({
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
     'mousedown': 'dragStart',
-    'mousedown .bar': 'stopPropagation'
+    'mousedown .bar': 'stopPropagation',
+    'click': 'unselect'
   },
   
   transEndEventNames: {
@@ -86,10 +87,12 @@ module.exports = View.extend({
 
     this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
+    // actor selection
+    $(document).on('viewSelected', this.actorSelected);
   },
   
   stopPropagation: function(event){
@@ -196,7 +199,7 @@ module.exports = View.extend({
   
   unselect: function(){
     if(this.mode) this.mode.unselect();
-    this.selectedActors = [];
+    $('.selected').removeClass('selected');
   },
 
   dragGroup: function(dx, dy){
@@ -260,14 +263,7 @@ module.exports = View.extend({
       connView.showMetadataForm();
   },
 
-  actorSelected: function(actorView){
-    if(this.selectedActors.length <= 1)
-      this.selectedActors = [actorView.model];
-    else{
-      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
-      if(!found)
-        this.selectedActors = [actorView.model];
-    }
+  actorSelected: function(event, actorView){
     if(this.mode)
       this.mode.actorSelected(actorView);
   },

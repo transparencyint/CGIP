@@ -2,6 +2,8 @@ var DraggableView = require('./draggable_view');
 var ActorGroupActor = require('./actor_group_actor_view');
 
 module.exports = DraggableView.extend({
+  selectable: true,
+  
   className: 'actor-group',
   template : require('./templates/actor_group'),
 
