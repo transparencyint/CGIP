@@ -9,7 +9,6 @@ module.exports = View.extend({
 
     this.editor = this.options.editor;
     this.dontDrag = false;
-    this.dontSnap = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
@@ -67,11 +66,13 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
-    if(this.isDragging)
+    if(this.isDragging){
       this.snapToGrid();
+      // emit a global dragstop event
+      $(document).trigger('viewdragstop', this);
+    }
+      
     
-    // emit a global dragstop event
-    $(document).trigger('viewdragstop', this);
     $(document).off('mousemove.global', this.drag);
 
     this.isDragging = false;
