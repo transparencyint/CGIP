@@ -60,7 +60,7 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.monitoringConnections = filteredConnections.monitoring;
-    this.selectedActors = [];
+
     this.zoom = {
       value: 1,
       sqrt: 1,
@@ -100,11 +100,8 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActors != []) {
-      _.each(this.selectedActors, function(actor){
-        actor.destroy();
-      });
-    }
+    if(this.selectedActorView)
+      this.selectedActorView.model.destroy();
   },
   
   slideZoom: function(event, ui){
@@ -197,7 +194,16 @@ module.exports = View.extend({
     };
   },
   
+  actorSelected: function(event, actorView){
+    if(actorView.$el.hasClass('actor')){
+      this.selectedActorView = actorView;
+      if(this.mode)
+        this.mode.actorSelected(actorView);
+    }
+  },
+
   unselect: function(){
+    this.selectedActorView = null;
     if(this.mode) this.mode.unselect();
     $('.selected').removeClass('selected');
   },
@@ -261,11 +267,6 @@ module.exports = View.extend({
 
     if(connection.showMetadataForm)
       connView.showMetadataForm();
-  },
-
-  actorSelected: function(event, actorView){
-    if(this.mode)
-      this.mode.actorSelected(actorView);
   },
 
   toggleMode: function(event){
