@@ -1,5 +1,5 @@
 var DraggableView = require('./draggable_view');
-var ActorGroupActor = require('./actor_group_actor_view');
+var ActorGroupActorView = require('./actor_group_actor_view');
 
 module.exports = DraggableView.extend({
   selectable: true,
@@ -58,7 +58,7 @@ module.exports = DraggableView.extend({
   },
 
   addSubActorView: function(actor){
-    var newView = new ActorGroupActor({model: actor, editor: this.editor});
+    var newView = new ActorGroupActorView({model: actor, editor: this.editor});
     this.$('.actors').append(newView.render().el);
     this.actorViews[actor.id] = newView;
   },
