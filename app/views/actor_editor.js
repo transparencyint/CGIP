@@ -86,7 +86,10 @@ module.exports = View.extend({
 
     this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+  
+    // gridlines
+    $(document).on('viewdrag', this.calculateGridLines);
   },
   
   stopPropagation: function(event){
@@ -429,6 +432,34 @@ module.exports = View.extend({
     this.drag(event, false);
     
     $(document).unbind('mousemove.global');
+  },
+
+  calculateGridLines: function(event, view){
+    if(view.noGridlines) return;
+
+    var pos = view.model.get('pos');
+
+    var x = Math.round(pos.x / this.gridSize) * this.gridSize;
+    var y = Math.round(pos.y / this.gridSize) * this.gridSize;
+
+    var foundGridX = false;
+    var foundGridY = false;
+
+    //check if there is an actor at the nearest grid point
+    this.actors.each(function(actor){
+      var currentPos = actor.get('pos');
+      var actorX = Math.round(currentPos.x);
+      var actorY = Math.round(currentPos.y);
+
+      if(view.model.id != actor.id){
+        if(actorX == x)
+          foundGridX = true;
+        if(actorY == y)
+          foundGridY = true;
+      }
+    });
+
+    this.showGridLine(x, y, foundGridX, foundGridY);
   },
 
   showGridLine: function(x, y, gridX, gridY){

@@ -48,7 +48,6 @@ module.exports = View.extend({
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
     
-    this.findNearestGridPoint();
     this.editor.dragGroup(dx, dy);
 
     // emit a global drag event
@@ -76,37 +75,6 @@ module.exports = View.extend({
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
     this.editor.actorSelected(this);
-  },
-
-  findNearestGridPoint: function(){
-    var gridSize = this.editor.gridSize;
-    var pos = this.model.get('pos');
-
-    var x = Math.round(pos.x / gridSize) * gridSize;
-    var y = Math.round(pos.y / gridSize) * gridSize;
-
-    var editor = this.editor;
-    var currentActor =  this;
-    var foundGridX = false;
-    var foundGridY = false;
-
-    //check if there is an actor at the nearest grid point
-    var actors = this.editor.actors.models;
-
-    _.each(actors, function(actor){
-      var currentPos = actor.get('pos');
-      var actorX = Math.round(currentPos.x);
-      var actorY = Math.round(currentPos.y);
-
-      if(currentActor.model.id != actor.id){
-        if(actorX == x)
-          foundGridX = true;
-        if(actorY == y)
-          foundGridY = true;
-      }
-    });
-
-    editor.showGridLine(x, y, foundGridX, foundGridY);
   },
 
   snapToGrid: function(){
