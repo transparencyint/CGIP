@@ -42,6 +42,7 @@ module.exports = View.extend({
   drag: function(event){ 
     var pos = this.model.get('pos');
     
+    this.dragging = true;
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
 
@@ -61,10 +62,14 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
-    this.snapToGrid();
+    if(this.isDragging)
+      this.snapToGrid();
+    
     // emit a global dragstop event
     $(document).trigger('viewdragstop', this);
     $(document).off('mousemove.global', this.drag);
+
+    this.isDragging = false;
   },
 
   snapToGrid: function(){
