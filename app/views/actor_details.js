@@ -139,7 +139,8 @@ module.exports = View.extend({
     // remove autosize helper (maybe not enough)
     $('.actorDetailsAutosizeHelper').remove();
     
-    this.clickCatcher.remove();
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
     this.clickCatcher = null;
     
     $(document).unbind('mousemove.global', this.drag);
