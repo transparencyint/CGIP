@@ -1,6 +1,7 @@
 var DraggableView = require('./draggable_view');
 
 module.exports = DraggableView.extend({
+  noGridlines: true,
   tagName: 'li',
   className: 'actor-group-actor',
   template : require('./templates/actor_group_actor'),
@@ -16,12 +17,21 @@ module.exports = DraggableView.extend({
 
   dragStart: function(event){
     this.$el.addClass('dragging');
-    var pos = this.model.get('pos');
-    console.log(event.pageX - pos.x );
+
+    var offset = this.$el.offset();
+    var coords = this.editor.offsetToCoords(offset);
+    this.model.set('pos', { x: coords.x, y: coords.y });
+    
+    this.detached = this.$el.detach();
+    this.detached.appendTo($('.workspace'));
+
     DraggableView.prototype.dragStart.call(this, event);
   },
 
   dragStop: function(){
+    debugger
+    this.$el = this.detached;
+
     DraggableView.prototype.dragStop.call(this);
     this.$el.removeClass('dragging');
   },
