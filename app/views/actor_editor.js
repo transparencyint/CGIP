@@ -3,6 +3,7 @@ var Actor = require('models/actor');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
@@ -238,7 +239,6 @@ module.exports = View.extend({
 
   // when an actor is removed, destroy its view
   removeActor: function(actor){
-    console.log('remove actor', actor);
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
   },
@@ -288,7 +288,6 @@ module.exports = View.extend({
       this.moneyConnectionMode = 'pledgedMode';
 
     this.trigger('change:moneyConnectionMode');
-    console.log(this.moneyConnectionMode);
   },
 
   toggleActiveMoneyMode: function(){
@@ -336,9 +335,14 @@ module.exports = View.extend({
   checkDrop: function(event, view){
     if(event.isPropagationStopped()) return;
 
-    // only check for new actors now
-    if(!view.$el.hasClass('new')) return;
-    
+    if(view instanceof FakeActorView)
+      this.newActorDropped(view);
+    else if(view instanceof ActorGroupActorView)
+      this.actorGroupActorDropped(view)
+  },
+
+  // the fake actor view has been dropped here
+  newActorDropped: function(view){
     // check if the new actor overlaps with one of the groups
     var overlapsWithOthers = false;
     _.each(this.actorGroupViews, function(groupView){
@@ -349,11 +353,18 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
-      var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
-      this.createActorAt(x, y);
+      var coords = this.offsetToCoords(offset);
+      this.createActorAt(coords.x, coords.y);
       view.model.set({pos: {x: 0, y:0 }});
     }
+  },
+
+  // an actor view from a group has been dragged here
+  actorGroupActorDropped: function(view){
+    // remove it from the group
+    view.model.collection.remove(view.model);
+    // add it to this actor
+    this.actors.add(view.model);
   },
   
   slideActorIn: function(){
