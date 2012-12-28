@@ -140,10 +140,6 @@ module.exports = DraggableView.extend({
   },
 
   afterRender: function(){
-
-    this.updateAbbrev();
-    this.updateName();
-
     this.showProperName();
 
     this.updatePosition();
