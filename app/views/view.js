@@ -7,6 +7,8 @@ module.exports = Backbone.View.extend({
   noGridlines: false,
   // is this view selectable
   selectable: false,
+  // don't snap to the grid,
+  dontSnap: false,
 
   initialize: function() {
     this.render = _.bind(this.render, this);
