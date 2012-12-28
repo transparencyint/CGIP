@@ -140,7 +140,9 @@ module.exports = View.extend({
     $('.actorDetailsAutosizeHelper').remove();
     
     this.clickCatcher.remove();
+    this.clickCatcher = null;
     
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keydown', this.handleEscape);
   },
 

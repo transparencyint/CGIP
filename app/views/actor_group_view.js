@@ -67,18 +67,8 @@ module.exports = DraggableView.extend({
     this.actorViews[actor.id].destroy();
   },
 
-  overlapsWith: function(view){
-    var myPos = this.$el.offset();
-    var viewPos = view.$el.offset();
-    var myWidth = this.$el.outerWidth();
-    var myHeight = this.$el.outerHeight();
-
-    // check if have an intersection
-    var overlaps =   (viewPos.left < myPos.left + myWidth)
-                  && (viewPos.left + view.width > myPos.left)
-                  && (viewPos.top < myPos.top + myHeight)
-                  && (viewPos.top + view.height > myPos.top);
-    return overlaps;
+  dragByDelta: function(dx, dy){
+    this.model.moveByDelta(dx, dy);
   },
 
   checkHover: function(event, view){
@@ -113,6 +103,8 @@ module.exports = DraggableView.extend({
   },
 
   checkDrop: function(event, view){
+    if(event.isPropagationStopped()) return;
+
     // return if it's this view
     if(view === this) return;
 

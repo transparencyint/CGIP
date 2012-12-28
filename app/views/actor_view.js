@@ -35,6 +35,10 @@ module.exports = DraggableView.extend({
     this.model.on('destroy', this.destroy, this);
   },
 
+  dragByDelta: function(dx, dy){
+    this.model.moveByDelta(dx, dy);
+  },
+
   showMetadataForm: function(){
     this.modal = new ActorDetailsView({ model: this.model, actor: this });
     this.editor.$el.append(this.modal.render().el);

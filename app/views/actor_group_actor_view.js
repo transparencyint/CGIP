@@ -32,6 +32,10 @@ module.exports = DraggableView.extend({
     DraggableView.prototype.dragStart.call(this, event);
   },
 
+  dragByDelta: function(dx, dy){
+    this.model.moveByDelta(dx, dy);
+  },
+
   dragStop: function(){
     this.$el.remove();
     this.$el = this.originalElement;

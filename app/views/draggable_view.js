@@ -9,6 +9,7 @@ module.exports = View.extend({
 
     this.editor = this.options.editor;
     this.dontDrag = false;
+    this.dontSnap = false;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
@@ -42,16 +43,20 @@ module.exports = View.extend({
   drag: function(event){ 
     var pos = this.model.get('pos');
     
-    this.dragging = true;
+    this.isDragging = true;
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
 
-    this.model.moveByDelta(dx, dy);
+    this.dragByDelta(dx, dy);
 
     // emit a global drag event
     $(document).trigger('viewdrag', this);
   },
   
+  dragByDelta: function(dx, dy){
+    throw('dragByDelta is not implemented.')
+  },
+
   updatePosition: function(){
     var pos = this.model.get('pos');
     
@@ -72,7 +77,22 @@ module.exports = View.extend({
     this.isDragging = false;
   },
 
+  overlapsWith: function(view){
+    var myPos = this.$el.offset();
+    var viewPos = view.$el.offset();
+    var myWidth = this.$el.outerWidth();
+    var myHeight = this.$el.outerHeight();
+
+    // check if have an intersection
+    var overlaps =   (viewPos.left < myPos.left + myWidth)
+                  && (viewPos.left + view.width > myPos.left)
+                  && (viewPos.top < myPos.top + myHeight)
+                  && (viewPos.top + view.height > myPos.top);
+    return overlaps;
+  },
+
   snapToGrid: function(){
+    if(this.dontSnap) return;
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
     var pos =  this.model.get('pos');     
@@ -84,31 +104,26 @@ module.exports = View.extend({
     var dx = x - pos.x;
     var dy = y - pos.y;
     
-    var actor = this.model;
-
     if(dx !== 0 || dy !== 0){
-      var editor = this.editor;
-      
+      var view = this;
+
       $({percent: 0}).animate({percent: 1}, {
         step: function(){
           var stepX = this.percent * dx;
           var stepY = this.percent * dy;
 
-          actor.moveByDelta(stepX, stepY);
+          view.dragByDelta(stepX, stepY);
 
           dx -= stepX;
           dy -= stepY;
         },
         duration: 100,
         complete: function(){
-          actor.save();
-
-          // hide grid line
-          editor.hideGridLine();
+          view.model.save();
         }
       });
     } else {
-      actor.save();
+      view.model.save();
     }
   },
 
