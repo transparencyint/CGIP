@@ -45,7 +45,7 @@ module.exports = DraggableView.extend({
 
   showInfo: function(event){
     event.stopPropagation();
-    console.log('info');
+    // add code for info display here
     return false;
   },
 
