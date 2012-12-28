@@ -22,11 +22,6 @@ module.exports = View.extend({
   metadataChanged: function(){ 
     this.render();
   },
-  
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
-
 
   afterRender: function(){
     var name = this.model.get('name');

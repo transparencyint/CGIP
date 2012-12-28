@@ -42,10 +42,6 @@ module.exports = View.extend({
     }
   },
 
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
-
   select: function(event){
     if(!this.$el.hasClass("ui-selected")){
       this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");

@@ -34,10 +34,6 @@ module.exports = View.extend({
     this.$('#' + this.editor.moneyConnectionMode).prop("checked", true);
   },
 
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
-
   afterRender: function(){
     this.$el.attr('rel', this.model.id);
     this.$el.fadeIn(100);

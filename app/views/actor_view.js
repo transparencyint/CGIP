@@ -134,10 +134,6 @@ module.exports = DraggableView.extend({
       }
     }
   },
-  
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
 
   afterRender: function(){
     this.showProperName();

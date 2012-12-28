@@ -303,10 +303,5 @@ module.exports = View.extend({
   // don't sync in realtime but just every 500ms
   saveFormData: function(){
     this.model.save();
-  },
-
-  getRenderData : function(){
-    return this.model.toJSON();
   }
-
 });
