@@ -87,7 +87,7 @@ module.exports = View.extend({
 
     this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -206,18 +206,6 @@ module.exports = View.extend({
     this.selectedActorView = null;
     if(this.mode) this.mode.unselect();
     $('.selected').removeClass('selected');
-  },
-
-  dragGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.moveByDelta(dx, dy);
-    });
-  },
-  
-  saveGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.save();
-    });
   },
   
   createActorAt: function(x, y){

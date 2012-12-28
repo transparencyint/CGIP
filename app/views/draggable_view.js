@@ -45,7 +45,7 @@ module.exports = View.extend({
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
 
-    this.editor.dragGroup(dx, dy);
+    this.model.moveByDelta(dx, dy);
 
     // emit a global drag event
     $(document).trigger('viewdrag', this);
@@ -79,29 +79,31 @@ module.exports = View.extend({
     var dx = x - pos.x;
     var dy = y - pos.y;
     
+    var actor = this.model;
+
     if(dx !== 0 || dy !== 0){
       var editor = this.editor;
-
+      
       $({percent: 0}).animate({percent: 1}, {
         step: function(){
           var stepX = this.percent * dx;
           var stepY = this.percent * dy;
 
-          editor.dragGroup(stepX, stepY);
+          actor.moveByDelta(stepX, stepY);
 
           dx -= stepX;
           dy -= stepY;
         },
         duration: 100,
         complete: function(){
-          editor.saveGroup();
+          actor.save();
 
           // hide grid line
           editor.hideGridLine();
         }
       });
     } else {
-      this.editor.saveGroup();
+      actor.save();
     }
   },
 
