@@ -1,5 +1,5 @@
 var DraggableView = require('./draggable_view');
-var ActorGroupActor = require('./actor_group_actor');
+var ActorGroupActor = require('./actor_group_actor_view');
 
 module.exports = DraggableView.extend({
   className: 'actor-group',
