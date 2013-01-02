@@ -130,7 +130,6 @@ module.exports = View.extend({
   
   createCoinDefinitions: function(){
 
-    console.log("this.createCoinDefinitions()");
     // case: coin size gets changed
     // then: remove coinMarker if its already there
     if(this.coinMarker)
@@ -142,9 +141,6 @@ module.exports = View.extend({
   
     this.coinWidth = 7 * this.model.coinSizeFactor;
     this.coinHeight = 12 * this.model.coinSizeFactor;
-
-    console.log("this.coinWidth "+this.coinWidth);
-    console.log("this.coinHeight "+this.coinHeight);
 
     //only set the marker if it is a money connection
     if(this.isMoney){

@@ -17,7 +17,6 @@ module.exports = Connection.extend({
   },
 
   calculateCoinSize: function(){
-    console.log("this.collection "+ this.collection);
 
     // Don't execute when the model hasn't been added to a collection yet
     if(!this.collection) return
@@ -25,12 +24,8 @@ module.exports = Connection.extend({
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
     var amount = this.get(amountType);
 
-    console.log("--------------------");
-    console.log("amountType"+amountType);
-    console.log("amount"+amount);
     var maxMoneyAmount = 0;
     var minMoneyAmount = 0;
-
 
     var size = this.collection.length;
     
@@ -40,9 +35,6 @@ module.exports = Connection.extend({
       maxMoneyAmount = this.collection.max(amountTypeSelect).get(amountType);
       minMoneyAmount = this.collection.min(amountTypeSelect).get(amountType);
 
-      console.log("minMoneyAmount"+minMoneyAmount);
-      console.log("maxMoneyAmount"+maxMoneyAmount);
-
       var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
       var minCoinFactor = this.minCoinSizeFactor;
 
@@ -51,9 +43,6 @@ module.exports = Connection.extend({
       if(!isMinMaxEqual){
         var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
         var moneyRange = maxMoneyAmount - minMoneyAmount;
-
-        console.log("factorRange"+factorRange);
-        console.log("moneyRange"+moneyRange);
 
         this.collection.each(function(connection){
           var amountDif = connection.get(amountType) - minMoneyAmount;
