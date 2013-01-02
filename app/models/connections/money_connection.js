@@ -10,14 +10,23 @@ module.exports = Connection.extend({
     return data;
   },
 
+  initialize: function(){
+    this.minCoinSizeFactor = 1;
+    this.maxCoinSizeFactor = 4;
+    this.coinSizeFactor = this.minCoinSizeFactor;
+  },
+
   calculateCoinSize: function(){
+    console.log("this.collection "+ this.collection);
+
     // Don't execute when the model hasn't been added to a collection yet
     if(!this.collection) return
-    debugger
+    
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
     var amount = this.get(amountType);
 
     console.log("--------------------");
+    console.log("amountType"+amountType);
     console.log("amount"+amount);
     var maxMoneyAmount = 0;
     var minMoneyAmount = 0;
@@ -28,8 +37,8 @@ module.exports = Connection.extend({
     //there is at least 1 other money connection on the map already
     if(size > 1){
       var amountTypeSelect = function(connection){ return connection.get(amountType); };
-      maxMoneyAmount = this.collection.min(amountTypeSelect).get(amountType);
-      minMoneyAmount = this.collection.max(amountTypeSelect).get(amountType);
+      maxMoneyAmount = this.collection.max(amountTypeSelect).get(amountType);
+      minMoneyAmount = this.collection.min(amountTypeSelect).get(amountType);
 
       console.log("minMoneyAmount"+minMoneyAmount);
       console.log("maxMoneyAmount"+maxMoneyAmount);
@@ -51,8 +60,6 @@ module.exports = Connection.extend({
           connection.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
           connection.trigger('change:coinSizeFactor');
         });
-      } else { // set minCoinSize for the first money connection
-        this.coinSizeFactor = this.minCoinSizeFactor;
       }
     }
 

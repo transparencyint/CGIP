@@ -20,9 +20,6 @@ module.exports = View.extend({
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
 
-    this.minCoinSizeFactor = 1;
-    this.maxCoinSizeFactor = 4;
-
     this.actorRadius = 60;
     this.markerSize = 4;
 
@@ -146,8 +143,13 @@ module.exports = View.extend({
     this.coinDistance = 4 * this.model.coinSizeFactor;
     this.coinReference = this.model.id + "-coin";
   
+    console.log("this.model.coinSizeFactor"+this.model.coinSizeFactor);
     this.coinWidth = 7 * this.model.coinSizeFactor;
     this.coinHeight = 12 * this.model.coinSizeFactor;
+
+    console.log("this.coinWidth "+this.coinWidth);
+    console.log("this.coinHeight "+this.coinHeight);
+
     //only set the marker if it is a money connection
     if(this.isMoney){
       this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
