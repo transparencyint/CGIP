@@ -99,9 +99,6 @@ module.exports = View.extend({
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
     
-    //if(this.isMoney && this.editor)
-      //this.updateCoinSize();
-    
     if(this.model.get("connectionType") === 'money'){
       this.pathSettings = {
         'marker-end': "url(#"+ this.coinReference +")",
@@ -143,7 +140,6 @@ module.exports = View.extend({
     this.coinDistance = 4 * this.model.coinSizeFactor;
     this.coinReference = this.model.id + "-coin";
   
-    console.log("this.model.coinSizeFactor"+this.model.coinSizeFactor);
     this.coinWidth = 7 * this.model.coinSizeFactor;
     this.coinHeight = 12 * this.model.coinSizeFactor;
 

@@ -44,11 +44,11 @@ module.exports = Connection.extend({
       console.log("maxMoneyAmount"+maxMoneyAmount);
 
       var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
+      var minCoinFactor = this.minCoinSizeFactor;
 
       //connections have at least 1 different money value
       //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
       if(!isMinMaxEqual){
-        var minCoinFactor = this.minCoinSizeFactor;
         var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
         var moneyRange = maxMoneyAmount - minMoneyAmount;
 
@@ -58,6 +58,11 @@ module.exports = Connection.extend({
         this.collection.each(function(connection){
           var amountDif = connection.get(amountType) - minMoneyAmount;
           connection.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
+          connection.trigger('change:coinSizeFactor');
+        });
+      }else {
+        this.collection.each(function(connection){
+          connection.coinSizeFactor = minCoinFactor;
           connection.trigger('change:coinSizeFactor');
         });
       }
