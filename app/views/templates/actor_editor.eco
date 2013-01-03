@@ -57,19 +57,7 @@
 
 <div class="centerLine"></div>
 
-<div class="roleHolder">
-  <div class="roleArea" id="funding"><span>Funding</span></div>
-  <div class="roleArea" id="coordination"><span>Coordination</span></div>
-  <div class="roleArea" id="implementation"><span>Implementation</span></div>
-  <div class="roleArea" id="monitoring"><span>Monitoring</span></div>
-</div>
-
-<div class="dragHandleBars">
-  <div class="draghandle" rel="funding"></div>
-  <div class="draghandle" rel="coordination"></div>
-  <div class="draghandle" rel="implementation"></div>
-  <div class="draghandle" rel="monitoring"></div>
-  <div class="draghandle last" rel="last"></div>
-</div>
+<div class="gridline" id="gridlineH"></div>
+<div class="gridline" id="gridlineV"></div>
 
 <div class="workspace"></div>
