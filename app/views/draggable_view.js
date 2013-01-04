@@ -80,7 +80,6 @@ module.exports = View.extend({
 
   findNearestGridPoint: function(){
     var gridSize = this.editor.gridSize;
-    var zoomValue = this.editor.zoom.value;
     var pos = this.model.get('pos');
 
     var x = Math.round(pos.x / gridSize) * gridSize;
