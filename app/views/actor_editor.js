@@ -20,6 +20,7 @@ module.exports = View.extend({
     'click .tool .connection': 'toggleMode',
     'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
+    'click .tool .toggleMonitoring': 'toggleMonitoring',
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
@@ -326,6 +327,15 @@ module.exports = View.extend({
 
   },
 
+  toggleMonitoring: function(event){
+    this.rbw.toggleMonitoring();
+
+    if($('#toggleMonitoringText').hasClass('active'))
+      $('#toggleMonitoringText').html('Off').removeClass('active');
+    else
+      $('#toggleMonitoringText').html('On').addClass('active');
+  },
+
   deactivateMode: function(){
     this.$('.connection').removeClass('active');
     this.mode.abort();
@@ -553,6 +563,14 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
+
+    //check if monitoring role is hidden and hide monitoring elements
+    if(!this.country.get('showMonitoring')){
+      this.$('#toggleMonitoringText').html('Off').removeClass('active');
+      this.$('#monitoring').css({'display': 'none'});
+      this.$('.draghandle.last').hide();
+      this.$('span[rel=monitoring]').hide();
+    }
   },
 
   destroy: function(){

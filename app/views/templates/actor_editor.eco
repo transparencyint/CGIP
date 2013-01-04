@@ -40,6 +40,10 @@
     <span id="disbursedMoney" class="small">Disbursed</span>
     <span id="pledgedMoney" class="small">Pledged</span>
   </div>
+  <div class="toggleMonitoring">
+    <span class="name">toggle Monitoring</span>
+    <span id="toggleMonitoringText" class="small active">On</span>
+  </div>
 </div>
 
 <div class="sidebar">

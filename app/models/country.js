@@ -10,6 +10,7 @@ module.exports = Model.extend({
   },
 
   defaults : {
-	 roleDimensions: [ -500, -250, 0, 250, 500 ]
+	 roleDimensions: [ -500, -250, 0, 250, 500 ],
+   showMonitoring: true
   }
 });

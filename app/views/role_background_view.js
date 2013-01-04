@@ -99,7 +99,6 @@ module.exports = View.extend({
   },
 
   zoom: function(){
-    console.log(this.editor.zoom.value, this.editor.zoom.value);
     var fWidth = $('#funding').width();
     $('#funding').width(fWidth *= this.editor.zoom.value);
   },
@@ -109,6 +108,27 @@ module.exports = View.extend({
     this.roleHolder.css('left', x);
     this.roleLabels.css('left', x);
     this.dragHandleBars.css('left', x);
+  },
+
+  toggleMonitoring: function(){
+    if($('#monitoring').is(':visible')){
+      $('#monitoring').hide();
+      $('.draghandle.last').hide();
+      $('span[rel=monitoring]').hide();
+
+      this.country.set({'showMonitoring' : false});
+      this.country.save();
+    }else{
+      $('#monitoring').show();
+      
+      //fix for the last draghandle
+      $('.draghandle.last').css({'left': $('#monitoring').position().left + $('#monitoring').width()});
+      $('.draghandle.last').show();
+      $('span[rel=monitoring]').show();
+
+      this.country.set({'showMonitoring' : true});
+      this.country.save();
+    }
   },
 
   render: function(){
@@ -138,12 +158,11 @@ module.exports = View.extend({
       }
       this.$('div[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i]});
     }
+
     return this.$el;
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
   }
-
-
 });
