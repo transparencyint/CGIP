@@ -256,8 +256,11 @@ module.exports = View.extend({
   submitForm: function(){
     
     var formData = this.$('form').serializeArray();
-    var cleanedData = {};
-    var sets = [ 'role', 'purpose'];
+    var sets = [ 'role', 'purpose' ];
+    var cleanedData = {
+      'role' : [],
+      'purpose' : []
+    };
     var checkboxes = [ 'hasCorruptionRisk' ];
     var hasCorruptionRisk = false;
     
@@ -270,13 +273,12 @@ module.exports = View.extend({
         if(cleanedData.organizationType === 'other')
           cleanedData[name] = value;
       }
+      
       // for our multiple checkbox: create an array of the name and add values to it
       else if(sets.indexOf(name) !== -1){
-        if(cleanedData[name] === undefined)
-          cleanedData[name] = [];
-        
         cleanedData[name].push(value);
       } 
+      
       // otherwise save as string (name: value)
       else {
         if(checkboxes.indexOf(name) !== -1){
