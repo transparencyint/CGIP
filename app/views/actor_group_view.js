@@ -29,7 +29,7 @@ module.exports = DraggableView.extend({
     return _.defaults({
       'mousedown'         : 'dragStart',
       'mousedown .caption': 'select',
-      'click'             : 'showActors'
+      'mouseup'           : 'showActors'
     }, parentEvents);
   },
 
@@ -119,7 +119,7 @@ module.exports = DraggableView.extend({
   },
 
   showActors: function(event){
-    if(this.hovered) return;
+    if(this.hovered || this.isDragging) return;
 
     this.$el.toggleClass('show-actors');
   },

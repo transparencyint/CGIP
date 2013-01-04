@@ -72,7 +72,6 @@ module.exports = View.extend({
       $(document).trigger('viewdragstop', this);
     }
       
-    
     $(document).off('mousemove.global', this.drag);
 
     this.isDragging = false;
