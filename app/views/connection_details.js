@@ -59,8 +59,6 @@ module.exports = View.extend({
 
     var pos = this.$el.offset();
     
-    this.$el.addClass('moved');
-    
     this.startX = event.pageX - pos.left;
     this.startY = event.pageY - pos.top;
     
@@ -68,6 +66,8 @@ module.exports = View.extend({
     if(this.pressOnScrollbar(this.startX))
       return;
   
+    this.$el.addClass('moved');
+    
     $(document).on('mousemove.global', this.drag);
     $(document).one('mouseup', this.dragStop);
   },
