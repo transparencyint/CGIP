@@ -5,7 +5,8 @@ var Actors = require('models/actors');
 var ActorView = require('./actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
-var ConnectionMode = require('./editor_modes/connection_mode')
+var ConnectionMode = require('./editor_modes/connection_mode');
+var RoleBackgroundView = require('./role_background_view');
 
 // TODO: find a better place for `transEndEventNames`
 
@@ -23,7 +24,6 @@ module.exports = View.extend({
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
     'mousedown': 'dragStart',
-    'mousedown .draghandle': 'dragRoleHandle',
     'mousedown .bar': 'stopPropagation'
   },
   
@@ -75,12 +75,6 @@ module.exports = View.extend({
       top: 0
     };
 
-    this.roleAreaOffsets = {
-      draghandleLeft: 0
-    }
-
-    this.roles = ['funding', 'coordination', 'implementation', 'monitoring'];
-    
     this.gridSize = this.radius;
     
     // add an actor view when a new one is added
@@ -107,9 +101,7 @@ module.exports = View.extend({
       'saveGroup', 
       'slideZoom', 
       'dragStop', 
-      'drag', 
-      'dragRoleHandleStart', 
-      'dragRoleHandleStop', 
+      'drag',
       'placeActorDouble', 
       'slideInDouble'
     );
@@ -136,8 +128,8 @@ module.exports = View.extend({
     this.zoom.sqrt = Math.sqrt(ui.value);
 
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
-    this.roleHolder.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
-    this.dragHandleBars.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
+    this.rbw.roleHolder.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
+    this.rbw.dragHandleBars.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
     
     this.$el.css('background-size', this.zoom.value*10);
   },
@@ -450,8 +442,8 @@ module.exports = View.extend({
     this.$el.css('background-position', x +'px, '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
-    this.roleHolder.css('left', x);
-    this.dragHandleBars.css('left', x);
+    this.rbw.roleHolder.css('left', x);
+    this.rbw.dragHandleBars.css('left', x);
   },
   
   dragStop : function(event){
@@ -495,25 +487,11 @@ module.exports = View.extend({
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
     this.cancel = this.$('.controls .cancel');
-    this.roleHolder = this.$('.roleHolder');
-    this.dragHandleBars = this.$('.dragHandleBars');
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
-    this.roleDimensions = this.country.get('roleDimensions');
-
-    for(var i=0; i<this.roleDimensions.length; i++){
-      if(i != this.roleDimensions.length-1){
-        this.$('#'+this.roles[i]).css({
-          'width': this.roleDimensions[i+1] - this.roleDimensions[i],
-          'left': this.roleDimensions[i]
-        });
-      }
-      else{
-        this.$('div[rel=last]').css({'left': this.roleDimensions[i] - 4});
-      }
-      this.$('div[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i] - 4});
-    }
+    this.rbw = new RoleBackgroundView({ country: this.country });
+    this.$el.append(this.rbw.render()); 
 
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
@@ -529,64 +507,6 @@ module.exports = View.extend({
     _.defer(this.realignCenter);
   },
   
-  dragRoleHandle: function(event){
-    event.stopPropagation();
-
-    this.startX = event.pageX - this.roleAreaOffsets.draghandleLeft;
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
-    
-    $(document).on('mousemove.draghandle', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStart);
-    $(document).one('mouseup', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStop);
-  },
-
-  dragRoleHandleStart: function(event){
-    // get the current drag x coordinate
-    var fundingWidth = $('#funding').width();
-    var coordinationWidth = $('#coordination').width();
-    var newWidth = 0;
-    var roleSelector = event.data.roleSelector;
-    var roleIndex = this.roles.indexOf(roleSelector);
-
-    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - event.pageX;
-
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
-
-    this.roleDimensions = [
-      $('.draghandle[rel=funding]').position().left,
-      $('.draghandle[rel=coordination]').position().left,
-      $('.draghandle[rel=implementation]').position().left,
-      $('.draghandle[rel=monitoring]').position().left,
-      $('.draghandle[rel=last]').position().left
-    ];
-
-    if(roleIndex == 0){
-      $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
-    }
-    else if(roleIndex != -1){
-        newWidth = this.roleDimensions[roleIndex] - this.roleDimensions[roleIndex-1];
-        $('#'+this.roles[roleIndex-1]).css({'width': newWidth});
-
-        newWidth = this.roleDimensions[roleIndex+1] - this.roleDimensions[roleIndex];
-        $('#'+roleSelector).css({'left': this.roleDimensions[roleIndex], 'width': newWidth});     
-    }
-    else {
-      newWidth = $('#monitoring').width();
-      $('#monitoring').css({'width': newWidth -= deltaXAbsolute});
-    }
-
-    // move the dragHandle 
-    $('.draghandle[rel='+roleSelector+']').css({'left': $('.draghandle[rel='+roleSelector+']').position().left - deltaXAbsolute});
-  },
-
-  dragRoleHandleStop: function(event){
-
-    // set the new roleArea coordinates  
-    this.country.set({'roleDimensions' : this.roleDimensions});
-    this.country.save();
-
-    $(document).unbind('mousemove.draghandle');
-  },
-
   initializeDimensions: function(){
     this.center = this.$el.width()/2;
   },
