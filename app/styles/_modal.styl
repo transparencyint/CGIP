@@ -4,6 +4,15 @@
   background #eee
   border-radius 5px
   box-shadow 0 0 0 1px white inset, 0 0 0 1px rgba(0,0,0,.34), 0 1px 5px rgba(0,0,0,.34)
+  /* 
+    the modal gets hidden in order to measure
+    its height and scrollbar-thickness
+    therefor it must not be display none because then
+    dimensions would be zero
+  */
+  &.hidden
+    display block
+    opacity 0
   &.leftAligned
     .arrow
       left auto
@@ -56,13 +65,12 @@
   input 
     margin 0
     padding 4px 5px 3px
-    vertical-align middle
     
   input[type=radio]
     cursor default
 
   input[type=checkbox] 
-    margin 5px
+    margin 3px
 
   select
     font-size auto

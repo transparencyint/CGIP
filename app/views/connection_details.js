@@ -4,7 +4,7 @@ module.exports = View.extend({
 
   template: require('./templates/connection_details'),
 
-  className : 'modal connectionDetails',
+  className : 'modal hidden connectionDetails',
 
   events: {
     // live updates on the input fields
@@ -47,7 +47,7 @@ module.exports = View.extend({
     this.connection = options.connection;
     this.editor = options.editor;
     
-    this.width = 360;
+    this.width = 320;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
@@ -63,6 +63,10 @@ module.exports = View.extend({
     
     this.startX = event.pageX - pos.left;
     this.startY = event.pageY - pos.top;
+    
+    // stop when the user is clicking onto a scrollbar (chrome bug)
+    if(this.pressOnScrollbar(this.startX))
+      return;
   
     $(document).on('mousemove.global', this.drag);
     $(document).one('mouseup', this.dragStop);
@@ -165,6 +169,7 @@ module.exports = View.extend({
     this.currentMoneyMode();
     this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
+    this.holder = this.$('.holder');
     
     this.fillInActorNames();
     this.addClickCatcher();
@@ -175,8 +180,32 @@ module.exports = View.extend({
     var self = this;
     _.defer(function(){ 
       self.placeNextToConnection();
+      self.$el.removeClass('hidden');
+      
+      self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
+      self.holder.css('overflow', 'auto');
+      
       self.$('input').first().focus();
     });
+  },
+  
+  /*
+  
+    detects if there is a scrollbar
+    and measures its thickness
+    
+    this is a workaround needed for draggable 
+    because of this bug in Chrome:
+    https://code.google.com/p/chromium/issues/detail?id=14204
+    (no mouseup on scrollbar)
+    
+  */
+  
+  pressOnScrollbar: function(x){ 
+    this.widthWithScrollbar = this.holder.find('div:first-child').width();
+    this.scrollbarThickness = this.widthWithoutScrollbar - this.widthWithScrollbar;
+    
+    return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
   },
   
   fillInActorNames: function(){
@@ -201,8 +230,7 @@ module.exports = View.extend({
         break
     }
     attributes[event.target.name] = value;
-     
-    console.log(attributes, event.target.checked);
+    
     this.model.set(attributes);
   },
 

@@ -4,7 +4,7 @@ var View = require('./view');
 module.exports = View.extend({
 
   template: require('./templates/actor_details'),
-  className: 'modal actorDetails',
+  className: 'modal hidden actorDetails',
 
   events: {
     // live updates on the input fields
@@ -218,6 +218,7 @@ module.exports = View.extend({
     var self = this;
     _.defer(function(){ 
       self.placeNextToActor();
+      self.$el.removeClass('hidden');
       self.$('input').first().focus();
     });
   },
