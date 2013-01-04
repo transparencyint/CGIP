@@ -244,10 +244,12 @@ module.exports = View.extend({
     var additionalInfo = toggle.nextAll('.additionalInfo');
     
     // show/hide the textarea and input field for description and source
-    if(toggle.prop('checked'))
+    if(toggle.prop('checked')){
       additionalInfo.slideDown();
-    else
+    } else {
+      this.$el.addClass('moved');
       additionalInfo.slideUp();
+    }
     
     // Does: focus the first input inside the additonal info
     additionalInfo.find('textarea, input').first().select();

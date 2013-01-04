@@ -265,6 +265,7 @@ module.exports = View.extend({
         additionalInfo.slideDown();
         shouldSelectFirst = true;
       } else {
+        this.$el.addClass('moved');
         additionalInfo.slideUp();
       }
     }
