@@ -462,15 +462,16 @@ module.exports = View.extend({
   },
 
   showGridLine: function(x, y, gridX, gridY){
+
     if(gridX){
-      this.gridlineV.css({'left': this.offset.left + this.center + x});
+      this.gridlineV.css({'left': (this.offset.left + this.center + x*this.zoom.value)});
       this.gridlineV.show();
     }
     else if(!gridX)
       this.gridlineV.hide();
 
     if(gridY){
-      this.gridlineH.css({'top': this.offset.top + y});
+      this.gridlineH.css({'top': this.offset.top + y*this.zoom.value});
       this.gridlineH.show();
     }
     else if(!gridY)
