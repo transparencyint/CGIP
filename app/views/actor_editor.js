@@ -353,7 +353,7 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var coords = this.offsetToCoords(offset);
+      var coords = this.offsetToCoords(offset, this.smallRadius);
       this.createActorAt(coords.x, coords.y);
       view.model.set({pos: {x: 0, y:0 }});
     }
