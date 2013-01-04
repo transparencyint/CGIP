@@ -127,9 +127,8 @@ module.exports = View.extend({
     this.zoom.value = ui.value;
     this.zoom.sqrt = Math.sqrt(ui.value);
 
+    this.trigger('zoom');
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
-    this.rbw.roleHolder.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
-    this.rbw.dragHandleBars.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +', 1)');
     
     this.$el.css('background-size', this.zoom.value*10);
   },
@@ -439,11 +438,11 @@ module.exports = View.extend({
       top: y
     });
     
+    this.trigger('pan', x, y);
     this.$el.css('background-position', x +'px, '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
-    this.rbw.roleHolder.css('left', x);
-    this.rbw.dragHandleBars.css('left', x);
+    
   },
   
   dragStop : function(event){
@@ -490,8 +489,8 @@ module.exports = View.extend({
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
-    this.rbw = new RoleBackgroundView({ country: this.country });
-    this.$el.append(this.rbw.render()); 
+    this.rbw = new RoleBackgroundView({ editor: editor });
+    this.workspace.before(this.rbw.render()); 
 
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);

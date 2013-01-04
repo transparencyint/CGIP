@@ -11,7 +11,8 @@ module.exports = View.extend({
   },
   
   initialize: function(options){
-    this.country = options.country;
+    this.editor = options.editor;
+    this.country = this.editor.country;
 
     this.roleAreaOffsets = {
       draghandleLeft: 0
@@ -19,6 +20,9 @@ module.exports = View.extend({
 
     this.roles = ['funding', 'coordination', 'implementation', 'monitoring'];
     
+    this.editor.on('zoom', this.zoom, this);
+    this.editor.on('pan', this.pan, this);
+
     this.minRoleWidth = 46*2;
 
     _.bindAll(
@@ -64,17 +68,21 @@ module.exports = View.extend({
 
     if(roleIndex == 0){
       $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
+      $('span[rel=funding]').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
     }
     else if(roleIndex != -1){
         newWidth = this.roleDimensions[roleIndex] - this.roleDimensions[roleIndex-1];
         $('#'+this.roles[roleIndex-1]).css({'width': newWidth});
+        $('span[rel='+this.roles[roleIndex-1]+']').css({'width': newWidth});
 
         newWidth = this.roleDimensions[roleIndex+1] - this.roleDimensions[roleIndex];
         $('#'+roleSelector).css({'left': this.roleDimensions[roleIndex], 'width': newWidth});     
+        $('span[rel='+roleSelector+']').css({'left': this.roleDimensions[roleIndex], 'width': newWidth});
     }
     else {
       newWidth = $('#monitoring').width();
       $('#monitoring').css({'width': newWidth -= deltaXAbsolute});
+      $('span[rel=monitoring]').css({'width': newWidth});
     }
 
     // move the dragHandle 
@@ -90,11 +98,25 @@ module.exports = View.extend({
     $(document).unbind('mousemove.draghandle');
   },
 
+  zoom: function(){
+    console.log(this.editor.zoom.value, this.editor.zoom.value);
+    var fWidth = $('#funding').width();
+    $('#funding').width(fWidth *= this.editor.zoom.value);
+  },
+
+
+  pan: function(x, y){
+    this.roleHolder.css('left', x);
+    this.roleLabels.css('left', x);
+    this.dragHandleBars.css('left', x);
+  },
+
   render: function(){
     var editor = this;
 
     this.$el.html( this.template() );
     this.roleHolder = this.$('.roleHolder');
+    this.roleLabels = this.$('.roleLabels');
     this.dragHandleBars = this.$('.dragHandleBars');
 
     this.roleDimensions = this.country.get('roleDimensions');
@@ -105,14 +127,17 @@ module.exports = View.extend({
           'width': this.roleDimensions[i+1] - this.roleDimensions[i],
           'left': this.roleDimensions[i]
         });
+
+        this.$('span[rel='+this.roles[i]+']').css({
+          'width': this.roleDimensions[i+1] - this.roleDimensions[i],
+          'left': this.roleDimensions[i]
+        });
       }
       else{
         this.$('div[rel=last]').css({'left': this.roleDimensions[i]});
       }
       this.$('div[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i]});
     }
-
-    console.log(this.$el.context.innerHTML);
     return this.$el;
   },
 

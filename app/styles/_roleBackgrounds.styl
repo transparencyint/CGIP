@@ -1,0 +1,69 @@
+.dragHandleBars,   
+.roleHolder
+  height 100%
+  position fixed
+.dragHandleBars
+  z-index 4
+  height 28px
+  margin-top 50px
+  .draghandle
+    width 46px
+    height 28px
+    margin 0 0 0 -23px
+    z-index 5
+    cursor col-resize
+    position absolute
+    background black
+    opacity 0
+    &:hover
+      opacity 0.1
+.roleHolder
+  &:before
+    content ""
+    position fixed
+    top 50px
+    left -100%
+    width 300%
+    background hsl(220, 53%, 32%)
+    height 28px
+    border-bottom 1px solid hsl(220, 55%, 24%)
+  .roleArea
+    width 25%
+    min-width 46px
+    height 100%
+    position absolute
+    &#funding
+      background hsla(76, 100%, 50%, 0.28)
+    &#coordination
+      background hsla(97, 100%, 50%, 0.19)
+      left 25%
+    &#implementation
+      background hsla(155, 100%, 43%, 0.13)
+      left 50%
+    &#monitoring
+      background hsla(222, 100%, 43%, 0.18)
+      left 75%
+.roleLabels 
+  position fixed
+  z-index 3
+.roleLabels 
+  span
+    width 25%
+    min-width 46px
+    margin-top 50px
+    display block
+    text-align center
+    font-size 13px
+    line-height 27px
+    position absolute
+    color hsl(220, 37%, 90%)
+    text-shadow 0 -1px hsl(220, 38%, 15%)
+    border 1px solid hsl(220, 55%, 24%)
+    background hsl(220, 53%, 32%)
+    box-shadow 1px 0 hsl(220, 43%, 43%) inset
+  &:not(:first-child)
+    span
+      border-left none
+  &:last-child
+    span
+      box-shadow 1px 0 hsl(220, 43%, 43%) inset, 1px 0 hsl(220, 43%, 43%)
