@@ -73,10 +73,14 @@ module.exports = View.extend({
 
     var pos = this.$el.offset();
     
-    this.$el.addClass('moved');
-    
     this.startX = event.pageX - pos.left;
     this.startY = event.pageY - pos.top;
+    
+    // stop when the user is clicking onto a scrollbar (chrome bug)
+    if(this.pressOnScrollbar(this.startX))
+      return;
+
+    this.$el.addClass('moved');
   
     $(document).on('mousemove.global', this.drag);
     $(document).one('mouseup', this.dragStop);
@@ -213,14 +217,38 @@ module.exports = View.extend({
     
     $(document).keydown(this.handleEscape);
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
+    this.holder = this.$('.holder');
     
     // focus first input field
     var self = this;
     _.defer(function(){ 
       self.placeNextToActor();
       self.$el.removeClass('hidden');
+      
+      self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
+      self.holder.css('overflow', 'auto');
+      
       self.$('input').first().focus();
     });
+  },
+  
+  /*
+  
+    detects if there is a scrollbar
+    and measures its thickness
+    
+    this is a workaround needed for draggable 
+    because of this bug in Chrome:
+    https://code.google.com/p/chromium/issues/detail?id=14204
+    (no mouseup on scrollbar)
+    
+  */
+  
+  pressOnScrollbar: function(x){ 
+    this.widthWithScrollbar = this.holder.find('div:first-child').width();
+    this.scrollbarThickness = this.widthWithoutScrollbar - this.widthWithScrollbar;
+    
+    return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
   },
 
   toggleAdditionalInfo: function(event){
