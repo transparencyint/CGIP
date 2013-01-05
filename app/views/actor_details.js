@@ -4,7 +4,7 @@ var View = require('./view');
 module.exports = View.extend({
 
   template: require('./templates/actor_details'),
-  className: 'modal actorDetails',
+  className: 'modal hidden actorDetails',
 
   events: {
     // live updates on the input fields
@@ -27,10 +27,10 @@ module.exports = View.extend({
     // submit on enter
     'form submit': 'submitAndClose',
     
-    // make the whole thing draggable
+    // make the whole thing draggable..
     'mousedown': 'dragStart',
     
-    // except all the text, buttons and inputs
+    // ..except all the text, buttons and inputs
     'mousedown label': 'stopPropagation',
     'mousedown input': 'stopPropagation',
     'mousedown textarea': 'stopPropagation',
@@ -45,7 +45,6 @@ module.exports = View.extend({
     this.actor = options.actor;
     this.editor = this.actor.editor;
     this.width = 360;
-    this.height = 515;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
@@ -74,10 +73,14 @@ module.exports = View.extend({
 
     var pos = this.$el.offset();
     
-    this.$el.addClass('moved');
-    
     this.startX = event.pageX - pos.left;
     this.startY = event.pageY - pos.top;
+    
+    // stop when the user is clicking onto a scrollbar (chrome bug)
+    if(this.pressOnScrollbar(this.startX))
+      return;
+
+    this.$el.addClass('moved');
   
     $(document).on('mousemove.global', this.drag);
     $(document).one('mouseup', this.dragStop);
@@ -136,7 +139,7 @@ module.exports = View.extend({
   destroy: function(){
     View.prototype.destroy.call(this);
     
-    // remove autosize helper (maybe not enough)
+    // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
     
     this.clickCatcher.remove();
@@ -155,7 +158,8 @@ module.exports = View.extend({
     var pos = this.actor.$el.offset();
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
-    var arrowPos;
+    this.height = this.$el.height();
+    var arrowPos = this.height / 2;
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
     var actorHeight = this.actor.height * this.editor.zoom.value;
@@ -177,22 +181,25 @@ module.exports = View.extend({
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
     if(pos.top - padding < 0){
-      arrowPos = this.height/2 - Math.abs(padding - pos.top);
+      arrowPos -= Math.abs(padding - pos.top);
       pos.top = padding;
     }
     else if(pos.top + this.height + padding > this.editor.$el.height()){      
-      arrowPos = this.height/2 + Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
+      arrowPos += Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
       pos.top = this.editor.$el.height() - padding - this.height;
     }
     
-    if(arrowPos){
-      // keep the arrow positonend inside the boundaries
-      var max = this.height-this.controlsHeight-this.arrowHeight/2;
-      var min = this.borderRadius+this.arrowHeight/2;
-      
-      arrowPos = Math.min(max, Math.max(min, arrowPos));
-      arrow.css('top', arrowPos - this.arrowHeight/2);
-    }
+    // keep the arrow positonend inside the boundaries
+    var max = this.height-this.controlsHeight-this.arrowHeight/2;
+    var min = this.borderRadius+this.arrowHeight/2;
+    
+    arrowPos = Math.min(max, Math.max(min, arrowPos));
+    arrow.css('top', arrowPos - this.arrowHeight/2);
+    
+    // limit the maximum height to show scrollbars
+    // if the details would get too high
+    var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
+    this.$('.holder').css('maxHeight', maxHeight);
 
     this.$el.css({
       left: pos.left,
@@ -206,15 +213,42 @@ module.exports = View.extend({
   },
 
   afterRender: function() {
-    this.placeNextToActor();
     this.addClickCatcher();
     
     $(document).keydown(this.handleEscape);
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
+    this.holder = this.$('.holder');
     
     // focus first input field
     var self = this;
-    _.defer(function(){ self.$('input').first().focus(); });
+    _.defer(function(){ 
+      self.placeNextToActor();
+      self.$el.removeClass('hidden');
+      
+      self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
+      self.holder.css('overflow', 'auto');
+      
+      self.$('input').first().focus();
+    });
+  },
+  
+  /*
+  
+    detects if there is a scrollbar
+    and measures its thickness
+    
+    this is a workaround needed for draggable 
+    because of this bug in Chrome:
+    https://code.google.com/p/chromium/issues/detail?id=14204
+    (no mouseup on scrollbar)
+    
+  */
+  
+  pressOnScrollbar: function(x){ 
+    this.widthWithScrollbar = this.holder.find('div:first-child').width();
+    this.scrollbarThickness = this.widthWithoutScrollbar - this.widthWithScrollbar;
+    
+    return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
   },
 
   toggleAdditionalInfo: function(event){
@@ -231,6 +265,7 @@ module.exports = View.extend({
         additionalInfo.slideDown();
         shouldSelectFirst = true;
       } else {
+        this.$el.addClass('moved');
         additionalInfo.slideUp();
       }
     }

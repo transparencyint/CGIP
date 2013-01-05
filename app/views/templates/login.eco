@@ -6,8 +6,8 @@
     <span>Program</span>
   </h1>
   <form>
-    <input type="text" placeholder="username" id="username-input" tabindex="1" autofocus />
-    <input type="password" placeholder="password" id="password-input" tabindex="2" />
-    <button type="submit">Login</button>
+    <input type="text" placeholder="username" id="username-input" />
+    <input type="password" placeholder="password" id="password-input" />
+    <button>Login</button>
   </form>
 </div>

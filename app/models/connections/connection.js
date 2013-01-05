@@ -14,7 +14,8 @@ module.exports = Model.extend({
       type: 'connection',
       from: null,
       to: null,
-      source: null
+      source: null,
+      hasCorruptionRisk: false
     }
   },
 
