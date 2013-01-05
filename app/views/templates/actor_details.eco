@@ -152,9 +152,9 @@
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
     	  <label for="corruptionRisk">Description</label>
-    	  <textarea id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk%></textarea>
-    	  <label>Source</label>
-    	  <input type="text" name="corruptionRiskSource" placeholder="http://">
+    	  <textarea id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk %></textarea>
+    	  <label for="corruptionRiskSource">Source</label>
+    	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" placeholder="http://">
     	</div>
   	</div>
   	
@@ -164,7 +164,7 @@
   	</div> 
 	</div><!-- /.holder -->
 	
-	<div class="controls">
+	<div class="controls clearfix">
     <div class="row right">
       <button type="submit" class="done">Save</button>
       <button class="revert">Revert</button>

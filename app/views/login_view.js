@@ -19,6 +19,13 @@ module.exports = View.extend({
   logoutClicked: function(){
     window.user.logout();
   },
+  
+  afterRender: function(){
+    var self = this;
+    _.defer(function(){
+      self.$('input').first().focus();
+    });
+  },
 
   login: function(event){
     event.preventDefault();
