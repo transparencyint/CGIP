@@ -1,0 +1,45 @@
+.connectionDetails
+  width 320px
+  
+  h3
+    color hsl(0, 0%, 20%)
+    margin 0 0 5px
+  
+  .money
+    width 242px
+    label
+      display block
+    .dollar
+      position relative
+      float left
+      input
+        padding-left 13px
+        display inline-block
+      &:before
+        content "$"
+        left 6px
+        position absolute
+        color black
+        line-height 26px
+        font-size 14px
+    input[type=radio]
+      display none
+      &:checked + .eye
+        background-image url(/images/glyphicons_051_eye_open.png)
+    .eye
+      float left
+      width 40px
+      height 25px
+      margin-right 0
+      background-size 16px
+      background-repeat no-repeat
+      background-position center
+      background-color hsl(210, 8%, 97%)
+      border-radius 0 3px 3px 0
+      border 1px solid hsla(0, 0%, 0%, 0.34)
+      border-left none
+      box-shadow 0 1px hsla(0, 0%, 0%, 0.05) inset, 0 1px white
+      &:not(:last-child)
+        margin-bottom 31px
+      &:hover
+        background-color white
