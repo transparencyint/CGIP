@@ -90,7 +90,7 @@ module.exports = View.extend({
         break;
       case 'money':
         this.$el.addClass(config.get('moneyConnectionMode'));
-        this.updateCoinSize();
+        //this.updateCoinSize();
         this.isMoney = true;
         this.strokeWidth = 1;
         break;
