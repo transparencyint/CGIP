@@ -62,7 +62,7 @@ module.exports = AsyncRouter.extend({
     var actors = new Actors();
     actors.country = country;
     
-    selectedCountry = _.find(countries.models, function(country){
+    selectedCountry = countries.find(function(country){
       return country.get('abbreviation') == actors.country;
     });
 
