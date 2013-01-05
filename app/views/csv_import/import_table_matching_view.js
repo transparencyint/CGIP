@@ -16,10 +16,6 @@ module.exports = View.extend({
     this.dbActors = new Actors();
     this.dbActors.country = options.country;
   },
-  
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
 
   /**
     Find the positions of the needed columns from the old table 
