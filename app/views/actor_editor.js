@@ -3,6 +3,8 @@ var Actor = require('models/actor');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var ActorGroupActorView = require('./actor_group_actor_view');
+var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
@@ -23,7 +25,8 @@ module.exports = View.extend({
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
     'mousedown': 'dragStart',
-    'mousedown .bar': 'stopPropagation'
+    'mousedown .bar': 'stopPropagation',
+    'click': 'unselect'
   },
   
   transEndEventNames: {
@@ -57,7 +60,7 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.monitoringConnections = filteredConnections.monitoring;
-    this.selectedActors = [];
+
     this.zoom = {
       value: 1,
       sqrt: 1,
@@ -84,7 +87,14 @@ module.exports = View.extend({
 
     config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(this, 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'saveGroup', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    this.hideGridLine = _.debounce(this.hideGridLine, 500);
+
+    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+  
+    // gridlines
+    $(document).on('viewdrag', this.calculateGridLines);
+    // actor selection
+    $(document).on('viewSelected', this.actorSelected);
   },
   
   stopPropagation: function(event){
@@ -92,11 +102,8 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActors != []) {
-      _.each(this.selectedActors, function(actor){
-        actor.destroy();
-      });
-    }
+    if(this.selectedActorView)
+      this.selectedActorView.model.destroy();
   },
   
   slideZoom: function(event, ui){
@@ -189,23 +196,20 @@ module.exports = View.extend({
     };
   },
   
-  unselect: function(){
-    if(this.mode) this.mode.unselect();
-    this.selectedActors = [];
+  actorSelected: function(event, actorView){
+    if(actorView.$el.hasClass('actor')){
+      this.selectedActorView = actorView;
+      if(this.mode)
+        this.mode.actorSelected(actorView);
+    }
   },
 
-  dragGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.moveByDelta(dx, dy);
-    });
+  unselect: function(){
+    this.selectedActorView = null;
+    if(this.mode) this.mode.unselect();
+    $('.selected').removeClass('selected');
   },
-  
-  saveGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.save();
-    });
-  },
-  
+
   createActorAt: function(x, y){
     var editor = this;
     
@@ -233,7 +237,6 @@ module.exports = View.extend({
 
   // when an actor is removed, destroy its view
   removeActor: function(actor){
-    console.log('remove actor', actor);
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
   },
@@ -255,18 +258,6 @@ module.exports = View.extend({
 
     if(connection.showMetadataForm)
       connView.showMetadataForm();
-  },
-
-  actorSelected: function(actorView){
-    if(this.selectedActors.length <= 1)
-      this.selectedActors = [actorView.model];
-    else{
-      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
-      if(!found)
-        this.selectedActors = [actorView.model];
-    }
-    if(this.mode)
-      this.mode.actorSelected(actorView);
   },
 
   toggleMode: function(event){
@@ -295,7 +286,6 @@ module.exports = View.extend({
       config.set('moneyConnectionMode','disbursedMode'); 
     else if(currentID === 'pledgedMoney')
       config.set('moneyConnectionMode','pledgedMode'); 
-
   },
 
   toggleActiveMoneyMode: function(){
@@ -338,6 +328,41 @@ module.exports = View.extend({
       this.workspace.removeClass( hideClass );
     };
   },
+
+  checkDrop: function(event, view){
+    if(event.isPropagationStopped()) return;
+
+    if(view instanceof FakeActorView)
+      this.newActorDropped(view);
+    else if(view instanceof ActorGroupActorView)
+      this.actorGroupActorDropped(view)
+  },
+
+  // the fake actor view has been dropped here
+  newActorDropped: function(view){
+    // check if the new actor overlaps with one of the groups
+    var overlapsWithOthers = false;
+    _.each(this.actorGroupViews, function(groupView){
+      if(!overlapsWithOthers)
+        overlapsWithOthers = groupView.overlapsWith(view);
+    });
+
+    // create a new actor when it doesn't over lap with others
+    if(!overlapsWithOthers){
+      var offset = view.$el.offset();
+      var coords = this.offsetToCoords(offset, this.smallRadius);
+      this.createActorAt(coords.x, coords.y);
+      view.model.set({pos: {x: 0, y:0 }});
+    }
+  },
+
+  // an actor view from a group has been dragged here
+  actorGroupActorDropped: function(view){
+    // remove it from the group
+    view.model.collection.remove(view.model);
+    // add it to this actor
+    this.actors.add(view.model);
+  },
   
   slideActorIn: function(){
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
@@ -350,13 +375,17 @@ module.exports = View.extend({
     this.addActor.addClass('slideIn');
   },
 
+  offsetToCoords: function(offset, radius){
+    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+    return { x: x, y: y };
+  },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
+    var coords = this.offsetToCoords(offset, this.radius);
     
-    this.createActorAt(x, y);
+    this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
     _.delay(this.slideInDouble, 100);
@@ -428,6 +457,35 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global');
   },
 
+  calculateGridLines: function(event, view){
+    if(view.noGridlines) return;
+
+    var pos = view.model.get('pos');
+
+    var x = Math.round(pos.x / this.gridSize) * this.gridSize;
+    var y = Math.round(pos.y / this.gridSize) * this.gridSize;
+
+    var foundGridX = false;
+    var foundGridY = false;
+
+    //check if there is an actor at the nearest grid point
+    this.actors.each(function(actor){
+      var currentPos = actor.get('pos');
+      var actorX = Math.round(currentPos.x);
+      var actorY = Math.round(currentPos.y);
+
+      if(view.model.id != actor.id){
+        if(actorX == x)
+          foundGridX = true;
+        if(actorY == y)
+          foundGridY = true;
+      }
+    });
+
+    this.showGridLine(x, y, foundGridX, foundGridY);
+    this.hideGridLine(); // hiding is a delayed function
+  },
+
   showGridLine: function(x, y, gridX, gridY){
     if(gridX){
       this.gridlineV.css({'left': this.offset.left + this.center + x});
@@ -457,8 +515,12 @@ module.exports = View.extend({
   
   render: function(){
     var editor = this;
-    
+
     this.$el.html( this.template() );
+    this.fakeActorView = new FakeActorView({editor: this});
+    this.fakeActorView.render();
+    this.$('.newActor .dock').append(this.fakeActorView.el);
+
     this.workspace = this.$('.workspace');
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
@@ -485,36 +547,12 @@ module.exports = View.extend({
   afterRender: function(){
     var editor = this;
 
+    $(document).on('viewdragstop', this.checkDrop);
+
     this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignCenter);
-
-    this.actorDouble.draggable({
-      stop : function(){ $(this).data('stopped', null); },
-      revert : true,
-      revertDuration : 1
-    });
-
-    this.cancel.droppable({
-      greedy: true,
-      drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
-    });
-
-    //this.workspace.draggable();
-
-    this.workspace.droppable({
-      drop : function(event, ui){
-        var draggable = $(ui.draggable);
-        if(draggable.hasClass('new') && !draggable.data('stopped')){
-          // TODO: fix after implementing pan&zoom
-          var x = draggable.offset().left + editor.smallRadius;
-          var y = draggable.offset().top + editor.smallRadius;
-
-          editor.createActorAt(x, y);
-        }
-      }
-    });
     
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
@@ -539,8 +577,12 @@ module.exports = View.extend({
     _.each(this.actorGroupViews, function(view){
       view.destroy();
     });
-
+    
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keyup', this.keyUp);
+    $(document).off('viewdrag', this.calculateGridLines);
+    $(document).off('viewSelected', this.actorSelected);
+    $(document).off('viewdragstop', this.checkDrop)
     $(window).unbind('resize', this.realignCenter);
   }
 });

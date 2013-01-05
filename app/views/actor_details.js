@@ -142,8 +142,11 @@ module.exports = View.extend({
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
     
-    this.clickCatcher.remove();
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
+    this.clickCatcher = null;
     
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keydown', this.handleEscape);
   },
 
@@ -340,10 +343,5 @@ module.exports = View.extend({
   // don't sync in realtime but just every 500ms
   saveFormData: function(){
     this.model.save();
-  },
-
-  getRenderData : function(){
-    return this.model.toJSON();
   }
-
 });

@@ -2,6 +2,7 @@ var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
 
 module.exports = View.extend({
+  selectable: true,
 
   template: require('./templates/connection'),
 
@@ -42,16 +43,6 @@ module.exports = View.extend({
       this.model.on('change:pledged', this.updateCoinSize, this);
       config.on('change:moneyConnectionMode', this.updateCoinSize, this);
       this.model.on('change:coinSizeFactor', this.createCoinDefinitions, this);
-    }
-  },
-
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
-
-  select: function(event){
-    if(!this.$el.hasClass("ui-selected")){
-      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
     }
   },
 

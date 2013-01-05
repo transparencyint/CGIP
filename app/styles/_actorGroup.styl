@@ -4,6 +4,7 @@
   background-color #EEE
   color #222
   border-radius 5px
+  z-index 2
 
   .actors
     display none
@@ -12,14 +13,17 @@
     margin 0
     width 200px
 
-    li
-      display inline
-      line-height 30px
-      margin-right 3px
-      padding 3px
-      border 2px solid black
-      border-radius 3px
-
   &.show-actors
     .actors
       display block
+
+.actor-group-actor
+  display inline
+  line-height 30px
+  margin-right 3px
+  padding 3px
+  border 2px solid black
+  border-radius 3px
+
+  &.dragging
+    position absolute

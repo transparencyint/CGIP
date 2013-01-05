@@ -21,11 +21,17 @@ module.exports = Actor.extend({
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
     if(!alreadyAdded){
+      // remove it from its current collection
+      actor.collection.remove(actor);
+
       // add actor to the model
       actors.push(actor.id);
 
       // add actor to the models' collectios
       this.actors.add(actor);
+
+      // trigger that the actor was moved to this group
+      actor.trigger('moveToGroup', this);
     }
   },
 
