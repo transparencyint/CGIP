@@ -4,7 +4,7 @@ var NavigationView = require('views/navigation_view');
 
 // Application bootstrapper.
 Application = {
-  initialize: function(start) {
+  initialize: function(done) {
     var app = this;
     
     // initiate the router
@@ -24,7 +24,7 @@ Application = {
     $.when(this.countries.fetch()).done(function(){
       app.nav.render();
       $(document.body).append(app.nav.el);
-      start();
+      done();
     });
   },
 
