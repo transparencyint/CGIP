@@ -73,7 +73,8 @@ module.exports = View.extend({
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
         
-    switch(this.model.get("connectionType")){
+    var connectionType = this.model.get("connectionType"); 
+    switch(connectionType){
       case 'accountability':
         this.strokeStyle = 'white';
         break;
@@ -91,7 +92,7 @@ module.exports = View.extend({
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
     
-    if(this.model.get("connectionType") === 'money'){
+    if(this.isMoney){
       this.pathSettings = {
         'marker-end': "url(#"+ this.coinReference +")",
         'marker-start': "url(#"+ this.coinReference +")",
@@ -117,7 +118,7 @@ module.exports = View.extend({
     createGlobalDefs();
     this.update();
     
-    this.$el.addClass( this.model.get("connectionType") );
+    this.$el.addClass( connectionType );
   },
   
   createCoinDefinitions: function(){
