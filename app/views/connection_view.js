@@ -12,7 +12,8 @@ module.exports = View.extend({
   events: {
     'mouseover path' : 'showMetadata',
     'mouseout path' : 'hideMetadata',
-    'dblclick svg' : 'showMetadataForm'
+    'dblclick svg' : 'showMetadataForm',
+    'click svg' : 'selected'
   },
 
   initialize: function(options){
@@ -87,7 +88,7 @@ module.exports = View.extend({
         this.$el.addClass(config.get('moneyConnectionMode'));
         this.model.calculateCoinSize();
         //this.isMoney = true;
-        this.strokeWidth = 1;
+        //this.strokeWidth = 1;
         break;
     }
     
@@ -440,13 +441,12 @@ module.exports = View.extend({
       this.editor.$el.append(cfw.render().el);  
     }
 
-    //remove all activeClasses from the connections
-    $('.connection').each(function(){ $(this).removeClass('activeConnection') });
+  },
 
-    if(!this.$el.hasClass('activeConnection'))
-      this.$el.addClass('activeConnection');
-    else
-      this.$el.removeClass('activeConnection');
+  selected: function(){
+     //remove all activeClasses from the connections
+    $('.connection').each(function(){ $(this).removeClass('activeConnection') });
+    this.$el.addClass('activeConnection');
   },
 
   showMetadata: function(e){
