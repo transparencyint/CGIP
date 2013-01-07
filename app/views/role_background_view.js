@@ -19,7 +19,9 @@ module.exports = View.extend({
     }
 
     this.roles = ['funding', 'coordination', 'implementation', 'monitoring'];
-    
+    this.roleBackgroundWidths = [];
+    this.zoomValue = 0.0;
+
     this.editor.on('zoom', this.zoom, this);
     this.editor.on('pan', this.pan, this);
 
@@ -67,8 +69,10 @@ module.exports = View.extend({
     ];
 
     if(roleIndex == 0){
-      $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
       $('span[rel=funding]').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
+      $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
+      
+      this.roleBackgroundWidths[0] = $('#funding').width() + deltaXAbsolute;
     }
     else if(roleIndex != -1){
         newWidth = this.roleDimensions[roleIndex] - this.roleDimensions[roleIndex-1];
@@ -78,11 +82,15 @@ module.exports = View.extend({
         newWidth = this.roleDimensions[roleIndex+1] - this.roleDimensions[roleIndex];
         $('#'+roleSelector).css({'left': this.roleDimensions[roleIndex], 'width': newWidth});     
         $('span[rel='+roleSelector+']').css({'left': this.roleDimensions[roleIndex], 'width': newWidth});
+
+        this.roleBackgroundWidths[roleIndex] = newWidth;
     }
     else {
       newWidth = $('#monitoring').width();
       $('#monitoring').css({'width': newWidth -= deltaXAbsolute});
       $('span[rel=monitoring]').css({'width': newWidth});
+      
+      this.roleBackgroundWidths[4] = newWidth;
     }
 
     // move the dragHandle 
@@ -91,20 +99,48 @@ module.exports = View.extend({
 
   dragRoleHandleStop: function(event){
 
-    // set the new roleArea coordinates  
-    this.country.set({'roleDimensions' : this.roleDimensions});
-    this.country.save();
+    // set the new roleArea coordinates and calculate the zoom factor out
+    
+    console.log(this.zoomValue);
+
+    for(var i=0; i<this.roleDimensions.length; i++){
+       //this.roleDimensions[i] =  Math.round(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
+    }
+
+    //console.log(this.roleDimensions);
+
+    if(this.editor.zoom.value == 1.0)
+    {
+      this.country.set({'roleDimensions' : this.roleDimensions});
+      this.country.save();
+    }
 
     $(document).unbind('mousemove.draghandle');
   },
 
-  zoom: function(){
-    var fWidth = $('#funding').width();
-    $('#funding').width(fWidth *= this.editor.zoom.value);
+  zoom: function(zoomValue){
+    // change the width of the role backgrounds depending on the zoom value
+    // shift the x position of the role backgrounds
+    this.zoomValue = zoomValue;
+    //$('.roleBackgrounds').css( Modernizr.prefixed('transform'), 'scale('+ this.editor.zoom.value +', 1.0)');
+    
+    for(var i=0; i<this.roles.length; i++){
+      var width = $('#'+this.roles[i]).width();
+      var newWidth = width + this.roleBackgroundWidths[i] * zoomValue;
+
+      $('#'+this.roles[i]).width(newWidth);
+      $('#'+this.roles[i]).css({'left': Math.round($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue)});
+
+      $('span[rel='+this.roles[i]+']').css({'width': Math.round(newWidth)});
+      $('span[rel='+this.roles[i]+']').css({'left': $('span[rel='+this.roles[i]+']').position().left + this.roleDimensions[i] * zoomValue});
+
+      $('.draghandle[rel='+this.roles[i]+']').css({'left': $('.draghandle[rel='+this.roles[i]+']').position().left + this.roleDimensions[i] * zoomValue});
+    }
+    $('.draghandle[rel=last]').css({'left': $('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue});
   },
 
 
-  pan: function(x, y){
+  pan: function(x, y){ 
     this.roleHolder.css('left', x);
     this.roleLabels.css('left', x);
     this.dragHandleBars.css('left', x);
@@ -152,6 +188,8 @@ module.exports = View.extend({
           'width': this.roleDimensions[i+1] - this.roleDimensions[i],
           'left': this.roleDimensions[i]
         });
+
+        this.roleBackgroundWidths[i] = this.roleDimensions[i+1] - this.roleDimensions[i];
       }
       else{
         this.$('div[rel=last]').css({'left': this.roleDimensions[i]});

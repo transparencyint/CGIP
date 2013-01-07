@@ -125,10 +125,11 @@ module.exports = View.extend({
     
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
+    var zoomBefore = this.zoom.value;
     this.zoom.value = ui.value;
     this.zoom.sqrt = Math.sqrt(ui.value);
 
-    this.trigger('zoom');
+    this.trigger('zoom', this.zoom.value - zoomBefore);
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
     
     this.$el.css('background-size', this.zoom.value*10);
@@ -444,8 +445,8 @@ module.exports = View.extend({
     x += this.center;
 
     this.workspace.css({
-      left: x,
-      top: y
+      left: Math.round(x),
+      top: Math.round(y)
     });
     
     this.trigger('pan', x, y);
@@ -464,14 +465,14 @@ module.exports = View.extend({
   showGridLine: function(x, y, gridX, gridY){
 
     if(gridX){
-      this.gridlineV.css({'left': (this.offset.left + this.center + x*this.zoom.value)});
+      this.gridlineV.css({'left': (this.offset.left*this.zoom.sqrt + this.center + x*this.zoom.value)});
       this.gridlineV.show();
     }
     else if(!gridX)
       this.gridlineV.hide();
 
     if(gridY){
-      this.gridlineH.css({'top': this.offset.top + y*this.zoom.value});
+      this.gridlineH.css({'top': this.offset.top*this.zoom.sqrt + y*this.zoom.value});
       this.gridlineH.show();
     }
     else if(!gridY)
