@@ -1,4 +1,5 @@
 var AsyncRouter = require('./async_router');
+var CountriesMapView = require('views/countries_map_view');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var EditCountriesView = require('views/edit_countries_view');
@@ -15,6 +16,8 @@ module.exports = AsyncRouter.extend({
   routes: {
     '': 'index',
     '/': 'index',
+    'show/:country': 'showCountry',
+    'show/:country/': 'showCountry',
     'login': 'login',
     'login?forward_to=:forward': 'login',
     'login/': 'login',
@@ -30,7 +33,11 @@ module.exports = AsyncRouter.extend({
   },
 
   index: function(){
-    this.navigate('/edit', { trigger: true });
+    this.switchToView(new CountriesMapView({countries: this.app.countries}));
+  },
+
+  showCountry: function(){
+    throw("not yet implemented");
   },
 
   login: function(forward){

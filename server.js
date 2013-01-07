@@ -74,6 +74,11 @@ var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taur
 /** Performs general routing actions */
 var routeHandler = {
 
+  /** Simply renders the index */
+  renderIndex: function(req, res){
+    res.render('index', { user: req.user || null });
+  },
+
   /** Redirects to the login when the user is not logged in */
   checkLogin: function(req, res){
     if(req.user){
@@ -96,10 +101,9 @@ var routeHandler = {
   }
 };
 
-/* Renders the index jade with the user info */
-app.get('/', routeHandler.checkLogin);
-
 /* Push state URLs */
+app.get('/', routeHandler.renderIndex);
+app.get('/show/:country', routeHandler.renderIndex);
 app.get('/login', routeHandler.redirectWhenLoggedIn);
 app.get('/edit', routeHandler.checkLogin);
 app.get('/edit/countries', routeHandler.checkLogin);
