@@ -567,7 +567,7 @@ module.exports = View.extend({
     });
 
     //check if monitoring role is hidden and hide monitoring elements
-    if(!this.country.has('showMonitoring')){
+    if(!this.country.get('showMonitoring')){
       this.$('#toggleMonitoringText').html('Off').removeClass('active');
       this.$('#monitoring').css({'display': 'none'});
       this.$('.draghandle.last').hide();

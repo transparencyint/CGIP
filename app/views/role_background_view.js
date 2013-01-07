@@ -61,16 +61,24 @@ module.exports = View.extend({
     this.roleAreaOffsets.draghandleLeft = event.pageX;
 
     this.roleDimensions = [
-      $('.draghandle[rel=funding]').position().left,
-      $('.draghandle[rel=coordination]').position().left,
-      $('.draghandle[rel=implementation]').position().left,
-      $('.draghandle[rel=monitoring]').position().left,
-      $('.draghandle[rel=last]').position().left
+      Math.floor($('.draghandle[rel=funding]').position().left),
+      Math.floor($('.draghandle[rel=coordination]').position().left),
+      Math.floor($('.draghandle[rel=implementation]').position().left),
+      Math.floor($('.draghandle[rel=monitoring]').position().left),
+      Math.floor($('.draghandle[rel=last]').position().left)
     ];
 
+
+
     if(roleIndex == 0){
-      $('span[rel=funding]').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
-      $('#funding').css({'left': $('#funding').position().left - deltaXAbsolute, 'width': $('#funding').width() + deltaXAbsolute});
+      $('span[rel=funding]').css({
+        'left': $('#funding').position().left - deltaXAbsolute, 
+        'width': $('#funding').width() + deltaXAbsolute
+      });
+      $('#funding').css({
+        'left': $('#funding').position().left - deltaXAbsolute, 
+        'width': $('#funding').width() + deltaXAbsolute
+      });
       
       this.roleBackgroundWidths[0] = $('#funding').width() + deltaXAbsolute;
     }
@@ -100,17 +108,10 @@ module.exports = View.extend({
   dragRoleHandleStop: function(event){
 
     // set the new roleArea coordinates and calculate the zoom factor out
-    
-    console.log(this.zoomValue);
-
     for(var i=0; i<this.roleDimensions.length; i++){
        //this.roleDimensions[i] =  Math.round(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
     }
-
-    //console.log(this.roleDimensions);
-
-    if(this.editor.zoom.value == 1.0)
-    {
+    if(this.editor.zoom.value == 1.0){
       this.country.set({'roleDimensions' : this.roleDimensions});
       this.country.save();
     }
@@ -119,24 +120,67 @@ module.exports = View.extend({
   },
 
   zoom: function(zoomValue){
+
     // change the width of the role backgrounds depending on the zoom value
     // shift the x position of the role backgrounds
     this.zoomValue = zoomValue;
-    //$('.roleBackgrounds').css( Modernizr.prefixed('transform'), 'scale('+ this.editor.zoom.value +', 1.0)');
-    
+
     for(var i=0; i<this.roles.length; i++){
       var width = $('#'+this.roles[i]).width();
-      var newWidth = width + this.roleBackgroundWidths[i] * zoomValue;
+      var newWidth = Math.floor(width + this.roleBackgroundWidths[i] * zoomValue);
+      var newLeft = Math.floor($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue);
 
       $('#'+this.roles[i]).width(newWidth);
-      $('#'+this.roles[i]).css({'left': Math.round($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue)});
+      $('#'+this.roles[i]).css({'left': newLeft});
 
-      $('span[rel='+this.roles[i]+']').css({'width': Math.round(newWidth)});
-      $('span[rel='+this.roles[i]+']').css({'left': $('span[rel='+this.roles[i]+']').position().left + this.roleDimensions[i] * zoomValue});
+      $('span[rel='+this.roles[i]+']').css({'width': Math.floor(newWidth)});
+      $('span[rel='+this.roles[i]+']').css({'left': newLeft});
 
-      $('.draghandle[rel='+this.roles[i]+']').css({'left': $('.draghandle[rel='+this.roles[i]+']').position().left + this.roleDimensions[i] * zoomValue});
+      $('.draghandle[rel='+this.roles[i]+']').css({'left': newLeft});
     }
-    $('.draghandle[rel=last]').css({'left': $('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue});
+    $('.draghandle[rel=last]').css({'left': Math.floor($('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue)});
+
+
+    //go through the role backgrounds and fix any gaps
+
+    $('#funding').css({
+      'width': $('#coordination').position().left - $('#funding').position().left
+    });
+    $('#coordination').css({
+      'width': $('#implementation').position().left - $('#coordination').position().left
+    });
+    $('#implementation').css({
+      'width': $('#monitoring').position().left - $('#implementation').position().left
+    });
+    $('#monitoring').css({
+      'width': $('.draghandle[rel=last]').position().left - $('#monitoring').position().left
+    });
+
+
+    $('span[rel=funding]').css({
+      'width': $('#coordination').position().left - $('#funding').position().left
+    });
+    $('span[rel=coordination]').css({
+      'width': $('#implementation').position().left - $('#coordination').position().left
+    });
+    $('span[rel=implementation]').css({
+      'width': $('#monitoring').position().left - $('#implementation').position().left
+    });
+    $('span[rel=monitoring]').css({
+      'width': $('.draghandle[rel=last]').position().left - $('#monitoring').position().left
+    });
+
+
+    /*
+    for(var i=0; i<this.roles.length; i++){
+      if(i != 0){
+        $('#'+this.roles[i]).css({
+          'left': $('#'+this.roles[i-1]).position().left + $('#'+this.roles[i]).width()
+        });
+      }
+    }
+    */
+    
   },
 
 
