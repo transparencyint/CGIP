@@ -1,5 +1,5 @@
 var AsyncRouter = require('./async_router');
-var CountriesMapView = require('views/countries_map_view');
+var IndexView = require('views/index_view');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var EditCountriesView = require('views/edit_countries_view');
@@ -33,7 +33,7 @@ module.exports = AsyncRouter.extend({
   },
 
   index: function(){
-    this.switchToView(new CountriesMapView({countries: this.app.countries}));
+    this.switchToView(new IndexView({countries: this.app.countries}));
   },
 
   showCountry: function(){
