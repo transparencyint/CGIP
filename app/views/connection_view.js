@@ -22,7 +22,7 @@ module.exports = View.extend({
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
 
-    this.actorRadius = 60;
+    //this.actorRadius = 60;
     this.markerSize = 4;
 
     this.editor = options.editor;
@@ -151,6 +151,10 @@ module.exports = View.extend({
 
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
+
+
+    var fromMargins = this.model.from.margins;
+    var toMargins = this.model.to.margins;
     
     this.offset = 2*(this.strokeWidth + this.markerSize);
     
@@ -205,8 +209,8 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 1c
@@ -214,9 +218,9 @@ module.exports = View.extend({
       // ──┐
       //   └──➝
       //  
-      else if(end.y - start.y <= this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 1d
@@ -225,9 +229,9 @@ module.exports = View.extend({
       //  └┐
       //   ↓
       //
-      else if(end.x - start.x <= this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 1a+b
@@ -236,8 +240,8 @@ module.exports = View.extend({
       //    ↓
       //
       else {
-        start.x += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y -= toMargins.top + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -257,8 +261,8 @@ module.exports = View.extend({
       //  │
       //
       if(start.x == end.x){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 2c
@@ -266,9 +270,9 @@ module.exports = View.extend({
       //   ┌──➝
       // ──┘
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 2d
@@ -277,9 +281,9 @@ module.exports = View.extend({
       //  ┌┘
       //  │
       //
-      else if(end.x - start.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 2a+b
@@ -288,8 +292,8 @@ module.exports = View.extend({
       //  ──┘
       //  
       else {
-        start.x += this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y += toMargins.bottom + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -308,8 +312,8 @@ module.exports = View.extend({
       //  ←──
       //
       if(start.y == end.y){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.x -= fromMargins.right;
+        end.x += toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 3c
@@ -317,9 +321,9 @@ module.exports = View.extend({
       //    ┌──
       //  ←─┘
       //
-      else if(end.y - start.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 3d
@@ -328,9 +332,9 @@ module.exports = View.extend({
       //  ┌─┘
       //  ↓
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 3a+b
@@ -339,8 +343,8 @@ module.exports = View.extend({
       //  ←─┘
       //
       else {
-        start.y += this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -354,14 +358,14 @@ module.exports = View.extend({
     }
     //case 4
     else {
-      //case 1f
+      //case 4f
       //
       //  │
       //  ↓
       //
       if(start.x == end.x){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 4c
@@ -369,9 +373,9 @@ module.exports = View.extend({
       //  ←─┐
       //    └──
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 4d
@@ -380,9 +384,9 @@ module.exports = View.extend({
       //    └┐
       //     │
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 4a+b
@@ -391,8 +395,8 @@ module.exports = View.extend({
       //    │
       //
       else {
-        start.y -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
