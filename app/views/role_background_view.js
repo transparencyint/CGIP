@@ -128,7 +128,12 @@ module.exports = View.extend({
     for(var i=0; i<this.roles.length; i++){
       var width = $('#'+this.roles[i]).width();
       var newWidth = Math.floor(width + this.roleBackgroundWidths[i] * zoomValue);
+
       var newLeft = Math.floor($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue);
+      if(!$('#monitoring').is(':visible') && this.roles[i] == 'monitoring'){
+        newLeft = this.roleDimensions[i] * this.editor.zoom.value;
+      }
+      
 
       $('#'+this.roles[i]).width(newWidth);
       $('#'+this.roles[i]).css({'left': newLeft});
@@ -137,6 +142,8 @@ module.exports = View.extend({
       $('span[rel='+this.roles[i]+']').css({'left': newLeft});
 
       $('.draghandle[rel='+this.roles[i]+']').css({'left': newLeft});
+
+      console.log(this.roles[i], newLeft, this.roleDimensions[i]);
     }
     $('.draghandle[rel=last]').css({'left': Math.floor($('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue)});
 
@@ -169,20 +176,8 @@ module.exports = View.extend({
     $('span[rel=monitoring]').css({
       'width': $('.draghandle[rel=last]').position().left - $('#monitoring').position().left
     });
-
-
-    /*
-    for(var i=0; i<this.roles.length; i++){
-      if(i != 0){
-        $('#'+this.roles[i]).css({
-          'left': $('#'+this.roles[i-1]).position().left + $('#'+this.roles[i]).width()
-        });
-      }
-    }
-    */
     
   },
-
 
   pan: function(x, y){ 
     this.roleHolder.css('left', x);
@@ -191,6 +186,9 @@ module.exports = View.extend({
   },
 
   toggleMonitoring: function(){
+
+    //depending on the zoom value we need to position the monitoring area after the implementation role
+
     if($('#monitoring').is(':visible')){
       $('#monitoring').hide();
       $('.draghandle.last').hide();
@@ -199,10 +197,24 @@ module.exports = View.extend({
       this.country.set({'showMonitoring' : false});
       this.country.save();
     }else{
+
+      $('#monitoring').css({
+        'left': $('#implementation').position().left + $('#implementation').width(),
+        'width': $(window).width() * this.editor.zoom.value / 4
+      });
+
+      $('span[rel=monitoring]').css({
+        'left': $('#implementation').position().left + $('#implementation').width(),
+        'width': $(window).width() * this.editor.zoom.value / 4
+      });
+
       $('#monitoring').show();
-      
+
       //fix for the last draghandle
-      $('.draghandle.last').css({'left': $('#monitoring').position().left + $('#monitoring').width()});
+      $('.draghandle.last').css({
+        'left': $('#monitoring').position().left + $('#monitoring').width()
+      });
+
       $('.draghandle.last').show();
       $('span[rel=monitoring]').show();
 
