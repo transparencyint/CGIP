@@ -1,5 +1,9 @@
-<% if @locationType or @locationName: %> 
-  <a href="/edit">Dashboard</a>
+<% if @locationType or @locationName: %>
+  <% if @currentRoute is 'showCountry': %>
+    <a href="/">Countries</a>
+  <% else: %>
+    <a href="/edit">Dashboard</a>
+  <% end %>
   <span class="location label">
     <% if @isoLocation: %>
       <span class="flag" style="background-image: url(/images/flags/<%= @isoLocation %>.svg);"></span>
