@@ -14,6 +14,10 @@ module.exports = Connection.extend({
     this.minCoinSizeFactor = 1;
     this.maxCoinSizeFactor = 4;
     this.coinSizeFactor = this.minCoinSizeFactor;
+    this.on('change:disbursed', this.calculateCoinSize, this);
+    this.on('change:pledged', this.calculateCoinSize, this);
+    config.on('change:moneyConnectionMode', this.calculateCoinSize, this);
+      
   },
 
   calculateCoinSize: function(){
@@ -23,7 +27,6 @@ module.exports = Connection.extend({
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
     var amount = this.get(amountType);
-
     var maxMoneyAmount = 0;
     var minMoneyAmount = 0;
 
@@ -46,13 +49,26 @@ module.exports = Connection.extend({
 
         this.collection.each(function(connection){
           var amountDif = connection.get(amountType) - minMoneyAmount;
-          connection.coinSizeFactor = amountDif / moneyRange * factorRange + minCoinFactor;
-          connection.trigger('change:coinSizeFactor');
+          var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
+          if(connection.coinSizeFactor !== newCoinSize) {
+            connection.coinSizeFactor = newCoinSize;
+            console.log("if ");
+            console.log("connection.coinSizeFactor " + connection.coinSizeFactor);
+            console.log("connection.get(amountType)" + connection.get(amountType));
+            connection.trigger('change:coinSizeFactor');
+            
+          }
         });
       }else {
         this.collection.each(function(connection){
-          connection.coinSizeFactor = minCoinFactor;
-          connection.trigger('change:coinSizeFactor');
+          if(connection.coinSizeFactor !== minCoinFactor) {
+            connection.coinSizeFactor = minCoinFactor;
+            console.log("else ");
+            console.log("connection.coinSizeFactor " + connection.coinSizeFactor);
+            console.log("connection.get(amountType)" + connection.get(amountType));
+            connection.trigger('change:coinSizeFactor');
+            
+          }
         });
       }
     }
