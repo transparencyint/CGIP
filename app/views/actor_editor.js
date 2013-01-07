@@ -37,44 +37,12 @@ module.exports = View.extend({
     'transition'       : 'transitionend'
   },
   
-  initialize: function(options){
-    this.country = options.country;
-    this.radius = 60;
-    this.smallRadius = 44;
-    
-    // padding for fit-to-screen
-    this.padding = this.radius/2;
-    
+  initialize: function(){
+    // initialize all of the editor's properties
+    this.initializeProperties();
+
+    // specific editor properties
     this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
-
-    // initialize the collections
-    this.actors = options.actors;
-    this.actorViews = {};
-
-    // filter the actor groups
-    this.actorGroups = this.actors.filterGroups();
-    this.actorGroupViews = {};
-
-    this.connections = options.connections;
-    var filteredConnections = this.connections.filterConnections();
-    this.moneyConnections = filteredConnections.money;
-    this.accountabilityConnections = filteredConnections.accountability;
-    this.monitoringConnections = filteredConnections.monitoring;
-
-    this.zoom = {
-      value: 1,
-      sqrt: 1,
-      step: 0.25,
-      min: 0.25,
-      max: 1.75
-    };
-    
-    this.offset = {
-      left: 0,
-      top: 0
-    };
-    
-    this.gridSize = this.radius;
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
@@ -95,6 +63,44 @@ module.exports = View.extend({
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
     $(document).on('viewSelected', this.actorSelected);
+  },
+
+  initializeProperties: function(){
+    this.country = this.options.country;
+    this.radius = 60;
+    this.smallRadius = 44;
+    
+    // padding for fit-to-screen
+    this.padding = this.radius/2;
+
+    // initialize the collections
+    this.actors = this.options.actors;
+    this.actorViews = {};
+
+    // filter the actor groups
+    this.actorGroups = this.actors.filterGroups();
+    this.actorGroupViews = {};
+
+    this.connections = this.options.connections;
+    var filteredConnections = this.connections.filterConnections();
+    this.moneyConnections = filteredConnections.money;
+    this.accountabilityConnections = filteredConnections.accountability;
+    this.monitoringConnections = filteredConnections.monitoring;
+
+    this.zoom = {
+      value: 1,
+      sqrt: 1,
+      step: 0.25,
+      min: 0.25,
+      max: 1.75
+    };
+    
+    this.offset = {
+      left: 0,
+      top: 0
+    };
+    
+    this.gridSize = this.radius;
   },
   
   stopPropagation: function(event){
