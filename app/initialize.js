@@ -1,5 +1,6 @@
 var application = require('application');
 var User = require('models/user');
+var Config = require('models/config');
 
 $(function() {
   Backbone.Model.prototype.idAttribute = "_id";
@@ -7,6 +8,8 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
+  window.config = new Config();
+  
   application.initialize(function(){
     Backbone.history.start({pushState: true});
   });

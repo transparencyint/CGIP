@@ -3,7 +3,7 @@
   <div class="flexbox center">
 
     <div class="abbrev">
-        <%= @abbreviation %>
+        <%= @abbreviation or 'Unknown' %>
     </div>
     <input type="text" placeholder="Abbrev" class='abbrev-input' />
 
