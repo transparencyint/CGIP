@@ -38,7 +38,9 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    if(this.model.get('connectionType') === 'money') { 
+    this.isMoney = this.model.get('connectionType') === 'money';
+    if(this.isMoney) { 
+      this.strokeWidth = 1;
       this.model.on('change:disbursed', this.updateCoinSize, this);
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:pledged', this.updateCoinSize, this);
@@ -84,7 +86,7 @@ module.exports = View.extend({
       case 'money':
         this.$el.addClass(config.get('moneyConnectionMode'));
         this.model.calculateCoinSize();
-        this.isMoney = true;
+        //this.isMoney = true;
         this.strokeWidth = 1;
         break;
     }
