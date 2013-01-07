@@ -41,8 +41,6 @@ module.exports = View.extend({
     this.country = options.country;
     this.radius = 60;
     this.smallRadius = 44;
-
-    this.moneyConnectionMode = 'disbursedMode'; //default
     
     // padding for fit-to-screen
     this.padding = this.radius/2;
@@ -87,7 +85,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
@@ -252,7 +250,9 @@ module.exports = View.extend({
 
   appendConnection: function(connection){
     connection.pickOutActors(this.actors);
+
     var connView = new ConnectionView({ model : connection, editor: this});
+
     connView.render();  
     this.workspace.append(connView.el);
 
@@ -283,19 +283,16 @@ module.exports = View.extend({
 
     var currentID = target.attr('id');
     if(currentID === 'disbursedMoney')
-      this.moneyConnectionMode = 'disbursedMode';
+      config.set('moneyConnectionMode','disbursedMode'); 
     else if(currentID === 'pledgedMoney')
-      this.moneyConnectionMode = 'pledgedMode';
-
-    this.trigger('change:moneyConnectionMode');
+      config.set('moneyConnectionMode','pledgedMode'); 
   },
 
   toggleActiveMoneyMode: function(){
-    if(this.moneyConnectionMode === 'disbursedMode')
+    if(config.get('moneyConnectionMode') === 'disbursedMode')
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
-    else if(this.moneyConnectionMode === 'pledgedMode')
+    else 
       this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
-
   },
 
   deactivateMode: function(){
@@ -534,8 +531,10 @@ module.exports = View.extend({
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 
-    //this.accountabilityConnections.each(this.appendAccountabilityConnection);
-    this.connections.each(this.appendConnection);
+    // append all connections
+    this.accountabilityConnections.each(this.appendConnection);
+    this.moneyConnections.each(this.appendConnection);
+    this.monitoringConnections.each(this.appendConnection);
 
     this.afterRender();
     

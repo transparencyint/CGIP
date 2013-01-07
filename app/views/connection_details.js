@@ -84,7 +84,7 @@ module.exports = View.extend({
   },
 
   currentMoneyMode: function () {
-    this.$('#' + this.editor.moneyConnectionMode).prop("checked", true);
+    this.$('#' + config.get('moneyConnectionMode')).prop("checked", true);
   },
 
   getRenderData : function(){
@@ -167,7 +167,8 @@ module.exports = View.extend({
     this.$('#pledged').numeric();
 
     this.currentMoneyMode();
-    this.editor.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+    config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+    
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
@@ -234,9 +235,8 @@ module.exports = View.extend({
     this.model.set(attributes);
   },
 
-  updateMoneyConnections: function(event) {
-    this.editor.moneyConnectionMode = event.currentTarget.id;
-    this.editor.trigger('change:moneyConnectionMode');
+  updateMoneyConnections: function (event) {
+    config.set('moneyConnectionMode', event.currentTarget.id);
   },
   
   toggleAdditionalInfo: function(event){
