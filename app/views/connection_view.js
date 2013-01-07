@@ -38,7 +38,7 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    if(this.model.get("connectionType") === 'money') { 
+    if(this.model.get('connectionType') === 'money') { 
       this.model.on('change:disbursed', this.updateCoinSize, this);
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:pledged', this.updateCoinSize, this);
@@ -73,7 +73,7 @@ module.exports = View.extend({
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
         
-    var connectionType = this.model.get("connectionType"); 
+    var connectionType = this.model.get('connectionType'); 
     switch(connectionType){
       case 'accountability':
         this.strokeStyle = 'white';
@@ -429,7 +429,7 @@ module.exports = View.extend({
   },
 
   showMetadataForm: function(){
-    if(this.model.get('connectionType') === "money"){
+    if(this.isMoney){
       //Remove all other forms
       $('.connection-form-container').remove();
 
