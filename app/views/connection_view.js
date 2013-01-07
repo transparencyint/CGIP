@@ -17,6 +17,7 @@ module.exports = View.extend({
 
   initialize: function(options){
 
+    this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
