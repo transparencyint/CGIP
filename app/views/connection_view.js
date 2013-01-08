@@ -37,14 +37,6 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-
-    if(this.model.get("connectionType") === 'money') { 
-      //this.model.on('change:disbursed', this.updateCoinSize, this);
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      //this.model.on('change:pledged', this.updateCoinSize, this);
-      //config.on('change:moneyConnectionMode', this.updateCoinSize, this);
-      this.model.on('change:coinSizeFactor', this.updateConnection, this);
-    }
   },
 
   render: function(){
@@ -116,15 +108,18 @@ module.exports = View.extend({
     this.g = this.svg.group();
     createGlobalDefs();
 
-    console.log("afterRender");
     this.update();
-    
+
     this.$el.addClass( this.model.get("connectionType") );
+
+    if(this.model.get("connectionType") === 'money') { 
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+    }
   },
 
   updateConnection: function(){
     this.createCoinDefinitions();
-    console.log("updateConnection this.model.coinSizeFactor "+this.model.coinSizeFactor );
     this.update();
   },
   
@@ -153,9 +148,7 @@ module.exports = View.extend({
   },
 
   update: function(){
-
-    console.log("update");
-
+    
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
@@ -418,16 +411,6 @@ module.exports = View.extend({
     if(this.pathElement) this.svg.remove(this.pathElement);
     
     this.pathElement = this.svg.path(this.g, this.path, this.pathSettings);
-  },
-
-  /* 
-   * Define the thickness of the money line.
-   */
-  updateCoinSize: function(){
-    this.model.calculateCoinSize();
-
-    console.log("updateCoinSize ");
-    //this.update();
   },
 
   updateDisbursed: function(){ 

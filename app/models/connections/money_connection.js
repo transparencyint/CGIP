@@ -17,7 +17,6 @@ module.exports = Connection.extend({
     this.on('change:disbursed', this.calculateCoinSize, this);
     this.on('change:pledged', this.calculateCoinSize, this);
     config.on('change:moneyConnectionMode', this.calculateCoinSize, this);
-      
   },
 
   calculateCoinSize: function(){
@@ -52,22 +51,14 @@ module.exports = Connection.extend({
           var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
           if(connection.coinSizeFactor !== newCoinSize) {
             connection.coinSizeFactor = newCoinSize;
-            console.log("if ");
-            console.log("connection.coinSizeFactor " + connection.coinSizeFactor);
-            console.log("connection.get(amountType)" + connection.get(amountType));
-            connection.trigger('change:coinSizeFactor');
-            
+            connection.trigger('change:coinSizeFactor');          
           }
         });
       }else {
         this.collection.each(function(connection){
           if(connection.coinSizeFactor !== minCoinFactor) {
             connection.coinSizeFactor = minCoinFactor;
-            console.log("else ");
-            console.log("connection.coinSizeFactor " + connection.coinSizeFactor);
-            console.log("connection.get(amountType)" + connection.get(amountType));
-            connection.trigger('change:coinSizeFactor');
-            
+            connection.trigger('change:coinSizeFactor');        
           }
         });
       }
