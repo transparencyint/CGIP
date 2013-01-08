@@ -167,7 +167,6 @@ module.exports = View.extend({
     switch(this.connectionType){
       case 'accountability':
         this.fillInActorNames('is accountable for');
-
         break;
 
       case 'money':
@@ -186,7 +185,6 @@ module.exports = View.extend({
         config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
 
         this.fillInActorNames('pays');
-
         break;
 
       case 'monitoring':
@@ -197,7 +195,6 @@ module.exports = View.extend({
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
-    //this.fillInActorNames();
     this.addClickCatcher();
 
     $(document).keydown(this.handleEscape);
