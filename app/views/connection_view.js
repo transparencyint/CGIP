@@ -37,14 +37,6 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-
-    if(this.model.get("connectionType") === 'money') { 
-      this.model.on('change:disbursed', this.updateCoinSize, this);
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:pledged', this.updateCoinSize, this);
-      config.on('change:moneyConnectionMode', this.updateCoinSize, this);
-      this.model.on('change:coinSizeFactor', this.createCoinDefinitions, this);
-    }
   },
 
   render: function(){
@@ -63,7 +55,7 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
   },
   
-  afterRender: function(){
+  afterRender: function(){ 
     //this.selectStyle = 'hsl(205,100%,55%)';
 
     this.path = "";
@@ -115,13 +107,23 @@ module.exports = View.extend({
 
     this.g = this.svg.group();
     createGlobalDefs();
+
     this.update();
-    
+
     this.$el.addClass( this.model.get("connectionType") );
+
+    if(this.model.get("connectionType") === 'money') { 
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+    }
+  },
+
+  updateConnection: function(){
+    this.createCoinDefinitions();
+    this.update();
   },
   
   createCoinDefinitions: function(){
-
     // case: coin size gets changed
     // then: remove coinMarker if its already there
     if(this.coinMarker)
@@ -146,6 +148,7 @@ module.exports = View.extend({
   },
 
   update: function(){
+    
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
@@ -408,14 +411,6 @@ module.exports = View.extend({
     if(this.pathElement) this.svg.remove(this.pathElement);
     
     this.pathElement = this.svg.path(this.g, this.path, this.pathSettings);
-  },
-
-  /* 
-   * Define the thickness of the money line.
-   */
-  updateCoinSize: function(){
-    this.model.calculateCoinSize();
-    this.update();
   },
 
   updateDisbursed: function(){ 
