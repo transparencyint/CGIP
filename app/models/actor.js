@@ -17,7 +17,7 @@ module.exports = Backbone.Model.extend({
   },
 
   initialize: function(){
-    this.margins = {top: 60, right: 60, bottom: 80, left: 60};
+    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
   },
 
   moveByDelta: function(dx, dy){
