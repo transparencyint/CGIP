@@ -196,11 +196,11 @@ module.exports = View.extend({
     };
   },
   
-  actorSelected: function(event, actorView){
-    if(actorView.$el.hasClass('actor')){
-      this.selectedActorView = actorView;
+  actorSelected: function(event, view){
+    if(view.$el.hasClass('actor')){
+      this.selectedActorView = view;
       if(this.mode)
-        this.mode.actorSelected(actorView);
+        this.mode.actorSelected(view);
     }
   },
 
