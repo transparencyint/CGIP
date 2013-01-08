@@ -64,7 +64,7 @@ module.exports = View.extend({
     this.zoom = {
       value: 1,
       sqrt: 1,
-      step: 0.25,
+      step: 0.1,
       min: 0.25,
       max: 1.75
     };
@@ -143,30 +143,14 @@ module.exports = View.extend({
     // center workspace
     this.moveTo(0, 0);
     
-    // check if the actors as a whole are not centered
-    // if thats the case, move them to the left
-    if(boundingBox.left !== boundingBox.width/2){
-      
-      // calculate center offset
-      var dx = boundingBox.left + boundingBox.width/2;
-      
-      this.actors.each(function(actor){
-        actor.moveByDelta(-dx, 0);
-        actor.save();
-      });
-    }
+    // calculate offset of the center
+    var offsetX = Math.abs(boundingBox.left + boundingBox.width/2);
     
-    var horizontalRatio = this.$el.width() / (boundingBox.width + this.radius*2 + this.padding*2);
-    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius + this.padding*2);
+    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.radius*2 + this.padding) );
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius*2 + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
-    
-    // round it to our zoom.step
-    fitZoom = Math.floor( fitZoom / this.zoom.step ) * this.zoom.step;
-    
-    // keep it inside our zoom boundaries
-    fitZoom = Math.max(this.zoom.min, Math.min(this.zoom.max, fitZoom));
     
     this.zoomTo(fitZoom);
   },
@@ -177,14 +161,17 @@ module.exports = View.extend({
     var top = Infinity;
     var bottom = 0;
     
-    this.actors.each(function(actor){
+    var checkPos = function(actor){
       var pos = actor.get('pos');
       
       if(pos.y < top) top = pos.y;
       if(pos.y > bottom) bottom = pos.y;
       if(pos.x < left) left = pos.x;
       if(pos.x > right) right = pos.x;
-    });
+    };
+    
+    this.actors.each(checkPos);
+    this.actorGroups.each(checkPos);
     
     return {
       left: left,
