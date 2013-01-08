@@ -21,8 +21,6 @@ module.exports = View.extend({
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
-
-    //this.actorRadius = 60;
     this.markerSize = 4;
 
     this.editor = options.editor;
@@ -73,6 +71,7 @@ module.exports = View.extend({
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
         
+    //set the style of the connection
     switch(this.model.get("connectionType")){
       case 'accountability':
         this.strokeStyle = 'white';
@@ -107,6 +106,8 @@ module.exports = View.extend({
       };
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
+
+      //creating the marker for the accountability and monitoring connection
       if(!this.isMoney){
         var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
         this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle, overflow:"visible" });
@@ -176,8 +177,6 @@ module.exports = View.extend({
       y : Math.round(to.y - pos.y)
     };
     
-    //var alpha = Math.atan2(end.y - start.y, end.x - start.x);
-    
     var width = Math.abs(from.x - to.x)  + this.offset;
     var height = Math.abs(from.y - to.y) + this.offset;
     
@@ -202,6 +201,7 @@ module.exports = View.extend({
     var halfY;
     var start2, end2;
 
+    //checking in which relation the start and end actor are
     //case 1
     if(start.x < end.x && start.y <= end.y){
       //case 1f
@@ -509,8 +509,9 @@ module.exports = View.extend({
 
     var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
     
-    for(var i=1; i<=count; i++){  
-
+    //drawing every single path segment
+    for(var i=1; i<=count; i++){ 
+      //getting the right circle direction 
       if(hasRightDirection){
         dx = radius * (1-Math.cos (i*alpha)) - sumX;
         dy = radius * Math.sin (i*alpha) - sumY;
@@ -571,6 +572,7 @@ module.exports = View.extend({
     if(dy/2 < edgeRadius)
       edgeRadius = dy/2;
     
+    //define the waypoints of the connection
     if(end.y - start.y > 0){
       firstY = start.y + edgeRadius;
       secondY = end.y - edgeRadius;
@@ -587,6 +589,7 @@ module.exports = View.extend({
       secondX = halfX - edgeRadius;
     }
       
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
     this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
@@ -604,6 +607,7 @@ module.exports = View.extend({
     if(dx/2 < edgeRadius)
       edgeRadius = dx/2;
 
+    //define the waypoints of the connection
     if(end.x - start.x > 0){
       firstX = start.x + edgeRadius;
       secondX = end.x - edgeRadius;
@@ -622,6 +626,7 @@ module.exports = View.extend({
       secondY = halfY - edgeRadius;
     }
 
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
     this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
@@ -630,10 +635,9 @@ module.exports = View.extend({
     this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
   },
 
+  //creates a straight line
   addPathSegment: function(start, end, distance, direction){
     var pathSegments = this.slicedPathSegments(start, end, distance);
-    //console.log("pathSegment", typeof pathSegments);
-    //console.log(direction + " '" + pathSegments + "'");
     if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
       this.path += direction + pathSegments;
   }
