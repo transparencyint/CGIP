@@ -488,9 +488,11 @@ module.exports = View.extend({
       1: clockwise
   */
   slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
+
+    //calculation the coin distance depending on the money connection thickness
+    distance /= this.model.coinSizeFactor;
+
     var length = Math.PI/2 * radius;
-    //REMOVE THE LINE BELOW TO GET THE ORIGINAL COIM DISTANCE, JUST A HACK TO MAKE BIG LINES NICER
-    distance /= 2;
     var count = Math.floor(length / distance);
     var segments = [];
     var signX = 1;
