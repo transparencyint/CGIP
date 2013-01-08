@@ -437,8 +437,10 @@ module.exports = View.extend({
   },
 
   showDetails: function(){
-    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
-    this.editor.$el.append(cfw.render().el);
+    if(this.isMoney){
+      var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
+      this.editor.$el.append(cfw.render().el);
+    }
   },
 
   showMetadata: function(e){
