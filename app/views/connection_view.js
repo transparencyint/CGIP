@@ -44,17 +44,6 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-    
-    this.isMoney = this.model.get('connectionType') === 'money';
-    
-    if(this.isMoney) { 
-      this.strokeWidth = 1;
-      this.model.on('change:disbursed', this.updateCoinSize, this);
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:pledged', this.updateCoinSize, this);
-      config.on('change:moneyConnectionMode', this.updateCoinSize, this);
-      this.model.on('change:coinSizeFactor', this.createCoinDefinitions, this);
-    }
   },
 
   render: function(){
@@ -121,13 +110,23 @@ module.exports = View.extend({
     this.g = this.svg.group();
     
     createGlobalDefs();
+
     this.update();
-    
-    this.$el.addClass( connectionType );
+
+    this.$el.addClass( this.model.get("connectionType") );
+
+    if(this.model.get("connectionType") === 'money') { 
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+    }
+  },
+
+  updateConnection: function(){
+    this.createCoinDefinitions();
+    this.update();
   },
   
   createCoinDefinitions: function(){
-
     // case: coin size gets changed
     // then: remove coinMarker if its already there
     if(this.coinMarker)
@@ -152,6 +151,7 @@ module.exports = View.extend({
   },
 
   update: function(){
+    
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
@@ -428,14 +428,6 @@ module.exports = View.extend({
     this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
     this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
     this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
-  },
-
-  /* 
-   * Define the thickness of the money line.
-   */
-  updateCoinSize: function(){
-    this.model.calculateCoinSize();
-    this.update();
   },
 
   updateDisbursed: function(){ 
