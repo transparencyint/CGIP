@@ -27,6 +27,7 @@ module.exports = View.extend({
     // current zoom value 
     this.zoomValue = 0.0;
 
+    // listen to zoom and pan events fired by actor editor
     this.editor.on('zoom', this.zoom, this);
     this.editor.on('pan', this.pan, this);
 
@@ -47,18 +48,24 @@ module.exports = View.extend({
   dragRoleHandle: function(event){
     event.stopPropagation();
 
-    this.startX = event.pageX - this.roleAreaOffsets.draghandleLeft;
     this.roleAreaOffsets.draghandleLeft = event.pageX;
     
-    $(document).on('mousemove.draghandle', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStart);
-    $(document).one('mouseup', {roleSelector: $(event.currentTarget).attr('rel') }, this.dragRoleHandleStop);
+    $(document).on('mousemove.draghandle', {
+      roleSelector: $(event.currentTarget).attr('rel') }, 
+      this.dragRoleHandleStart
+    );
+
+    $(document).one('mouseup', {
+      roleSelector: $(event.currentTarget).attr('rel') }, 
+      this.dragRoleHandleStop
+    );
   },
 
   dragRoleHandleStart: function(event){
     
     // get the current drag x coordinate
-    var fundingWidth = $('#funding').width();
-    var coordinationWidth = $('#coordination').width();
+    var fundingWidth = this.$('#funding').width();
+    var coordinationWidth = this.$('#coordination').width();
     var newWidth = 0;
     var roleSelector = event.data.roleSelector;
     var roleIndex = this.roles.indexOf(roleSelector);
@@ -67,6 +74,8 @@ module.exports = View.extend({
 
     this.roleAreaOffsets.draghandleLeft = event.pageX;
 
+    // the draghandles define the positions and widths of the role backgrounds
+    // save the dimensions if they are dragged
     this.roleDimensions = [
       Math.floor($('.draghandle[rel=funding]').position().left),
       Math.floor($('.draghandle[rel=coordination]').position().left),
@@ -76,52 +85,62 @@ module.exports = View.extend({
     ];
 
 
-
     if(roleIndex == 0){
-      $('span[rel=funding]').css({
-        'left': $('#funding').position().left - deltaXAbsolute, 
-        'width': $('#funding').width() + deltaXAbsolute
-      });
-      $('#funding').css({
+      this.$('.funding').css({
         'left': $('#funding').position().left - deltaXAbsolute, 
         'width': $('#funding').width() + deltaXAbsolute
       });
       
-      this.roleBackgroundWidths[0] = $('#funding').width() + deltaXAbsolute;
+      this.roleBackgroundWidths[0] = this.$('#funding').width() + deltaXAbsolute;
     }
     else if(roleIndex != -1){
         newWidth = this.roleDimensions[roleIndex] - this.roleDimensions[roleIndex-1];
-        $('#'+this.roles[roleIndex-1]).css({'width': newWidth});
-        $('span[rel='+this.roles[roleIndex-1]+']').css({'width': newWidth});
+        this.$('.'+this.roles[roleIndex-1]).css({'width': newWidth});
 
         newWidth = this.roleDimensions[roleIndex+1] - this.roleDimensions[roleIndex];
-        $('#'+roleSelector).css({'left': this.roleDimensions[roleIndex], 'width': newWidth});     
-        $('span[rel='+roleSelector+']').css({'left': this.roleDimensions[roleIndex], 'width': newWidth});
+        this.$('.'+roleSelector).css({
+          'left': this.roleDimensions[roleIndex], 
+          'width': newWidth
+        });     
 
         this.roleBackgroundWidths[roleIndex] = newWidth;
     }
     else {
-      newWidth = $('#monitoring').width();
-      $('#monitoring').css({'width': newWidth -= deltaXAbsolute});
-      $('span[rel=monitoring]').css({'width': newWidth});
+      newWidth = this.$('#monitoring').width();
+
+      this.$('#monitoring').css({'width': newWidth -= deltaXAbsolute});
+      this.$('span[rel=monitoring]').css({'width': newWidth});
       
       this.roleBackgroundWidths[4] = newWidth;
     }
 
-    // move the dragHandle 
-    $('.draghandle[rel='+roleSelector+']').css({'left': $('.draghandle[rel='+roleSelector+']').position().left - deltaXAbsolute});
+    // move the dragHandle if it is not overlapping
+    //console.log('eventX:', event.pageX);
+    //console.log('draghandle:', this.$('.draghandle[rel='+roleSelector+']').position().left);
+
+    //if(this.$('.draghandle[rel='+roleSelector+']').position().left < (this.$('#monitoring').position().left + 46)){
+      //console.log('cannot move');
+    //}else{
+      this.$('.draghandle[rel='+roleSelector+']').css({
+        'left': $('.draghandle[rel='+roleSelector+']').position().left - deltaXAbsolute
+      });
+    //}
+    
   },
 
   dragRoleHandleStop: function(event){
 
     // set the new roleArea coordinates and calculate the zoom factor out
     for(var i=0; i<this.roleDimensions.length; i++){
-       this.roleDimensions[i] =  Math.round(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
+       this.roleDimensions[i] =  Math.floor(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
     }
     if(this.editor.zoom.value == 1.0){
       this.country.set({'roleDimensions' : this.roleDimensions});
       this.country.save();
     }
+
+    // if dragging has stopped we need to set all dimensions to get rid of any gaps
+    //this.setDimensions();
 
     $(document).unbind('mousemove.draghandle');
   },
@@ -133,54 +152,45 @@ module.exports = View.extend({
     this.zoomValue = zoomValue;
 
     for(var i=0; i<this.roles.length; i++){
-      var width = $('#'+this.roles[i]).width();
+      var width = this.$('#'+this.roles[i]).width();
       var newWidth = Math.floor(width + this.roleBackgroundWidths[i] * zoomValue);
 
       var newLeft = Math.floor($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue);
 
-      if(!$('#monitoring').is(':visible') && this.roles[i] == 'monitoring')
+      if(!this.$('#monitoring').is(':visible') && this.roles[i] == 'monitoring')
         newLeft = this.roleDimensions[i] * this.editor.zoom.value;
 
-      $('#'+this.roles[i]).width(newWidth);
-      $('#'+this.roles[i]).css({'left': newLeft});
+      this.$('#'+this.roles[i]).css({
+        'width': newWidth,
+        'left': newLeft
+      });
 
-      $('span[rel='+this.roles[i]+']').css({'width': Math.floor(newWidth)});
-      $('span[rel='+this.roles[i]+']').css({'left': newLeft});
+      this.$('.'+this.roles[i]).css({
+        'width': Math.floor(newWidth),
+        'left': newLeft
+      });
 
-      $('.draghandle[rel='+this.roles[i]+']').css({'left': newLeft});
+      this.$('.draghandle[rel='+this.roles[i]+']').css({'left': newLeft});
     }
-    $('.draghandle[rel=last]').css({'left': Math.floor($('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue)});
+    this.$('.draghandle.last').css({'left': Math.floor($('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue)});
 
 
     // go through the role backgrounds and fix any gaps
 
-    $('#funding').css({
+    this.$('.funding').css({
       'width': $('#coordination').position().left - $('#funding').position().left
     });
-    $('#coordination').css({
+    this.$('.coordination').css({
       'width': $('#implementation').position().left - $('#coordination').position().left
     });
-    $('#implementation').css({
+    this.$('.implementation').css({
       'width': $('#monitoring').position().left - $('#implementation').position().left
     });
-    $('#monitoring').css({
+    this.$('.monitoring').css({
       'width': $('.draghandle[rel=last]').position().left - $('#monitoring').position().left
-    });
+    });    
 
-
-    $('span[rel=funding]').css({
-      'width': $('#coordination').position().left - $('#funding').position().left
-    });
-    $('span[rel=coordination]').css({
-      'width': $('#implementation').position().left - $('#coordination').position().left
-    });
-    $('span[rel=implementation]').css({
-      'width': $('#monitoring').position().left - $('#implementation').position().left
-    });
-    $('span[rel=monitoring]').css({
-      'width': $('.draghandle[rel=last]').position().left - $('#monitoring').position().left
-    });
-    
+    console.log(this.zoomValue);
   },
 
   pan: function(x, y){ 
@@ -193,34 +203,32 @@ module.exports = View.extend({
 
     //depending on the zoom value we need to position the monitoring area after the implementation role
 
-    if($('#monitoring').is(':visible')){
-      $('#monitoring').hide();
-      $('.draghandle.last').hide();
-      $('span[rel=monitoring]').hide();
-
+    if(this.$('#monitoring').is(':visible')){
+      this.$('.monitoring').hide();
+      this.$('.draghandle.last').hide();
+      
       this.country.set({'showMonitoring' : false});
       this.country.save();
     }else{
 
-      $('#monitoring').css({
+      this.$('.monitoring').css({
         'left': $('#implementation').position().left + $('#implementation').width(),
         'width': $(window).width() * this.editor.zoom.value / 4
       });
 
-      $('span[rel=monitoring]').css({
+      this.$('.monitoring').css({
         'left': $('#implementation').position().left + $('#implementation').width(),
         'width': $(window).width() * this.editor.zoom.value / 4
       });
 
-      $('#monitoring').show();
+      this.$('.monitoring').show();
 
       //fix for the last draghandle
-      $('.draghandle.last').css({
+      this.$('.draghandle.last').css({
         'left': $('#monitoring').position().left + $('#monitoring').width()
       });
 
-      $('.draghandle.last').show();
-      $('span[rel=monitoring]').show();
+      this.$('.draghandle.last').show();
 
       this.country.set({'showMonitoring' : true});
       this.country.save();
@@ -236,28 +244,29 @@ module.exports = View.extend({
     this.dragHandleBars = this.$('.dragHandleBars');
 
     this.roleDimensions = this.country.get('roleDimensions');
+    this.setDimensions();
+    
+    return this.$el;
+  },
 
+  setDimensions: function(){
+
+    // iterate through all roles and set their dimensions
+    // we also take care of the zoom factor
     for(var i=0; i<this.roleDimensions.length; i++){
       if(i != this.roleDimensions.length-1){
-        this.$('#'+this.roles[i]).css({
-          'width': this.roleDimensions[i+1] - this.roleDimensions[i],
-          'left': this.roleDimensions[i]
-        });
-
-        this.$('span[rel='+this.roles[i]+']').css({
+        this.$('.'+this.roles[i]).css({
           'width': this.roleDimensions[i+1] - this.roleDimensions[i],
           'left': this.roleDimensions[i]
         });
 
         this.roleBackgroundWidths[i] = this.roleDimensions[i+1] - this.roleDimensions[i];
+      }else{
+        this.$('.draghandle.last').css({'left': this.roleDimensions[i]});
       }
-      else{
-        this.$('div[rel=last]').css({'left': this.roleDimensions[i]});
-      }
-      this.$('div[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i]});
+      this.$('.draghandle[rel='+this.roles[i]+']').css({'left': this.roleDimensions[i]});
     }
 
-    return this.$el;
   },
 
   destroy: function(){

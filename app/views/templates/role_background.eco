@@ -1,15 +1,15 @@
 <div class="roleHolder">
-  <div class="roleArea" id="funding"></div>
-  <div class="roleArea" id="coordination"></div>
-  <div class="roleArea" id="implementation"></div>
-  <div class="roleArea" id="monitoring"></div>
+  <div class="roleArea funding" id="funding"></div>
+  <div class="roleArea coordination" id="coordination"></div>
+  <div class="roleArea implementation" id="implementation"></div>
+  <div class="roleArea monitoring" id="monitoring"></div>
 </div>
 
 <div class="roleLabels">
-	<span class="rolelabel" rel="funding">Funding</span>
-	<span class="rolelabel" rel="coordination">Coordination</span>
-	<span class="rolelabel" rel="implementation">Implementation</span>
-	<span class="rolelabel" rel="monitoring">Monitoring</span>
+	<span class="rolelabel funding" rel="funding">Funding</span>
+	<span class="rolelabel coordination" rel="coordination">Coordination</span>
+	<span class="rolelabel implementation" rel="implementation">Implementation</span>
+	<span class="rolelabel monitoring" rel="monitoring">Monitoring</span>
 </div>
 
 <div class="dragHandleBars">
