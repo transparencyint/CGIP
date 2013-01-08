@@ -18,13 +18,19 @@ module.exports = View.extend({
       draghandleLeft: 0
     }
 
+    // define which roles there are
     this.roles = ['funding', 'coordination', 'implementation', 'monitoring'];
+
+    // store the widths of the roles if the change (needed for zooming)
     this.roleBackgroundWidths = [];
+
+    // current zoom value 
     this.zoomValue = 0.0;
 
     this.editor.on('zoom', this.zoom, this);
     this.editor.on('pan', this.pan, this);
 
+    // the minimum width of a role background
     this.minRoleWidth = 46*2;
 
     _.bindAll(
@@ -49,6 +55,7 @@ module.exports = View.extend({
   },
 
   dragRoleHandleStart: function(event){
+    
     // get the current drag x coordinate
     var fundingWidth = $('#funding').width();
     var coordinationWidth = $('#coordination').width();
@@ -109,7 +116,7 @@ module.exports = View.extend({
 
     // set the new roleArea coordinates and calculate the zoom factor out
     for(var i=0; i<this.roleDimensions.length; i++){
-       //this.roleDimensions[i] =  Math.round(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
+       this.roleDimensions[i] =  Math.round(this.roleDimensions[i] - (this.roleDimensions[i] * this.zoomValue));
     }
     if(this.editor.zoom.value == 1.0){
       this.country.set({'roleDimensions' : this.roleDimensions});
@@ -130,10 +137,9 @@ module.exports = View.extend({
       var newWidth = Math.floor(width + this.roleBackgroundWidths[i] * zoomValue);
 
       var newLeft = Math.floor($('#'+this.roles[i]).position().left + this.roleDimensions[i] * zoomValue);
-      if(!$('#monitoring').is(':visible') && this.roles[i] == 'monitoring'){
+
+      if(!$('#monitoring').is(':visible') && this.roles[i] == 'monitoring')
         newLeft = this.roleDimensions[i] * this.editor.zoom.value;
-      }
-      
 
       $('#'+this.roles[i]).width(newWidth);
       $('#'+this.roles[i]).css({'left': newLeft});
@@ -142,13 +148,11 @@ module.exports = View.extend({
       $('span[rel='+this.roles[i]+']').css({'left': newLeft});
 
       $('.draghandle[rel='+this.roles[i]+']').css({'left': newLeft});
-
-      console.log(this.roles[i], newLeft, this.roleDimensions[i]);
     }
     $('.draghandle[rel=last]').css({'left': Math.floor($('.draghandle[rel=last]').position().left + this.roleDimensions[4] * zoomValue)});
 
 
-    //go through the role backgrounds and fix any gaps
+    // go through the role backgrounds and fix any gaps
 
     $('#funding').css({
       'width': $('#coordination').position().left - $('#funding').position().left
