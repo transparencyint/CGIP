@@ -1,17 +1,35 @@
 .connection
+  pointer-events none
   path
     fill none
+  use
     cursor pointer
+    pointer-events visiblePainted
+  marker
+    fill none
   &.pledgedMode
     path
       stroke hsl(60,20%,60%)
     use
       fill hsl(60,20%,60%)
+  &.accountability
+    .arrow
+      fill white
+    .path
+      stroke white
+  &.monitoring
+    .arrow
+      fill black
+    .path
+      stroke black
+  .clickBorder
+    stroke transparent
   &.selected
-    path
+    .selectPath
       stroke hsl(205,100%,55%)
-      marker-end url(#selectedTriangle)
-  .connection-metadata
+    .selected-arrow
+      fill hsl(205,100%,55%)
+  .metadata
   	display none
   	padding 20px
   	color #000
@@ -21,9 +39,4 @@
   	border 1px solid rgba(0,0,0,.13)
   	border-radius 5px
   	box-shadow 0 1px 5px rgba(0,0,0,.13)
-    
-.activeConnection path
-  stroke hsl(205,100%,55%)
-.activeConnection use
-  fill hsl(205,100%,55%)
 
