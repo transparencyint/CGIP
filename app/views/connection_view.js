@@ -44,6 +44,8 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
+    
+    this.isMoney = this.model.get('connectionType') === 'money';
   },
 
   render: function(){
@@ -76,7 +78,7 @@ module.exports = View.extend({
     
     this.pathSettings = {
       class_: 'path', 
-      strokeWidth: this.strokeWidth
+      strokeWidth: this.isMoney ? 1 : this.strokeWidth
     };
     
     this.selectSettings = {
@@ -115,7 +117,7 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
 
-    if(this.model.get("connectionType") === 'money') { 
+    if(this.isMoney) { 
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
     }
