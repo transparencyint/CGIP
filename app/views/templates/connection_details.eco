@@ -3,14 +3,10 @@
 <form>
 	<div class="holder">
 	  <div>
-	    <h3>
-	      <span class="actorName actorA">Unknown</span> 
-	      pays 
-	      <span class="actorName actorB">Unknown</span>
-	    </h3>
+	    <h3 class="connectionName"></h3>
 	  </div>
-	  <div>
-	    <div class="money">
+	  <div class="money">
+	    <div>
 	      <div class="clearfix">
     	    <label for="disbursed">Disbursed</label>
       	  <div class="dollar">

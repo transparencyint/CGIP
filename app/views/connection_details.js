@@ -45,6 +45,7 @@ module.exports = View.extend({
     this.oldPledged = this.model.get('pledged');
     
     this.connection = options.connection;
+    this.connectionType = this.model.get('connectionType');
     this.editor = options.editor;
     
     this.width = 320;
@@ -157,22 +158,46 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    var _disbursed = this.model.get('disbursed');
-    var _pledged = this.model.get('pledged');
 
-    this.$('#disbursed').val(_disbursed);
-    this.$('#pledged').val(_pledged);   
+    //set the money part to invisible per default
+    this.$('.money').hide();
 
-    this.$('#disbursed').numeric();
-    this.$('#pledged').numeric();
 
-    this.currentMoneyMode();
-    config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+    // detect which connection type we have and show/hide related fields
+    switch(this.connectionType){
+      case 'accountability':
+        this.fillInActorNames('is accountable for');
+
+        break;
+
+      case 'money':
+        this.$('.money').show();
+
+        var _disbursed = this.model.get('disbursed');
+        var _pledged = this.model.get('pledged');
+
+        this.$('#disbursed').val(_disbursed);
+        this.$('#pledged').val(_pledged);   
+
+        this.$('#disbursed').numeric();
+        this.$('#pledged').numeric();
+
+        this.currentMoneyMode();
+        config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
+
+        this.fillInActorNames('pays');
+
+        break;
+
+      case 'monitoring':
+        this.fillInActorNames('monitors');
+        break;
+    }
     
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
-    this.fillInActorNames();
+    //this.fillInActorNames();
     this.addClickCatcher();
 
     $(document).keydown(this.handleEscape);
@@ -209,9 +234,11 @@ module.exports = View.extend({
     return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
   },
   
-  fillInActorNames: function(){
-    this.$('.actorA').text( this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown' );
-    this.$('.actorB').text( this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown' );
+  fillInActorNames: function(text){
+    var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
+    var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
+
+    this.$('.connectionName').text(from + ' ' + text + ' ' + to);
   },
 
   updateValue: function(event) {
