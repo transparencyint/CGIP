@@ -41,6 +41,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
+    this.connection.to.margins = {top: 0, right:0, bottom:0, left:0};
     this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
     this.connectionView.actorRadius = 0;
     this.connectionView.render();

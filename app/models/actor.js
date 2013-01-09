@@ -16,10 +16,15 @@ module.exports = Backbone.Model.extend({
     pos: {x: 0, y: 0}
   },
 
+  initialize: function(){
+    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+  },
+
   moveByDelta: function(dx, dy){
     var thisPos = _.clone(this.get('pos'));
     thisPos.x += dx;
     thisPos.y += dy;
     this.set('pos', thisPos);
   }
+
 });

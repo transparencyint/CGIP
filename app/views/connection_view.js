@@ -25,8 +25,6 @@ module.exports = View.extend({
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
-
-    this.actorRadius = 60;
     this.markerSize = 4;
     
     this.selectionBorderSize = 4;
@@ -158,6 +156,10 @@ module.exports = View.extend({
 
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
+
+
+    var fromMargins = this.model.from.margins;
+    var toMargins = this.model.to.margins;
     
     var overlap = Math.max(this.strokeWidth + this.markerSize + this.selectionBorderSize, this.clickAreaRadius);
     this.offset = 2 * overlap;
@@ -179,8 +181,6 @@ module.exports = View.extend({
       x : Math.round(to.x - this.pos.x),
       y : Math.round(to.y - this.pos.y)
     };
-    
-    //var alpha = Math.atan2(end.y - start.y, end.x - start.x);
     
     var width = Math.abs(from.x - to.x)  + this.offset;
     var height = Math.abs(from.y - to.y) + this.offset;
@@ -206,6 +206,7 @@ module.exports = View.extend({
     var halfY;
     var start2, end2;
 
+    //checking in which relation the start and end actor are
     //case 1
     if(start.x < end.x && start.y <= end.y){
       //case 1f
@@ -213,8 +214,8 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 1c
@@ -222,9 +223,9 @@ module.exports = View.extend({
       // ──┐
       //   └──➝
       //  
-      else if(end.y - start.y <= this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 1d
@@ -233,9 +234,9 @@ module.exports = View.extend({
       //  └┐
       //   ↓
       //
-      else if(end.x - start.x <= this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 1a+b
@@ -244,8 +245,8 @@ module.exports = View.extend({
       //    ↓
       //
       else {
-        start.x += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y -= toMargins.top + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -265,8 +266,8 @@ module.exports = View.extend({
       //  │
       //
       if(start.x == end.x){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 2c
@@ -274,9 +275,9 @@ module.exports = View.extend({
       //   ┌──➝
       // ──┘
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 2d
@@ -285,9 +286,9 @@ module.exports = View.extend({
       //  ┌┘
       //  │
       //
-      else if(end.x - start.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 2a+b
@@ -296,8 +297,8 @@ module.exports = View.extend({
       //  ──┘
       //  
       else {
-        start.x += this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y += toMargins.bottom + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -316,8 +317,8 @@ module.exports = View.extend({
       //  ←──
       //
       if(start.y == end.y){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.x -= fromMargins.right;
+        end.x += toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 3c
@@ -325,9 +326,9 @@ module.exports = View.extend({
       //    ┌──
       //  ←─┘
       //
-      else if(end.y - start.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 3d
@@ -336,9 +337,9 @@ module.exports = View.extend({
       //  ┌─┘
       //  ↓
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 3a+b
@@ -347,8 +348,8 @@ module.exports = View.extend({
       //  ←─┘
       //
       else {
-        start.y += this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -362,14 +363,14 @@ module.exports = View.extend({
     }
     //case 4
     else {
-      //case 1f
+      //case 4f
       //
       //  │
       //  ↓
       //
       if(start.x == end.x){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 4c
@@ -377,9 +378,9 @@ module.exports = View.extend({
       //  ←─┐
       //    └──
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 4d
@@ -388,9 +389,9 @@ module.exports = View.extend({
       //    └┐
       //     │
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 4a+b
@@ -399,8 +400,8 @@ module.exports = View.extend({
       //    │
       //
       else {
-        start.y -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -490,9 +491,11 @@ module.exports = View.extend({
       1: clockwise
   */
   slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
+
+    //calculation the coin distance depending on the money connection thickness
+    distance /= this.model.coinSizeFactor;
+
     var length = Math.PI/2 * radius;
-    //REMOVE THE LINE BELOW TO GET THE ORIGINAL COIM DISTANCE, JUST A HACK TO MAKE BIG LINES NICER
-    distance /= 2;
     var count = Math.floor(length / distance);
     var segments = [];
     var signX = 1;
@@ -511,8 +514,9 @@ module.exports = View.extend({
 
     var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
     
-    for(var i=1; i<=count; i++){  
-
+    //drawing every single path segment
+    for(var i=1; i<=count; i++){ 
+      //getting the right circle direction 
       if(hasRightDirection){
         dx = radius * (1-Math.cos (i*alpha)) - sumX;
         dy = radius * Math.sin (i*alpha) - sumY;
@@ -573,6 +577,7 @@ module.exports = View.extend({
     if(dy/2 < edgeRadius)
       edgeRadius = dy/2;
     
+    //define the waypoints of the connection
     if(end.y - start.y > 0){
       firstY = start.y + edgeRadius;
       secondY = end.y - edgeRadius;
@@ -589,6 +594,7 @@ module.exports = View.extend({
       secondX = halfX - edgeRadius;
     }
       
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
     this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
@@ -606,6 +612,7 @@ module.exports = View.extend({
     if(dx/2 < edgeRadius)
       edgeRadius = dx/2;
 
+    //define the waypoints of the connection
     if(end.x - start.x > 0){
       firstX = start.x + edgeRadius;
       secondX = end.x - edgeRadius;
@@ -624,6 +631,7 @@ module.exports = View.extend({
       secondY = halfY - edgeRadius;
     }
 
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
     this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
@@ -632,10 +640,9 @@ module.exports = View.extend({
     this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
   },
 
+  //creates a straight line
   addPathSegment: function(start, end, distance, direction){
     var pathSegments = this.slicedPathSegments(start, end, distance);
-    //console.log("pathSegment", typeof pathSegments);
-    //console.log(direction + " '" + pathSegments + "'");
     if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
       this.path += direction + pathSegments;
   }
