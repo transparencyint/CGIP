@@ -68,27 +68,8 @@ module.exports = View.extend({
 
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
-<<<<<<< HEAD
-        
-    //set the style of the connection
-    switch(this.model.get("connectionType")){
-      case 'accountability':
-        this.strokeStyle = 'white';
-        break;
-      case 'monitoring':
-        this.strokeStyle = 'black';
-        break;
-      case 'money':
-        this.$el.addClass(config.get('moneyConnectionMode'));
-        this.model.calculateCoinSize();
-        this.isMoney = true;
-        this.strokeWidth = 1;
-        break;
-    }
-=======
     
     this.$el.addClass(this.model.get('connectionType'));
->>>>>>> b66efac48e82b44f172e9d613894ed116ca48812
     
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
@@ -116,14 +97,6 @@ module.exports = View.extend({
       this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
-<<<<<<< HEAD
-
-      //creating the marker for the accountability and monitoring connection
-      if(!this.isMoney){
-        var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
-        this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle, overflow:"visible" });
-      }
-=======
       
       var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
       this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { overflow: "visible" });
@@ -132,7 +105,6 @@ module.exports = View.extend({
       
       var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
       this.svg.use(selectedArrow, 0, 0, selectedArrowSize, selectedArrowSize, '#trianglePath', { overflow: "visible" });
->>>>>>> b66efac48e82b44f172e9d613894ed116ca48812
     }
     
     this.g = this.svg.group();
