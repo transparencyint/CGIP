@@ -423,21 +423,9 @@ module.exports = View.extend({
   },
 
   showMetadataForm: function(){
-    
-    //Remove all other forms
-    $('.connection-form-container').remove();
-
     var model = this.model;
     var cfw = new ConnectionDetailsView({ model: model, editor: this.editor, connection: this });
-    this.editor.$el.append(cfw.render().el);  
-
-    //remove all activeClasses from the connections
-    this.$('.connection').each(function(){ $(this).removeClass('activeConnection') });
-
-    if(!this.$el.hasClass('activeConnection'))
-      this.$el.addClass('activeConnection');
-    else
-      this.$el.removeClass('activeConnection');
+    this.editor.$el.append(cfw.render().el);
   },
 
   showMetadata: function(e){
