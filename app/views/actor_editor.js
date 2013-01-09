@@ -17,15 +17,25 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
+    // tool controls
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
     'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
+    
+    // view controls
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
+    
+    // start to pan..
     'mousedown': 'dragStart',
-    'mousedown .bar': 'stopPropagation',
+    
+    // ..except when your mouse touches the controls
+    'mousedown .controls': 'stopPropagation',
+    'click .controls': 'stopPropagation',
+    
+    // unselect when clicking into empty space
     'click': 'unselect'
   },
   
@@ -89,7 +99,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -248,7 +258,7 @@ module.exports = View.extend({
   },
 
   toggleMode: function(event){
-    this.$('.connection').removeClass('active');
+    this.$('.connection.active').removeClass('active');
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
@@ -569,7 +579,7 @@ module.exports = View.extend({
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.actorSelected);
-    $(document).off('viewdragstop', this.checkDrop)
+    $(document).off('viewdragstop', this.checkDrop);
     $(window).unbind('resize', this.realignCenter);
   }
 });
