@@ -8,11 +8,15 @@ module.exports = View.extend({
 
   tagName : 'div',
   className : 'connection',
+  selectable : true,
 
   events: {
-    'mouseover path' : 'showMetadata',
-    'mouseout path' : 'hideMetadata',
-    'dblclick svg' : 'showMetadataForm'
+    'mouseover' : 'showMetadata',
+    'mousemove' : 'stickMetadata',
+    'mouseout' : 'hideMetadata',
+    'mousedown' : 'hideMetadata',
+    'dblclick' : 'showDetails',
+    'click' : 'select'
   },
 
   initialize: function(options){
@@ -24,6 +28,9 @@ module.exports = View.extend({
 
     this.actorRadius = 60;
     this.markerSize = 4;
+    
+    this.selectionBorderSize = 4;
+    this.clickAreaRadius = 40;
 
     this.editor = options.editor;
 
@@ -37,6 +44,8 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
+    
+    this.isMoney = this.model.get('connectionType') === 'money';
   },
 
   render: function(){
@@ -55,64 +64,60 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
   },
   
-  afterRender: function(){ 
-    //this.selectStyle = 'hsl(205,100%,55%)';
-
+  afterRender: function(){
     this.path = "";
     this.$el.svg();
-    this.$el.attr('id', this.model.id);
 
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
-        
-    switch(this.model.get("connectionType")){
-      case 'accountability':
-        this.strokeStyle = 'white';
-        break;
-      case 'monitoring':
-        this.strokeStyle = 'black';
-        break;
-      case 'money':
-        this.$el.addClass(config.get('moneyConnectionMode'));
-        this.model.calculateCoinSize();
-        this.isMoney = true;
-        this.strokeWidth = 1;
-        break;
-    }
+    
+    this.$el.addClass(this.model.get('connectionType'));
     
     // also creates something crucial for the other connections
     this.createCoinDefinitions();
     
-    if(this.model.get("connectionType") === 'money'){
-      this.pathSettings = {
-        'marker-end': "url(#"+ this.coinReference +")",
-        'marker-start': "url(#"+ this.coinReference +")",
-        'marker-mid': "url(#"+ this.coinReference +")",
-        'stroke-width': this.strokeWidth
-      };
+    this.pathSettings = {
+      class_: 'path', 
+      strokeWidth: this.isMoney ? 1 : this.strokeWidth
+    };
+    
+    this.selectSettings = {
+      class_: 'selectPath'
+    };
+    
+    if(this.isMoney){
+      this.$el.addClass(config.get('moneyConnectionMode'));
+      this.model.calculateCoinSize();
+      
+      this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
+      this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
+      this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
+      
       this.markerSize = 0;
     } else {
-      this.pathSettings = {
-        'marker-end': 'url(#'+ this.model.id +')',
-        'stroke': this.strokeStyle,
-        'stroke-width': this.strokeWidth
-      };
+      this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
+      this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
-      if(!this.isMoney){
-        var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
-        this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle, overflow:"visible" });
-      }
+      
+      var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
+      this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { overflow: "visible" });
+      
+      var selectedArrowSize = this.markerRatio - 0.5;
+      
+      var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
+      this.svg.use(selectedArrow, 0, 0, selectedArrowSize, selectedArrowSize, '#trianglePath', { overflow: "visible" });
     }
-
+    
     this.g = this.svg.group();
+    
     createGlobalDefs();
 
     this.update();
 
     this.$el.addClass( this.model.get("connectionType") );
 
-    if(this.model.get("connectionType") === 'money') { 
+    if(this.isMoney) { 
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
     }
@@ -155,24 +160,25 @@ module.exports = View.extend({
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
     
-    this.offset = 2*(this.strokeWidth + this.markerSize);
+    var overlap = Math.max(this.strokeWidth + this.markerSize + this.selectionBorderSize, this.clickAreaRadius);
+    this.offset = 2 * overlap;
     
     if(this.isMoney)
       this.offset = this.coinHeight*2;
     
-    var pos = {
+    this.pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
     }
     
     // round because our positions are float, not integer
     var start = {
-      x : Math.round(from.x - pos.x),
-      y : Math.round(from.y - pos.y)
+      x : Math.round(from.x - this.pos.x),
+      y : Math.round(from.y - this.pos.y)
     };
     var end = {
-      x : Math.round(to.x - pos.x),
-      y : Math.round(to.y - pos.y)
+      x : Math.round(to.x - this.pos.x),
+      y : Math.round(to.y - this.pos.y)
     };
     
     //var alpha = Math.atan2(end.y - start.y, end.x - start.x);
@@ -189,8 +195,8 @@ module.exports = View.extend({
     this.$('g').attr('transform', 'translate('+ this.offset/2 +' '+ this.offset/2 +')');
     
     this.$el.css({
-      'left': pos.x,
-      'top': pos.y,
+      'left': this.pos.x,
+      'top': this.pos.y,
       'marginTop': -this.offset/2,
       'marginLeft': -this.offset/2,
       'width': width,
@@ -407,38 +413,57 @@ module.exports = View.extend({
         this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true);
       }
     }
-
-    if(this.pathElement) this.svg.remove(this.pathElement);
     
-    this.pathElement = this.svg.path(this.g, this.path, this.pathSettings);
+    // remove path and its clones
+    if(this.pathSymbol) this.svg.remove(this.pathSymbol);
+    if(this.selectPath) this.svg.remove(this.selectPath);
+    if(this.pathElement) this.svg.remove(this.pathElement);
+    if(this.clickArea) this.svg.remove(this.clickArea);
+    
+    // recalculate select-border size (depending on strokeWidth)
+    var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
+    this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
+    
+    // render all paths and clones
+    // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
+    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
+    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
+    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
+    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
 
   updateDisbursed: function(){ 
-    this.$('.connection-metadata').text('$' + this.model.get('disbursed'));
+    this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
 
-
-  showMetadataInput: function(){   
-    this.$el.find('.overlay-form-container').fadeIn(100);
-  },
-
-  showMetadataForm: function(){
-    var model = this.model;
-    var cfw = new ConnectionDetailsView({ model: model, editor: this.editor, connection: this });
-    this.editor.$el.append(cfw.render().el);
+  showDetails: function(){
+    if(this.isMoney){
+      var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
+      this.editor.$el.append(cfw.render().el);
+    }
   },
 
   showMetadata: function(e){
     if(this.model.get('disbursed')){
-      var metadata = this.$el.find('.connection-metadata');
+      var metadata = this.$('.metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.fadeIn(0);
+      metadata.show();
     }
   },
+  
+  stickMetadata: function(e){
+    var x = e.pageX - this.editor.center - this.editor.offset.left - this.pos.x;
+    var y = e.pageY - this.editor.offset.top - this.pos.y;
+    
+    this.$('.metadata').css({
+      left: x + 30, 
+      top: y + 10
+    });
+  },
 
-  hideMetadata: function(e){   
-    var metadata = this.$el.find('.connection-metadata');
-    metadata.fadeOut(0);  
+  hideMetadata: function(e){ 
+    var metadata = this.$('.metadata');
+    metadata.hide();  
   },
   
   // slices a line from a to b into segments
