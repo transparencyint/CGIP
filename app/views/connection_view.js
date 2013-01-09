@@ -73,9 +73,6 @@ module.exports = View.extend({
     
     this.$el.addClass(this.model.get('connectionType'));
     
-    // also creates something crucial for the other connections
-    this.createCoinDefinitions();
-    
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.isMoney ? 1 : this.strokeWidth
@@ -88,12 +85,19 @@ module.exports = View.extend({
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
+
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
       
       this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
       
       this.markerSize = 0;
+
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+
     } else {
       this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
       this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
@@ -116,11 +120,6 @@ module.exports = View.extend({
     this.update();
 
     this.$el.addClass( this.model.get("connectionType") );
-
-    if(this.isMoney) { 
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:coinSizeFactor', this.updateConnection, this);
-    }
   },
 
   updateConnection: function(){
