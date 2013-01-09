@@ -14,6 +14,7 @@ module.exports = View.extend({
     'change [type=checkbox]': 'submitForm',
     'change select': 'submitForm',
     'change textarea': 'submitForm',
+    'keydown [data-type=text]': 'allowEnter',
     
     // show/hide the 'other' input field on 'Type'
     // and the Corruption Risk details
@@ -21,7 +22,7 @@ module.exports = View.extend({
     
     // the buttons at the bottom
     'click .delete': 'deleteActor',
-    'click .revert': 'revert',
+    'click .cancel': 'cancel',
     'click .done': 'submitAndClose',
     
     // submit on enter
@@ -31,16 +32,16 @@ module.exports = View.extend({
     'mousedown': 'dragStart',
     
     // ..except all the text, buttons and inputs
-    'mousedown label': 'stopPropagation',
-    'mousedown input': 'stopPropagation',
-    'mousedown textarea': 'stopPropagation',
-    'mousedown select': 'stopPropagation',
-    'mousedown button': 'stopPropagation'
+    'mousedown label': 'dontDrag',
+    'mousedown input': 'dontDrag',
+    'mousedown textarea': 'dontDrag',
+    'mousedown select': 'dontDrag',
+    'mousedown button': 'dontDrag'
   }, 
 
   initialize: function(options){
     View.prototype.initialize.call(this);
-    _.bindAll(this, 'handleEscape', 'dragStop', 'drag', 'submitAndClose');
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
     
     this.actor = options.actor;
     this.editor = this.actor.editor;
@@ -53,7 +54,7 @@ module.exports = View.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     
-    // backup data for revert
+    // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
     
@@ -64,7 +65,11 @@ module.exports = View.extend({
     this.updateName();
   },
   
-  stopPropagation: function(event){
+  dontDrag: function(event){
+    event.stopPropagation();
+  },
+  
+  allowEnter: function(event){
     event.stopPropagation();
   },
   
@@ -119,7 +124,7 @@ module.exports = View.extend({
     return false;
   },
   
-  revert: function(){
+  cancel: function(){
     this.model.save(this.backup);
     this.destroy();
     
@@ -147,12 +152,20 @@ module.exports = View.extend({
     this.clickCatcher = null;
     
     $(document).unbind('mousemove.global', this.drag);
-    $(document).unbind('keydown', this.handleEscape);
+    $(document).unbind('keydown', this.handleKeys);
   },
 
-  handleEscape: function(event){
-    if (event.keyCode === 27) {
-      this.revert();
+  handleKeys: function(event){
+    switch (event.keyCode) {
+      case 27: // ESC
+        this.cancel();
+        break;
+      case 13: // Enter
+        this.submitAndClose();
+        break;
+      case 46: // Delete
+        this.deleteConnection();
+        break;
     }
   },
   
@@ -218,7 +231,7 @@ module.exports = View.extend({
   afterRender: function() {
     this.addClickCatcher();
     
-    $(document).keydown(this.handleEscape);
+    $(document).keydown(this.handleKeys);
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     

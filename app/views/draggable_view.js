@@ -25,7 +25,7 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
-    this.select();
+    this.select(event);
 
     if(!this.dontDrag){
       event.stopPropagation();

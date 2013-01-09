@@ -68,8 +68,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
         to: this.selectedActors[1].id
       });
 
-      if(newConnection.get('connectionType') === 'money')
-        newConnection.showMetadataForm = true;
+      newConnection.showMetadataForm = true;
 
       newConnection.save(null, {
         success: function(){
