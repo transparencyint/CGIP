@@ -21,7 +21,7 @@ Application = {
     this.nav = new NavigationView({ router: this.router, countries: this.countries });
 
     // fetch the countries, lod the dictionary and start the app
-    $.when(this.countries.fetch(), $.jsperanto.init(null, {dicoPath: '/locales'})).done(function(){
+    $.when(this.countries.fetch(), $.jsperanto.init({dicoPath: '/locales'})).done(function(){
       app.nav.render();
       $(document.body).append(app.nav.el);
       start();
