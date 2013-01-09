@@ -12,10 +12,11 @@ module.exports = View.extend({
     'change input[type=radio]': 'updateMoneyConnections',
     'input #corruptionRisk': 'updateValue',
     'input #corruptionRiskSource': 'updateValue',
+    'keydown [data-type=text]': 'allowEnter',
     
     // the controls buttons at the bottom
     'click .delete': 'deleteConnection',
-    'click .revert': 'revert',
+    'click .cancel': 'cancel',
     'click .done': 'submitAndClose',
     
     // show/hide the 'other' input field on 'Type'
@@ -38,11 +39,13 @@ module.exports = View.extend({
   dontDrag: function(event){
     event.stopPropagation();
   },
+  
+  allowEnter: function(event){
+    event.stopPropagation();
+  },
 
   initialize: function(options){
-    _.bindAll(this, 'handleEscape', 'dragStop', 'drag', 'submitAndClose');
-    this.oldDisbursed = this.model.get('disbursed');
-    this.oldPledged = this.model.get('pledged');
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
     
     this.connection = options.connection;
     this.connectionType = this.model.get('connectionType');
@@ -53,6 +56,10 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToConnection = 21;
+    
+    // backup data for cancel
+    this.backup = this.model.toJSON();
+    delete this.backup._rev;
   },
   
   dragStart: function(event){
@@ -146,9 +153,17 @@ module.exports = View.extend({
     });
   },
   
-  handleEscape: function(event){
-    if (event.keyCode === 27) {
-      this.revert();
+  handleKeys: function(event){
+    switch (event.keyCode) {
+      case 27: // ESC
+        this.cancel();
+        break;
+      case 13: // Enter
+        this.submitAndClose();
+        break;
+      case 46: // Delete
+        this.deleteConnection();
+        break;
     }
   },
   
@@ -162,42 +177,37 @@ module.exports = View.extend({
     //set the money part to invisible per default
     this.$('.money').hide();
 
-
     // detect which connection type we have and show/hide related fields
-    switch(this.connectionType){
-      case 'accountability':
-        this.fillInActorNames('is accountable for');
-        break;
+    if(this.connectionType === 'money'){
+      this.$('.money').show();
 
-      case 'money':
-        this.$('.money').show();
+      var _disbursed = this.model.get('disbursed');
+      var _pledged = this.model.get('pledged');
 
-        var _disbursed = this.model.get('disbursed');
-        var _pledged = this.model.get('pledged');
+      this.$('#disbursed').val(_disbursed);
+      this.$('#pledged').val(_pledged);   
 
-        this.$('#disbursed').val(_disbursed);
-        this.$('#pledged').val(_pledged);   
+      this.$('#disbursed').numeric();
+      this.$('#pledged').numeric();
 
-        this.$('#disbursed').numeric();
-        this.$('#pledged').numeric();
-
-        this.currentMoneyMode();
-        config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
-
-        this.fillInActorNames('pays');
-        break;
-
-      case 'monitoring':
-        this.fillInActorNames('monitors');
-        break;
+      this.currentMoneyMode();
+      config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
     }
+    
+    var sentences = {
+      'accountability': 'is accountable for',
+      'monitoring': 'monitors',
+      'money': 'pays',
+    };
+    
+    this.fillInActorNames( sentences[this.connectionType] );
     
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
     this.addClickCatcher();
 
-    $(document).keydown(this.handleEscape);
+    $(document).keydown(this.handleKeys);
     
     // focus first input field
     var self = this;
@@ -247,7 +257,7 @@ module.exports = View.extend({
       case 'integer':
         value = parseInt(event.target.value, 10);
         break;
-      case 'string':
+      case 'string': case 'text':
         value = event.target.value;
         break;
       case 'boolean':
@@ -292,21 +302,15 @@ module.exports = View.extend({
     return false;
   },
 
-  revert: function(event){
-    this.model.set({
-      disbursed: this.oldDisbursed,
-      pledged: this.oldPledged
-    });
-    
+  cancel: function(event){
+    this.model.save(this.backup);
     this.destroy();
     
     // prevent form forwarding
     return false;
   },
 
-  submitAndClose: function(e){
-    e.preventDefault();
-    
+  submitAndClose: function(){
     var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10);
     var _pledged = parseInt(this.$el.find('#pledged').val(), 10);
 
@@ -329,6 +333,6 @@ module.exports = View.extend({
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
     
-    $(document).unbind('keydown', this.handleEscape);
+    $(document).unbind('keydown', this.handleKeys);
   }
 });
