@@ -46,7 +46,7 @@
                 checked
               <% end %>
             <%end%>>
-            <label for="funding">funding</label>
+            <label for="funding">Funding</label>
           </td>
           <td>
             <input type="checkbox" name="role" value="coordination" id="coordination" 
@@ -55,7 +55,7 @@
                 checked
               <% end %>
             <% end %>>
-            <label for="coordination">coordination</label>
+            <label for="coordination">Coordination</label>
           </td>
         </tr>
         <tr>
@@ -66,7 +66,7 @@
                 checked
               <% end %>
             <%end%>>
-            <label for="implementation">implementation</label>
+            <label for="implementation">Implementation</label>
           </td>
           <td>
             <input type="checkbox" name="role" value="monitoring" id="monitoring" 
@@ -75,7 +75,7 @@
                 checked
               <% end %>
             <% end%>>
-            <label for="monitoring">monitoring</label>
+            <label for="monitoring">Monitoring</label>
           </td>
         </tr>
       </table>
@@ -152,7 +152,7 @@
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
     	  <label for="corruptionRisk">Description</label>
-    	  <textarea id="corruptionRisk" name="corruptionRisk"><%= @corruptionRisk %></textarea>
+    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
     	  <label for="corruptionRiskSource">Source</label>
     	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" placeholder="http://">
     	</div>
@@ -160,14 +160,14 @@
   	
   	<div>
   	  <label for="description">Note</label>
-  		<textarea id="description" name="description"><%= @description%></textarea>
+  		<textarea id="description" name="description" data-type="text"><%= @description%></textarea>
   	</div> 
 	</div><!-- /.holder -->
 	
 	<div class="controls clearfix">
     <div class="row right">
       <button type="submit" class="done">Save</button>
-      <button class="revert">Revert</button>
+      <button class="cancel">Cancel</button>
     </div>
     <div class="row left">
       <button class="delete">Delete</button>
