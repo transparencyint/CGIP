@@ -26,7 +26,7 @@ module.exports = Connection.extend({
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
     var amount = this.get(amountType);
-    var maxMoneyAmount = 0;
+    var maxMoneyAmount;
     var minMoneyAmount = 0;
 
     var size = this.collection.length;
@@ -44,14 +44,19 @@ module.exports = Connection.extend({
       //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
       if(!isMinMaxEqual){
         var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
-        var moneyRange = maxMoneyAmount - minMoneyAmount;
+        //var moneyRange = maxMoneyAmount - minMoneyAmount;
+        var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
         this.collection.each(function(connection){
-          var amountDif = connection.get(amountType) - minMoneyAmount;
+          //var amountDif = connection.get(amountType) - minMoneyAmount;
+          var amountDif = Math.log(connection.get(amountType) - minMoneyAmount + 1);
           var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
+          //var newCoinSize = Math.log(amountDif / moneyRange + 1) * factorRange + minCoinFactor;
+          
+          console.log("amount:", connection.get(amountType), "factor:", newCoinSize);
           if(connection.coinSizeFactor !== newCoinSize) {
             connection.coinSizeFactor = newCoinSize;
-            connection.trigger('change:coinSizeFactor');          
+            connection.trigger('change:coinSizeFactor');     
           }
         });
       }else {
