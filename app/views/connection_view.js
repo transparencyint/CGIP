@@ -534,12 +534,17 @@ module.exports = View.extend({
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
 
-    if(start.y === end.y){
-      // path goes horizontal
-      this.path += ' H ' + this.slicedPathSegments(start.x, end.x, this.coinDistance);
-    } else {
-      // path goes vertical
-      this.path += ' V '  + this.slicedPathSegments(start.y, end.y, this.coinDistance);
+    if(this.model.get("connectionType") === 'money'){
+      if(start.y === end.y){
+        // path goes horizontal
+        this.path += ' H ' + this.slicedPathSegments(start.x, end.x, this.coinDistance);
+      } else {
+        // path goes vertical
+        this.path += ' V '  + this.slicedPathSegments(start.y, end.y, this.coinDistance);
+      }
+    }
+    else{
+      this.path += ' L ' + end.x + ' ' + end.y;
     }
   },
   
@@ -547,16 +552,30 @@ module.exports = View.extend({
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection){
 
     this.path = 'M ' + start.x + ' ' + start.y;
-    
+
     if(start.x < end.x){
-      this.addPathSegment(start.x, end2.x, this.coinDistance, ' H ');
-      this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-      this.addPathSegment(start2.y, end.y, this.coinDistance, ' V ');
+      if(this.model.get("connectionType") === 'money'){
+        this.addPathSegment(start.x, end2.x, this.coinDistance, ' H ');
+        this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
+        this.addPathSegment(start2.y, end.y, this.coinDistance, ' V ');
+      }
+      else{
+        this.path += ' L ' + end2.x + ' ' + start.y;
+        this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
+        this.path += ' L ' + end.x + ' ' + end.y; 
+      }
     }
     else{
-      this.addPathSegment(start.y, end2.y, this.coinDistance, ' V ');
-      this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-      this.addPathSegment(start2.x, end.x, this.coinDistance, ' H ');
+      if(this.model.get("connectionType") === 'money'){
+        this.addPathSegment(start.y, end2.y, this.coinDistance, ' V ');
+        this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
+        this.addPathSegment(start2.x, end.x, this.coinDistance, ' H ');
+      }
+      else{
+        this.path += ' L ' + start.x + ' ' + end2.y;
+        this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ' ' + end.y;
+        this.path += ' L ' + end.x + ' ' + end.y; 
+      }
     }
   },
 
@@ -588,11 +607,21 @@ module.exports = View.extend({
       
     //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
-    this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
-    this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
-    this.addPathSegment(firstY, secondY, this.coinDistance, ' V ');
-    this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
-    this.addPathSegment(secondX, end.x, this.coinDistance, ' H ');
+
+    if(this.model.get("connectionType") === 'money'){
+      this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
+      this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
+      this.addPathSegment(firstY, secondY, this.coinDistance, ' V ');
+      this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
+      this.addPathSegment(secondX, end.x, this.coinDistance, ' H ');
+    }
+    else{
+      this.path += ' L ' + firstX + ' ' + start.y;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ' ' + firstY;
+      this.path += ' L ' + halfX + ' ' + secondY;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
+      this.path += ' L ' + end.x + ' ' + end.y; 
+    }
   },
 
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
@@ -625,11 +654,21 @@ module.exports = View.extend({
 
     //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
-    this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
-    this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
-    this.addPathSegment(firstX, secondX, this.coinDistance, ' H ');
-    this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
-    this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
+
+    if(this.model.get("connectionType") === 'money'){
+      this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
+      this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
+      this.addPathSegment(firstX, secondX, this.coinDistance, ' H ');
+      this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
+      this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
+    }
+    else{
+      this.path += ' L ' + start.x + ' ' + firstY;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + firstX + ' ' + halfY;
+      this.path += ' L ' + secondX + ' ' + halfY;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
+      this.path += ' L ' + end.x + ' ' + end.y;
+    }
   },
 
   //creates a straight line
