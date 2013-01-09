@@ -57,7 +57,7 @@ module.exports = Connection.extend({
         });
       }else {
         this.collection.each(function(connection){
-          if(connection.coinSizeFactor !== minCinFactor) {
+          if(connection.coinSizeFactor !== minCoinFactor) {
             connection.coinSizeFactor = minCoinFactor;
             connection.trigger('change:coinSizeFactor');        
           }
