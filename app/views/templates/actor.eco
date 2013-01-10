@@ -1,16 +1,1 @@
-<div class="svg-holder"></div>
-<div class="inner">
-  <div class="flexbox center">
-
-    <div class="abbrev">
-        <%= @abbreviation or 'Unknown' %>
-    </div>
-    <input type="text" placeholder="Abbrev" class='abbrev-input' />
-
-    <div class="name">
-        <%= @name %>
-    </div>
-    <input type="text" placeholder="Name" class='name-input' />
-
-  </div>
-</div>
+<div class="name"><%= @name %></div>
