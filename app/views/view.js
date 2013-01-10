@@ -1,5 +1,13 @@
 require('lib/view_helper');
 
+var transEndEventNames = {
+  'WebkitTransition' : 'webkitTransitionEnd',
+  'MozTransition'    : 'transitionend',
+  'OTransition'      : 'oTransitionEnd',
+  'msTransition'     : 'MSTransitionEnd',
+  'transition'       : 'transitionend'
+};
+
 // Base class for all views.
 module.exports = Backbone.View.extend({
   // config fields //
@@ -10,17 +18,9 @@ module.exports = Backbone.View.extend({
   // don't snap to the grid,
   dontSnap: false,
   
-  transEndEventNames: {
-    'WebkitTransition' : 'webkitTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'msTransition'     : 'MSTransitionEnd',
-    'transition'       : 'transitionend'
-  },
+  transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
 
   initialize: function() {    
-    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
-    
     this.render = _.bind(this.render, this);
   },
 

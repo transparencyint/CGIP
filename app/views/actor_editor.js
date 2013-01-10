@@ -9,8 +9,6 @@ var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode')
 
-// TODO: find a better place for `transEndEventNames`
-
 module.exports = View.extend({
   id: 'actorEditor',
   
@@ -387,7 +385,7 @@ module.exports = View.extend({
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
-    _.delay(this.slideInDouble, 100);
+    _.delay(this.slideInDouble, 180);
   },
   
   slideInDouble: function(){
