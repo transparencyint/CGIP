@@ -503,8 +503,8 @@ module.exports = View.extend({
   },
 
   hideGridLine: function(){
-    this.gridlineV.fadeOut(400);
-    this.gridlineH.fadeOut(400);
+    this.gridlineV.hide();
+    this.gridlineH.hide();
   },
   
   realignCenter: function(){
