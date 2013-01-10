@@ -20,6 +20,7 @@ module.exports = DraggableView.extend({
   
   initialize: function(options){
     DraggableView.prototype.initialize.call(this, options);
+    _.bindAll(this, 'destroy');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;    
@@ -63,7 +64,11 @@ module.exports = DraggableView.extend({
   destroy: function(){
     // TODO: call the proper destroy method and clean up the editor's view instances
     // TODO: call lightbox destroy as well
-    DraggableView.prototype.destroy.call(this);
+    var self = this;
+    this.$el.one(this.transEndEventName, function(){
+      DraggableView.prototype.destroy.call(self);
+    });
+    this.$el.addClass('disappear');
 
     if(this.modal) this.modal.destroy()
 

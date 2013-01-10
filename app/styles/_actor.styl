@@ -19,6 +19,10 @@
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
+  &.disappear
+    opacity 0
+    transform scale(0.5) translateY(10px)
+    transition 250ms
   .name
     display table-cell
     text-align center
