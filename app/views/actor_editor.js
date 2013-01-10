@@ -344,7 +344,9 @@ module.exports = View.extend({
       var offset = view.$el.offset();
       var coords = this.offsetToCoords(offset, this.smallActorWidth, this.smallActorHeight);
       this.createActorAt(coords.x, coords.y);
-      view.model.set({pos: {x: 0, y:0 }});
+      
+      // move actorDouble back to its origin by sliding it in from the top
+      _.delay(this.slideInDouble, 120, view);
     }
   },
 
@@ -385,10 +387,10 @@ module.exports = View.extend({
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
-    _.delay(this.slideInDouble, 180);
+    _.delay(this.slideInDouble, 120);
   },
   
-  slideInDouble: function(){
+  slideInDouble: function(view){
     this.addActor.addClass('curtainDown');
     this.addActor.removeClass('slideIn').addClass('slideUp');
     // reset css
@@ -398,6 +400,7 @@ module.exports = View.extend({
 
     this.addActor.removeClass('curtainDown');
     this.addActor.removeClass('slideUp');
+    if(view) view.model.set({pos: {x: 0, y:0 }});
   },
   
   dragStart: function(event){
