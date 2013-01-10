@@ -44,7 +44,7 @@ module.exports = DraggableView.extend({
   },
   
   determineName: function(){
-    return this.model.get('abbreviation') || this.model.get('name') || 'Unknown';
+    return this.model.get('abbreviation') || this.model.get('name') || '';
   },
 
   updateName: function(){
