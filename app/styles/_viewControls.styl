@@ -1,0 +1,42 @@
+.view.controls
+  background linear-gradient(top, hsl(213,55%,50%), hsl(218,55%,48%))
+  &:not(:last-child)
+    margin-bottom 13px
+  .range
+    height 144px
+    .ui-slider-vertical
+      height 100%
+      width 40px
+      background none
+      border none
+      &:after
+        content ""
+        position absolute
+        width 3px
+        left 19px
+        height 100%
+        background white
+        border-radius 3px
+        box-shadow 0 1px 3px black
+      .ui-slider-handle
+        left 6px
+        height 10px
+        margin-bottom -5px
+        width 28px
+        background white
+        border-radius 2px
+        border none
+        box-shadow 0 1px 3px black
+        outline none
+  .icon
+    width 40px
+    height 40px
+    background-position center
+    background-repeat no-repeat
+    cursor pointer
+    &.fit
+      background-image url(../images/fit_screen.png)
+    &.in
+      background-image url(../images/zoom_in.png)
+    &.out
+      background-image url(../images/zoom_out.png)

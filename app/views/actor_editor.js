@@ -49,11 +49,18 @@ module.exports = View.extend({
   
   initialize: function(options){
     this.country = options.country;
+    
+    this.actorHeight = 40;
+    this.actorWidth = 120;
+    
+    this.smallActorWidth = 88;
+    this.smallActorHeight = 30;
+    
     this.radius = 60;
     this.smallRadius = 44;
     
     // padding for fit-to-screen
-    this.padding = this.radius/2;
+    this.padding = this.actorWidth/4;
     
     this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
@@ -84,7 +91,7 @@ module.exports = View.extend({
       top: 0
     };
     
-    this.gridSize = this.radius;
+    this.gridSize = this.actorHeight;
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
@@ -156,8 +163,8 @@ module.exports = View.extend({
     // calculate offset of the center
     var offsetX = Math.abs(boundingBox.left + boundingBox.width/2);
     
-    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.radius*2 + this.padding) );
-    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius*2 + this.padding*2);
+    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.actorWidth + this.padding) );
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.actorHeight + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
@@ -347,7 +354,7 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var coords = this.offsetToCoords(offset, this.smallRadius);
+      var coords = this.offsetToCoords(offset, this.smallActorWidth, this.smallActorHeight);
       this.createActorAt(coords.x, coords.y);
       view.model.set({pos: {x: 0, y:0 }});
     }
@@ -365,22 +372,28 @@ module.exports = View.extend({
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
     
     // triggere animation
-    var diameter = 2 * this.radius * this.zoom.value;
-    var marginLeft = this.smallRadius - diameter/2;
+    var width = this.actorWidth * this.zoom.value;
+    var height = this.actorHeight * this.zoom.value
+    var marginLeft = this.smallActorWidth/2 - width/2;
     
-    this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
+    this.actorDouble.css({
+      marginLeft: marginLeft, 
+      width: width, 
+      height: height,
+      lineHeight: this.actorHeight + "px"
+    });
     this.addActor.addClass('slideIn');
   },
 
-  offsetToCoords: function(offset, radius){
-    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+  offsetToCoords: function(offset, width, height){
+    var x = (offset.left - this.center + (width/2 || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + (height/2 || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
     return { x: x, y: y };
   },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var coords = this.offsetToCoords(offset, this.radius);
+    var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
     
     this.createActorAt(coords.x, coords.y);
     
