@@ -379,8 +379,7 @@ module.exports = View.extend({
     this.actorDouble.css({
       marginLeft: marginLeft, 
       width: width, 
-      height: height,
-      lineHeight: this.actorHeight + "px"
+      height: height
     });
     this.addActor.addClass('slideIn');
   },
@@ -405,7 +404,7 @@ module.exports = View.extend({
     this.addActor.addClass('curtainDown');
     this.addActor.removeClass('slideIn').addClass('slideUp');
     // reset css
-    this.actorDouble.css({ marginLeft: "", width: "", height: "" });
+    this.actorDouble.css({ marginLeft: '', width: '', height: '' });
 
     document.redraw();
 
