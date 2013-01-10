@@ -1,7 +1,9 @@
 var View = require('./view');
 
 module.exports = View.extend({
-  events: {},
+  events: {
+    'click' : 'select'
+  },
 
   initialize: function(){
     View.prototype.initialize.call(this);
