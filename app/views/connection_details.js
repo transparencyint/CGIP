@@ -45,7 +45,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.connection = options.connection;
     this.connectionType = this.model.get('connectionType');
@@ -296,7 +296,7 @@ module.exports = View.extend({
     if(this.model) 
       this.model.destroy();
 
-    this.destroy();  
+    this.close();  
     
     // prevent form forwarding
     return false;
@@ -304,7 +304,7 @@ module.exports = View.extend({
 
   cancel: function(event){
     this.model.save(this.backup);
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
@@ -319,20 +319,25 @@ module.exports = View.extend({
       pledged: _pledged
     });
 
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
+  },
+  
+  close: function(){
+    this.$el.one(this.transEndEventName, this.destroy);
+    
+    this.clickCatcher.remove();
+    $(document).unbind('keydown', this.handleKeys);
+    
+    this.$el.addClass('hidden');
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
     
-    this.clickCatcher.remove();
-    
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
-    
-    $(document).unbind('keydown', this.handleKeys);
   }
 });

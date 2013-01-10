@@ -9,8 +9,18 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  
+  transEndEventNames: {
+    'WebkitTransition' : 'webkitTransitionEnd',
+    'MozTransition'    : 'transitionend',
+    'OTransition'      : 'oTransitionEnd',
+    'msTransition'     : 'MSTransitionEnd',
+    'transition'       : 'transitionend'
+  },
 
-  initialize: function() {
+  initialize: function() {    
+    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
+    
     this.render = _.bind(this.render, this);
   },
 

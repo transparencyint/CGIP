@@ -12,17 +12,17 @@ module.exports = DraggableView.extend({
     var parentEvents = DraggableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
-      'mousedown'  : 'dragStart',
-      'dblclick'          : 'showDetails',
-      'click'             : 'stopPropagation'
+      'mousedown' : 'dragStart',
+      'dblclick'  : 'showDetails',
+      'click'     : 'stopPropagation'
     }, parentEvents);
   },
   
   initialize: function(options){
     DraggableView.prototype.initialize.call(this, options);
 
-    this.width = 120;
-    this.height = 40;    
+    this.width = options.editor.actorWidth;
+    this.height = options.editor.actorHeight;    
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);

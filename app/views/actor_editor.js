@@ -39,14 +39,6 @@ module.exports = View.extend({
     'click': 'unselect'
   },
   
-  transEndEventNames: {
-    'WebkitTransition' : 'webkitTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'msTransition'     : 'MSTransitionEnd',
-    'transition'       : 'transitionend'
-  },
-  
   initialize: function(options){
     this.country = options.country;
     
@@ -59,10 +51,8 @@ module.exports = View.extend({
     this.radius = 60;
     this.smallRadius = 44;
     
-    // padding for fit-to-screen
+    // padding for fit-to-screen and for placing the details
     this.padding = this.actorWidth/4;
-    
-    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
 
     // initialize the collections
     this.actors = options.actors;

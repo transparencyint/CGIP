@@ -4,15 +4,21 @@
   background #eee
   border-radius 5px
   box-shadow 0 0 0 1px white inset, 0 0 0 1px rgba(0,0,0,.34), 0 1px 5px rgba(0,0,0,.34)
+  opacity 1
+  transform scale(1)
+  transition -webkit-transform 180ms, opacity 180ms
   /* 
     the modal gets hidden in order to measure
     its height and scrollbar-thickness
-    therefor it must not be display none because then
-    dimensions would be zero
+    therefor we can't use display none
+    because then the dimensions would be zero
+    
+    instead we hide it with opacity 0
   */
   &.hidden
     display block
     opacity 0
+    transform scale(0.95)
   &.leftAligned
     .arrow
       left auto
