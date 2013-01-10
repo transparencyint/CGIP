@@ -3,7 +3,7 @@
 <div class="tool controls top">
   <div class="newActor">
     <div class="description">
-      <span class="name"><i class="plus">+</i> Add Actor</span>
+      <span class="name"><i class="plus">+</i> <%= t('add_actor') %></span>
     </div>
     <div class="dock">
       <div class="cancel"><span>Drop here to cancel</span></div>
@@ -13,7 +13,7 @@
   <div class="connection accountability control" data-connectionType="accountability">
     <div class="eye"></div>
     <div class="description button" title="New Accountability Connection">
-      <span class="name">Accountability</span>
+      <span class="name"><%= t('accountability') %></span>
       <img src="/images/accountabilityflow.png">
     </div>
   </div>
@@ -21,7 +21,7 @@
   <div class="connection monitoring control" data-connectionType="monitoring">
     <div class="eye"></div>
     <div class="description button" title="New Monitoring Connection">
-      <span class="name">Monitoring</span>
+      <span class="name"><%= t('monitoring') %></span>
       <img src="/images/monitoringflow.png">
     </div>
   </div>
@@ -29,15 +29,15 @@
   <div class="connection money control" data-connectionType="money">
     <div class="eye"></div>
     <div class="description button" title="New Money Connection">
-      <span class="name">Money</span>
+      <span class="name"><%= t('money') %></span>
       <img src="/images/moneyflow.png">
     </div>
   </div>
   
   <div class="moneyMode">
-    <span class="name">Money mode</span>
-    <span id="disbursedMoney" class="small">Disbursed</span>
-    <span id="pledgedMoney" class="small">Pledged</span>
+    <span class="name"><%= t('money_mode') %></span>
+    <span id="disbursedMoney" class="small"><%= t('disbursed') %></span>
+    <span id="pledgedMoney" class="small"><%= t('pledged') %></span>
   </div>
 </div>
 
