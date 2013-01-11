@@ -23,7 +23,7 @@ var Actor = require('./server/models/actor').Actor;
 var Connection = require('./server/models/connection').Connection;
 var Country = require('./server/models/country').Country;
 
-var app = express.createServer();
+var app = express();
 
 passport.use(new LocalStrategy({
   usernameField: 'username',
@@ -58,14 +58,14 @@ app.configure(function(){
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(express.csrf());
+  app.use(function(req, res, next) {
+    res.locals.csrf_token = function(){ return req.session._csrf; };
+    next();
+  });
   app.use(app.router);
-});
-
-/* A template helper for csrf tokens */
-app.dynamicHelpers({
-  csrf_token: function(req, res) {
-    return req.session._csrf;
-  }
+  app.use(function(req, res){ 
+    res.render('404');
+  }); 
 });
 
 /** TODO: find out why res.redirect('/') is not working on uberhost */
@@ -223,12 +223,6 @@ app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
     if(err) return res.json(err, 404);
     res.json(country);
   });
-});
-
-//error handling
-app.error(function(error, request, response, next){
-  console.dir(error);
-  next(error);
 });
 
 var port = process.env.APP_PORT || 3000;
