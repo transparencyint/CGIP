@@ -189,7 +189,8 @@ module.exports = View.extend({
   },
   
   actorSelected: function(event, view){
-    if(view.$el.hasClass('actor')){
+    var type = view.model.get('type');
+    if(type == 'actor'){
       this.selectedActorView = view;
       if(this.mode)
         this.mode.actorSelected(view);
@@ -241,14 +242,14 @@ module.exports = View.extend({
   },
 
   appendConnection: function(connection){
-    connection.pickOutActors(this.actors);
+    connection.pickOutActors(this.actors, this.actorGroups);
 
     var connView = new ConnectionView({ model : connection, editor: this});
 
     connView.render();  
     this.workspace.append(connView.el);
 
-    if(connection.showMetadataForm)
+    if(connection.showMetadataForm && connView.showMetadataForm)
       connView.showMetadataForm();
   },
 

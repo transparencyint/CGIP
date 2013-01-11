@@ -12,6 +12,9 @@ module.exports = Actor.extend({
     this.actors = new Backbone.Collection();
     this.actors.model = Actor;
 
+    // needed for calculations
+    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+
     // remove the actor from the array
     this.actors.on('remove', this.removeFromGroup, this);
   },

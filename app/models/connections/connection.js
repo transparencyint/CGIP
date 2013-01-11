@@ -24,17 +24,17 @@ module.exports = Model.extend({
       return 'A connection has to have two different actors. Or at least one set to "none".';
   },
 
-  pickOutActors: function(actors){
+  pickOutActors: function(actors, actorGroups){
     var connection = this;
 
     if(this.has('to')){
-      var toActor = actors.get(this.get('to'));
+      var toActor = actors.get(this.get('to')) || actorGroups.get(this.get('to'));
       if(toActor)
         connection.setToActor(toActor);
     }
     
     if(this.has('from')){
-      var fromActor = actors.get(this.get('from'));
+      var fromActor = actors.get(this.get('from')) || actorGroups.get(this.get('from'));;
       if(fromActor)
         connection.setFromActor(fromActor);
     }
