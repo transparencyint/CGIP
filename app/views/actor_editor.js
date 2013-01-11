@@ -469,7 +469,7 @@ module.exports = View.extend({
     var foundGridY = false;
 
     //check if there is an actor at the nearest grid point
-    this.actors.each(function(actor){
+    var actorCheck = function(actor){
       var currentPos = actor.get('pos');
       var actorX = Math.round(currentPos.x);
       var actorY = Math.round(currentPos.y);
@@ -480,7 +480,9 @@ module.exports = View.extend({
         if(actorY == y)
           foundGridY = true;
       }
-    });
+    }
+    this.actors.each(actorCheck);
+    this.actorGroups.each(actorCheck);
 
     this.showGridLine(x, y, foundGridX, foundGridY);
     this.hideGridLine(); // hiding is a delayed function
