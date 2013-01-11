@@ -1,7 +1,6 @@
 .actor-group
-  z-index 2
   width 120px
-  margin -20px 0 0 -60px
+  margin -24px 0 0 -64px
   padding-right 2px
   padding-bottom 2px
   &, &:before
@@ -51,7 +50,7 @@
         transform translateY(1px) rotate(90deg)
       &:active .arrow
         transform translateY(1px) rotate(45deg)
-  &.show-actors .dropdown-control .arrow
+  &.show-actors.selected .dropdown-control .arrow
       transform none
   .actors
     display none
@@ -60,7 +59,7 @@
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.show-actors
+  &.show-actors.selected
     .actors
       display block
 
