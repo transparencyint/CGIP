@@ -249,7 +249,6 @@ io.sockets.on('connection', function (socket) {
 
   // broadcast a lock for a model
   socket.on('lock', function(model_id){
-    console.log('lock', model_id)
     lockedModels.push({
       user_id: socket.user_id,
       model_id: model_id
@@ -260,20 +259,24 @@ io.sockets.on('connection', function (socket) {
 
   // broadcast an unlock for a model
   socket.on('unlock', function(model_id){
-    console.log('unlock', model_id);
-    lockedModels = _.reject(lockedModels, function(model){ return model.user_id == socket.user_id; });
+    lockedModels = _.reject(lockedModels, function(model){ return model.model_id == model_id; });
     socket.broadcast.emit('unlock', model_id);
     socket.broadcast.emit('unlock:'+model_id, null);
   });
 
   socket.on('disconnect', function(){
-    console.log('disconnect socket', user_id);
     var user_id = socket.user_id;
+    console.log('disconnect socket', user_id);
 
-    console.log('before', lockedModels.length);
+    // select all tha locked models from this user
+    var user_models = _.where(lockedModels, function(model){ return model.user_id == user_id; });
+    // broadcast unlocks for these models
+    _.each(user_models, function(model){
+      var model_id = model.model_id;
+      socket.broadcast.emit('unlock', model_id);
+      socket.broadcast.emit('unlock:'+model_id, null);
+    });
+    // delete the locks
     lockedModels = _.reject(lockedModels, function(model){ return model.user_id == user_id; });
-    console.log('after', lockedModels.length);
   });
-
-  socket.emit('test', { hello: 'world' });
 });
