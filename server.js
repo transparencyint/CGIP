@@ -255,6 +255,8 @@ io.sockets.on('connection', function (socket) {
 
   // broadcast an unlock for a model
   socket.on('unlock', function(model_id){
+    console.log('unlock', model_id);
+    lockedModels = _.reject(lockedModels, function(model){ return model.user_id == socket.user_id; });
     socket.broadcast.emit('unlock', model_id);
     socket.broadcast.emit('unlock:'+model_id, null);
   });
