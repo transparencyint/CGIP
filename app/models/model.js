@@ -40,7 +40,9 @@ module.exports = Backbone.Model.extend({
       socket.on('lock:' + this.id, function(){ model.set('locked', true) });
       socket.on('unlock:' + this.id, function(){ model.set('locked', false) });
       socket.on('change:' + this.id, function(attrs){ model.set(attrs); });
-      socket.on('destroy:' + this.id, function(){ model.destroy(); });
+      // we can't call the normal model.destroy() here because it'll be already deleted on the server
+      // instead we just trigger the destroy event, which will have the same effect
+      socket.on('destroy:' + this.id, function(){ model.trigger('destroy'); });
     }
   },
 

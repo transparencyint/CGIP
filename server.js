@@ -190,7 +190,7 @@ app.put('/:country/connections/:connection_id', auth.ensureAuthenticated, functi
 app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
   Connection.remove(req.params.connection_id, function(err, connection){
     if(err) return res.json(err, 404);
-    io.sockets.emit('destroy:' + req.params.connection_id, connection);
+    io.sockets.emit('destroy:' + req.params.connection_id, null);
     res.json(connection);
   });
 });

@@ -20,6 +20,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+    View.prototype.initialize.call(this, options);
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
@@ -42,7 +43,7 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-    
+
     this.isMoney = this.model.get('connectionType') === 'money';
   },
 

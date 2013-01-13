@@ -10,7 +10,9 @@ module.exports = Connection.extend({
     return data;
   },
 
-  initialize: function(){
+  initialize: function(opts){
+    Connection.prototype.initialize.call(this, opts);
+    
     this.minCoinSizeFactor = 0.8;
     this.maxCoinSizeFactor = 2;
     this.coinSizeFactor = this.minCoinSizeFactor;
