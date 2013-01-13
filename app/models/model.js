@@ -7,7 +7,7 @@ module.exports = Backbone.Model.extend({
     Backbone.Model.prototype.initialize.call(this, values);
 
     this.registerLockEvents();
-  }
+  },
 
   toJSON: function(){
     var data = Backbone.Model.prototype.toJSON.call(this);
