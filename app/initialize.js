@@ -10,8 +10,12 @@ $(function() {
   delete window.user_hash;
 
   // start socket.io
-  if(user.isLoggedIn())
+  if(user.isLoggedIn()){
     window.socket = io.connect();
+    socket.on('connect', function(a, b){
+      socket.emit('register_socket', user.id);
+    });
+  }
 
   // set up the config model
   window.config = new Config();
