@@ -3,6 +3,7 @@ var http = require('http');
 var url = require('url');
 var express = require('express');
 var gzippo = require('gzippo');
+var io = require('socket.io');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
@@ -63,9 +64,6 @@ app.configure(function(){
     next();
   });
   app.use(app.router);
-  app.use(function(req, res){ 
-    res.render('404');
-  }); 
 });
 
 /** TODO: find out why res.redirect('/') is not working on uberhost */
@@ -226,5 +224,18 @@ app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
 });
 
 var port = process.env.APP_PORT || 3000;
-app.listen(port);
+var server = app.listen(port);
 console.log('Server is up and running on port: ' + port);
+
+// Realtime stuff
+var io = io.listen(server);
+// a less noisy log level
+io.set('log level', 1)
+
+// new connection established
+io.sockets.on('connection', function (socket) {
+  socket.emit('test', { hello: 'world' });
+  socket.on('test', function (data) {
+    console.log(data);
+  });
+});

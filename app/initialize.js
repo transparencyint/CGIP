@@ -5,9 +5,15 @@ var Config = require('models/config');
 $(function() {
   Backbone.Model.prototype.idAttribute = "_id";
   
+  // create the user model
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
+  // start socket.io
+  if(user.isLoggedIn())
+    window.socket = io.connect();
+
+  // set up the config model
   window.config = new Config();
   
   application.initialize(function(){
