@@ -26,27 +26,26 @@ module.exports = Backbone.Model.extend({
 
   // Locks the model
   lock: function(){
-    this.set('locked', true);
     socket.emit('lock', this.id);
   },
 
   // unlocks the model
   unlock: function(){
-    this.set('locked', false);
     socket.emit('unlock', this.id);
   },
 
   registerLockEvents: function(){
     if(socket && this.id && this.lockable == true){
-      debugger
       var model = this;
       socket.on('lock:' + this.id, function(){ model.set('locked', true) });
       socket.on('unlock:' + this.id, function(){ model.set('locked', false) });
+      socket.on('change:' + this.id, function(attrs){ model.set(attrs); });
     }
   },
 
   unregisterLockEvents: function(){
     socket.removeAllListeners('lock:' + this.id);
     socket.removeAllListeners('unlock:' + this.id);
+    socket.removeAllListeners('change:' + this.id);
   }
 });
