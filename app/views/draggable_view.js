@@ -25,6 +25,11 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
+    if(this.model && this.model.isLocked()) return;
+
+    if(this.model && this.model.lockable)
+      this.model.lock();
+
     this.select(event);
 
     if(!this.dontDrag){
@@ -66,6 +71,9 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
+    if(this.model && this.model.lockable)
+      this.model.unlock();
+
     if(this.isDragging){
       this.snapToGrid();
       // emit a global dragstop event
@@ -131,5 +139,6 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     $(document).off('mousemove.global', this.drag);
     $(document).off('mouseup', this.dragStop);
+    this.model.unregisterLockEvents();
   }
 });

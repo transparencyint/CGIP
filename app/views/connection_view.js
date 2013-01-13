@@ -58,7 +58,9 @@ module.exports = View.extend({
       
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
-      
+    
+    this.model.unregisterLockEvents();
+    
     View.prototype.destroy.call(this);
   },
   

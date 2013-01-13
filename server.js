@@ -144,6 +144,7 @@ app.post('/:country/actors', auth.ensureAuthenticated, function(req, res){
 app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
   Actor.edit(req.params.actor_id, req.body, function(err, actor){
     if(err) return res.json(err, 404);
+    io.sockets.emit('change:' + req.params.actor_id, actor);
     res.json(actor);
   });
 });
@@ -245,6 +246,7 @@ io.sockets.on('connection', function (socket) {
 
   // broadcast a lock for a model
   socket.on('lock', function(model_id){
+    console.log('lock', model_id)
     lockedModels.push({
       user_id: socket.user_id,
       model_id: model_id
