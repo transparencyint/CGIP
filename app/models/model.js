@@ -21,7 +21,7 @@ module.exports = Backbone.Model.extend({
   // Returns the current lock-state
   // TODO: add list of locked models
   isLocked: function(){
-    return this.get('locked') === true;
+    return this.lockable && this.get('locked') === true;
   },
 
   // Locks the model
@@ -40,6 +40,7 @@ module.exports = Backbone.Model.extend({
       socket.on('lock:' + this.id, function(){ model.set('locked', true) });
       socket.on('unlock:' + this.id, function(){ model.set('locked', false) });
       socket.on('change:' + this.id, function(attrs){ model.set(attrs); });
+      socket.on('destroy:' + this.id, function(){ model.destroy(); });
     }
   },
 
@@ -47,5 +48,6 @@ module.exports = Backbone.Model.extend({
     socket.removeAllListeners('lock:' + this.id);
     socket.removeAllListeners('unlock:' + this.id);
     socket.removeAllListeners('change:' + this.id);
+    socket.removeAllListeners('destroy:' + this.id);
   }
 });

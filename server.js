@@ -152,6 +152,7 @@ app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, re
 app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
   Actor.remove(req.params.actor_id, function(err, actor){
     if(err) return res.json(err, 404);
+    io.sockets.emit('destroy:' + req.params.actor_id, actor);
     res.json(actor);
   });
 });
@@ -178,9 +179,10 @@ app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   });
 });
 
-app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(req, res){
-  Connection.edit(req.params.actor_id, req.body, function(err, connection){
+app.put('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
+  Connection.edit(req.params.connection_id, req.body, function(err, connection){
     if(err) return res.json(err, 404);
+    io.sockets.emit('change:' + req.params.connection_id, connection);
     res.json(connection);
   });
 });
@@ -188,6 +190,7 @@ app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(re
 app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
   Connection.remove(req.params.connection_id, function(err, connection){
     if(err) return res.json(err, 404);
+    io.sockets.emit('destroy:' + req.params.connection_id, connection);
     res.json(connection);
   });
 });
