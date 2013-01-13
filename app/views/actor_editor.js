@@ -247,13 +247,12 @@ module.exports = View.extend({
 
   appendConnection: function(connection){
     connection.pickOutActors(this.actors);
-
     var connView = new ConnectionView({ model : connection, editor: this});
 
     connView.render();  
     this.workspace.append(connView.el);
 
-    if(connection.showMetadataForm)
+    if(connection.showMetadataForm && connView.showMetadataForm)
       connView.showMetadataForm();
   },
 
