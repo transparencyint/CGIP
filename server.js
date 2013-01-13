@@ -1,4 +1,5 @@
 var util = require('util');
+var _ = require('underscore');
 var http = require('http');
 var url = require('url');
 var express = require('express');
@@ -227,6 +228,8 @@ var port = process.env.APP_PORT || 3000;
 var server = app.listen(port);
 console.log('Server is up and running on port: ' + port);
 
+var lockedModels = [];
+
 // Realtime stuff
 var io = io.listen(server);
 // a less noisy log level
@@ -234,8 +237,36 @@ io.set('log level', 1)
 
 // new connection established
 io.sockets.on('connection', function (socket) {
-  socket.emit('test', { hello: 'world' });
-  socket.on('test', function (data) {
-    console.log(data);
+  // register the current user
+  socket.on('register_socket', function (user_id) {
+    socket.user_id = user_id;
+    console.log('register socket', user_id);
   });
+
+  // broadcast a lock for a model
+  socket.on('lock', function(model_id){
+    lockedModels.push({
+      user_id: socket.user_id,
+      model_id: model_id
+    });
+    socket.broadcast.emit('lock', model_id);
+    socket.broadcast.emit('lock:'+model_id, null);
+  });
+
+  // broadcast an unlock for a model
+  socket.on('unlock', function(model_id){
+    socket.broadcast.emit('unlock', model_id);
+    socket.broadcast.emit('unlock:'+model_id, null);
+  });
+
+  socket.on('disconnect', function(){
+    console.log('disconnect socket', user_id);
+    var user_id = socket.user_id;
+
+    console.log('before', lockedModels.length);
+    lockedModels = _.reject(lockedModels, function(model){ return model.user_id == user_id; });
+    console.log('after', lockedModels.length);
+  });
+
+  socket.emit('test', { hello: 'world' });
 });
