@@ -19,6 +19,8 @@ $(function() {
 
   // set up the config model
   window.config = new Config();
+
+  window.t = $.jsperanto.translate;
   
   application.initialize(function(){
     Backbone.history.start({pushState: true});

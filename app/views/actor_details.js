@@ -41,7 +41,7 @@ module.exports = View.extend({
 
   initialize: function(options){
     View.prototype.initialize.call(this);
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.actor = options.actor;
     this.editor = this.actor.editor;
@@ -118,7 +118,7 @@ module.exports = View.extend({
     if(this.model) 
       this.model.destroy();
 
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
@@ -126,7 +126,7 @@ module.exports = View.extend({
   
   cancel: function(){
     this.model.save(this.backup);
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
@@ -135,10 +135,20 @@ module.exports = View.extend({
   submitAndClose: function(){
     
     this.saveFormData();
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
+  },
+  
+  close: function(){
+    this.$el.one(this.transEndEventName, this.destroy);
+    
+    this.clickCatcher.remove();
+    
+    $(document).unbind('keydown', this.handleKeys);
+    
+    this.$el.addClass('hidden');
   },
 
   destroy: function(){
@@ -146,13 +156,6 @@ module.exports = View.extend({
     
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
-    
-    if(this.clickCatcher)
-      this.clickCatcher.remove();
-    this.clickCatcher = null;
-    
-    $(document).unbind('mousemove.global', this.drag);
-    $(document).unbind('keydown', this.handleKeys);
   },
 
   handleKeys: function(event){

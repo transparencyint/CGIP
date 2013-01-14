@@ -1,0 +1,17 @@
+{
+  "project_name": "CGIP",
+  "logout": "Ausloggen",
+  "dashboard": "Übersicht",
+  "cgip_countries_headline": "CGIP Länder",
+  "edit_map": "Map editieren",
+  "edit_money_connections": "Geldverbindungen editirieren",
+  "import_csv": "CSV importieren",
+  "edit_countries": "Länder editieren",
+  "add_actor": "Actor hinzufügen",
+  "accountability": "Verantwortung",
+  "monitoring": "Kontrolle",
+  "money": "Geld",
+  "money_mode": "Geld Modus",
+  "disbursed": "ausgezahlt",
+  "pledged": "versprochen"
+}
