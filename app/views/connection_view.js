@@ -85,9 +85,8 @@ module.exports = View.extend({
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
 
-      if(this.model.isZeroAmount)
-        this.$el.addClass('amountUnknown');
-      
+      this.toggleZeroConnection();
+
       // also creates something crucial for the other connections
       this.createCoinDefinitions();
       
@@ -97,6 +96,7 @@ module.exports = View.extend({
       
       this.markerSize = 0;
 
+      this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
 
@@ -126,10 +126,15 @@ module.exports = View.extend({
     this.$el.addClass( this.model.get("connectionType") );
   },
 
-  updateConnection: function(){
+  toggleZeroConnection: function(){
     this.$el.removeClass('amountUnknown');
-    if(this.model.isZeroAmount)
+    if(this.model.isZeroAmount) {
       this.$el.addClass('amountUnknown');
+    }
+  },
+
+  updateConnection: function(){
+    //this.toggleZeroConnection(); 
     this.createCoinDefinitions();
     this.update();
   },
