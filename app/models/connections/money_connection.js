@@ -11,6 +11,7 @@ module.exports = Connection.extend({
   },
 
   initialize: function(){
+    this.zeroCoinSize = 0.5;
     this.minCoinSizeFactor = 0.8;
     this.maxCoinSizeFactor = 2;
     this.coinSizeFactor = this.minCoinSizeFactor;
@@ -25,17 +26,34 @@ module.exports = Connection.extend({
     if(!this.collection) return
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.get(amountType);
-    var maxMoneyAmount;
-    var minMoneyAmount = 0;
+    this.isZeroAmount = this.get(amountType) === 0;
+    if(this.isZeroAmount) {
+      this.coinSizeFactor = this.zeroCoinSize;
+      this.trigger('change:coinSizeFactor'); 
+    }
 
     var size = this.collection.length;
     
     //there is at least 1 other money connection on the map already
     if(size > 1){
-      var amountTypeSelect = function(connection){ return connection.get(amountType); };
-      maxMoneyAmount = this.collection.max(amountTypeSelect).get(amountType);
-      minMoneyAmount = this.collection.min(amountTypeSelect).get(amountType);
+      this.allZero = true;
+
+      var amountTypeSelect = function(connection){ 
+        var amount = connection.get(amountType);
+        if(amount > 0) {
+          this.allZero = false;
+          return amount; 
+        }
+      };
+      
+      var max = this.collection.max(amountTypeSelect);
+      var min = this.collection.min(amountTypeSelect);
+      var maxMoneyAmount = 0;
+      var minMoneyAmount = 0;
+      if(!this.allZero) {
+        maxMoneyAmount = max.get(amountType);
+        minMoneyAmount = min.get(amountType);
+      }
 
       var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
       var minCoinFactor = this.minCoinSizeFactor;
@@ -47,17 +65,21 @@ module.exports = Connection.extend({
         var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
         this.collection.each(function(connection){
-          var amountDif = Math.log(connection.get(amountType) - minMoneyAmount + 1);
-          var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
-          
-          if(connection.coinSizeFactor !== newCoinSize) {
-            connection.coinSizeFactor = newCoinSize;
-            connection.trigger('change:coinSizeFactor');     
+          var amount = connection.get(amountType);
+          if(amount !== 0) {
+            var amountDif = Math.log(amount - minMoneyAmount + 1);
+            var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
+            
+            if(connection.coinSizeFactor !== newCoinSize) {
+              connection.coinSizeFactor = newCoinSize;
+              connection.trigger('change:coinSizeFactor');     
+            }
           }
+          
         });
       }else {
         this.collection.each(function(connection){
-          if(connection.coinSizeFactor !== minCoinFactor) {
+          if(connection.coinSizeFactor !== minCoinFactor && connection.get(amountType) !== 0) {
             connection.coinSizeFactor = minCoinFactor;
             connection.trigger('change:coinSizeFactor');        
           }
