@@ -105,6 +105,12 @@ module.exports = View.extend({
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
     $(document).on('viewSelected', this.actorSelected);
+
+    // react to socket events
+    socket.on(this.country + ':actor', this.actors.add.bind(this.actors));
+    socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
+    socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
   },
   
   stopPropagation: function(event){
@@ -217,6 +223,7 @@ module.exports = View.extend({
     },{
       success : function(){
         editor.actors.add(actor);
+        socket.emit('new_model', actor.toJSON());
     }});
   },
   
@@ -580,5 +587,10 @@ module.exports = View.extend({
     $(document).off('viewSelected', this.actorSelected);
     $(document).off('viewdragstop', this.checkDrop);
     $(window).unbind('resize', this.realignCenter);
+
+    socket.removeAllListeners(this.country + ':actor');
+    socket.removeAllListeners(this.country + ':connection:money');
+    socket.removeAllListeners(this.country + ':connection:accountability');
+    socket.removeAllListeners(this.country + ':connection:monitoring');
   }
 });

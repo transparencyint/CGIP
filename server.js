@@ -264,6 +264,16 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('unlock:'+model_id, null);
   });
 
+  socket.on('new_model', function(model){
+    var country = model.country;
+    var type = model.type;
+    var specificType = (type == 'actor') ? model['actorType'] : model['connectionType'];
+    var key = [country, type].join(':');
+    if(specificType)
+      key += ':' + specificType;
+    socket.broadcast.emit(key, model);
+  });
+
   socket.on('disconnect', function(){
     var user_id = socket.user_id;
     console.log('disconnect socket', user_id);

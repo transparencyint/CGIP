@@ -75,6 +75,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
 
       newConnection.save(null, {
         success: function(){
+          socket.emit('new_model', newConnection.toJSON());
           mode.collection.add(newConnection);
         }
       });
