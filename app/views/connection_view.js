@@ -63,6 +63,9 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+
+    console.log("afterrender");
+
     this.path = "";
     this.$el.svg();
 
@@ -97,6 +100,9 @@ module.exports = View.extend({
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
 
     } else {
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
+      
       this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
       this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
       
@@ -110,9 +116,8 @@ module.exports = View.extend({
       var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
       this.svg.use(selectedArrow, 0, 0, selectedArrowSize, selectedArrowSize, '#trianglePath', { overflow: "visible" });
     }
-    
-    this.g = this.svg.group();
-    
+
+    this.g = this.svg.group();    
     createGlobalDefs();
 
     this.update();
@@ -157,7 +162,6 @@ module.exports = View.extend({
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
 
-
     var fromMargins = this.model.from.margins;
     var toMargins = this.model.to.margins;
     
@@ -184,7 +188,7 @@ module.exports = View.extend({
     
     var width = Math.abs(from.x - to.x)  + this.offset;
     var height = Math.abs(from.y - to.y) + this.offset;
-    
+
     // resize it
     this.svg.configure({
       'width' : width,
@@ -424,6 +428,8 @@ module.exports = View.extend({
     var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
     
+    console.log("update");
+
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
     this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
