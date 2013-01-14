@@ -134,7 +134,6 @@ module.exports = View.extend({
   },
 
   updateConnection: function(){
-    //this.toggleZeroConnection(); 
     this.createCoinDefinitions();
     this.update();
   },
@@ -164,7 +163,6 @@ module.exports = View.extend({
   },
 
   update: function(){
-    
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
