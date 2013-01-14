@@ -85,8 +85,9 @@ module.exports = View.extend({
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
 
-            if(this.model.isZeroAmount)
+      if(this.model.isZeroAmount)
         this.$el.addClass('amountUnknown');
+      
       // also creates something crucial for the other connections
       this.createCoinDefinitions();
       

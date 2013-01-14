@@ -11,7 +11,7 @@ module.exports = Connection.extend({
   },
 
   initialize: function(){
-    this.zeroCoinSize = 0.5;
+    this.zeroCoinSize = 0.6;
     this.minCoinSizeFactor = 0.8;
     this.maxCoinSizeFactor = 2;
     this.coinSizeFactor = this.minCoinSizeFactor;
