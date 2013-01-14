@@ -100,6 +100,8 @@ module.exports = View.extend({
     //move the actor to the nearest grid point
     var x = Math.round(pos.x / gridSize) * gridSize;
     var y = Math.round(pos.y / gridSize) * gridSize;
+
+    console.log(x, y);
     
     var dx = x - pos.x;
     var dy = y - pos.y;
@@ -119,6 +121,16 @@ module.exports = View.extend({
         },
         duration: 100,
         complete: function(){
+
+          //fix the last animation step to generate integer values
+          view.model.set({
+            pos : {
+              x: Math.round(x),
+              y: Math.round(y)
+            }
+          });
+
+          //console.log(view.model.get('pos'));
           view.model.save();
         }
       });
