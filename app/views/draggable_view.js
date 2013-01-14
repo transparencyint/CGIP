@@ -101,8 +101,6 @@ module.exports = View.extend({
     var x = Math.round(pos.x / gridSize) * gridSize;
     var y = Math.round(pos.y / gridSize) * gridSize;
 
-    console.log(x, y);
-    
     var dx = x - pos.x;
     var dy = y - pos.y;
     
@@ -129,8 +127,6 @@ module.exports = View.extend({
               y: Math.round(y)
             }
           });
-
-          //console.log(view.model.get('pos'));
           view.model.save();
         }
       });
