@@ -112,7 +112,7 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActorView)
+    if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
       this.selectedActorView.model.destroy();
   },
   
