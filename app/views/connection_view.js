@@ -63,9 +63,7 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-
-    console.log("afterrender");
-
+    
     this.path = "";
     this.$el.svg();
 
@@ -102,7 +100,7 @@ module.exports = View.extend({
     } else {
       // also creates something crucial for the other connections
       this.createCoinDefinitions();
-      
+
       this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
       this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
       
@@ -427,8 +425,6 @@ module.exports = View.extend({
     // recalculate select-border size (depending on strokeWidth)
     var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
-    
-    console.log("update");
 
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
