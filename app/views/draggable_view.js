@@ -123,8 +123,8 @@ module.exports = View.extend({
           //fix the last animation step to generate integer values
           view.model.set({
             pos : {
-              x: Math.round(x),
-              y: Math.round(y)
+              x: x,
+              y: y
             }
           });
           view.model.save();
