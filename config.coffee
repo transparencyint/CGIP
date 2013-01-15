@@ -28,7 +28,8 @@ exports.config =
           'vendor/scripts/jquery.csv-0-6.js',
           'vendor/scripts/jquery.svg.min.js',
           'vendor/scripts/jquery.autosize.js',
-          'vendor/scripts/jquery.numeric.js'
+          'vendor/scripts/jquery.numeric.js',
+          'vendor/scripts/jquery.jsperanto.js'
         ]
 
     stylesheets:
