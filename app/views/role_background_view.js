@@ -75,15 +75,12 @@ module.exports = View.extend({
     this.roleAreaOffsets.draghandleLeft = event.pageX;
 
     // check if the dimensions are larger then the minimum role width
-
-    /*
     if(roleIndex > 0 && roleIndex != -1){
       if(this.defaultRoleDimensions[roleIndex] - this.defaultRoleDimensions[roleIndex-1] - deltaXAbsolute < this.minRoleWidth){  
         isDraggable = false;
       }else if(this.defaultRoleDimensions[roleIndex] - deltaXAbsolute > this.defaultRoleDimensions[roleIndex+1] - this.minRoleWidth){ 
         // check if monitoring is inactive
         if(roleIndex == 3 && !this.$('#monitoring').is(':visible')){
-          console.log('hidden monitoring');
           isDraggable = true;
         }else
           isDraggable = false;
@@ -96,24 +93,23 @@ module.exports = View.extend({
       if(this.defaultRoleDimensions[4] - this.defaultRoleDimensions[3] - deltaXAbsolute < this.minRoleWidth){
         isDraggable = false;
       }
-    } 
-    */
+    }
 
-    
     if(isDraggable){
 
+      // calculate with the initial role dimensions to prevent unwanted data shift
+      // we need to use float values here in order to prevent role area shifts
+      if(roleSelector == 'last')
+        this.defaultRoleDimensions[4] = this.defaultRoleDimensions[4] - deltaXAbsolute;
+      else
+        this.defaultRoleDimensions[roleIndex] = this.defaultRoleDimensions[roleIndex] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);
+      
       // the draghandles define the positions and widths of the role backgrounds
       // save the dimensions when they are dragged
       for(var i=0; i<this.roleDimensions.length; i++){
-        this.roleDimensions[i] = Math.floor(this.defaultRoleDimensions[i] + this.defaultRoleDimensions[i] * this.zoomValue)
+        this.roleDimensions[i] = Math.floor(this.defaultRoleDimensions[i] + this.defaultRoleDimensions[i] * this.zoomValue);
       }
 
-      // calculate with the initial role dimensions to prevent unwanted data shift
-      if(roleSelector == 'last')
-        this.defaultRoleDimensions[4] = Math.floor( this.defaultRoleDimensions[4] - deltaXAbsolute );
-      else
-        this.defaultRoleDimensions[roleIndex] = Math.floor( this.defaultRoleDimensions[roleIndex] - deltaXAbsolute );
-      
       this.setDimensions();
     }
   },
@@ -167,6 +163,7 @@ module.exports = View.extend({
   toggleMonitoring: function(){
 
     //depending on the zoom value we need to position the monitoring area after the implementation role
+    console.log(this.roleDimensions);
 
     if(this.$('#monitoring').is(':visible')){
       this.$('.monitoring').hide();
@@ -176,9 +173,10 @@ module.exports = View.extend({
       this.country.save();
     }else{
       if(this.roleDimensions[4] - this.roleDimensions[3] < this.minRoleWidth){
-        console.log('smaller');
-        this.roleDimensions[4] = this.roleDimensions[3] + this.minRoleWidth;
+        this.roleDimensions[4] = this.roleDimensions[3] + this.minRoleWidth*2;
+        this.defaultRoleDimensions[4] = this.defaultRoleDimensions[3] + this.minRoleWidth*2;
       }
+      console.log(this.roleDimensions);
       this.$('.monitoring').css({
         'left': this.roleDimensions[2] + $('#implementation').width(),
         'width': this.roleDimensions[4] - this.roleDimensions[3]
@@ -188,15 +186,17 @@ module.exports = View.extend({
 
       //fix for the last draghandle
       this.$('.draghandle.last').css({
-        'left': $('#monitoring').position().left + $('#monitoring').width()
+        'left': this.roleDimensions[4]
       });
 
       this.$('.draghandle.last').show();
 
-      this.roleDimensions[4] = $('#monitoring').position().left + $('#monitoring').width();
+      //this.roleDimensions[4] = $('#monitoring').position().left + $('#monitoring').width();
       this.country.set({'showMonitoring' : true});
       this.country.save();
     }
+
+    console.log(this.roleDimensions);
   },
 
   render: function(){
@@ -226,7 +226,7 @@ module.exports = View.extend({
       if(i < this.roleDimensions.length-1){
           
         // fix the min width
-        var newWidth = this.roleDimensions[i+1] - roleLeft;
+        var newWidth = Math.floor(this.roleDimensions[i+1] - roleLeft);
 
         this.$('.'+this.roles[i]).css({
           'width': newWidth,
