@@ -12,8 +12,20 @@ $(function() {
   // start socket.io
   if(user.isLoggedIn()){
     window.socket = io.connect();
-    socket.on('connect', function(a, b){
+    // connect the socket
+    socket.on('connect', function(){
+      // register the socket to the server
       socket.emit('register_socket', user.id);
+
+      // save to the locked models
+      socket.on('lock', function(modelLock){
+        lockedModels.push(modelLock);
+      });
+
+      // remove from the locked models
+      socket.on('unlock', function(model_id){
+        lockedModels = _.reject(lockedModels, function(model){ return model.model_id == model_id; });
+      });
     });
   }
 

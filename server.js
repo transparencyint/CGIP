@@ -249,11 +249,12 @@ io.sockets.on('connection', function (socket) {
 
   // broadcast a lock for a model
   socket.on('lock', function(model_id){
-    lockedModels.push({
+    var lock = {
       user_id: socket.user_id,
       model_id: model_id
-    });
-    socket.broadcast.emit('lock', model_id);
+    };
+    lockedModels.push(lock);
+    socket.broadcast.emit('lock', lock);
     socket.broadcast.emit('lock:'+model_id, null);
   });
 
