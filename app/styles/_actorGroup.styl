@@ -79,7 +79,24 @@
   border-radius 1px
   background linear-gradient(top, #fff, #fafafa)
   box-shadow 0 1px white inset, 0 1px 1px 1px rgba(0,0,0,.21), 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
+  
+  &.hidden
+    display block
+    background none
+    box-shadow none
+    color transparent
+    font 0/0 a
+    text-shadow none
+    border 1px dashed rgba(0,0,0,.21)
 
   &.dragging
+    width 120px
+    height 40px
     position absolute
-    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+    margin -20px 0 0 -60px
+    font-size 14px
+    color black
+    line-height 40px
+    border-radius 3px
+    background linear-gradient(top, #f5f5f5, #fbfbfb)
+    z-index 2

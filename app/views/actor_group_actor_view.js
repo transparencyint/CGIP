@@ -21,16 +21,19 @@ module.exports = DraggableView.extend({
   },
 
   dragStart: function(event){
+    // small actor version
     this.originalElement = this.$el;
     
+    // normally-sized actor for dragging
     this.$el = this.$el.clone();
     this.$el.addClass('dragging');
 
     var offset = this.originalElement.offset();
-    var coords = this.editor.offsetToCoords(offset);
+    var coords = this.editor.offsetToCoords(offset, this.width, this.height);
     this.model.set('pos', coords);
     
     this.$el.appendTo($('.workspace'));
+    this.originalElement.addClass('hidden');
 
     DraggableView.prototype.dragStart.call(this, event);
   },
@@ -42,6 +45,7 @@ module.exports = DraggableView.extend({
   dragStop: function(){
     this.$el.remove();
     this.$el = this.originalElement;
+    this.$el.removeClass('hidden');
 
     DraggableView.prototype.dragStop.call(this);
   },
