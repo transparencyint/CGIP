@@ -71,9 +71,6 @@ module.exports = View.extend({
     
     this.$el.addClass(this.model.get('connectionType'));
     
-    // also creates something crucial for the other connections
-    this.createCoinDefinitions();
-    
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.isMoney ? 1 : this.strokeWidth
@@ -86,11 +83,12 @@ module.exports = View.extend({
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
+      this.createCoinDefinitions();
       
       this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
-      
+
       this.markerSize = 0;
     } else {
       this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
@@ -150,8 +148,7 @@ module.exports = View.extend({
     return (this.model.from && this.model.to);
   },
 
-  update: function(){
-    
+  update: function(){    
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
@@ -217,7 +214,7 @@ module.exports = View.extend({
       if(start.y == end.y){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath1Line(start, end);
+        this.definePath1Line(start, end, 1);
       }
       //case 1c
       //
@@ -227,7 +224,7 @@ module.exports = View.extend({
       else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0);
+        this.definePath3LinesX(start, end, 1, 0, 1);
       }
       //case 1d
       //  
@@ -238,7 +235,7 @@ module.exports = View.extend({
       else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1);
+        this.definePath3LinesY(start, end, 0, 1, 2);
       }
       //case 1a+b
       //  
@@ -256,7 +253,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, false);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, false, 2);
       }
     }
     //case 2
@@ -269,7 +266,7 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath1Line(start, end);
+        this.definePath1Line(start, end, 0);
       }
       //case 2c
       //
@@ -279,7 +276,7 @@ module.exports = View.extend({
       else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1);
+        this.definePath3LinesX(start, end, 0, 1, 1);
       }
       //case 2d
       //  
@@ -290,7 +287,7 @@ module.exports = View.extend({
       else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0);
+        this.definePath3LinesY(start, end, 1, 0, 0);
       }
       //case 2a+b
       //  
@@ -308,7 +305,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - 10
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, false);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, false, 0);
       }
     }
     //case 3
@@ -320,7 +317,7 @@ module.exports = View.extend({
       if(start.y == end.y){
         start.x -= fromMargins.right;
         end.x += toMargins.left + this.markerSize;
-        this.definePath1Line(start, end);
+        this.definePath1Line(start, end, 3);
       }
       //case 3c
       //
@@ -330,7 +327,7 @@ module.exports = View.extend({
       else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1);
+        this.definePath3LinesX(start, end, 0, 1, 3);
       }
       //case 3d
       //
@@ -341,7 +338,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0);
+        this.definePath3LinesY(start, end, 1, 0, 2);
       }
       //case 3a+b
       //
@@ -359,7 +356,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, true);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, true, 3);
       }
     }
     //case 4
@@ -372,7 +369,7 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath1Line(start, end);
+        this.definePath1Line(start, end, 2);
       }
       //case 4c
       //
@@ -382,7 +379,7 @@ module.exports = View.extend({
       else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0);
+        this.definePath3LinesX(start, end, 1, 0, 3);
       }
       //case 4d
       //
@@ -393,7 +390,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1);
+        this.definePath3LinesY(start, end, 0, 1, 0);
       }
       //case 4a+b
       //
@@ -411,7 +408,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y + this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true, 3);
       }
     }
     
@@ -492,16 +489,16 @@ module.exports = View.extend({
       1: clockwise
   */
   slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
-
     //calculation the coin distance depending on the money connection thickness
-    distance /= this.model.coinSizeFactor;
+    //if the maximum money connection is changed the multiplied value may be changed
+    var dis = distance / (this.model.coinSizeFactor*1.0);
 
     var length = Math.PI/2 * radius;
-    var count = Math.floor(length / distance);
+    var count = Math.floor(length / dis);
     var segments = [];
     var signX = 1;
     var signY = 1;
-    var alpha = 2 * Math.asin(distance / (2*radius));
+    var alpha = 2 * Math.asin(dis / (2*radius));
     var dx, dy;
     var sumX = 0;
     var sumY = 0;
@@ -539,7 +536,55 @@ module.exports = View.extend({
     return segments.join(" ");
   },
 
-  definePath1Line: function(start, end){
+    slicedEdgeCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
+    //calculation the coin distance depending on the money connection thickness
+    //if the maximum money connection is changed the multiplied value may be changed
+    var dis = distance / (this.model.coinSizeFactor*1.0);
+
+    var length = Math.PI/2 * radius;
+    var count = Math.floor(length / dis);
+    var segments = [];
+    var signX = 1;
+    var signY = 1;
+    var alpha = 2 * Math.asin(dis / (2*radius));
+    var dx, dy;
+    var sumX = 0;
+    var sumY = 0;
+ 
+    if(x1 < x0){
+      signX *= -1;
+    }
+    if(y1 < y0){
+      signY *= -1;
+    }
+
+    var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
+    
+    //drawing every single path segment
+    for(var i=1; i<=count; i++){ 
+      //getting the right circle direction 
+      if(hasRightDirection){
+        dx = radius * (1-Math.cos (i*alpha)) - sumX;
+        dy = radius * Math.sin (i*alpha) - sumY;
+      }
+      else{
+        dx = radius * Math.sin (i*alpha) - sumX;
+        dy = radius * (1-Math.cos (i*alpha)) - sumY;
+      }
+
+      sumX += dx;
+      sumY += dy;
+      
+      segments.push(path + signX*dx*1.5 + ' ' + signY*dy);
+    }
+    
+    // move back to last
+    segments.push(path + signX*(radius-sumX) + ' ' + signY*(radius-sumY));
+    
+    return segments.join(" ");
+  },
+
+  definePath1Line: function(start, end, direction){
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
 
@@ -554,11 +599,14 @@ module.exports = View.extend({
     }
     else{
       this.path += ' L ' + end.x + ' ' + end.y;
+      if(navigator.userAgent.indexOf('Firefox') != -1){
+        this.addArrowFirefox(end, direction);
+      }
     }
   },
   
 
-  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection){
+  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection, direction){
 
     this.path = 'M ' + start.x + ' ' + start.y;
 
@@ -572,6 +620,7 @@ module.exports = View.extend({
         this.path += ' L ' + end2.x + ' ' + start.y;
         this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
         this.path += ' L ' + end.x + ' ' + end.y; 
+        
       }
     }
     else{
@@ -579,16 +628,21 @@ module.exports = View.extend({
         this.addPathSegment(start.y, end2.y, this.coinDistance, ' V ');
         this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
         this.addPathSegment(start2.x, end.x, this.coinDistance, ' H ');
+        //TO DO: ADD HERE THE DRAWING OF THE MONEY CONNECTION ARROW (AS A FUNCTION CALL)
       }
       else{
         this.path += ' L ' + start.x + ' ' + end2.y;
         this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ' ' + end.y;
         this.path += ' L ' + end.x + ' ' + end.y; 
+        
       }
     }
+    if(navigator.userAgent.indexOf('Firefox') != -1){
+          this.addArrowFirefox(end, direction);
+        }
   },
 
-  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2){
+  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2, direction){
     var edgeRadius = this.edgeRadius;
     var halfX = start.x + (end.x - start.x)/2;
     var firstY, secondY, firstX, secondX;
@@ -630,10 +684,13 @@ module.exports = View.extend({
       this.path += ' L ' + halfX + ' ' + secondY;
       this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
       this.path += ' L ' + end.x + ' ' + end.y; 
+      if(navigator.userAgent.indexOf('Firefox') != -1){
+        this.addArrowFirefox(end, direction);
+      }
     }
   },
 
-  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
+  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, direction){
     var edgeRadius = this.edgeRadius;
     var halfY = start.y + (end.y - start.y)/2;
     var firstX, secondX, firstY, secondY;
@@ -677,6 +734,9 @@ module.exports = View.extend({
       this.path += ' L ' + secondX + ' ' + halfY;
       this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
       this.path += ' L ' + end.x + ' ' + end.y;
+      if(navigator.userAgent.indexOf('Firefox') != -1){
+        this.addArrowFirefox(end, direction);
+      }
     }
   },
 
@@ -685,6 +745,35 @@ module.exports = View.extend({
     var pathSegments = this.slicedPathSegments(start, end, distance);
     if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
       this.path += direction + pathSegments;
+  },
+
+  //creates the arrows for non-money-connections in firefox
+  //direction:
+  // 0: top, 1: right, 2: bottom, 3: left
+  addArrowFirefox: function(end, direction){
+    var prefix = 1;
+    if (direction == 0 || direction == 3){
+      prefix = -1;
+    }
+
+    //top or bottom
+    if (direction == 0 || direction == 2){
+      //go to the real endpoint
+      this.path += ' L ' + end.x + ' ' + (end.y + prefix * this.markerSize/2);
+      //draw 3 lines for the arrow
+      this.path += ' L ' + (end.x + this.markerSize/4) + ' ' + end.y;
+      this.path += ' L ' + (end.x - this.markerSize/4) + ' ' + end.y;
+      this.path += ' L ' + end.x + ' ' + (end.y + prefix * this.markerSize/2);
+    }
+    //left or right
+    else{
+      //go to the real endpoint
+      this.path += ' L ' + (end.x + prefix * this.markerSize/2) + ' ' + end.y;
+      //draw 3 lines for the arrow
+      this.path += ' L ' + end.x + ' ' + (end.y - this.markerSize/4);
+      this.path += ' L ' + end.x + ' ' + (end.y + this.markerSize/4);
+      this.path += ' L ' + (end.x + prefix * this.markerSize/2) + ' ' + end.y;
+    }
   }
 });
 
