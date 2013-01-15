@@ -46,28 +46,35 @@
       text-align center
       color #bbb
       border-left 1px solid rgba(0,0,0,.05)
+      cursor pointer
       .arrow
         transform translateY(1px) rotate(90deg)
       &:active .arrow
         transform translateY(1px) rotate(45deg)
   &.show-actors.selected .dropdown-control .arrow
       transform none
+  &.empty .caption 
+    .name 
+      right 0
+    .dropdown-control
+      display none
   .actors
     display none
-    list-style none
     padding 1px
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.show-actors.selected
+  &.show-actors:not(.empty)
     .actors
       display block
 
 .actor-group-actor
   line-height 30px
   height 30px
+  width 110px
   margin 5px 4px
   padding 0 5px
+  list-style none
   text-align center
   border-radius 1px
   background linear-gradient(top, #fff, #fafafa)
@@ -75,3 +82,4 @@
 
   &.dragging
     position absolute
+    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset

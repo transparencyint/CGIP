@@ -4,7 +4,7 @@ var ActorGroupActorView = require('./actor_group_actor_view');
 module.exports = DraggableView.extend({
   selectable: true,
 
-  className: 'actor-group',
+  className: 'actor-group empty',
   template : require('./templates/actor_group'),
 
   initialize: function(){
@@ -60,10 +60,25 @@ module.exports = DraggableView.extend({
     var newView = new ActorGroupActorView({model: actor, editor: this.editor});
     this.$('.actors').append(newView.render().el);
     this.actorViews[actor.id] = newView;
+    
+    this.$el.removeClass('empty');
   },
 
   removeSubActorView: function(actor){
     this.actorViews[actor.id].destroy();
+    
+    // remove destroyed actor from object
+    delete this.actorViews[actor.id];
+    
+    // don't show the arrow when it's empty
+    // idealy: if there is only one view left,
+    // transform into actor view
+    if(_.isEmpty(this.actorViews))
+      this.isEmpty();
+  },
+  
+  isEmpty: function(){
+    this.$el.addClass('empty');
   },
 
   dragByDelta: function(dx, dy){
@@ -97,7 +112,7 @@ module.exports = DraggableView.extend({
     this.$el.removeClass('show-actors');
     if(this.hoveredView){
       this.hoveredView.$el.css('opacity', 1);
-      this.hoveredView = null;  
+      this.hoveredView = null;
     }
   },
 
