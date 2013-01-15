@@ -75,11 +75,18 @@ module.exports = View.extend({
     this.roleAreaOffsets.draghandleLeft = event.pageX;
 
     // check if the dimensions are larger then the minimum role width
+
+    /*
     if(roleIndex > 0 && roleIndex != -1){
       if(this.defaultRoleDimensions[roleIndex] - this.defaultRoleDimensions[roleIndex-1] - deltaXAbsolute < this.minRoleWidth){  
         isDraggable = false;
       }else if(this.defaultRoleDimensions[roleIndex] - deltaXAbsolute > this.defaultRoleDimensions[roleIndex+1] - this.minRoleWidth){ 
-        isDraggable = false;
+        // check if monitoring is inactive
+        if(roleIndex == 3 && !this.$('#monitoring').is(':visible')){
+          console.log('hidden monitoring');
+          isDraggable = true;
+        }else
+          isDraggable = false;
       }
     }else if(roleIndex == 0){
       if(this.defaultRoleDimensions[0] - deltaXAbsolute > this.defaultRoleDimensions[1] - this.minRoleWidth){ 
@@ -90,6 +97,7 @@ module.exports = View.extend({
         isDraggable = false;
       }
     } 
+    */
 
     
     if(isDraggable){
@@ -167,7 +175,10 @@ module.exports = View.extend({
       this.country.set({'showMonitoring' : false});
       this.country.save();
     }else{
-
+      if(this.roleDimensions[4] - this.roleDimensions[3] < this.minRoleWidth){
+        console.log('smaller');
+        this.roleDimensions[4] = this.roleDimensions[3] + this.minRoleWidth;
+      }
       this.$('.monitoring').css({
         'left': this.roleDimensions[2] + $('#implementation').width(),
         'width': this.roleDimensions[4] - this.roleDimensions[3]
