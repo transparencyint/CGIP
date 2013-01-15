@@ -440,6 +440,7 @@ module.exports = View.extend({
   },
 
   showDetails: function(){
+    if(this.model.isLocked()) return; // don't show when model is locked
     if(this.isMoney){
       var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
       this.editor.$el.append(cfw.render().el);

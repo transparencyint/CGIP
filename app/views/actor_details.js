@@ -150,8 +150,10 @@ module.exports = View.extend({
   },
   
   close: function(){
+    // unlock the model
     this.model.unlock();
-    
+    this.unlockedModel = true;
+
     this.$el.one(this.transEndEventName, this.destroy);
     
     if(this.clickCatcher)
@@ -163,10 +165,12 @@ module.exports = View.extend({
   },
 
   destroy: function(){
-    View.prototype.destroy.call(this);
-    
+    if(!this.unlockedModel) this.model.unlock();
+
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
+
+    View.prototype.destroy.call(this);
   },
 
   handleKeys: function(event){
