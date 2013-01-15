@@ -12,7 +12,12 @@ module.exports = Backbone.Model.extend({
     name: '',
     abbreviation: '',
     type: 'actor',
-    hasCorruptionRisk: false
+    hasCorruptionRisk: false,
+    pos: {x: 0, y: 0}
+  },
+
+  initialize: function(){
+    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
   },
 
   moveByDelta: function(dx, dy){
@@ -21,4 +26,5 @@ module.exports = Backbone.Model.extend({
     thisPos.y += dy;
     this.set('pos', thisPos);
   }
+
 });

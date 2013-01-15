@@ -1,5 +1,11 @@
 var ConnectionView = require('views/connection_view');
 
+var connectionTypes = {
+  money: require('models/connections/money_connection'),
+  accountability: require('models/connections/accountability_connection'),
+  monitoring: require('models/connections/monitoring_connection')
+};
+
 var ConnectionMode = function(workspace, collection, connectionType, editor){
   this.workspace = workspace;
   this.collection = collection;
@@ -12,7 +18,7 @@ var ConnectionMode = function(workspace, collection, connectionType, editor){
 
 ConnectionMode.prototype.reset = function(){
   this.selectedActors = [];
-  this.connection = new Backbone.Model();
+  this.connection = new connectionTypes[this.connectionType]();
   this.connection.id = 1337;
   this.connection.from = new Backbone.Model();
   this.connection.to = new Backbone.Model();
@@ -35,6 +41,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
+    this.connection.to.margins = {top: 0, right:0, bottom:0, left:0};
     this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
     this.connectionView.actorRadius = 0;
     this.connectionView.render();
@@ -43,7 +50,6 @@ ConnectionMode.prototype.actorSelected = function(actor){
     $(document).bind('keyup', this._keyUp);
   
   }else if(this.selectedActors.length === 2){
-
     this.connection.to = actor.model;
     var mode = this;
     //check whether or not same from-to connection already exists
@@ -62,8 +68,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
         to: this.selectedActors[1].id
       });
 
-      if(newConnection.get('connectionType') === 'money')
-        newConnection.showMetadataForm = true;
+      newConnection.showMetadataForm = true;
 
       newConnection.save(null, {
         success: function(){

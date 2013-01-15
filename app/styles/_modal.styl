@@ -4,6 +4,15 @@
   background #eee
   border-radius 5px
   box-shadow 0 0 0 1px white inset, 0 0 0 1px rgba(0,0,0,.34), 0 1px 5px rgba(0,0,0,.34)
+  /* 
+    the modal gets hidden in order to measure
+    its height and scrollbar-thickness
+    therefor it must not be display none because then
+    dimensions would be zero
+  */
+  &.hidden
+    display block
+    opacity 0
   &.leftAligned
     .arrow
       left auto
@@ -36,11 +45,6 @@
     max-height 300px
   
   .holder
-    position absolute
-    top 0
-    right 0
-    bottom 46px
-    left 0
     overflow auto
     padding 13px 8px 8px
     > div
@@ -61,10 +65,12 @@
   input 
     margin 0
     padding 4px 5px 3px
-    vertical-align middle
+    
+  input[type=radio]
+    cursor default
 
   input[type=checkbox] 
-    margin 5px
+    margin 3px
 
   select
     font-size auto
@@ -82,6 +88,8 @@
     border-radius 3px
     border 1px solid rgba(0,0,0,.34)
     box-shadow 0 1px rgba(0,0,0,.05) inset, 0 1px white
+    &.noRightBorderRadius
+      border-radius 3px 0 0 3px
     &.hidden
       display none
     &.big
@@ -90,7 +98,7 @@
       width 133px
 
   label 
-    margin-right 8px
+    margin-right 5px
     font-size 15px
     line-height 1.75
     color #333
@@ -111,11 +119,6 @@
     box-shadow 0 1px rgba(0,0,0,.13) inset, 0 2px rgba(0,0,0,.05) inset
   
   .controls
-    bottom 0
-    left 0
-    right 0
-    height 46px
-    position absolute
     background linear-gradient(top, hsl(205,8%,75%), hsl(205,3%,50%))
     border-radius 0 0 3.5px 3.5px
     border none
@@ -123,7 +126,7 @@
     box-shadow 0 1px hsl(205,5%,90%) inset, 0 -1px rgba(0,0,0,.05), 0 -2px rgba(0,0,0,.03)
     cursor move
     .row
-      margin 10px 7px
+      margin 10px 7px 8px
       button  
         margin 0 3px
         width 65px

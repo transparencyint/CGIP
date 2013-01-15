@@ -2,6 +2,14 @@ require('lib/view_helper');
 
 // Base class for all views.
 module.exports = Backbone.View.extend({
+  // config fields //
+  // deactivated gridline-checking
+  noGridlines: false,
+  // is this view selectable
+  selectable: false,
+  // don't snap to the grid,
+  dontSnap: false,
+
   initialize: function() {
     this.render = _.bind(this.render, this);
   },
@@ -25,14 +33,6 @@ module.exports = Backbone.View.extend({
     alert(error);
   },
 
-  normalizedX: function(event){
-    return window.Touch ? event.originalEvent.touches[0].pageX : event.pageX;
-  },
-
-  normalizedY: function(event){
-    return window.Touch ? event.originalEvent.touches[0].pageY : event.pageY;
-  },
-
   afterRender: function() {},
 
   destroy: function(){
@@ -47,11 +47,13 @@ module.exports = Backbone.View.extend({
     done();
   },
 
-  fadedLeave: function(done){
-    var view = this;
-    this.$el.fadeOut(function(){
-      view.destroy();
-      done();
-    });
+  select: function(event){
+    if(this.selectable){
+      event.stopPropagation();
+      $('.selected').removeClass('selected');
+      this.$el.addClass('selected');
+      $(document).trigger('viewSelected', this);
+    }
   }
+
 });

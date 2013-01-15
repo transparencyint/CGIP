@@ -1,48 +1,43 @@
+<div id="overlay"></div>
+
 <div class="tool controls top">
   <div class="newActor">
     <div class="description">
-      <span class="name"><i class="plus">+</i> Add Actor</span>
+      <span class="name"><i class="plus">+</i> <%= t('add_actor') %></span>
     </div>
     <div class="dock">
-      <div class="actor new">
-        <div class="inner">
-          <div class="flexbox center">
-            <div class="name">Unknown</div>
-          </div>
-        </div>
-      </div>
       <div class="cancel"><span>Drop here to cancel</span></div>
     </div>
   </div>
-  <div class="connection money control" data-connectionType="money">
-    <div class="eye"></div>
-    <div class="description button" title="New Money Connection">
-      <img src="/images/moneyflow.png">
-      <span class="name">Money</span>
-    </div>
-  </div>
+
   <div class="connection accountability control" data-connectionType="accountability">
     <div class="eye"></div>
     <div class="description button" title="New Accountability Connection">
+      <span class="name"><%= t('accountability') %></span>
       <img src="/images/accountabilityflow.png">
-      <span class="name">Accountability</span>
     </div>
   </div>
+
   <div class="connection monitoring control" data-connectionType="monitoring">
     <div class="eye"></div>
     <div class="description button" title="New Monitoring Connection">
+      <span class="name"><%= t('monitoring') %></span>
       <img src="/images/monitoringflow.png">
-      <span class="name">Monitoring</span>
     </div>
   </div>
-  <div class="moneyMode">
-    <span class="name">Money mode</span>
-    <span id="disbursedMoney" class="small">Disbursed</span>
-    <span id="pledgedMoney" class="small">Pledged</span>
+
+  <div class="connection money control" data-connectionType="money">
+    <div class="eye"></div>
+    <div class="description button" title="New Money Connection">
+      <span class="name"><%= t('money') %></span>
+      <img src="/images/moneyflow.png">
+    </div>
   </div>
-  <div class="toggleMonitoring">
-    <span class="name">toggle Monitoring</span>
-    <span id="toggleMonitoringText" class="small active">On</span>
+  
+  <div class="moneyMode">
+    <span class="name"><%= t('money_mode') %></span>
+    <span id="disbursedMoney" class="small"><%= t('disbursed') %></span>
+    <span id="pledgedMoney" class="small"><%= t('pledged') %></span>
   </div>
 </div>
 
@@ -59,9 +54,8 @@
   </div>
 </div>
 
-<div class="centerLine"></div>
-
-<div class="gridline" id="gridlineH"></div>
 <div class="gridline" id="gridlineV"></div>
+<div class="gridline" id="gridlineH"></div>
 
+<div class="centerLine"></div>
 <div class="workspace"></div>

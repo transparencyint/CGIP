@@ -3,6 +3,8 @@ var Actor = require('models/actor');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
+var ActorGroupActorView = require('./actor_group_actor_view');
+var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode');
@@ -16,16 +18,27 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
+    // tool controls
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
     'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
     'click .tool .toggleMonitoring': 'toggleMonitoring',
+    
+    // view controls
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
+    
+    // start to pan..
     'mousedown': 'dragStart',
-    'mousedown .bar': 'stopPropagation'
+    
+    // ..except when your mouse touches the controls
+    'mousedown .controls': 'stopPropagation',
+    'click .controls': 'stopPropagation',
+    
+    // unselect when clicking into empty space
+    'click': 'unselect'
   },
   
   transEndEventNames: {
@@ -41,8 +54,6 @@ module.exports = View.extend({
 
     this.radius = 60;
     this.smallRadius = 44;
-
-    this.moneyConnectionMode = 'disbursedMode'; //default
     
     // padding for fit-to-screen
     this.padding = this.radius/2;
@@ -62,11 +73,11 @@ module.exports = View.extend({
     this.moneyConnections = filteredConnections.money;
     this.accountabilityConnections = filteredConnections.accountability;
     this.monitoringConnections = filteredConnections.monitoring;
-    this.selectedActors = [];
+
     this.zoom = {
       value: 1,
       sqrt: 1,
-      step: 0.25,
+      step: 0.1,
       min: 0.25,
       max: 1.75
     };
@@ -86,26 +97,17 @@ module.exports = View.extend({
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
-    
-    this.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
 
-    _.bindAll(
-      this, 
-      'initializeDimensions', 
-      'appendActorGroup', 
-      'realignCenter', 
-      'appendActor', 
-      'createActorAt', 
-      'appendConnection', 
-      'keyUp', 
-      'unselect', 
-      'saveGroup', 
-      'slideZoom', 
-      'dragStop', 
-      'drag',
-      'placeActorDouble', 
-      'slideInDouble'
-    );
+    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+
+    this.hideGridLine = _.debounce(this.hideGridLine, 500);
+
+    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+  
+    // gridlines
+    $(document).on('viewdrag', this.calculateGridLines);
+    // actor selection
+    $(document).on('viewSelected', this.actorSelected);
   },
   
   stopPropagation: function(event){
@@ -113,11 +115,8 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActors != []) {
-      _.each(this.selectedActors, function(actor){
-        actor.destroy();
-      });
-    }
+    if(this.selectedActorView)
+      this.selectedActorView.model.destroy();
   },
   
   slideZoom: function(event, ui){
@@ -159,30 +158,14 @@ module.exports = View.extend({
     // center workspace
     this.moveTo(0, 0);
     
-    // check if the actors as a whole are not centered
-    // if thats the case, move them to the left
-    if(boundingBox.left !== boundingBox.width/2){
-      
-      // calculate center offset
-      var dx = boundingBox.left + boundingBox.width/2;
-      
-      this.actors.each(function(actor){
-        actor.moveByDelta(-dx, 0);
-        actor.save();
-      });
-    }
+    // calculate offset of the center
+    var offsetX = Math.abs(boundingBox.left + boundingBox.width/2);
     
-    var horizontalRatio = this.$el.width() / (boundingBox.width + this.radius*2 + this.padding*2);
-    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius + this.padding*2);
+    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.radius*2 + this.padding) );
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius*2 + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
-    
-    // round it to our zoom.step
-    fitZoom = Math.floor( fitZoom / this.zoom.step ) * this.zoom.step;
-    
-    // keep it inside our zoom boundaries
-    fitZoom = Math.max(this.zoom.min, Math.min(this.zoom.max, fitZoom));
     
     this.zoomTo(fitZoom);
   },
@@ -193,14 +176,17 @@ module.exports = View.extend({
     var top = Infinity;
     var bottom = 0;
     
-    this.actors.each(function(actor){
+    var checkPos = function(actor){
       var pos = actor.get('pos');
       
       if(pos.y < top) top = pos.y;
       if(pos.y > bottom) bottom = pos.y;
       if(pos.x < left) left = pos.x;
       if(pos.x > right) right = pos.x;
-    });
+    };
+    
+    this.actors.each(checkPos);
+    this.actorGroups.each(checkPos);
     
     return {
       left: left,
@@ -212,23 +198,20 @@ module.exports = View.extend({
     };
   },
   
-  unselect: function(){
-    if(this.mode) this.mode.unselect();
-    this.selectedActors = [];
+  actorSelected: function(event, view){
+    if(view.$el.hasClass('actor')){
+      this.selectedActorView = view;
+      if(this.mode)
+        this.mode.actorSelected(view);
+    }
   },
 
-  dragGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.moveByDelta(dx, dy);
-    });
+  unselect: function(){
+    this.selectedActorView = null;
+    if(this.mode) this.mode.unselect();
+    $('.selected').removeClass('selected');
   },
-  
-  saveGroup: function(dx, dy){
-    _.each(this.selectedActors, function(actor){
-      actor.save();
-    });
-  },
-  
+
   createActorAt: function(x, y){
     var editor = this;
   
@@ -256,7 +239,6 @@ module.exports = View.extend({
 
   // when an actor is removed, destroy its view
   removeActor: function(actor){
-    console.log('remove actor', actor);
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
   },
@@ -270,7 +252,9 @@ module.exports = View.extend({
 
   appendConnection: function(connection){
     connection.pickOutActors(this.actors);
+
     var connView = new ConnectionView({ model : connection, editor: this});
+
     connView.render();  
     this.workspace.append(connView.el);
 
@@ -278,20 +262,8 @@ module.exports = View.extend({
       connView.showMetadataForm();
   },
 
-  actorSelected: function(actorView){
-    if(this.selectedActors.length <= 1)
-      this.selectedActors = [actorView.model];
-    else{
-      var found = _.find(this.selectedActors, function(actor){ return actor.id == actorView.model.id; });
-      if(!found)
-        this.selectedActors = [actorView.model];
-    }
-    if(this.mode)
-      this.mode.actorSelected(actorView);
-  },
-
   toggleMode: function(event){
-    this.$('.connection').removeClass('active');
+    this.$('.connection.active').removeClass('active');
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
@@ -313,19 +285,16 @@ module.exports = View.extend({
 
     var currentID = target.attr('id');
     if(currentID === 'disbursedMoney')
-      this.moneyConnectionMode = 'disbursedMode';
+      config.set('moneyConnectionMode','disbursedMode'); 
     else if(currentID === 'pledgedMoney')
-      this.moneyConnectionMode = 'pledgedMode';
-
-    this.trigger('change:moneyConnectionMode');
+      config.set('moneyConnectionMode','pledgedMode'); 
   },
 
   toggleActiveMoneyMode: function(){
-    if(this.moneyConnectionMode === 'disbursedMode')
+    if(config.get('moneyConnectionMode') === 'disbursedMode')
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
-    else if(this.moneyConnectionMode === 'pledgedMode')
+    else 
       this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
-
   },
 
   toggleMonitoring: function(event){
@@ -370,6 +339,41 @@ module.exports = View.extend({
       this.workspace.removeClass( hideClass );
     };
   },
+
+  checkDrop: function(event, view){
+    if(event.isPropagationStopped()) return;
+
+    if(view instanceof FakeActorView)
+      this.newActorDropped(view);
+    else if(view instanceof ActorGroupActorView)
+      this.actorGroupActorDropped(view)
+  },
+
+  // the fake actor view has been dropped here
+  newActorDropped: function(view){
+    // check if the new actor overlaps with one of the groups
+    var overlapsWithOthers = false;
+    _.each(this.actorGroupViews, function(groupView){
+      if(!overlapsWithOthers)
+        overlapsWithOthers = groupView.overlapsWith(view);
+    });
+
+    // create a new actor when it doesn't over lap with others
+    if(!overlapsWithOthers){
+      var offset = view.$el.offset();
+      var coords = this.offsetToCoords(offset, this.smallRadius);
+      this.createActorAt(coords.x, coords.y);
+      view.model.set({pos: {x: 0, y:0 }});
+    }
+  },
+
+  // an actor view from a group has been dragged here
+  actorGroupActorDropped: function(view){
+    // remove it from the group
+    view.model.collection.remove(view.model);
+    // add it to this actor
+    this.actors.add(view.model);
+  },
   
   slideActorIn: function(){
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
@@ -382,13 +386,17 @@ module.exports = View.extend({
     this.addActor.addClass('slideIn');
   },
 
+  offsetToCoords: function(offset, radius){
+    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+    return { x: x, y: y };
+  },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var x = (offset.left - this.center + this.radius*this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + this.radius*this.zoom.value - this.offset.top) / this.zoom.value;
+    var coords = this.offsetToCoords(offset, this.radius);
     
-    this.createActorAt(x, y);
+    this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
     _.delay(this.slideInDouble, 100);
@@ -462,6 +470,35 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global');
   },
 
+  calculateGridLines: function(event, view){
+    if(view.noGridlines) return;
+
+    var pos = view.model.get('pos');
+
+    var x = Math.round(pos.x / this.gridSize) * this.gridSize;
+    var y = Math.round(pos.y / this.gridSize) * this.gridSize;
+
+    var foundGridX = false;
+    var foundGridY = false;
+
+    //check if there is an actor at the nearest grid point
+    this.actors.each(function(actor){
+      var currentPos = actor.get('pos');
+      var actorX = Math.round(currentPos.x);
+      var actorY = Math.round(currentPos.y);
+
+      if(view.model.id != actor.id){
+        if(actorX == x)
+          foundGridX = true;
+        if(actorY == y)
+          foundGridY = true;
+      }
+    });
+
+    this.showGridLine(x, y, foundGridX, foundGridY);
+    this.hideGridLine(); // hiding is a delayed function
+  },
+
   showGridLine: function(x, y, gridX, gridY){
 
     if(gridX){
@@ -494,6 +531,10 @@ module.exports = View.extend({
     var editor = this;
 
     this.$el.html( this.template() );
+    this.fakeActorView = new FakeActorView({editor: this});
+    this.fakeActorView.render();
+    this.$('.newActor .dock').append(this.fakeActorView.el);
+
     this.workspace = this.$('.workspace');
     this.addActor = this.$('.controls .newActor');
     this.actorDouble = this.$('.controls .actor.new');
@@ -507,8 +548,10 @@ module.exports = View.extend({
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 
-    //this.accountabilityConnections.each(this.appendAccountabilityConnection);
-    this.connections.each(this.appendConnection);
+    // append all connections
+    this.accountabilityConnections.each(this.appendConnection);
+    this.moneyConnections.each(this.appendConnection);
+    this.monitoringConnections.each(this.appendConnection);
 
     this.afterRender();
     
@@ -525,36 +568,12 @@ module.exports = View.extend({
   afterRender: function(){
     var editor = this;
 
+    $(document).on('viewdragstop', this.checkDrop);
+
     this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignCenter);
-
-    this.actorDouble.draggable({
-      stop : function(){ $(this).data('stopped', null); },
-      revert : true,
-      revertDuration : 1
-    });
-
-    this.cancel.droppable({
-      greedy: true,
-      drop: function(event, ui){ $(ui.draggable).data('stopped', true); }
-    });
-
-    //this.workspace.draggable();
-
-    this.workspace.droppable({
-      drop : function(event, ui){
-        var draggable = $(ui.draggable);
-        if(draggable.hasClass('new') && !draggable.data('stopped')){
-          // TODO: fix after implementing pan&zoom
-          var x = draggable.offset().left + editor.smallRadius;
-          var y = draggable.offset().top + editor.smallRadius;
-
-          editor.createActorAt(x, y);
-        }
-      }
-    });
     
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
@@ -587,8 +606,12 @@ module.exports = View.extend({
     _.each(this.actorGroupViews, function(view){
       view.destroy();
     });
-
+    
+    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keyup', this.keyUp);
+    $(document).off('viewdrag', this.calculateGridLines);
+    $(document).off('viewSelected', this.actorSelected);
+    $(document).off('viewdragstop', this.checkDrop);
     $(window).unbind('resize', this.realignCenter);
   }
 });

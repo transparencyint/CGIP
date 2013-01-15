@@ -1,0 +1,48 @@
+<div class="arrow"></div>
+
+<form>
+	<div class="holder">
+	  <div>
+	    <h3 class="connectionName"></h3>
+	  </div>
+	  <div class="money">
+	    <div>
+	      <div class="clearfix">
+    	    <label for="disbursed">Disbursed</label>
+      	  <div class="dollar">
+      	    <input type="text" class="noRightBorderRadius" data-type="integer" id="disbursed" name="disbursed" />
+      	  </div>  
+      	  <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
+      	</div>
+      	<div class="clearfix">
+      	  <label for="pledged">Pledged</label>
+      	  <div class="dollar">
+      	    <input type="text" class="noRightBorderRadius" data-type="integer" id="pledged" name="pledged" />
+      	  </div>
+        	<input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
+      	</div>
+      </div>
+    </div>
+    
+    <div>
+  	  <label>Corruption Risk</label>
+  	  <input class="hasAdditionalInfo" type="checkbox" data-type="boolean" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
+  	  <label for="hasCorruptionRisk">Yes</label>
+  	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
+    	  <label for="corruptionRisk">Description</label>
+    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
+    	  <label for="corruptionRiskSource">Source</label>
+    	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" data-type="string" placeholder="http://">
+    	</div>
+  	</div>
+  </div>
+	<div class="controls clearfix">
+    <div class="row right">
+      <button type="submit" class="done">Save</button>
+      <button class="cancel">Cancel</button>
+    </div>
+    <div class="row left">
+      <button class="delete">Delete</button>
+    </div>
+  </div>
+</form>

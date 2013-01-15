@@ -14,8 +14,6 @@ module.exports = View.extend({
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
-
-    this.$document = $(document);
   },
 
   disableDraggable: function(){
@@ -27,34 +25,37 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
-    this.select(); // always select actor before dragging
+    this.select(event);
 
     if(!this.dontDrag){
       event.stopPropagation();
-      
       var pos = this.model.get('pos');
       
       this.startX = event.pageX - pos.x;
       this.startY = event.pageY - pos.y;
     
-      this.$document.on('mousemove.global', this.drag);
-      this.$document.one('mouseup', this.dragStop);
+      $(document).on('mousemove.global', this.drag);
+      $(document).one('mouseup', this.dragStop);
     }
   },
 
   drag: function(event){ 
     var pos = this.model.get('pos');
     
+    this.isDragging = true;
     var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
-    
-    this.findNearestGridPoint();
-    this.editor.dragGroup(dx, dy);
+
+    this.dragByDelta(dx, dy);
 
     // emit a global drag event
-    this.$document.trigger('viewdrag', this);
+    $(document).trigger('viewdrag', this);
   },
   
+  dragByDelta: function(dx, dy){
+    throw('dragByDelta is not implemented.')
+  },
+
   updatePosition: function(){
     var pos = this.model.get('pos');
     
@@ -65,50 +66,33 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
-    this.snapToGrid();
-    // emit a global dragstop event
-    this.$document.trigger('viewdragstop', this);
-    $(document).off('mousemove.global', this.drag);
-  },
-
-  select: function(event){
-    if(!this.$el.hasClass("ui-selected")){
-      this.$el.addClass("ui-selected").siblings().removeClass("ui-selected");
+    if(this.isDragging){
+      this.snapToGrid();
+      // emit a global dragstop event
+      $(document).trigger('viewdragstop', this);
     }
-    this.editor.actorSelected(this);
+      
+    $(document).off('mousemove.global', this.drag);
+
+    this.isDragging = false;
   },
 
-  findNearestGridPoint: function(){
-    var gridSize = this.editor.gridSize;
-    var pos = this.model.get('pos');
+  overlapsWith: function(view){
+    var myPos = this.$el.offset();
+    var viewPos = view.$el.offset();
+    var myWidth = this.$el.outerWidth();
+    var myHeight = this.$el.outerHeight();
 
-    var x = Math.round(pos.x / gridSize) * gridSize;
-    var y = Math.round(pos.y / gridSize) * gridSize;
-
-    var editor = this.editor;
-    var currentActor =  this;
-    var foundGridX = false;
-    var foundGridY = false;
-
-    //check if there is an actor at the nearest grid point
-    var actors = this.editor.actors.models;
-
-    _.each(actors, function(actor){
-      var actorX = Math.round(actor.attributes.pos.x);
-      var actorY = Math.round(actor.attributes.pos.y);
-
-      if(currentActor.model.id != actor.id){
-        if(actorX == x)
-          foundGridX = true;
-        if(actorY == y)
-          foundGridY = true;
-      }
-    });
-
-    editor.showGridLine(x, y, foundGridX, foundGridY);
+    // check if have an intersection
+    var overlaps =   (viewPos.left < myPos.left + myWidth)
+                  && (viewPos.left + view.width > myPos.left)
+                  && (viewPos.top < myPos.top + myHeight)
+                  && (viewPos.top + view.height > myPos.top);
+    return overlaps;
   },
 
   snapToGrid: function(){
+    if(this.dontSnap) return;
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
     var pos =  this.model.get('pos');     
@@ -121,34 +105,31 @@ module.exports = View.extend({
     var dy = y - pos.y;
     
     if(dx !== 0 || dy !== 0){
-      var editor = this.editor;
+      var view = this;
 
       $({percent: 0}).animate({percent: 1}, {
         step: function(){
           var stepX = this.percent * dx;
           var stepY = this.percent * dy;
 
-          editor.dragGroup(stepX, stepY);
+          view.dragByDelta(stepX, stepY);
 
           dx -= stepX;
           dy -= stepY;
         },
         duration: 100,
         complete: function(){
-          editor.saveGroup();
-
-          // hide grid line
-          editor.hideGridLine();
+          view.model.save();
         }
       });
     } else {
-      this.editor.saveGroup();
+      view.model.save();
     }
   },
 
   destroy: function(){
     View.prototype.destroy.call(this);
-    this.$document.off('mousemove.global', this.drag);
-    this.$document.off('mouseup', this.dragStop);
+    $(document).off('mousemove.global', this.drag);
+    $(document).off('mouseup', this.dragStop);
   }
 });

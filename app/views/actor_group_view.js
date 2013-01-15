@@ -1,6 +1,9 @@
 var DraggableView = require('./draggable_view');
+var ActorGroupActorView = require('./actor_group_actor_view');
 
 module.exports = DraggableView.extend({
+  selectable: true,
+
   className: 'actor-group',
   template : require('./templates/actor_group'),
 
@@ -16,7 +19,8 @@ module.exports = DraggableView.extend({
     this.$document.on('viewdrag', this.checkHover);
     this.$document.on('viewdragstop', this.checkDrop);
 
-    this.model.actors.on('add remove', this.render, this);
+    this.model.actors.on('add', this.addSubActorView, this);
+    this.model.actors.on('remove', this.removeSubActorView, this);
   },
 
   events: function(){
@@ -25,7 +29,7 @@ module.exports = DraggableView.extend({
     return _.defaults({
       'mousedown'         : 'dragStart',
       'mousedown .caption': 'select',
-      'hover'             : 'showActors'
+      'mouseup'           : 'showActors'
     }, parentEvents);
   },
 
@@ -35,25 +39,42 @@ module.exports = DraggableView.extend({
     return data;
   },
 
+  render: function(){
+    // call the super function
+    DraggableView.prototype.render.call(this);
+
+    _.bindAll(this, 'addSubActorView');
+
+    // render the subactors
+    this.actorViews = {};
+
+    this.model.actors.each(this.addSubActorView);
+
+    return this;
+  },
+
   afterRender: function(){
     this.updatePosition();
   },
 
-  overlapsWith: function(view){
-    var myPos = this.$el.offset();
-    var viewPos = view.$el.offset();
-    var myWidth = this.$el.outerWidth();
-    var myHeight = this.$el.outerHeight();
+  addSubActorView: function(actor){
+    var newView = new ActorGroupActorView({model: actor, editor: this.editor});
+    this.$('.actors').append(newView.render().el);
+    this.actorViews[actor.id] = newView;
+  },
 
-    // check if have an intersection
-    var overlaps =   (viewPos.left < myPos.left + myWidth)
-                  && (viewPos.left + view.width > myPos.left)
-                  && (viewPos.top < myPos.top + myHeight)
-                  && (viewPos.top + view.height > myPos.top);
-    return overlaps;
+  removeSubActorView: function(actor){
+    this.actorViews[actor.id].destroy();
+  },
+
+  dragByDelta: function(dx, dy){
+    this.model.moveByDelta(dx, dy);
   },
 
   checkHover: function(event, view){
+    // return if it's this view
+    if(view === this) return
+
     if(view.$el.hasClass('actor')){
       // if it overlaps, give feedback
       if(this.overlapsWith(view))
@@ -82,27 +103,32 @@ module.exports = DraggableView.extend({
   },
 
   checkDrop: function(event, view){
+    if(event.isPropagationStopped()) return;
+
+    // return if it's this view
+    if(view === this) return;
+
     if(this.overlapsWith(view)){
-      // remove it from the current collection
-      this.editor.actors.remove(view.model);
+      // add it to the group
       this.model.addToGroup(view.model);
       this.model.save();
     }
-    this.dragOut();      
+
+    if(this.hovered)
+      this.dragOut();      
   },
 
   showActors: function(event){
-    if(this.hovered) return;
+    if(this.hovered || this.isDragging) return;
 
-    if(event.type == 'mouseenter'){
-      this.$el.addClass('show-actors');
-    }else{
-      this.$el.removeClass('show-actors');
-    }
+    this.$el.toggleClass('show-actors');
   },
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);
+
+    // destroy all sub actors
+    _.each(this.actorViews, function(actorView){ actorView.destroy(); });
 
     this.$document.off('viewdrag', this.checkHover);
     this.$document.off('viewdragstop', this.checkDrop);

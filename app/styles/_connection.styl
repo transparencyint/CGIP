@@ -1,77 +1,42 @@
-.connection
+.workspace .connection
+  pointer-events none
   path
+    fill none
+  use
     cursor pointer
+    pointer-events visiblePainted
+  marker
+    fill none
   &.pledgedMode
     path
       stroke hsl(60,20%,60%)
     use
       fill hsl(60,20%,60%)
-  &.ui-selected
-    path
+  &.accountability
+    .arrow
+      fill white
+    .path
+      stroke white
+  &.monitoring
+    .arrow
+      fill black
+    .path
+      stroke black
+  .clickBorder
+    stroke transparent
+  &.selected
+    .selectPath
       stroke hsl(205,100%,55%)
-      marker-end url(#selectedTriangle)
-
-  .connection-metadata
-  	display none
-  	padding 20px
-  	color #000
-  	background white
-  	position absolute
-  	z-index	10
-  	border 1px solid rgba(0,0,0,.13)
-  	border-radius 5px
-  	box-shadow 0 1px 5px rgba(0,0,0,.13)
-.connection-form
-  div
-    margin 10px 0 
-  .mode
-      position absolute
-      right 20px
-.connection-form-container
-  width 300px
-  height 240px
-  position absolute
-  left 50%
-  top 50%
-  margin-left: -150px
-  margin-top: -120px
-  display none
-  padding 15px 20px 20px 20px 
-  color #000
-  background white
-  z-index 10
-  opacity 0.95
-  border 1px solid rgba(0,0,0,.13)
-  border-radius 5px
-  box-shadow 0 1px 5px rgba(0,0,0,.13)
-  .close
+    .selected-arrow
+      fill hsl(205,100%,55%)
+  .metadata
     position absolute
-    top 0
-    right 0
-    cursor pointer
-    font-size 30px
-    line-height 1
-    padding 5px 8px
-
-  .movable
-    width 240px
-    height 10px
-    background #eee
-    cursor move
-    margin-bottom 20px
-
-  input[type=text]
-    margin 5px 0
-    width 100%
-    border 1px solid #999
-  input[type=radio]
-    margin-right 3px
-  button
-    margin 10px 0
-    padding 10px 15px
-    
-.activeConnection path
-  stroke #a00000
-.activeConnection use
-  fill #a00000
+    display none
+    padding 3px 8px
+    color black
+    white-space nowrap
+    background white
+    z-index	10
+    border-radius 3px
+    box-shadow 0 1px 3px 1px rgba(0, 0, 0, 0.34), 0 1px rgb(251, 251, 251) inset
 
