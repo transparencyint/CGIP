@@ -17,6 +17,9 @@ module.exports = DraggableView.extend({
     this.model = new Actor();
     // stub the save function
     this.model.save = function(){};
+    
+    this.width = this.options.editor.smallActorWidth;
+    this.height = this.options.editor.smallActorHeight;
 
     DraggableView.prototype.initialize.call(this);
   },

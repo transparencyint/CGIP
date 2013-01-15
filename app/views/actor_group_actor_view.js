@@ -6,7 +6,10 @@ module.exports = DraggableView.extend({
 
   tagName: 'li',
   className: 'actor-group-actor',
-  template : require('./templates/actor_group_actor'),
+  template: require('./templates/actor_group_actor'),
+  
+  width: 110,
+  height: 30,
 
   events: function(){
     var parentEvents = DraggableView.prototype.events;
@@ -25,7 +28,7 @@ module.exports = DraggableView.extend({
 
     var offset = this.originalElement.offset();
     var coords = this.editor.offsetToCoords(offset);
-    this.model.set('pos', { x: coords.x, y: coords.y });
+    this.model.set('pos', coords);
     
     this.$el.appendTo($('.workspace'));
 
