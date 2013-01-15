@@ -279,7 +279,8 @@ io.sockets.on('connection', function (socket) {
     console.log('disconnect socket', user_id);
 
     // select all tha locked models from this user
-    var user_models = _.where(lockedModels, function(model){ return model.user_id == user_id; });
+    var user_models = _.where(lockedModels, { user_id: user_id });
+
     // broadcast unlocks for these models
     _.each(user_models, function(model){
       var model_id = model.model_id;
