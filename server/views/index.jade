@@ -12,10 +12,13 @@ html
     script(src="/socket.io/socket.io.js")
     title CGIP
   body
-    #container
-      if user
+    script(id="lockedModels")
+      window.lockedModels = !{JSON.stringify(lockedModels)};
+    if user
         script(id="user_hash")
-          window.user_hash = !{JSON.stringify(user)}
+          window.user_hash = !{JSON.stringify(user)};
+
+    #container
 
     script
       require('initialize');

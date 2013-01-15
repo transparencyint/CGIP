@@ -79,7 +79,7 @@ var routeHandler = {
       var user = {};
       user._id = req.user.id;
       user._rev = req.user._rev;
-      res.render('index', { user: user });
+      res.render('index', { user: user, lockedModels: lockedModels });
     }else{
       res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
     }
@@ -90,7 +90,7 @@ var routeHandler = {
     if(req.user){
       res.redirect(baseURL + '/edit');
     }else{
-      res.render('index', { user: null });
+      res.render('index', { user: null, lockedModels: lockedModels });
     }
   }
 };
