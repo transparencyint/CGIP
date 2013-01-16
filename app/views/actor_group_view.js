@@ -130,9 +130,16 @@ module.exports = DraggableView.extend({
     }
 
     if(this.overlapsWith(view)){
-      // add it to the group
-      this.model.addToGroup(view.model);
-      this.model.save();
+      // is it already in the list?
+      if(this.model.actors.contains(view.model)){
+        // stop propagation and do nothing
+        event.stopPropagation();
+        return;
+      }else{
+        // add it to the group
+        this.model.addToGroup(view.model);
+        this.model.save();
+      }
     }
 
     if(this.hovered)
