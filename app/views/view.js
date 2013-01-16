@@ -69,7 +69,7 @@ module.exports = Backbone.View.extend({
 
   select: function(event){
     if(this.selectable){
-      event.stopPropagation();
+      if(event) event.stopPropagation();
       $('.selected').removeClass('selected');
       this.$el.addClass('selected');
       $(document).trigger('viewSelected', this);

@@ -2,7 +2,7 @@ var View = require('./view');
 
 module.exports = View.extend({
   events: {
-    'click' : 'select'
+    'click' : 'dontUnselect'
   },
 
   initialize: function(){
@@ -16,6 +16,10 @@ module.exports = View.extend({
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
+  },
+  
+  dontUnselect: function(event){
+    event.stopPropagation();
   },
 
   disableDraggable: function(){

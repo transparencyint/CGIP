@@ -237,7 +237,10 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     this.actorViews[actor.id] = actorView;
-    if(startEdit === true) actorView.showDetails();
+    if(startEdit === true){
+      actorView.select();
+      actorView.showDetails();
+    }
   },
 
   // when an actor is removed, destroy its view
@@ -355,7 +358,7 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var coords = this.offsetToCoords(offset, this.smallActorWidth, this.smallActorHeight);
+      var coords = this.offsetToCoords(offset, view.width, view.height);
       this.createActorAt(coords.x, coords.y);
       
       // move actorDouble back to its origin by sliding it in from the top

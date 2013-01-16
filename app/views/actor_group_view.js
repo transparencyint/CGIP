@@ -1,10 +1,11 @@
 var DraggableView = require('./draggable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
+var FakeActorView = require('./fake_actor_view');
 
 module.exports = DraggableView.extend({
   selectable: true,
 
-  className: 'actor-group',
+  className: 'actor-group empty',
   template : require('./templates/actor_group'),
 
   initialize: function(){
@@ -55,15 +56,42 @@ module.exports = DraggableView.extend({
   afterRender: function(){
     this.updatePosition();
   },
+  
+  open: function(){
+    this.$el.addClass('open');
+  },
+  
+  close: function(){
+    this.$el.removeClass('open');
+  },
+  
+  toggle: function(){
+    this.$el.toggleClass('open');
+  },
 
   addSubActorView: function(actor){
     var newView = new ActorGroupActorView({model: actor, editor: this.editor});
     this.$('.actors').append(newView.render().el);
     this.actorViews[actor.id] = newView;
+    
+    this.$el.removeClass('empty');
   },
 
   removeSubActorView: function(actor){
     this.actorViews[actor.id].destroy();
+    
+    // remove destroyed actor from object
+    delete this.actorViews[actor.id];
+    
+    // don't show the arrow when it's empty
+    // idealy: if there is only one view left,
+    // transform into actor view
+    if(_.isEmpty(this.actorViews))
+      this.isEmpty();
+  },
+  
+  isEmpty: function(){
+    this.$el.addClass('empty');
   },
 
   dragByDelta: function(dx, dy){
@@ -89,38 +117,54 @@ module.exports = DraggableView.extend({
     this.hovered = true;
     this.hoveredView = view;
     this.hoveredView.$el.css('opacity', .5);
-    this.$el.addClass('show-actors');
+    this.open();
   },
 
   dragOut: function(){
     this.hovered = false;
-    this.$el.removeClass('show-actors');
+    this.close();
     if(this.hoveredView){
       this.hoveredView.$el.css('opacity', 1);
-      this.hoveredView = null;  
+      this.hoveredView = null;
     }
   },
 
   checkDrop: function(event, view){
     if(event.isPropagationStopped()) return;
-
     // return if it's this view
     if(view === this) return;
 
+    // Don't allow to add FakeActorViews
+    if(view instanceof FakeActorView && this.overlapsWith(view)){
+      event.stopPropagation();
+      view.reset();
+      return;
+    }
+
     if(this.overlapsWith(view)){
-      // add it to the group
-      this.model.addToGroup(view.model);
-      this.model.save();
+      // is it already in the list?
+      if(this.model.actors.contains(view.model)){
+        // stop propagation and do nothing
+        event.stopPropagation();
+        return;
+      }else{
+        // add it to the group
+        this.model.addToGroup(view.model);
+        this.model.save();
+      }
     }
 
     if(this.hovered)
-      this.dragOut();      
+      this.dragOut();
+      
+    // then it was dragged out
+    this.close();   
   },
 
   showActors: function(event){
     if(this.hovered || this.isDragging) return;
 
-    this.$el.toggleClass('show-actors');
+    this.toggle();
   },
 
   destroy: function(){
