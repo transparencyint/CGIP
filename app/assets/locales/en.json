@@ -13,5 +13,9 @@
   "money": "Money",
   "money_mode": "Money Mode",
   "disbursed": "disbursed",
-  "pledged": "pledged"
+  "pledged": "pledged",
+  "funding": "Funding",
+  "coordination": "Coordination",
+  "implementation": "Implementation",
+  "monitoring": "Monitoring"
 }
