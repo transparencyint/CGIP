@@ -7,7 +7,8 @@ var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
-var ConnectionMode = require('./editor_modes/connection_mode')
+var ConnectionMode = require('./editor_modes/connection_mode');
+var RoleBackgroundView = require('./role_background_view');
 
 // TODO: find a better place for `transEndEventNames`
 
@@ -22,6 +23,7 @@ module.exports = View.extend({
     'click .tool .connection': 'toggleMode',
     'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
+    'click .tool .toggleMonitoring': 'toggleMonitoring',
     
     // view controls
     'click .zoom.in': 'zoomIn',
@@ -49,6 +51,7 @@ module.exports = View.extend({
   
   initialize: function(options){
     this.country = options.country;
+
     this.radius = 60;
     this.smallRadius = 44;
     
@@ -83,7 +86,7 @@ module.exports = View.extend({
       left: 0,
       top: 0
     };
-    
+
     this.gridSize = this.radius;
     
     // add an actor view when a new one is added
@@ -121,9 +124,11 @@ module.exports = View.extend({
     
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
+    var zoomBefore = this.zoom.value;
     this.zoom.value = ui.value;
     this.zoom.sqrt = Math.sqrt(ui.value);
 
+    this.trigger('zoom', this.zoom.value - zoomBefore);
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
     
     this.$el.css('background-size', this.zoom.value*10);
@@ -209,10 +214,10 @@ module.exports = View.extend({
 
   createActorAt: function(x, y){
     var editor = this;
-    
+  
     var actor = new Actor();
     actor.save({
-      country: editor.country,
+      country: editor.country.get('abbreviation'),
       pos : { x : x, y : y }
     },{
       success : function(){
@@ -290,6 +295,15 @@ module.exports = View.extend({
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
     else 
       this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
+  },
+
+  toggleMonitoring: function(event){
+    this.rbw.toggleMonitoring();
+
+    if($('#toggleMonitoringText').hasClass('active'))
+      $('#toggleMonitoringText').html('Off').removeClass('active');
+    else
+      $('#toggleMonitoringText').html('On').addClass('active');
   },
 
   deactivateMode: function(){
@@ -435,17 +449,19 @@ module.exports = View.extend({
       this.offset.left = x / this.zoom.sqrt;
       this.offset.top =  y / this.zoom.sqrt;
     }
-    
+
     x += this.center;
-    
+
     this.workspace.css({
-      left: x,
-      top: y
+      left: Math.round(x),
+      top: Math.round(y)
     });
     
+    this.trigger('pan', x, y);
     this.$el.css('background-position', x +'px, '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
+    
   },
   
   dragStop : function(event){
@@ -484,15 +500,16 @@ module.exports = View.extend({
   },
 
   showGridLine: function(x, y, gridX, gridY){
+
     if(gridX){
-      this.gridlineV.css({'left': this.offset.left + this.center + x});
+      this.gridlineV.css({'left': (this.offset.left*this.zoom.sqrt + this.center + x*this.zoom.value)});
       this.gridlineV.show();
     }
     else if(!gridX)
       this.gridlineV.hide();
 
     if(gridY){
-      this.gridlineH.css({'top': this.offset.top + y});
+      this.gridlineH.css({'top': this.offset.top*this.zoom.sqrt + y*this.zoom.value});
       this.gridlineH.show();
     }
     else if(!gridY)
@@ -525,6 +542,9 @@ module.exports = View.extend({
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
+    this.rbw = new RoleBackgroundView({ editor: editor });
+    this.workspace.before(this.rbw.render()); 
+
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 
@@ -541,6 +561,10 @@ module.exports = View.extend({
     _.defer(this.realignCenter);
   },
   
+  initializeDimensions: function(){
+    this.center = this.$el.width()/2;
+  },
+
   afterRender: function(){
     var editor = this;
 
@@ -560,6 +584,14 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
+
+    //check if monitoring role is hidden and hide monitoring elements
+    if(!this.country.get('showMonitoring')){
+      this.$('#toggleMonitoringText').html('Off').removeClass('active');
+      this.$('#monitoring').css({'display': 'none'});
+      this.$('.draghandle.last').hide();
+      this.$('span[rel=monitoring]').hide();
+    }
   },
 
   destroy: function(){

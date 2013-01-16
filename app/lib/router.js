@@ -57,8 +57,14 @@ module.exports = AsyncRouter.extend({
 
   actor_editor: function(country) {
     var router = this;
+    var countries = this.app.countries;
+    var selectedCountry;
     var actors = new Actors();
     actors.country = country;
+    
+    selectedCountry = countries.find(function(country){
+      return country.get('abbreviation') == actors.country;
+    });
 
     var connections = new Connections();
     connections.country = country;
@@ -66,7 +72,7 @@ module.exports = AsyncRouter.extend({
     // fetch all actors and all connections
     $.when(actors.fetch(), connections.fetch()).done(function(){
       // instantiate the editor
-      router.switchToView(new ActorEditor({connections: connections, actors: actors, country: country}));
+      router.switchToView(new ActorEditor({connections: connections, actors: actors, country: selectedCountry}));
     });
   },
 

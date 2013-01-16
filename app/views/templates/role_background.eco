@@ -1,0 +1,21 @@
+<div class="roleHolder">
+  <div class="roleArea funding" id="funding"></div>
+  <div class="roleArea coordination" id="coordination"></div>
+  <div class="roleArea implementation" id="implementation"></div>
+  <div class="roleArea monitoring" id="monitoring"></div>
+</div>
+
+<div class="roleLabels">
+	<span class="rolelabel funding" rel="funding"><%= t('funding') %></span>
+	<span class="rolelabel coordination" rel="coordination"><%= t('coordination') %></span>
+	<span class="rolelabel implementation" rel="implementation"><%= t('implementation') %></span>
+	<span class="rolelabel monitoring" rel="monitoring"><%= t('monitoring') %></span>
+</div>
+
+<div class="dragHandleBars">
+  <div class="draghandle" rel="funding"></div>
+  <div class="draghandle" rel="coordination"></div>
+  <div class="draghandle" rel="implementation"></div>
+  <div class="draghandle" rel="monitoring"></div>
+  <div class="draghandle last" rel="last"></div>
+</div>

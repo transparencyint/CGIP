@@ -3,6 +3,7 @@
   text-shadow 0 -1px hsl(213,55%,34%)
   background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,50%))
   border 1px solid hsl(213,55%,28%)
+  border-bottom-color hsl(213, 55%, 22%)
   border-radius 3px
   box-shadow 0 0 1px rgba(0,0,0,.34), 0 0 5px rgba(0,0,0,.13)
   cursor default
@@ -55,15 +56,16 @@
       border-radius 3px
 
 .tool.controls
-  left 50%
-  margin-left -201px
+  width 100%
+  display box
+  box-pack center
   position absolute
-  > *
-    float left
+  z-index 4
+  box-shadow 0 1px rgba(0,0,0,.08)
   .newActor  
     height 50px
-    border-right 1px solid hsl(213,55%,28%)
-    box-shadow 1px 0 hsl(213,55%,60%)
+    border-left 1px solid hsl(213,55%,28%)
+    box-shadow 1px 0 hsl(213,55%,60%) inset
     cursor pointer
     position relative
     &.slideUp
@@ -81,6 +83,7 @@
       background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,52%))
       position relative
       z-index 3
+      box-shadow 1px 0 hsl(213,55%,60%) inset
       &:after, 
       &:before
         content ""
@@ -101,7 +104,7 @@
         right 0
         bottom -1px
         background linear-gradient(left, hsl(218,55%,52%) 4px, #20436F 4px, #20436F 96px, hsl(218,55%,52%) 96px)
-        box-shadow none
+        box-shadow 1px 0 hsl(213,55%,60%) inset
     .plus
       font-size 16px
       font-weight bold
@@ -171,19 +174,16 @@
   .connection
     vertical-align top
     cursor pointer
-    border-right 1px solid hsl(213,55%,28%)
-    box-shadow 1px 0 hsl(213,55%,60%)
+    border-left 1px solid hsl(213,55%,28%)
+    box-shadow 1px 0 hsl(213,55%,60%) inset
     &.money
       border-right none
-      box-shadow none
     &.active, &:active
+      box-shadow 1px 0 hsl(213,55%,28%) inset
+      border-color hsl(213, 45%, 26%)
       .description
         position relative
         top 1px
-    &:last-child
-      border-right none
-      box-shadow none
-      border-radius 0 0 3px 0
     .eye
       float left
       width 34px
@@ -197,12 +197,29 @@
       background none
   .moneyMode
     padding 6px 13px
+    border-right 1px solid hsl(213,55%,28%)
+    box-shadow 1px 0 hsl(213,55%,60%)
     .name
       font-size 11px
       text-align center
       display block
     .small
       padding 4px
+      font-size 9px
+      &:active, &.active
+        background-color hsl(219,55%,36%)
+      cursor pointer
+  .toggleMonitoring
+    padding 6px 13px
+    border-right 1px solid hsl(213,55%,28%)
+    box-shadow 1px 0 hsl(213,55%,60%)
+    .name
+      font-size 11px
+      text-align center
+      display block
+    .small
+      padding 4px
+      text-align center
       font-size 9px
       &:active, &.active
         background-color hsl(219,55%,36%)
