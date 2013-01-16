@@ -135,7 +135,7 @@ module.exports = DraggableView.extend({
     if(view === this) return;
 
     // Don't allow to add FakeActorViews
-    if(view instanceof FakeActorView){
+    if(view instanceof FakeActorView && this.overlapsWith(view)){
       event.stopPropagation();
       view.reset();
       return;
