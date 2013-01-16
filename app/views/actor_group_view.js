@@ -56,6 +56,18 @@ module.exports = DraggableView.extend({
   afterRender: function(){
     this.updatePosition();
   },
+  
+  open: function(){
+    this.$el.addClass('open');
+  },
+  
+  close: function(){
+    this.$el.removeClass('open');
+  },
+  
+  toggle: function(){
+    this.$el.toggleClass('open');
+  },
 
   addSubActorView: function(actor){
     var newView = new ActorGroupActorView({model: actor, editor: this.editor});
@@ -105,12 +117,12 @@ module.exports = DraggableView.extend({
     this.hovered = true;
     this.hoveredView = view;
     this.hoveredView.$el.css('opacity', .5);
-    this.$el.addClass('show-actors');
+    this.open();
   },
 
   dragOut: function(){
     this.hovered = false;
-    this.$el.removeClass('show-actors');
+    this.close();
     if(this.hoveredView){
       this.hoveredView.$el.css('opacity', 1);
       this.hoveredView = null;
@@ -143,13 +155,16 @@ module.exports = DraggableView.extend({
     }
 
     if(this.hovered)
-      this.dragOut();      
+      this.dragOut();
+      
+    // then it was dragged out
+    this.close();   
   },
 
   showActors: function(event){
     if(this.hovered || this.isDragging) return;
 
-    this.$el.toggleClass('show-actors');
+    this.toggle();
   },
 
   destroy: function(){
