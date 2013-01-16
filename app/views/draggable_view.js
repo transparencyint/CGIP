@@ -121,13 +121,12 @@ module.exports = View.extend({
         complete: function(){
 
           //fix the last animation step to generate integer values
-          view.model.set({
+          view.model.save({
             pos : {
               x: x,
               y: y
             }
           });
-          view.model.save();
         }
       });
     } else {
