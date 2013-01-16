@@ -78,7 +78,8 @@ module.exports = DraggableView.extend({
   },
 
   removeSubActorView: function(actor){
-    this.actorViews[actor.id].destroy();
+    if(this.actorViews[actor.id])
+      this.actorViews[actor.id].destroy();
     
     // remove destroyed actor from object
     delete this.actorViews[actor.id];
@@ -130,7 +131,9 @@ module.exports = DraggableView.extend({
   },
 
   checkDrop: function(event, view){
-    if(event.isPropagationStopped()) return;
+    if(this.model.isLocked()) return; // return if model is locked
+    if(event.isPropagationStopped()) return; // return if others stopped the propagation
+    
     // return if it's this view
     if(view === this) return;
 
@@ -149,8 +152,14 @@ module.exports = DraggableView.extend({
         return;
       }else{
         // add it to the group
+        var model = this.model;
+        model.lock()
         this.model.addToGroup(view.model);
-        this.model.save();
+        this.model.save({
+          success: function(){
+            model.unlock();
+          }
+        });
       }
     }
 
@@ -175,5 +184,8 @@ module.exports = DraggableView.extend({
 
     this.$document.off('viewdrag', this.checkHover);
     this.$document.off('viewdragstop', this.checkDrop);
+
+    this.model.actors.off('add', this.addSubActorView);
+    this.model.actors.off('remove', this.removeSubActorView);
   }
 });
