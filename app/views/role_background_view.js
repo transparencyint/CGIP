@@ -163,7 +163,6 @@ module.exports = View.extend({
   toggleMonitoring: function(){
 
     //depending on the zoom value we need to position the monitoring area after the implementation role
-    console.log(this.roleDimensions);
 
     if(this.$('#monitoring').is(':visible')){
       this.$('.monitoring').hide();
@@ -176,7 +175,6 @@ module.exports = View.extend({
         this.roleDimensions[4] = this.roleDimensions[3] + this.minRoleWidth*2;
         this.defaultRoleDimensions[4] = this.defaultRoleDimensions[3] + this.minRoleWidth*2;
       }
-      console.log(this.roleDimensions);
       this.$('.monitoring').css({
         'left': this.roleDimensions[2] + $('#implementation').width(),
         'width': this.roleDimensions[4] - this.roleDimensions[3]
@@ -195,8 +193,6 @@ module.exports = View.extend({
       this.country.set({'showMonitoring' : true});
       this.country.save();
     }
-
-    console.log(this.roleDimensions);
   },
 
   render: function(){
