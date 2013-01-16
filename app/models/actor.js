@@ -1,4 +1,7 @@
-module.exports = Backbone.Model.extend({
+var Model = require('./model');
+
+module.exports = Model.extend({
+  lockable: true,
 
   url: function(){
     if(!this.has('country')) throw('In order to create an actor you have to specify a country.');
@@ -16,7 +19,9 @@ module.exports = Backbone.Model.extend({
     pos: {x: 0, y: 0}
   },
 
-  initialize: function(){
+  initialize: function(values){
+    Model.prototype.initialize.call(this, values);
+    
     this.margins = {top: 20, right: 60, bottom: 20, left: 60};
   },
 

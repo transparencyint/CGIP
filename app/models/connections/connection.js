@@ -1,6 +1,8 @@
 var Model = require('models/model');
 
 module.exports = Model.extend({
+  lockable: true,
+  
   url: function(){
     if(!this.has('country')) throw('In order to create a connection you have to specify a country.');
     var url = '/' + this.get('country') + '/connections';

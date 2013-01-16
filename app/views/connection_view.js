@@ -20,6 +20,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+    View.prototype.initialize.call(this, options);
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
@@ -42,7 +43,7 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-    
+
     this.isMoney = this.model.get('connectionType') === 'money';
   },
 
@@ -58,7 +59,9 @@ module.exports = View.extend({
       
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
-      
+    
+    this.model.unregisterLockEvents();
+    
     View.prototype.destroy.call(this);
   },
   
@@ -448,6 +451,8 @@ module.exports = View.extend({
   },
 
   showDetails: function(){
+    if(this.model.isLocked()) return; // don't show when model is locked
+
     var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
     this.editor.$el.append(cfw.render().el);
   },

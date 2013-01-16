@@ -23,7 +23,7 @@ module.exports = DraggableView.extend({
     _.bindAll(this, 'destroy');
 
     this.width = options.editor.actorWidth;
-    this.height = options.editor.actorHeight;    
+    this.height = options.editor.actorHeight;
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
@@ -35,8 +35,9 @@ module.exports = DraggableView.extend({
   },
 
   showDetails: function(){
-    this.modal = new ActorDetailsView({ model: this.model, actor: this });
-    this.editor.$el.append(this.modal.render().el);
+    if(this.model.isLocked()) return; // don't show it if it's locked
+    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
   },
 
   stopPropagation: function(event){

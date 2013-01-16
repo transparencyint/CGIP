@@ -40,11 +40,19 @@ module.exports = View.extend({
   }, 
 
   initialize: function(options){
+    // handle lock-states
+    if(this.model.isLocked()){
+      this.close();
+      return;
+    }else{
+      this.model.lock();
+    }
+
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.actor = options.actor;
-    this.editor = this.actor.editor;
+    this.editor = options.editor;
     this.width = 360;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
@@ -142,9 +150,14 @@ module.exports = View.extend({
   },
   
   close: function(){
+    // unlock the model
+    this.model.unlock();
+    this.unlockedModel = true;
+
     this.$el.one(this.transEndEventName, this.destroy);
     
-    this.clickCatcher.remove();
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
     
     $(document).unbind('keydown', this.handleKeys);
     
@@ -152,10 +165,12 @@ module.exports = View.extend({
   },
 
   destroy: function(){
-    View.prototype.destroy.call(this);
-    
+    if(!this.unlockedModel) this.model.unlock();
+
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
+
+    View.prototype.destroy.call(this);
   },
 
   handleKeys: function(event){

@@ -50,6 +50,9 @@ ConnectionMode.prototype.actorSelected = function(actor){
     $(document).bind('keyup', this._keyUp);
   
   }else if(this.selectedActors.length === 2){
+    // unlock the first actor
+    this.selectedActors[0].unlock();
+    
     this.connection.to = actor.model;
     var mode = this;
     //check whether or not same from-to connection already exists
@@ -72,6 +75,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
 
       newConnection.save(null, {
         success: function(){
+          socket.emit('new_model', newConnection.toJSON());
           mode.collection.add(newConnection);
         }
       });

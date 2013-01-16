@@ -45,6 +45,14 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+    // handle lock-states
+    if(this.model.isLocked()){
+      this.close();
+      return;
+    }else{
+      this.model.lock();
+    }
+
     _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.connection = options.connection;
@@ -326,18 +334,26 @@ module.exports = View.extend({
   },
   
   close: function(){
+    // unlock the model
+    this.model.unlock();
+    this.unlockedModel = true;
+
     this.$el.one(this.transEndEventName, this.destroy);
+
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
     
-    this.clickCatcher.remove();
     $(document).unbind('keydown', this.handleKeys);
     
     this.$el.addClass('hidden');
   },
 
   destroy: function(){
-    View.prototype.destroy.call(this);
-    
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
+
+    if(!this.unlockedModel) this.model.unlock();
+
+    View.prototype.destroy.call(this);
   }
 });
