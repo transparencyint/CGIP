@@ -1,12 +1,13 @@
 var DraggableView = require('./draggable_view');
 
 module.exports = DraggableView.extend({
-  noGridlines: true,
-  selectable: true,
 
   tagName: 'li',
   className: 'actor-group-actor',
-  template : require('./templates/actor_group_actor'),
+  template: require('./templates/actor_group_actor'),
+  
+  width: 110,
+  height: 30,
 
   events: function(){
     var parentEvents = DraggableView.prototype.events;
@@ -18,16 +19,19 @@ module.exports = DraggableView.extend({
   },
 
   dragStart: function(event){
+    // small actor version
     this.originalElement = this.$el;
     
+    // normally-sized actor for dragging
     this.$el = this.$el.clone();
     this.$el.addClass('dragging');
 
     var offset = this.originalElement.offset();
-    var coords = this.editor.offsetToCoords(offset);
-    this.model.set('pos', { x: coords.x, y: coords.y });
+    var coords = this.editor.offsetToCoords(offset, this.width, this.height);
+    this.model.set('pos', coords);
     
     this.$el.appendTo($('.workspace'));
+    this.originalElement.addClass('hidden');
 
     DraggableView.prototype.dragStart.call(this, event);
   },
@@ -37,10 +41,11 @@ module.exports = DraggableView.extend({
   },
 
   dragStop: function(){
+    DraggableView.prototype.dragStop.call(this);
+    
     this.$el.remove();
     this.$el = this.originalElement;
-
-    DraggableView.prototype.dragStop.call(this);
+    this.$el.removeClass('hidden');
   },
 
   showInfo: function(event){
@@ -51,7 +56,9 @@ module.exports = DraggableView.extend({
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);
-    this.originalElement = null;
+    if(this.originalElement){
+      this.originalElement.remove(); 
+    }
   }
 
 });

@@ -1,5 +1,13 @@
 require('lib/view_helper');
 
+var transEndEventNames = {
+  'WebkitTransition' : 'webkitTransitionEnd',
+  'MozTransition'    : 'transitionend',
+  'OTransition'      : 'oTransitionEnd',
+  'msTransition'     : 'MSTransitionEnd',
+  'transition'       : 'transitionend'
+};
+
 // Base class for all views.
 module.exports = Backbone.View.extend({
   // config fields //
@@ -9,8 +17,10 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  
+  transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
 
-  initialize: function() {
+  initialize: function() {    
     this.render = _.bind(this.render, this);
   },
 
@@ -49,7 +59,7 @@ module.exports = Backbone.View.extend({
 
   select: function(event){
     if(this.selectable){
-      event.stopPropagation();
+      if(event) event.stopPropagation();
       $('.selected').removeClass('selected');
       this.$el.addClass('selected');
       $(document).trigger('viewSelected', this);

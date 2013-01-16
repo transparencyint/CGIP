@@ -33,14 +33,15 @@ radial-bg-gradient(shape, from, to)
 background-clip()
   vendor('background-clip', arguments)
 
-box(orient, pack, align)
+box(align, pack, orient)
   display -webkit-box
   display -moz-box
+  display -ms-box
+  display -o-box
   display box
-  vendor('box-orient', orient)
-  vendor('box-pack', pack)
   vendor('box-align', align)
-  vendor('box-lines', multiple)
+  vendor('box-pack', pack)
+  vendor('box-orient', orient)
 
 text-fill-color()
   vendor('text-fill-color', arguments)
