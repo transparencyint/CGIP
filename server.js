@@ -228,6 +228,13 @@ app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
   });
 });
 
+app.put('/countries/:id', auth.ensureAuthenticated, function(req, res){
+  Country.edit(req.params.id, req.body, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
+});
+
 var port = process.env.APP_PORT || 3000;
 var server = app.listen(port);
 console.log('Server is up and running on port: ' + port);

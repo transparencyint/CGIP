@@ -263,7 +263,7 @@ module.exports = View.extend({
     
     switch(type){
       case 'integer':
-        value = parseInt(event.target.value, 10);
+        value = parseInt(event.target.value, 10) || 0;
         break;
       case 'string': case 'text':
         value = event.target.value;
@@ -319,8 +319,8 @@ module.exports = View.extend({
   },
 
   submitAndClose: function(){
-    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10);
-    var _pledged = parseInt(this.$el.find('#pledged').val(), 10);
+    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10) || 0;
+    var _pledged = parseInt(this.$el.find('#pledged').val(), 10) || 0;
 
     this.model.save({
       disbursed: _disbursed,

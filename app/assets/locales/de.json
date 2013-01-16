@@ -13,5 +13,9 @@
   "money": "Geld",
   "money_mode": "Geld Modus",
   "disbursed": "ausgezahlt",
-  "pledged": "versprochen"
+  "pledged": "versprochen",
+  "funding": "Finanzierung",
+  "coordination": "Koordinierung",
+  "implementation": "Umsetzung",
+  "monitoring": "Beobachtung"
 }
