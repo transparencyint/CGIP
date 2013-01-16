@@ -37,7 +37,7 @@ $(function() {
   window.t = $.jsperanto.translate;
   
   application.initialize(function(){
-    Backbone.history.start({pushState: true});
+    Backbone.history.start({pushState: (window.history && window.history.pushState)});
   });
 });
 

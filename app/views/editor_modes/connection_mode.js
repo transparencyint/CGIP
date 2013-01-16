@@ -107,8 +107,8 @@ ConnectionMode.prototype.unselect = function(){
 
 ConnectionMode.prototype._moveDummy = function(event){
   var pos = this.connection.to.get('pos');
-  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.center) / this.editor.zoom.value;
-  var dy = (event.pageY - pos.y - this.editor.offset.top) / this.editor.zoom.value;
+  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.origin.left) / this.editor.zoom.value;
+  var dy = (event.pageY - pos.y - this.editor.offset.top - this.editor.origin.top) / this.editor.zoom.value;
 
   this.connection.to.set({
     pos: {

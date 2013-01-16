@@ -70,6 +70,11 @@ module.exports = View.extend({
       max: 1.75
     };
     
+    this.origin = {
+      left: 0,
+      top: 78
+    };
+    
     this.offset = {
       left: 0,
       top: 0
@@ -90,7 +95,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -398,8 +403,8 @@ module.exports = View.extend({
   },
 
   offsetToCoords: function(offset, width, height){
-    var x = (offset.left - this.center + (width/2 || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + (height/2 || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+    var x = (offset.left - this.origin.left + (width/2 || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top - this.origin.top + (height/2 || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
     return { x: x, y: y };
   },
   
@@ -462,7 +467,8 @@ module.exports = View.extend({
       this.offset.top =  y / this.zoom.sqrt;
     }
 
-    x += this.center;
+    x += this.origin.left;
+    y += this.origin.top;
 
     this.workspace.css({
       left: Math.round(x),
@@ -516,7 +522,7 @@ module.exports = View.extend({
   showGridLine: function(x, y, gridX, gridY){
 
     if(gridX){
-      this.gridlineV.css({'left': (this.offset.left*this.zoom.sqrt + this.center + x*this.zoom.value)});
+      this.gridlineV.css({'left': (this.offset.left*this.zoom.sqrt + this.origin.left + x*this.zoom.value)});
       this.gridlineV.show();
     }
     else if(!gridX)
@@ -535,8 +541,8 @@ module.exports = View.extend({
     this.gridlineH.hide();
   },
   
-  realignCenter: function(){
-    this.center = this.$el.width()/2;
+  realignOrigin: function(){
+    this.origin.left = this.$el.width()/2;
     
     this.moveTo(0, 0);
   },
@@ -572,11 +578,11 @@ module.exports = View.extend({
     // call this slightly delayed to give the browser
     // time to layout the html changes
     // source: http://stackoverflow.com/questions/8225869/how-can-i-get-size-height-width-information-in-backbone-views
-    _.defer(this.realignCenter);
+    _.defer(this.realignOrigin);
   },
   
   initializeDimensions: function(){
-    this.center = this.$el.width()/2;
+    this.origin.left = this.$el.width()/2;
   },
 
   afterRender: function(){
@@ -587,7 +593,7 @@ module.exports = View.extend({
     this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
-    $(window).resize(this.realignCenter);
+    $(window).resize(this.realignOrigin);
     
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
@@ -626,7 +632,8 @@ module.exports = View.extend({
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.actorSelected);
     $(document).off('viewdragstop', this.checkDrop);
-    $(window).unbind('resize', this.realignCenter);
+
+    $(window).unbind('resize', this.realignOrigin);
 
     socket.removeAllListeners(this.country + ':actor');
     socket.removeAllListeners(this.country + ':connection:money');

@@ -467,12 +467,14 @@ module.exports = View.extend({
   },
   
   stickMetadata: function(e){
-    var x = e.pageX - this.editor.center - this.editor.offset.left - this.pos.x;
-    var y = e.pageY - this.editor.offset.top - this.pos.y;
+    var pos = this.editor.offsetToCoords({ 
+      left: e.pageX - this.pos.x, 
+      top: e.pageY - this.pos.y
+    });
     
     this.$('.metadata').css({
-      left: x + 30, 
-      top: y + 10
+      left: pos.x + 30, 
+      top: pos.y + 10
     });
   },
 
