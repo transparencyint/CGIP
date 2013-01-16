@@ -43,11 +43,11 @@ module.exports = DraggableView.extend({
   },
 
   dragStop: function(){
+    DraggableView.prototype.dragStop.call(this);
+    
     this.$el.remove();
     this.$el = this.originalElement;
     this.$el.removeClass('hidden');
-
-    DraggableView.prototype.dragStop.call(this);
   },
 
   showInfo: function(event){
@@ -58,7 +58,9 @@ module.exports = DraggableView.extend({
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);
-    this.originalElement = null;
+    if(this.originalElement){
+      this.originalElement.remove(); 
+    }
   }
 
 });
