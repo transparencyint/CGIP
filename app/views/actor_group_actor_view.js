@@ -1,8 +1,6 @@
 var DraggableView = require('./draggable_view');
 
 module.exports = DraggableView.extend({
-  noGridlines: true,
-  selectable: true,
 
   tagName: 'li',
   className: 'actor-group-actor',
