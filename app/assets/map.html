@@ -9,7 +9,8 @@
   
   html {
     min-height: 100%;
-    background: -webkit-linear-gradient(white, #eee);
+    background: #82d480;
+    background: -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%));
   }
   body { 
     width: 960px;
@@ -18,13 +19,13 @@
     font: 15px/27px "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
   a {
-    color: hsl(205,67%,52%);
+    color: hsl(205,68%,52%);
     text-decoration: none;
   }
   h1 {
     display: block;
     margin: 30px 0;
-    padding: 0 0 17px;
+    padding: 0 13px 17px;
     color: #333;
     font-size: 24px;
     font-family: "HelveticaNeueW01-57Cn";
@@ -36,6 +37,7 @@
     height: 500px;
     width: 1134px;
     margin-left: -87px;
+    -webkit-perspective: 1000;
   }
   .map:before {
     content: "";
@@ -44,30 +46,47 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background: url(images/BlankMap-World-v2.png) no-repeat center;
+    background: url(images/greenWorld.png) no-repeat center;
     background-size: contain;
     opacity: .5;
   }
   .point {
     position: absolute;
+    margin: -4px 0 0 -4px;
     width: 8px;
     height: 8px;
     border: 1px solid hsl(205,68%,40%);
     background: hsl(205,68%,53%);
     box-shadow: 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34);
     border-radius: 100%;
+    opacity: 0;
+    -webkit-transform: translateZ(200px);
+    -webkit-transform-style: preserve-3d;
+  }
+  .point.appear {
+    opacity: 1;
+    -webkit-transform: translateZ(0);
+    -webkit-transition: -webkit-transform 500ms, opacity 500ms;
   }
     .label {
       position: absolute;
       white-space: nowrap;
       left: -18px;
       top: -44px;
+      opacity: 0;
+      -webkit-transform: translateY(-13px);
+    }
+    .point.appear .label {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+      -webkit-transition: -webkit-transform 500ms 500ms, opacity 500ms 500ms;
     }
     .point:active .label {
       top: -43px;
     }
       .below .label {
         top: 19px;
+        -webkit-transform: translateY(13px);
       }
       .point.below:active .label {
         top: 20px;
@@ -120,45 +139,45 @@
         top: 4px;
       }
   .mexico {
-    left: 215px;
-    top: 205px;
+    left: 219px;
+    top: 209px;
   }
   .peru {
-    left: 298px;
-    top: 325px;
+    left: 302px;
+    top: 329px;
   }
   .dominicanRepublic {
-    left: 310px;
-    top: 210px;
+    left: 314px;
+    top: 214px;
   }
   .kenya {
-    left: 650px;
-    top: 275px;
+    left: 654px;
+    top: 279px;
   }
   .maledives {
-    left: 753px;
-    top: 285px;
+    left: 757px;
+    top: 289px;
   }
   .vietnam {
-    left: 865px;
-    top: 215px;
+    left: 869px;
+    top: 219px;
   }
   .indonesia {
-    left: 905px;
-    top: 295px;
+    left: 909px;
+    top: 299px;
   }
   .papuaNewGuinea {
-    left: 990px;
-    top: 300px;
+    left: 994px;
+    top: 304px;
   }
   
   footer {
     margin-top: 21px;
     padding: 13px;
     font-size: 13px;
-    border-top: 1px solid #c0c0c0;
+    border-top: 1px solid rgba(0,0,0,.21);
     overflow: hidden;
-    box-shadow: 0 1px white inset;
+    box-shadow: 0 1px hsla(104,100%,86%,.55) inset;
   }
     footer .left {
       float: left;
@@ -232,20 +251,20 @@
 <script>
   var points = document.querySelectorAll('.point');
   var mapWidth = document.querySelector('.map').clientWidth;
-  var start = { hue: 200, saturation: 68 };
-  var end =   { hue: 210, saturation: 60  };
+  var start = { hue: 200, saturation: 74 };
+  var end =   { hue: 200, saturation: 74  };
   var selectorTemplate = '%s, %s a, %s .arrow:before';
   var valueTemplate = 'text-shadow: 0 1px 1px hsl(%h,%s%,30%);' +
     'border: 1px solid hsl(%h,%s%,30%);' +
-    'background: hsl(%h,%s%,50%);' +
+    'background: hsl(%h,%s%,52%);' +
     'box-shadow: 0 1px hsl(%h,%s%,75%) inset,' +
-               ' 0 1px 2px hsla(%h,%s%,13%,.34);'
+               ' 0 1px 2px hsla(%h,%s%,13%,.34);';
+  var delay = 1000;
+  var i = 0;
+  var count = points.length;
   
   // sort by position on the map: left to right
   points = _.sortBy(points, function(point){ return point.offsetLeft; });
-  
-  var min = points[0].offsetLeft;
-  var max = points[points.length-1].offsetLeft;
   
   _.each(points, rainbow);
 
@@ -264,5 +283,7 @@
     var value = valueTemplate.replace(/%h/g, hue).replace(/%s/g, saturation);
     
     document.styleSheets[0].addRule(fullSelector, value);
+    
+    setTimeout(function(){ point.classList.add('appear'); }, Math.sqrt(++i/count) * delay);
   }
 </script>
