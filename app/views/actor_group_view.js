@@ -118,7 +118,6 @@ module.exports = DraggableView.extend({
 
   checkDrop: function(event, view){
     if(event.isPropagationStopped()) return;
-
     // return if it's this view
     if(view === this) return;
 
