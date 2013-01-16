@@ -225,7 +225,10 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     this.actorViews[actor.id] = actorView;
-    if(startEdit === true) actorView.showDetails();
+    if(startEdit === true){
+      actorView.select();
+      actorView.showDetails();
+    }
   },
 
   // when an actor is removed, destroy its view
