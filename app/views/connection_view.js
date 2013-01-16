@@ -63,6 +63,7 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+    
     this.path = "";
     this.$el.svg();
 
@@ -70,9 +71,6 @@ module.exports = View.extend({
     this.defs = this.svg.defs();
     
     this.$el.addClass(this.model.get('connectionType'));
-    
-    // also creates something crucial for the other connections
-    this.createCoinDefinitions();
     
     this.pathSettings = {
       class_: 'path', 
@@ -86,39 +84,43 @@ module.exports = View.extend({
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
+
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
       
       this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
       this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
       
       this.markerSize = 0;
+
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+
     } else {
-      this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
-      this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
       
       var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
-      this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { overflow: "visible" });
+      this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
       
       var selectedArrowSize = this.markerRatio - 0.5;
       
       var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-      this.svg.use(selectedArrow, 0, 0, selectedArrowSize, selectedArrowSize, '#trianglePath', { overflow: "visible" });
+      this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
+
+      this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
+      this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
     }
-    
-    this.g = this.svg.group();
-    
+
+    this.g = this.svg.group();    
     createGlobalDefs();
 
     this.update();
 
     this.$el.addClass( this.model.get("connectionType") );
-
-    if(this.isMoney) { 
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:coinSizeFactor', this.updateConnection, this);
-    }
   },
 
   updateConnection: function(){
@@ -158,7 +160,6 @@ module.exports = View.extend({
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
 
-
     var fromMargins = this.model.from.margins;
     var toMargins = this.model.to.margins;
     
@@ -185,7 +186,7 @@ module.exports = View.extend({
     
     var width = Math.abs(from.x - to.x)  + this.offset;
     var height = Math.abs(from.y - to.y) + this.offset;
-    
+
     // resize it
     this.svg.configure({
       'width' : width,
@@ -424,7 +425,7 @@ module.exports = View.extend({
     // recalculate select-border size (depending on strokeWidth)
     var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
-    
+
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
     this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
@@ -654,10 +655,6 @@ function createGlobalDefs(){
     $('body').svg().find('> svg').attr('id', 'svgDefinitions');
     this.svg = $('body').svg('get');
     var defs = this.svg.defs();
-    
-    // marker definition
-    var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, 1, 1);
-    this.svg.path(markerSymbol, 'M 0 0 L 1 0.5 L 0 1 z');
     
     // coin definition
     var yellowStops = [['0%', '#fbd54d'], ['25%', '#fae167'], ['50%', '#fcd852'], ['100%', '#f7eb7a']];
