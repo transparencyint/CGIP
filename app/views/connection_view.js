@@ -8,22 +8,28 @@ module.exports = View.extend({
 
   tagName : 'div',
   className : 'connection',
+  selectable : true,
 
   events: {
-    'mouseover path' : 'showMetadata',
-    'mouseout path' : 'hideMetadata',
-    'dblclick svg' : 'showMetadataForm'
+    'mouseover' : 'showMetadata',
+    'mousemove' : 'stickMetadata',
+    'mouseout' : 'hideMetadata',
+    'mousedown' : 'hideMetadata',
+    'dblclick' : 'showDetails',
+    'click' : 'select'
   },
 
   initialize: function(options){
+    View.prototype.initialize.call(this, options);
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
-
-    this.actorRadius = 60;
     this.markerSize = 4;
+    
+    this.selectionBorderSize = 4;
+    this.clickAreaRadius = 40;
 
     this.editor = options.editor;
 
@@ -38,13 +44,7 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
 
-    if(this.model.get("connectionType") === 'money') { 
-      this.model.on('change:disbursed', this.updateCoinSize, this);
-      this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:pledged', this.updateCoinSize, this);
-      config.on('change:moneyConnectionMode', this.updateCoinSize, this);
-      this.model.on('change:coinSizeFactor', this.createCoinDefinitions, this);
-    }
+    this.isMoney = this.model.get('connectionType') === 'money';
   },
 
   render: function(){
@@ -59,69 +59,89 @@ module.exports = View.extend({
       
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
-      
+    
+    this.model.unregisterLockEvents();
+    
     View.prototype.destroy.call(this);
   },
   
   afterRender: function(){
-    //this.selectStyle = 'hsl(205,100%,55%)';
-
+    
     this.path = "";
     this.$el.svg();
-    this.$el.attr('id', this.model.id);
 
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
-        
-    switch(this.model.get("connectionType")){
-      case 'accountability':
-        this.strokeStyle = 'white';
-        break;
-      case 'monitoring':
-        this.strokeStyle = 'black';
-        break;
-      case 'money':
-        this.$el.addClass(config.get('moneyConnectionMode'));
-        this.model.calculateCoinSize();
-        this.isMoney = true;
-        this.strokeWidth = 1;
-        break;
-    }
     
-    // also creates something crucial for the other connections
-    this.createCoinDefinitions();
+    this.$el.addClass(this.model.get('connectionType'));
     
-    if(this.model.get("connectionType") === 'money'){
-      this.pathSettings = {
-        'marker-end': "url(#"+ this.coinReference +")",
-        'marker-start': "url(#"+ this.coinReference +")",
-        'marker-mid': "url(#"+ this.coinReference +")",
-        'stroke-width': this.strokeWidth
-      };
+    this.pathSettings = {
+      class_: 'path', 
+      strokeWidth: this.isMoney ? 1 : this.strokeWidth
+    };
+    
+    this.selectSettings = {
+      class_: 'selectPath'
+    };
+    
+    if(this.isMoney){
+      this.$el.addClass(config.get('moneyConnectionMode'));
+      this.model.calculateCoinSize();
+
+      this.toggleZeroConnection();
+
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
+      
+      this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
+      this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
+      this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
+      
       this.markerSize = 0;
+
+      this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
+      this.model.on('change:disbursed', this.updateDisbursed, this);
+      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+
     } else {
-      this.pathSettings = {
-        'marker-end': 'url(#'+ this.model.id +')',
-        'stroke': this.strokeStyle,
-        'stroke-width': this.strokeWidth
-      };
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
       
       this.markerSize = this.strokeWidth/2 * this.markerRatio;
-      if(!this.isMoney){
-        var arrow = this.svg.marker(this.defs, this.model.id, this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio);
-        this.svg.use(arrow, 0, 0, this.markerRatio, this.markerRatio, '#trianglePath', { fill: this.strokeStyle, overflow:"visible" });
-      }
+      
+      var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
+      this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
+      
+      var selectedArrowSize = this.markerRatio - 0.5;
+      
+      var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
+      this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
+
+      this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
+      this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
     }
 
-    this.g = this.svg.group();
+    this.g = this.svg.group();    
     createGlobalDefs();
+
     this.update();
-    
+
     this.$el.addClass( this.model.get("connectionType") );
+  },
+
+  toggleZeroConnection: function(){
+    this.$el.removeClass('amountUnknown');
+    if(this.model.isZeroAmount) {
+      this.$el.addClass('amountUnknown');
+    }
+  },
+
+  updateConnection: function(){
+    this.createCoinDefinitions();
+    this.update();
   },
   
   createCoinDefinitions: function(){
-
     // case: coin size gets changed
     // then: remove coinMarker if its already there
     if(this.coinMarker)
@@ -151,32 +171,34 @@ module.exports = View.extend({
 
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
+
+    var fromMargins = this.model.from.margins;
+    var toMargins = this.model.to.margins;
     
-    this.offset = 2*(this.strokeWidth + this.markerSize);
+    var overlap = Math.max(this.strokeWidth + this.markerSize + this.selectionBorderSize, this.clickAreaRadius);
+    this.offset = 2 * overlap;
     
     if(this.isMoney)
       this.offset = this.coinHeight*2;
     
-    var pos = {
+    this.pos = {
       x : Math.min(from.x, to.x),
       y : Math.min(from.y, to.y)
     }
     
     // round because our positions are float, not integer
     var start = {
-      x : Math.round(from.x - pos.x),
-      y : Math.round(from.y - pos.y)
+      x : Math.round(from.x - this.pos.x),
+      y : Math.round(from.y - this.pos.y)
     };
     var end = {
-      x : Math.round(to.x - pos.x),
-      y : Math.round(to.y - pos.y)
+      x : Math.round(to.x - this.pos.x),
+      y : Math.round(to.y - this.pos.y)
     };
-    
-    //var alpha = Math.atan2(end.y - start.y, end.x - start.x);
     
     var width = Math.abs(from.x - to.x)  + this.offset;
     var height = Math.abs(from.y - to.y) + this.offset;
-    
+
     // resize it
     this.svg.configure({
       'width' : width,
@@ -186,8 +208,8 @@ module.exports = View.extend({
     this.$('g').attr('transform', 'translate('+ this.offset/2 +' '+ this.offset/2 +')');
     
     this.$el.css({
-      'left': pos.x,
-      'top': pos.y,
+      'left': this.pos.x,
+      'top': this.pos.y,
       'marginTop': -this.offset/2,
       'marginLeft': -this.offset/2,
       'width': width,
@@ -198,6 +220,7 @@ module.exports = View.extend({
     var halfY;
     var start2, end2;
 
+    //checking in which relation the start and end actor are
     //case 1
     if(start.x < end.x && start.y <= end.y){
       //case 1f
@@ -205,8 +228,8 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 1c
@@ -214,9 +237,9 @@ module.exports = View.extend({
       // ──┐
       //   └──➝
       //  
-      else if(end.y - start.y <= this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 1d
@@ -225,9 +248,9 @@ module.exports = View.extend({
       //  └┐
       //   ↓
       //
-      else if(end.x - start.x <= this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 1a+b
@@ -236,8 +259,8 @@ module.exports = View.extend({
       //    ↓
       //
       else {
-        start.x += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y -= toMargins.top + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -257,8 +280,8 @@ module.exports = View.extend({
       //  │
       //
       if(start.x == end.x){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 2c
@@ -266,9 +289,9 @@ module.exports = View.extend({
       //   ┌──➝
       // ──┘
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x += this.editor.radius;
-        end.x -= this.editor.radius + this.markerSize;
+      else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
+        start.x += fromMargins.right;
+        end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 2d
@@ -277,9 +300,9 @@ module.exports = View.extend({
       //  ┌┘
       //  │
       //
-      else if(end.x - start.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 2a+b
@@ -288,8 +311,8 @@ module.exports = View.extend({
       //  ──┘
       //  
       else {
-        start.x += this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+        start.x += fromMargins.right;
+        end.y += toMargins.bottom + this.markerSize;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -308,8 +331,8 @@ module.exports = View.extend({
       //  ←──
       //
       if(start.y == end.y){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.x -= fromMargins.right;
+        end.x += toMargins.left + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 3c
@@ -317,9 +340,9 @@ module.exports = View.extend({
       //    ┌──
       //  ←─┘
       //
-      else if(end.y - start.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1);
       }
       //case 3d
@@ -328,9 +351,9 @@ module.exports = View.extend({
       //  ┌─┘
       //  ↓
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0);
       }
       //case 3a+b
@@ -339,8 +362,8 @@ module.exports = View.extend({
       //  ←─┘
       //
       else {
-        start.y += this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -354,14 +377,14 @@ module.exports = View.extend({
     }
     //case 4
     else {
-      //case 1f
+      //case 4f
       //
       //  │
       //  ↓
       //
       if(start.x == end.x){
-        start.y += this.editor.radius;
-        end.y -= this.editor.radius + this.markerSize;
+        start.y += fromMargins.bottom;
+        end.y -= toMargins.top + this.markerSize;
         this.definePath1Line(start, end);
       }
       //case 4c
@@ -369,9 +392,9 @@ module.exports = View.extend({
       //  ←─┐
       //    └──
       //
-      else if(start.y - end.y < this.editor.radius+this.edgeRadius){
-        start.x -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+      else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
+        start.x -= fromMargins.left;
+        end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0);
       }
       //case 4d
@@ -380,9 +403,9 @@ module.exports = View.extend({
       //    └┐
       //     │
       //
-      else if(start.x - end.x < this.editor.radius+this.edgeRadius){
-        start.y -= this.editor.radius;
-        end.y += this.editor.radius + this.markerSize;
+      else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
+        start.y -= fromMargins.top;
+        end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1);
       }
       //case 4a+b
@@ -391,8 +414,8 @@ module.exports = View.extend({
       //    │
       //
       else {
-        start.y -= this.editor.radius;
-        end.x += this.editor.radius + this.markerSize;
+        start.y -= fromMargins.top;
+        end.x += toMargins.right + this.markerSize;
         start2 = {
           x : start.x - this.edgeRadius,
           y : start.y
@@ -404,59 +427,59 @@ module.exports = View.extend({
         this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true);
       }
     }
-
-    if(this.pathElement) this.svg.remove(this.pathElement);
     
-    this.pathElement = this.svg.path(this.g, this.path, this.pathSettings);
-  },
+    // remove path and its clones
+    if(this.pathSymbol) this.svg.remove(this.pathSymbol);
+    if(this.selectPath) this.svg.remove(this.selectPath);
+    if(this.pathElement) this.svg.remove(this.pathElement);
+    if(this.clickArea) this.svg.remove(this.clickArea);
+    
+    // recalculate select-border size (depending on strokeWidth)
+    var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
+    this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
 
-  /* 
-   * Define the thickness of the money line.
-   */
-  updateCoinSize: function(){
-    this.model.calculateCoinSize();
-    this.update();
+    // render all paths and clones
+    // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
+    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
+    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
+    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
+    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
 
   updateDisbursed: function(){ 
-    this.$('.connection-metadata').text('$' + this.model.get('disbursed'));
+    this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
 
+  showDetails: function(){
+    if(this.model.isLocked()) return; // don't show when model is locked
 
-  showMetadataInput: function(){   
-    this.$el.find('.overlay-form-container').fadeIn(100);
-  },
-
-  showMetadataForm: function(){
-    if(this.model.get('connectionType') === "money"){
-      //Remove all other forms
-      $('.connection-form-container').remove();
-
-      var model = this.model;
-      var cfw = new ConnectionDetailsView({ model: model, editor: this.editor, connection: this });
-      this.editor.$el.append(cfw.render().el);  
-    }
-
-    //remove all activeClasses from the connections
-    $('.connection').each(function(){ $(this).removeClass('activeConnection') });
-
-    if(!this.$el.hasClass('activeConnection'))
-      this.$el.addClass('activeConnection');
-    else
-      this.$el.removeClass('activeConnection');
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
+    this.editor.$el.append(cfw.render().el);
   },
 
   showMetadata: function(e){
     if(this.model.get('disbursed')){
-      var metadata = this.$el.find('.connection-metadata');
+      var metadata = this.$('.metadata');
       metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.fadeIn(0);
+      metadata.show();
     }
   },
+  
+  stickMetadata: function(e){
+    var pos = this.editor.offsetToCoords({ 
+      left: e.pageX - this.pos.x, 
+      top: e.pageY - this.pos.y
+    });
+    
+    this.$('.metadata').css({
+      left: pos.x + 30, 
+      top: pos.y + 10
+    });
+  },
 
-  hideMetadata: function(e){   
-    var metadata = this.$el.find('.connection-metadata');
-    metadata.fadeOut(0);  
+  hideMetadata: function(e){ 
+    var metadata = this.$('.metadata');
+    metadata.hide();  
   },
   
   // slices a line from a to b into segments
@@ -484,9 +507,11 @@ module.exports = View.extend({
       1: clockwise
   */
   slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
+
+    //calculation the coin distance depending on the money connection thickness
+    distance /= this.model.coinSizeFactor;
+
     var length = Math.PI/2 * radius;
-    //REMOVE THE LINE BELOW TO GET THE ORIGINAL COIM DISTANCE, JUST A HACK TO MAKE BIG LINES NICER
-    distance /= 2;
     var count = Math.floor(length / distance);
     var segments = [];
     var signX = 1;
@@ -505,8 +530,9 @@ module.exports = View.extend({
 
     var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
     
-    for(var i=1; i<=count; i++){  
-
+    //drawing every single path segment
+    for(var i=1; i<=count; i++){ 
+      //getting the right circle direction 
       if(hasRightDirection){
         dx = radius * (1-Math.cos (i*alpha)) - sumX;
         dy = radius * Math.sin (i*alpha) - sumY;
@@ -567,6 +593,7 @@ module.exports = View.extend({
     if(dy/2 < edgeRadius)
       edgeRadius = dy/2;
     
+    //define the waypoints of the connection
     if(end.y - start.y > 0){
       firstY = start.y + edgeRadius;
       secondY = end.y - edgeRadius;
@@ -583,6 +610,7 @@ module.exports = View.extend({
       secondX = halfX - edgeRadius;
     }
       
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
     this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
@@ -600,6 +628,7 @@ module.exports = View.extend({
     if(dx/2 < edgeRadius)
       edgeRadius = dx/2;
 
+    //define the waypoints of the connection
     if(end.x - start.x > 0){
       firstX = start.x + edgeRadius;
       secondX = end.x - edgeRadius;
@@ -618,6 +647,7 @@ module.exports = View.extend({
       secondY = halfY - edgeRadius;
     }
 
+    //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
     this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
     this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
@@ -626,10 +656,9 @@ module.exports = View.extend({
     this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
   },
 
+  //creates a straight line
   addPathSegment: function(start, end, distance, direction){
     var pathSegments = this.slicedPathSegments(start, end, distance);
-    //console.log("pathSegment", typeof pathSegments);
-    //console.log(direction + " '" + pathSegments + "'");
     if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
       this.path += direction + pathSegments;
   }
@@ -640,10 +669,6 @@ function createGlobalDefs(){
     $('body').svg().find('> svg').attr('id', 'svgDefinitions');
     this.svg = $('body').svg('get');
     var defs = this.svg.defs();
-    
-    // marker definition
-    var markerSymbol = this.svg.symbol(defs, 'trianglePath', 0, 0, 1, 1);
-    this.svg.path(markerSymbol, 'M 0 0 L 1 0.5 L 0 1 z');
     
     // coin definition
     var yellowStops = [['0%', '#fbd54d'], ['25%', '#fae167'], ['50%', '#fcd852'], ['100%', '#f7eb7a']];

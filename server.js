@@ -1,8 +1,10 @@
 var util = require('util');
+var _ = require('underscore');
 var http = require('http');
 var url = require('url');
 var express = require('express');
 var gzippo = require('gzippo');
+var io = require('socket.io');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
 var config = require('./server/config').config;
@@ -23,7 +25,7 @@ var Actor = require('./server/models/actor').Actor;
 var Connection = require('./server/models/connection').Connection;
 var Country = require('./server/models/country').Country;
 
-var app = express.createServer();
+var app = express();
 
 passport.use(new LocalStrategy({
   usernameField: 'username',
@@ -58,14 +60,11 @@ app.configure(function(){
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(express.csrf());
+  app.use(function(req, res, next) {
+    res.locals.csrf_token = function(){ return req.session._csrf; };
+    next();
+  });
   app.use(app.router);
-});
-
-/* A template helper for csrf tokens */
-app.dynamicHelpers({
-  csrf_token: function(req, res) {
-    return req.session._csrf;
-  }
 });
 
 /** TODO: find out why res.redirect('/') is not working on uberhost */
@@ -76,7 +75,7 @@ var routeHandler = {
 
   /** Simply renders the index */
   renderIndex: function(req, res){
-    res.render('index', { user: req.user || null });
+    res.render('index', { user: (req.user || null), lockedModels: lockedModels });
   },
 
   /** Redirects to the login when the user is not logged in */
@@ -85,7 +84,7 @@ var routeHandler = {
       var user = {};
       user._id = req.user.id;
       user._rev = req.user._rev;
-      res.render('index', { user: user });
+      res.render('index', { user: user, lockedModels: lockedModels });
     }else{
       res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
     }
@@ -96,7 +95,7 @@ var routeHandler = {
     if(req.user){
       res.redirect(baseURL + '/edit');
     }else{
-      res.render('index', { user: null });
+      res.render('index', { user: null, lockedModels: lockedModels });
     }
   }
 };
@@ -149,6 +148,7 @@ app.post('/:country/actors', auth.ensureAuthenticated, function(req, res){
 app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
   Actor.edit(req.params.actor_id, req.body, function(err, actor){
     if(err) return res.json(err, 404);
+    io.sockets.emit('change:' + req.params.actor_id, actor);
     res.json(actor);
   });
 });
@@ -156,6 +156,7 @@ app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, re
 app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
   Actor.remove(req.params.actor_id, function(err, actor){
     if(err) return res.json(err, 404);
+    io.sockets.emit('destroy:' + req.params.actor_id, actor);
     res.json(actor);
   });
 });
@@ -182,9 +183,10 @@ app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   });
 });
 
-app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(req, res){
-  Connection.edit(req.params.actor_id, req.body, function(err, connection){
+app.put('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
+  Connection.edit(req.params.connection_id, req.body, function(err, connection){
     if(err) return res.json(err, 404);
+    io.sockets.emit('change:' + req.params.connection_id, connection);
     res.json(connection);
   });
 });
@@ -192,6 +194,7 @@ app.put('/:country/connections/:actor_id', auth.ensureAuthenticated, function(re
 app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
   Connection.remove(req.params.connection_id, function(err, connection){
     if(err) return res.json(err, 404);
+    io.sockets.emit('destroy:' + req.params.connection_id, null);
     res.json(connection);
   });
 });
@@ -229,12 +232,74 @@ app.del('/countries/:id', auth.ensureAuthenticated, function(req, res){
   });
 });
 
-//error handling
-app.error(function(error, request, response, next){
-  console.dir(error);
-  next(error);
+app.put('/countries/:id', auth.ensureAuthenticated, function(req, res){
+  Country.edit(req.params.id, req.body, function(err, country){
+    if(err) return res.json(err, 404);
+    res.json(country);
+  });
 });
 
 var port = process.env.APP_PORT || 3000;
-app.listen(port);
+var server = app.listen(port);
 console.log('Server is up and running on port: ' + port);
+
+var lockedModels = [];
+
+// Realtime stuff
+var io = io.listen(server);
+// a less noisy log level
+io.set('log level', 1)
+
+// new connection established
+io.sockets.on('connection', function (socket) {
+  // register the current user
+  socket.on('register_socket', function (user_id) {
+    socket.user_id = user_id;
+    console.log('register socket', user_id);
+  });
+
+  // broadcast a lock for a model
+  socket.on('lock', function(model_id){
+    var lock = {
+      user_id: socket.user_id,
+      model_id: model_id
+    };
+    lockedModels.push(lock);
+    socket.broadcast.emit('lock', lock);
+    socket.broadcast.emit('lock:'+model_id, null);
+  });
+
+  // broadcast an unlock for a model
+  socket.on('unlock', function(model_id){
+    lockedModels = _.reject(lockedModels, function(model){ return model.model_id == model_id; });
+    socket.broadcast.emit('unlock', model_id);
+    socket.broadcast.emit('unlock:'+model_id, null);
+  });
+
+  socket.on('new_model', function(model){
+    var country = model.country;
+    var type = model.type;
+    var specificType = (type == 'actor') ? model['actorType'] : model['connectionType'];
+    var key = [country, type].join(':');
+    if(specificType)
+      key += ':' + specificType;
+    socket.broadcast.emit(key, model);
+  });
+
+  socket.on('disconnect', function(){
+    var user_id = socket.user_id;
+    console.log('disconnect socket', user_id);
+
+    // select all tha locked models from this user
+    var user_models = _.where(lockedModels, { user_id: user_id });
+
+    // broadcast unlocks for these models
+    _.each(user_models, function(model){
+      var model_id = model.model_id;
+      socket.broadcast.emit('unlock', model_id);
+      socket.broadcast.emit('unlock:'+model_id, null);
+    });
+    // delete the locks
+    lockedModels = _.reject(lockedModels, function(model){ return model.user_id == user_id; });
+  });
+});

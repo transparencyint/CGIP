@@ -1,5 +1,13 @@
 require('lib/view_helper');
 
+var transEndEventNames = {
+  'WebkitTransition' : 'webkitTransitionEnd',
+  'MozTransition'    : 'transitionend',
+  'OTransition'      : 'oTransitionEnd',
+  'msTransition'     : 'MSTransitionEnd',
+  'transition'       : 'transitionend'
+};
+
 // Base class for all views.
 module.exports = Backbone.View.extend({
   // config fields //
@@ -9,9 +17,15 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  
+  transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
 
-  initialize: function() {
+  initialize: function() {    
     this.render = _.bind(this.render, this);
+    this.toggleLocked = _.bind(this.toggleLocked, this);
+
+    if(this.model && this.model.lockable == true)
+      this.model.on('change:locked', this.toggleLocked);
   },
 
   template: function() {},
@@ -25,6 +39,12 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template(this.getRenderData()));
     this.afterRender();
+
+    // check if the model is locked, if so, toggle the view's lock
+    if(this.model && this.model.lockable && this.model.isLocked()){
+      this.toggleLocked();
+    }
+
     return this;
   },
 
@@ -49,10 +69,19 @@ module.exports = Backbone.View.extend({
 
   select: function(event){
     if(this.selectable){
+      if(event) event.stopPropagation();
       $('.selected').removeClass('selected');
       this.$el.addClass('selected');
       $(document).trigger('viewSelected', this);
     }
+  },
+
+  toggleLocked: function(){
+    var isLocked = this.model.get('locked');
+    if(isLocked == true)
+      this.$el.addClass('locked');
+    else
+      this.$el.removeClass('locked');
   }
 
 });

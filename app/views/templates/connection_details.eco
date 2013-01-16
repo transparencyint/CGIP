@@ -3,14 +3,10 @@
 <form>
 	<div class="holder">
 	  <div>
-	    <h3>
-	      <span class="actorName actorA">Unknown</span> 
-	      pays 
-	      <span class="actorName actorB">Unknown</span>
-	    </h3>
+	    <h3 class="connectionName"></h3>
 	  </div>
-	  <div>
-	    <div class="money">
+	  <div class="money">
+	    <div>
 	      <div class="clearfix">
     	    <label for="disbursed">Disbursed</label>
       	  <div class="dollar">
@@ -34,7 +30,7 @@
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
     	  <label for="corruptionRisk">Description</label>
-    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="string"><%= @corruptionRisk %></textarea>
+    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
     	  <label for="corruptionRiskSource">Source</label>
     	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" data-type="string" placeholder="http://">
     	</div>
@@ -43,7 +39,7 @@
 	<div class="controls clearfix">
     <div class="row right">
       <button type="submit" class="done">Save</button>
-      <button class="revert">Revert</button>
+      <button class="cancel">Cancel</button>
     </div>
     <div class="row left">
       <button class="delete">Delete</button>

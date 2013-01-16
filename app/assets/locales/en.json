@@ -1,0 +1,21 @@
+{
+  "project_name": "CGIP",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "cgip_countries_headline": "CGIP Countries",
+  "edit_map": "Edit Map",
+  "edit_money_connections": "Edit Money Connections",
+  "import_csv": "Import CSV",
+  "edit_countries": "Edit Countries",
+  "add_actor": "Add Actor",
+  "accountability": "Accountability",
+  "monitoring": "Monitoring",
+  "money": "Money",
+  "money_mode": "Money Mode",
+  "disbursed": "disbursed",
+  "pledged": "pledged",
+  "funding": "Funding",
+  "coordination": "Coordination",
+  "implementation": "Implementation",
+  "monitoring": "Monitoring"
+}

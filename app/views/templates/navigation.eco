@@ -1,8 +1,8 @@
 <% if @locationType or @locationName: %>
   <% if @currentRoute is 'showCountry': %>
-    <a href="/">Countries</a>
+    <a href="/"><%= t('Countries') %></a>
   <% else: %>
-    <a href="/edit">Dashboard</a>
+    <a href="/edit"><%= t('Dashboard') %></a>
   <% end %>
   <span class="location label">
     <% if @isoLocation: %>

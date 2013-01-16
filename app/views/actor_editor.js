@@ -7,9 +7,8 @@ var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
-var ConnectionMode = require('./editor_modes/connection_mode')
-
-// TODO: find a better place for `transEndEventNames`
+var ConnectionMode = require('./editor_modes/connection_mode');
+var RoleBackgroundView = require('./role_background_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -17,15 +16,26 @@ module.exports = View.extend({
   template: require('./templates/actor_editor'),
   
   events: {
+    // tool controls
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
     'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
+    'click .tool .toggleMonitoring': 'toggleMonitoring',
+    
+    // view controls
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
+    
+    // start to pan..
     'mousedown': 'dragStart',
-    'mousedown .bar': 'stopPropagation',
+    
+    // ..except when your mouse touches the controls
+    'mousedown .controls': 'stopPropagation',
+    'click .controls': 'stopPropagation',
+    
+    // unselect when clicking into empty space
     'click': 'unselect'
   },
   
@@ -36,8 +46,62 @@ module.exports = View.extend({
     'msTransition'     : 'MSTransitionEnd',
     'transition'       : 'transitionend'
   },
-  
-  initialize: function(){
+
+  initializeProperties: function(){
+    this.country = this.options.country;
+    this.actorHeight = 40;
+    this.actorWidth = 120;
+
+    this.fakeActorWidth = 88;
+    this.fakeActorHeight = 30;
+
+    this.radius = 60;
+    this.smallRadius = 44;
+
+    this.zoom = {
+      value: 1,
+      sqrt: 1,
+      step: 0.1,
+      min: 0.25,
+      max: 1.75
+    };
+    
+    // the static origin of the workspace
+    // 'left' gets updated to be 50% from the left
+    this.origin = {
+      left: 0,
+      top: 78
+    };
+    
+    // the dynamic offset of the workspace
+    this.offset = {
+      left: 0,
+      top: 0
+    };
+    
+    this.gridSize = this.actorHeight;
+    
+    // padding for fit-to-screen and for placing the details
+    this.padding = this.actorWidth/4;
+
+    // initialize the collections
+    this.actors = this.options.actors;
+    this.actorViews = {};
+
+    // filter the actor groups
+    this.actorGroups = this.actors.filterGroups();
+    this.actorGroupViews = {};
+
+    // filter the connections
+    this.connections = this.options.connections;
+    var filteredConnections = this.connections.filterConnections();
+    this.moneyConnections = filteredConnections.money;
+    this.accountabilityConnections = filteredConnections.accountability;
+    this.monitoringConnections = filteredConnections.monitoring;
+
+  },
+
+  initialize: function(options){
     // initialize all of the editor's properties
     this.initializeProperties();
 
@@ -57,50 +121,23 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignCenter', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'unselect', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
     $(document).on('viewSelected', this.actorSelected);
+
+    // react to socket events
+    socket.on(this.country + ':actor', this.addPushedActor);
+    socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
+    socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
   },
 
-  initializeProperties: function(){
-    this.country = this.options.country;
-    this.radius = 60;
-    this.smallRadius = 44;
-    
-    // padding for fit-to-screen
-    this.padding = this.radius/2;
-
-    // initialize the collections
-    this.actors = this.options.actors;
-    this.actorViews = {};
-
-    // filter the actor groups
-    this.actorGroups = this.actors.filterGroups();
-    this.actorGroupViews = {};
-
-    this.connections = this.options.connections;
-    var filteredConnections = this.connections.filterConnections();
-    this.moneyConnections = filteredConnections.money;
-    this.accountabilityConnections = filteredConnections.accountability;
-    this.monitoringConnections = filteredConnections.monitoring;
-
-    this.zoom = {
-      value: 1,
-      sqrt: 1,
-      step: 0.25,
-      min: 0.25,
-      max: 1.75
-    };
-    
-    this.offset = {
-      left: 0,
-      top: 0
-    };
-    
-    this.gridSize = this.radius;
+  addPushedActor: function(actor){
+    this.actors.add(actor, {silent: true});
+    this.appendActor(this.actors.get(actor._id), false);
   },
   
   stopPropagation: function(event){
@@ -108,7 +145,7 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActorView)
+    if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
       this.selectedActorView.model.destroy();
   },
   
@@ -117,9 +154,11 @@ module.exports = View.extend({
     
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
+    var zoomBefore = this.zoom.value;
     this.zoom.value = ui.value;
     this.zoom.sqrt = Math.sqrt(ui.value);
 
+    this.trigger('zoom', this.zoom.value - zoomBefore);
     this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
     
     this.$el.css('background-size', this.zoom.value*10);
@@ -149,30 +188,14 @@ module.exports = View.extend({
     // center workspace
     this.moveTo(0, 0);
     
-    // check if the actors as a whole are not centered
-    // if thats the case, move them to the left
-    if(boundingBox.left !== boundingBox.width/2){
-      
-      // calculate center offset
-      var dx = boundingBox.left + boundingBox.width/2;
-      
-      this.actors.each(function(actor){
-        actor.moveByDelta(-dx, 0);
-        actor.save();
-      });
-    }
+    // calculate offset of the center
+    var offsetX = Math.abs(boundingBox.left + boundingBox.width/2);
     
-    var horizontalRatio = this.$el.width() / (boundingBox.width + this.radius*2 + this.padding*2);
-    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius + this.padding*2);
+    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.actorWidth + this.padding) );
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.actorHeight + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
-    
-    // round it to our zoom.step
-    fitZoom = Math.floor( fitZoom / this.zoom.step ) * this.zoom.step;
-    
-    // keep it inside our zoom boundaries
-    fitZoom = Math.max(this.zoom.min, Math.min(this.zoom.max, fitZoom));
     
     this.zoomTo(fitZoom);
   },
@@ -183,14 +206,17 @@ module.exports = View.extend({
     var top = Infinity;
     var bottom = 0;
     
-    this.actors.each(function(actor){
+    var checkPos = function(actor){
       var pos = actor.get('pos');
       
       if(pos.y < top) top = pos.y;
       if(pos.y > bottom) bottom = pos.y;
       if(pos.x < left) left = pos.x;
       if(pos.x > right) right = pos.x;
-    });
+    };
+    
+    this.actors.each(checkPos);
+    this.actorGroups.each(checkPos);
     
     return {
       left: left,
@@ -202,11 +228,12 @@ module.exports = View.extend({
     };
   },
   
-  actorSelected: function(event, actorView){
-    if(actorView.$el.hasClass('actor')){
-      this.selectedActorView = actorView;
+  actorSelected: function(event, view){
+    var type = view.model.get('type');
+    if(type == 'actor'){
+      this.selectedActorView = view;
       if(this.mode)
-        this.mode.actorSelected(actorView);
+        this.mode.actorSelected(view);
     }
   },
 
@@ -218,14 +245,15 @@ module.exports = View.extend({
 
   createActorAt: function(x, y){
     var editor = this;
-    
+  
     var actor = new Actor();
     actor.save({
-      country: editor.country,
+      country: editor.country.get('abbreviation'),
       pos : { x : x, y : y }
     },{
       success : function(){
         editor.actors.add(actor);
+        socket.emit('new_model', actor.toJSON());
     }});
   },
   
@@ -238,7 +266,10 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     this.actorViews[actor.id] = actorView;
-    if(startEdit === true) actorView.startEditName();
+    if(startEdit === true){
+      actorView.select();
+      actorView.showDetails();
+    }
   },
 
   // when an actor is removed, destroy its view
@@ -255,19 +286,19 @@ module.exports = View.extend({
   },
 
   appendConnection: function(connection){
-    connection.pickOutActors(this.actors);
+    connection.pickOutActors(this.actors, this.actorGroups);
 
     var connView = new ConnectionView({ model : connection, editor: this});
 
     connView.render();  
     this.workspace.append(connView.el);
 
-    if(connection.showMetadataForm)
+    if(connection.showMetadataForm && connView.showMetadataForm)
       connView.showMetadataForm();
   },
 
   toggleMode: function(event){
-    this.$('.connection').removeClass('active');
+    this.$('.connection.active').removeClass('active');
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
@@ -299,6 +330,15 @@ module.exports = View.extend({
       this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
     else 
       this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
+  },
+
+  toggleMonitoring: function(event){
+    this.rbw.toggleMonitoring();
+
+    if($('#toggleMonitoringText').hasClass('active'))
+      $('#toggleMonitoringText').html('Off').removeClass('active');
+    else
+      $('#toggleMonitoringText').html('On').addClass('active');
   },
 
   deactivateMode: function(){
@@ -356,9 +396,11 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var coords = this.offsetToCoords(offset, this.smallRadius);
+      var coords = this.offsetToCoords(offset, view.width, view.height);
       this.createActorAt(coords.x, coords.y);
-      view.model.set({pos: {x: 0, y:0 }});
+      
+      // move actorDouble back to its origin by sliding it in from the top
+      _.delay(this.slideInDouble, 120, view);
     }
   },
 
@@ -374,39 +416,45 @@ module.exports = View.extend({
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
     
     // triggere animation
-    var diameter = 2 * this.radius * this.zoom.value;
-    var marginLeft = this.smallRadius - diameter/2;
+    var width = this.actorWidth * this.zoom.value;
+    var height = this.actorHeight * this.zoom.value
+    var marginLeft = this.fakeActorWidth/2 - width/2;
     
-    this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
+    this.actorDouble.css({
+      marginLeft: marginLeft, 
+      width: width, 
+      height: height
+    });
     this.addActor.addClass('slideIn');
   },
 
-  offsetToCoords: function(offset, radius){
-    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+  offsetToCoords: function(offset, width, height){
+    var x = (offset.left - this.origin.left + (width/2 || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top - this.origin.top + (height/2 || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
     return { x: x, y: y };
   },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var coords = this.offsetToCoords(offset, this.radius);
+    var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
     
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
-    _.delay(this.slideInDouble, 100);
+    _.delay(this.slideInDouble, 120);
   },
   
-  slideInDouble: function(){
+  slideInDouble: function(view){
     this.addActor.addClass('curtainDown');
     this.addActor.removeClass('slideIn').addClass('slideUp');
     // reset css
-    this.actorDouble.css({ marginLeft: "", width: "", height: "" });
+    this.actorDouble.css({ marginLeft: '', width: '', height: '' });
 
     document.redraw();
 
     this.addActor.removeClass('curtainDown');
     this.addActor.removeClass('slideUp');
+    if(view) view.model.set({pos: {x: 0, y:0 }});
   },
   
   dragStart: function(event){
@@ -444,17 +492,20 @@ module.exports = View.extend({
       this.offset.left = x / this.zoom.sqrt;
       this.offset.top =  y / this.zoom.sqrt;
     }
-    
-    x += this.center;
-    
+
+    x += this.origin.left;
+    y += this.origin.top;
+
     this.workspace.css({
-      left: x,
-      top: y
+      left: Math.round(x),
+      top: Math.round(y)
     });
     
+    this.trigger('pan', x, y);
     this.$el.css('background-position', x +'px, '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
+    
   },
   
   dragStop : function(event){
@@ -475,7 +526,7 @@ module.exports = View.extend({
     var foundGridY = false;
 
     //check if there is an actor at the nearest grid point
-    this.actors.each(function(actor){
+    var actorCheck = function(actor){
       var currentPos = actor.get('pos');
       var actorX = Math.round(currentPos.x);
       var actorY = Math.round(currentPos.y);
@@ -486,22 +537,25 @@ module.exports = View.extend({
         if(actorY == y)
           foundGridY = true;
       }
-    });
+    }
+    this.actors.each(actorCheck);
+    this.actorGroups.each(actorCheck);
 
     this.showGridLine(x, y, foundGridX, foundGridY);
     this.hideGridLine(); // hiding is a delayed function
   },
 
   showGridLine: function(x, y, gridX, gridY){
+
     if(gridX){
-      this.gridlineV.css({'left': this.offset.left + this.center + x});
+      this.gridlineV.css({'left': (this.offset.left*this.zoom.sqrt + this.origin.left + x*this.zoom.value)});
       this.gridlineV.show();
     }
     else if(!gridX)
       this.gridlineV.hide();
 
     if(gridY){
-      this.gridlineH.css({'top': this.offset.top + y});
+      this.gridlineH.css({'top': this.offset.top*this.zoom.sqrt + y*this.zoom.value});
       this.gridlineH.show();
     }
     else if(!gridY)
@@ -509,12 +563,12 @@ module.exports = View.extend({
   },
 
   hideGridLine: function(){
-    this.gridlineV.fadeOut(400);
-    this.gridlineH.fadeOut(400);
+    this.gridlineV.hide();
+    this.gridlineH.hide();
   },
   
-  realignCenter: function(){
-    this.center = this.$el.width()/2;
+  realignOrigin: function(){
+    this.origin.left = this.$el.width()/2;
     
     this.moveTo(0, 0);
   },
@@ -534,6 +588,9 @@ module.exports = View.extend({
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
+    this.rbw = new RoleBackgroundView({ editor: editor });
+    this.workspace.before(this.rbw.render()); 
+
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);
 
@@ -547,9 +604,13 @@ module.exports = View.extend({
     // call this slightly delayed to give the browser
     // time to layout the html changes
     // source: http://stackoverflow.com/questions/8225869/how-can-i-get-size-height-width-information-in-backbone-views
-    _.defer(this.realignCenter);
+    _.defer(this.realignOrigin);
   },
   
+  initializeDimensions: function(){
+    this.origin.left = this.$el.width()/2;
+  },
+
   afterRender: function(){
     var editor = this;
 
@@ -558,7 +619,7 @@ module.exports = View.extend({
     this.$('#disbursedMoney').addClass("active");
 
     $(document).bind('keyup', this.keyUp);
-    $(window).resize(this.realignCenter);
+    $(window).resize(this.realignOrigin);
     
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
@@ -569,6 +630,14 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
+
+    //check if monitoring role is hidden and hide monitoring elements
+    if(!this.country.get('showMonitoring')){
+      this.$('#toggleMonitoringText').html('Off').removeClass('active');
+      this.$('#monitoring').css({'display': 'none'});
+      this.$('.draghandle.last').hide();
+      this.$('span[rel=monitoring]').hide();
+    }
   },
 
   destroy: function(){
@@ -588,7 +657,13 @@ module.exports = View.extend({
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.actorSelected);
-    $(document).off('viewdragstop', this.checkDrop)
-    $(window).unbind('resize', this.realignCenter);
+    $(document).off('viewdragstop', this.checkDrop);
+
+    $(window).unbind('resize', this.realignOrigin);
+
+    socket.removeAllListeners(this.country + ':actor');
+    socket.removeAllListeners(this.country + ':connection:money');
+    socket.removeAllListeners(this.country + ':connection:accountability');
+    socket.removeAllListeners(this.country + ':connection:monitoring');
   }
 });

@@ -1,29 +1,47 @@
-.connection
+.workspace .connection
+  pointer-events none
   path
     fill none
+  marker
+    path
+      fill inherit
+  use
     cursor pointer
+    pointer-events visiblePainted
+  marker
+    fill none
   &.pledgedMode
     path
       stroke hsl(60,20%,60%)
     use
       fill hsl(60,20%,60%)
+  &.accountability
+    .arrow
+      fill white
+    .path
+      stroke white
+  &.monitoring
+    .arrow
+      fill black
+    .path
+      stroke black
+  &.amountUnknown
+    opacity 0.6
+  .clickBorder
+    stroke transparent
   &.selected
-    path
+    .selectPath
       stroke hsl(205,100%,55%)
-      marker-end url(#selectedTriangle)
-  .connection-metadata
-  	display none
-  	padding 20px
-  	color #000
-  	background white
-  	position absolute
-  	z-index	10
-  	border 1px solid rgba(0,0,0,.13)
-  	border-radius 5px
-  	box-shadow 0 1px 5px rgba(0,0,0,.13)
-    
-.activeConnection path
-  stroke #a00000
-.activeConnection use
-  fill #a00000
+    .selected-arrow
+      fill hsl(205,100%,55%)
+  .metadata
+    position absolute
+    display none
+    padding 3px 8px
+    color black
+    white-space nowrap
+    background white
+    z-index	10
+    border-radius 3px
+    box-shadow 0 1px 3px 1px rgba(0, 0, 0, 0.34), 0 1px rgb(251, 251, 251) inset
 

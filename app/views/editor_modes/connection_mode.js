@@ -41,6 +41,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
+    this.connection.to.margins = {top: 0, right:0, bottom:0, left:0};
     this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
     this.connectionView.actorRadius = 0;
     this.connectionView.render();
@@ -49,6 +50,9 @@ ConnectionMode.prototype.actorSelected = function(actor){
     $(document).bind('keyup', this._keyUp);
   
   }else if(this.selectedActors.length === 2){
+    // unlock the first actor
+    this.selectedActors[0].unlock();
+    
     this.connection.to = actor.model;
     var mode = this;
     //check whether or not same from-to connection already exists
@@ -67,11 +71,11 @@ ConnectionMode.prototype.actorSelected = function(actor){
         to: this.selectedActors[1].id
       });
 
-      if(newConnection.get('connectionType') === 'money')
-        newConnection.showMetadataForm = true;
+      newConnection.showMetadataForm = true;
 
       newConnection.save(null, {
         success: function(){
+          socket.emit('new_model', newConnection.toJSON());
           mode.collection.add(newConnection);
         }
       });
@@ -103,8 +107,8 @@ ConnectionMode.prototype.unselect = function(){
 
 ConnectionMode.prototype._moveDummy = function(event){
   var pos = this.connection.to.get('pos');
-  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.center) / this.editor.zoom.value;
-  var dy = (event.pageY - pos.y - this.editor.offset.top) / this.editor.zoom.value;
+  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.origin.left) / this.editor.zoom.value;
+  var dy = (event.pageY - pos.y - this.editor.offset.top - this.editor.origin.top) / this.editor.zoom.value;
 
   this.connection.to.set({
     pos: {

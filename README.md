@@ -34,4 +34,4 @@ For a detailed documentation see [documentation/deployment.md](https://github.co
 - [Backbone.js](http://documentcloud.github.com/backbone/) for the frontend code
 - [Eco](https://github.com/sstephenson/eco) for the templates
 - [Stylus](http://learnboost.github.com/stylus/) as a CSS pre-processor
-- [CouchDB](http://couchdb.apache.org) as a backend `(decision pending)`
+- [CouchDB](http://couchdb.apache.org) as a backend
