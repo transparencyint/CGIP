@@ -1,0 +1,11 @@
+<div class="actor">
+  <div class="caption">
+    <span class="name">
+      <%= @abbreviation %>
+    </span>
+    <div class="dropdown-control">
+     <div class="arrow"> ▼</div>
+    </div>
+  </div>
+  <ul class="actors"></ul>
+</div>
