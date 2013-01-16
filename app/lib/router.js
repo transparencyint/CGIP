@@ -1,6 +1,6 @@
 var AsyncRouter = require('./async_router');
 var IndexView = require('views/index_view');
-var CountryMapView = require('views/country_map_view');
+var CountryMapView = require('views/presentation/country_map_view');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var EditCountriesView = require('views/edit_countries_view');
