@@ -10,8 +10,6 @@ var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
 
-// TODO: find a better place for `transEndEventNames`
-
 module.exports = View.extend({
   id: 'actorEditor',
   
@@ -41,24 +39,14 @@ module.exports = View.extend({
     'click': 'unselect'
   },
   
-  transEndEventNames: {
-    'WebkitTransition' : 'webkitTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'msTransition'     : 'MSTransitionEnd',
-    'transition'       : 'transitionend'
-  },
-  
   initialize: function(options){
     this.country = options.country;
 
     this.radius = 60;
     this.smallRadius = 44;
     
-    // padding for fit-to-screen
-    this.padding = this.radius/2;
-    
-    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
+    // padding for fit-to-screen and for placing the details
+    this.padding = this.actorWidth/4;
 
     // initialize the collections
     this.actors = options.actors;
@@ -86,8 +74,8 @@ module.exports = View.extend({
       left: 0,
       top: 0
     };
-
-    this.gridSize = this.radius;
+    
+    this.gridSize = this.actorHeight;
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
@@ -161,8 +149,8 @@ module.exports = View.extend({
     // calculate offset of the center
     var offsetX = Math.abs(boundingBox.left + boundingBox.width/2);
     
-    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.radius*2 + this.padding) );
-    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.radius*2 + this.padding*2);
+    var horizontalRatio = this.$el.width() / ( 2 * (offsetX + boundingBox.width/2 + this.actorWidth + this.padding) );
+    var verticalRatio = this.$el.height() / (boundingBox.top + boundingBox.height + this.actorHeight + this.padding*2);
     
     // use the smaller ratio
     var fitZoom = Math.min(horizontalRatio, verticalRatio);
@@ -199,7 +187,8 @@ module.exports = View.extend({
   },
   
   actorSelected: function(event, view){
-    if(view.$el.hasClass('actor')){
+    var type = view.model.get('type');
+    if(type == 'actor'){
       this.selectedActorView = view;
       if(this.mode)
         this.mode.actorSelected(view);
@@ -234,7 +223,10 @@ module.exports = View.extend({
     actorView.render();
     this.workspace.append(actorView.el);
     this.actorViews[actor.id] = actorView;
-    if(startEdit === true) actorView.startEditName();
+    if(startEdit === true){
+      actorView.select();
+      actorView.showDetails();
+    }
   },
 
   // when an actor is removed, destroy its view
@@ -251,14 +243,14 @@ module.exports = View.extend({
   },
 
   appendConnection: function(connection){
-    connection.pickOutActors(this.actors);
+    connection.pickOutActors(this.actors, this.actorGroups);
 
     var connView = new ConnectionView({ model : connection, editor: this});
 
     connView.render();  
     this.workspace.append(connView.el);
 
-    if(connection.showMetadataForm)
+    if(connection.showMetadataForm && connView.showMetadataForm)
       connView.showMetadataForm();
   },
 
@@ -361,9 +353,11 @@ module.exports = View.extend({
     // create a new actor when it doesn't over lap with others
     if(!overlapsWithOthers){
       var offset = view.$el.offset();
-      var coords = this.offsetToCoords(offset, this.smallRadius);
+      var coords = this.offsetToCoords(offset, view.width, view.height);
       this.createActorAt(coords.x, coords.y);
-      view.model.set({pos: {x: 0, y:0 }});
+      
+      // move actorDouble back to its origin by sliding it in from the top
+      _.delay(this.slideInDouble, 120, view);
     }
   },
 
@@ -379,39 +373,45 @@ module.exports = View.extend({
     this.addActor.one(this.transEndEventName, this.placeActorDouble);
     
     // triggere animation
-    var diameter = 2 * this.radius * this.zoom.value;
-    var marginLeft = this.smallRadius - diameter/2;
+    var width = this.actorWidth * this.zoom.value;
+    var height = this.actorHeight * this.zoom.value
+    var marginLeft = this.smallActorWidth/2 - width/2;
     
-    this.actorDouble.css({marginLeft: marginLeft, width: diameter, height: diameter });
+    this.actorDouble.css({
+      marginLeft: marginLeft, 
+      width: width, 
+      height: height
+    });
     this.addActor.addClass('slideIn');
   },
 
-  offsetToCoords: function(offset, radius){
-    var x = (offset.left - this.center + (radius || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
-    var y = (offset.top + (radius || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
+  offsetToCoords: function(offset, width, height){
+    var x = (offset.left - this.center + (width/2 || 0) * this.zoom.value - this.offset.left) / this.zoom.value; 
+    var y = (offset.top + (height/2 || 0) * this.zoom.value - this.offset.top) / this.zoom.value;
     return { x: x, y: y };
   },
   
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
-    var coords = this.offsetToCoords(offset, this.radius);
+    var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
     
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
-    _.delay(this.slideInDouble, 100);
+    _.delay(this.slideInDouble, 120);
   },
   
-  slideInDouble: function(){
+  slideInDouble: function(view){
     this.addActor.addClass('curtainDown');
     this.addActor.removeClass('slideIn').addClass('slideUp');
     // reset css
-    this.actorDouble.css({ marginLeft: "", width: "", height: "" });
+    this.actorDouble.css({ marginLeft: '', width: '', height: '' });
 
     document.redraw();
 
     this.addActor.removeClass('curtainDown');
     this.addActor.removeClass('slideUp');
+    if(view) view.model.set({pos: {x: 0, y:0 }});
   },
   
   dragStart: function(event){
@@ -482,7 +482,7 @@ module.exports = View.extend({
     var foundGridY = false;
 
     //check if there is an actor at the nearest grid point
-    this.actors.each(function(actor){
+    var actorCheck = function(actor){
       var currentPos = actor.get('pos');
       var actorX = Math.round(currentPos.x);
       var actorY = Math.round(currentPos.y);
@@ -493,7 +493,9 @@ module.exports = View.extend({
         if(actorY == y)
           foundGridY = true;
       }
-    });
+    }
+    this.actors.each(actorCheck);
+    this.actorGroups.each(actorCheck);
 
     this.showGridLine(x, y, foundGridX, foundGridY);
     this.hideGridLine(); // hiding is a delayed function
@@ -517,8 +519,8 @@ module.exports = View.extend({
   },
 
   hideGridLine: function(){
-    this.gridlineV.fadeOut(400);
-    this.gridlineH.fadeOut(400);
+    this.gridlineV.hide();
+    this.gridlineH.hide();
   },
   
   realignCenter: function(){

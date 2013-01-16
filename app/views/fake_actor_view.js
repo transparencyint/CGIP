@@ -9,7 +9,7 @@ module.exports = DraggableView.extend({
   template: require('./templates/fake_actor'),
 
   events: {
-    'mousedown .inner'  : 'dragStart'
+    'mousedown'  : 'dragStart'
   },
 
   initialize: function(){
@@ -17,8 +17,18 @@ module.exports = DraggableView.extend({
     this.model = new Actor();
     // stub the save function
     this.model.save = function(){};
+    
+    this.width = this.options.editor.smallActorWidth;
+    this.height = this.options.editor.smallActorHeight;
 
     DraggableView.prototype.initialize.call(this);
+  },
+
+  // moves the view back to the starting point
+  reset: function(){
+    this.dragging = false;
+    this.model.set({ pos: { x:0, y:0 }});
+    this.$el.css('opacity', 1);
   },
 
   dragByDelta: function(dx, dy){

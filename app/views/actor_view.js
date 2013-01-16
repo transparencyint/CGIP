@@ -12,26 +12,21 @@ module.exports = DraggableView.extend({
     var parentEvents = DraggableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
-      'dblclick .name'    : 'startEditName',
-      'dblclick .abbrev'  : 'startEditName',
-      'blur .abbrev-input': 'stopEditName',
-      'blur .name-input'  : 'stopEditName',
-      'keydown input'     : 'saveOnEnter',
-      'mousedown .inner'  : 'dragStart',
-      'dblclick'          : 'showMetadataForm',
-      'click'             : 'stopPropagation'
+      'mousedown' : 'dragStart',
+      'dblclick'  : 'showDetails',
+      'click'     : 'stopPropagation'
     }, parentEvents);
   },
   
   initialize: function(options){
     DraggableView.prototype.initialize.call(this, options);
+    _.bindAll(this, 'destroy');
 
-    this.width = this.editor.radius*2;
-    this.height = this.editor.radius*2;    
+    this.width = options.editor.actorWidth;
+    this.height = options.editor.actorHeight;    
 
-    this.model.on('change:abbreviation', this.updateAbbrev, this);
+    this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
-    this.model.on('change:role', this.drawRoleBorders, this);
     this.model.on('destroy', this.destroy, this);
   },
 
@@ -39,7 +34,7 @@ module.exports = DraggableView.extend({
     this.model.moveByDelta(dx, dy);
   },
 
-  showMetadataForm: function(){
+  showDetails: function(){
     this.modal = new ActorDetailsView({ model: this.model, actor: this });
     this.editor.$el.append(this.modal.render().el);
   },
@@ -47,159 +42,33 @@ module.exports = DraggableView.extend({
   stopPropagation: function(event){
     event.stopPropagation();
   },
-
-  startEditName: function(event){
-    var currentDiv;
-    if(event) {
-      event.stopPropagation();
-      currentDiv = $(event.currentTarget);
-    }else //a new actor is created
-      currentDiv = this.$('.name');
-
-    this.$el.addClass('editingName');
-    this.dontDrag = true;
-
-    var currentInput;
-    if(currentDiv.hasClass('name')) {
-      currentInput = this.$('.name-input');
-      this.$('.abbrev-input').hide();
-      this.$('.abbrev').hide();
-    } else if(currentDiv.hasClass('abbrev')) {
-      currentInput = this.$('.abbrev-input');
-      this.$('.name-input').hide();
-      this.$('.name').hide();
-    }
-
-    currentInput.show();
-
-    var divText = currentDiv.text();
-    currentDiv.hide();
-    currentInput.val($.trim(divText));
-    currentInput.focus();
-    currentInput.select();
-  },
   
-  stopEditName: function(event){
-    this.$el.removeClass('editingName');
-
-    var currentInput = $(event.currentTarget);
-    if(currentInput.hasClass('name-input')){
-      this.model.save({name : currentInput.val()}); 
-    } else if(currentInput.hasClass('abbrev-input')){
-      this.model.save({abbreviation : currentInput.val()});
-    }
-
-    currentInput.hide();
-    this.showProperName();
-
-    this.dontDrag = false;
-  },
-
-  showProperName: function(event){
-    var abbrev = this.model.get('abbreviation');
-    var name = this.model.get('name');
-    if(abbrev.length !== 0){
-      this.$('.name').hide();
-      this.$('.abbrev').show();
-    }else if(name.length !== 0){
-      this.$('.abbrev').hide();
-      this.$('.name').show();
-    }else{
-      this.$('.name').hide();
-      this.$('.abbrev').show();
-    }
-  },
-
-  updateAbbrev: function(){
-    var abbrev = this.model.get('abbreviation');
-    if(abbrev.length == 0){
-      this.$('.abbrev').text('Unknown');
-    }else
-      this.$('.abbrev').text(abbrev);
-    this.showProperName();
+  determineName: function(){
+    return this.model.get('abbreviation') || this.model.get('name') || '';
   },
 
   updateName: function(){
-    var name = this.model.get('name');
-    this.$('.name').text(name);
-    this.showProperName();
+    this.$('.name').text( this.determineName() );
   },
   
-  saveOnEnter: function(event){
-    if(event.keyCode === 13){
-      if(this.$el.hasClass('editingName')){
-        $(event.currentTarget).blur();
-      }
-    }
+  getRenderData: function() {
+    return { name: this.determineName() };
   },
 
   afterRender: function(){
-    this.showProperName();
-
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
-
-    this.drawRoleBorders();
-  },
-
-  drawRoleBorders: function(){
-    var roles = this.model.get('role');
-    var el = this.$el;
-
-    // remove all previous paths and circles
-    el.find('.svg-holder circle, .svg-holder path').remove();
-    
-    if(roles && roles.length > 0){
-      var width =  130;
-      var height = 130;
-      
-      el.find('.svg-holder').svg({settings:{'class': 'actor-svg'}});  
-      var svg = el.find('.svg-holder').svg('get'); 
-
-      /* if there is just one role we drwa a svg circle */
-      if(roles.length == 1){
-        var drawnPath = svg.circle(width/2, width/2, width/2, {
-            strokeWidth: 1
-          });
-        $(drawnPath).attr({'class': roles[0], transform: 'translate(-5 -5)'});
-      } else {
-        var percent = 100 / roles.length;
-        var angles = percent * 360 / 100;
-        var startAngle = 0;
-        var endAngle = 0;
-
-        $.each(roles, function(role, roleValue){
-          startAngle = endAngle;
-          endAngle = startAngle + angles;
-
-          x1 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*startAngle/180));
-          y1 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*startAngle/180));
-
-          x2 = parseInt(width/2 + ((width/2))*Math.cos(Math.PI*endAngle/180));
-          y2 = parseInt(height/2 + ((height/2))*Math.sin(Math.PI*endAngle/180));                
-
-          var path = svg.createPath();
-          var drawnPath = svg.path(
-            path.move(width/2, height/2).
-            line(x1, y1).
-            arc((width/2), (height/2), 0, 0, true, x2, y2).
-            close(), {
-              strokeWidth: 1,
-              transform: 'translate(5 -5), rotate(90, 60, 60)'
-            });
-
-          $(drawnPath).attr('class', roleValue);
-
-        });
-      }
-    }
   },
 
   destroy: function(){
     // TODO: call the proper destroy method and clean up the editor's view instances
     // TODO: call lightbox destroy as well
-    DraggableView.prototype.destroy.call(this);
+    var self = this;
+    this.$el.one(this.transEndEventName, function(){
+      DraggableView.prototype.destroy.call(self);
+    });
+    this.$el.addClass('disappear');
 
     if(this.modal) this.modal.destroy()
 
