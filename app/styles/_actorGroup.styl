@@ -49,10 +49,11 @@
       cursor pointer
       .arrow
         transform translateY(1px) rotate(90deg)
-      &:active .arrow
-        transform translateY(1px) rotate(45deg)
-  &.show-actors.selected .dropdown-control .arrow
+  &.open.selected .dropdown-control .arrow
       transform none
+  &.open.selected .dropdown-control:active .arrow, 
+  .dropdown-control:active .arrow
+    transform translateY(1px) rotate(45deg)
   &.empty .caption 
     .name 
       right 0
@@ -64,7 +65,7 @@
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.show-actors:not(.empty)
+  &.open.selected:not(.empty)
     .actors
       display block
 
