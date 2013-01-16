@@ -44,6 +44,7 @@ module.exports = View.extend({
   },
 
   redirectToGoal: function(){
-    this.options.router.navigate(this.options.forward, { trigger: true });
+    // hard reload to the forward url
+    location.href = this.options.forward;
   }
 });

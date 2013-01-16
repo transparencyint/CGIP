@@ -9,9 +9,11 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
+  // hotfix for missing socket
+  window.socket = io.connect();
+
   // start socket.io
   if(user.isLoggedIn()){
-    window.socket = io.connect();
     // connect the socket
     socket.on('connect', function(){
       // register the socket to the server
