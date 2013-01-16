@@ -104,12 +104,23 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
     $(document).on('viewSelected', this.actorSelected);
+
+    // react to socket events
+    socket.on(this.country + ':actor', this.addPushedActor);
+    socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
+    socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
+  },
+
+  addPushedActor: function(actor){
+    this.actors.add(actor, {silent: true});
+    this.appendActor(this.actors.get(actor._id), false);
   },
   
   stopPropagation: function(event){
@@ -117,7 +128,7 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActorView)
+    if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
       this.selectedActorView.model.destroy();
   },
   
@@ -225,6 +236,7 @@ module.exports = View.extend({
     },{
       success : function(){
         editor.actors.add(actor);
+        socket.emit('new_model', actor.toJSON());
     }});
   },
   
@@ -629,6 +641,12 @@ module.exports = View.extend({
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.actorSelected);
     $(document).off('viewdragstop', this.checkDrop);
+
     $(window).unbind('resize', this.realignOrigin);
+
+    socket.removeAllListeners(this.country + ':actor');
+    socket.removeAllListeners(this.country + ':connection:money');
+    socket.removeAllListeners(this.country + ':connection:accountability');
+    socket.removeAllListeners(this.country + ':connection:monitoring');
   }
 });

@@ -22,6 +22,10 @@ module.exports = Backbone.View.extend({
 
   initialize: function() {    
     this.render = _.bind(this.render, this);
+    this.toggleLocked = _.bind(this.toggleLocked, this);
+
+    if(this.model && this.model.lockable == true)
+      this.model.on('change:locked', this.toggleLocked);
   },
 
   template: function() {},
@@ -35,6 +39,12 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template(this.getRenderData()));
     this.afterRender();
+
+    // check if the model is locked, if so, toggle the view's lock
+    if(this.model && this.model.lockable && this.model.isLocked()){
+      this.toggleLocked();
+    }
+
     return this;
   },
 
@@ -64,6 +74,14 @@ module.exports = Backbone.View.extend({
       this.$el.addClass('selected');
       $(document).trigger('viewSelected', this);
     }
+  },
+
+  toggleLocked: function(){
+    var isLocked = this.model.get('locked');
+    if(isLocked == true)
+      this.$el.addClass('locked');
+    else
+      this.$el.removeClass('locked');
   }
 
 });
