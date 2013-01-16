@@ -41,6 +41,12 @@ module.exports = View.extend({
   
   initialize: function(options){
     this.country = options.country;
+    
+    this.actorHeight = 40;
+    this.actorWidth = 120;
+
+    this.fakeActorWidth = 88;
+    this.fakeActorHeight = 30;
 
     this.radius = 60;
     this.smallRadius = 44;
@@ -70,11 +76,14 @@ module.exports = View.extend({
       max: 1.75
     };
     
+    // the static origin of the workspace
+    // 'left' gets updated to be 50% from the left
     this.origin = {
       left: 0,
       top: 78
     };
     
+    // the dynamic offset of the workspace
     this.offset = {
       left: 0,
       top: 0
@@ -380,7 +389,7 @@ module.exports = View.extend({
     // triggere animation
     var width = this.actorWidth * this.zoom.value;
     var height = this.actorHeight * this.zoom.value
-    var marginLeft = this.smallActorWidth/2 - width/2;
+    var marginLeft = this.fakeActorWidth/2 - width/2;
     
     this.actorDouble.css({
       marginLeft: marginLeft, 
