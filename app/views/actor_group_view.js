@@ -1,5 +1,6 @@
 var DraggableView = require('./draggable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
+var FakeActorView = require('./fake_actor_view');
 
 module.exports = DraggableView.extend({
   selectable: true,
@@ -120,6 +121,13 @@ module.exports = DraggableView.extend({
     if(event.isPropagationStopped()) return;
     // return if it's this view
     if(view === this) return;
+
+    // Don't allow to add FakeActorViews
+    if(view instanceof FakeActorView){
+      event.stopPropagation();
+      view.reset();
+      return;
+    }
 
     if(this.overlapsWith(view)){
       // add it to the group

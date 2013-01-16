@@ -24,6 +24,13 @@ module.exports = DraggableView.extend({
     DraggableView.prototype.initialize.call(this);
   },
 
+  // moves the view back to the starting point
+  reset: function(){
+    this.dragging = false;
+    this.model.set({ pos: { x:0, y:0 }});
+    this.$el.css('opacity', 1);
+  },
+
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
   }

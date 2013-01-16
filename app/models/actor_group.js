@@ -24,8 +24,9 @@ module.exports = Actor.extend({
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
     if(!alreadyAdded){
-      // remove it from its current collection
-      actor.collection.remove(actor);
+      // remove it from its current collection, if there is one
+      if(actor.collection)
+        actor.collection.remove(actor);
 
       // add actor to the model
       actors.push(actor.id);
