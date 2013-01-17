@@ -19,6 +19,9 @@ module.exports = Backbone.View.extend({
   dontSnap: false,
   
   transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
+  inputDownEvent: Modernizr.touch ? 'touchstart' : 'mousedown',
+  inputMoveEvent: Modernizr.touch ? 'touchmove' : 'mousemove',
+  inputUpEvent: Modernizr.touch ? 'touchend' : 'mouseup',
 
   initialize: function() {    
     this.render = _.bind(this.render, this);
@@ -82,6 +85,13 @@ module.exports = Backbone.View.extend({
       this.$el.addClass('locked');
     else
       this.$el.removeClass('locked');
+  },
+  
+  normalizedX: function(event){
+    return Modernizr.touch ? event.originalEvent.touches[0].pageX : event.pageX;
+  },
+  
+  normalizedY: function(event){
+    return Modernizr.touch ? event.originalEvent.touches[0].pageY : event.pageY;
   }
-
 });

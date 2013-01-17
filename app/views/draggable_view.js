@@ -35,18 +35,19 @@ module.exports = View.extend({
 
     if(this.model && this.model.lockable)
       this.model.lock();
-
-    this.select(event);
+    
+    this.select();
 
     if(!this.dontDrag){
       event.stopPropagation();
+      event.preventDefault();
       var pos = this.model.get('pos');
       
-      this.startX = event.pageX - pos.x;
-      this.startY = event.pageY - pos.y;
+      this.startX = this.normalizedX(event) - pos.x;
+      this.startY = this.normalizedY(event) - pos.y;
     
-      $(document).on('mousemove.global', this.drag);
-      $(document).one('mouseup', this.dragStop);
+      $(document).on(this.inputMoveEvent, this.drag);
+      $(document).one(this.inputUpEvent, this.dragStop);
     }
   },
 
@@ -54,8 +55,8 @@ module.exports = View.extend({
     var pos = this.model.get('pos');
     
     this.isDragging = true;
-    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
-    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
+    var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
+    var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
 
     this.dragByDelta(dx, dy);
 
@@ -86,7 +87,7 @@ module.exports = View.extend({
       $(document).trigger('viewdragstop', this);
     }
       
-    $(document).off('mousemove.global', this.drag);
+    $(document).off(this.inputMoveEvent, this.drag);
 
     this.isDragging = false;
   },

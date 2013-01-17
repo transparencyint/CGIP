@@ -10,9 +10,12 @@ module.exports = DraggableView.extend({
 
   events: function(){
     var parentEvents = DraggableView.prototype.events;
+    
+    // bind dynamic input event (touch or mouse)
+    parentEvents[ this.inputDownEvent ] = 'dragStart';
+    
     // merge the parent events and the current events
     return _.defaults({
-      'mousedown' : 'dragStart',
       'dblclick'  : 'showDetails',
       'click'     : 'stopPropagation'
     }, parentEvents);

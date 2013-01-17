@@ -15,36 +15,34 @@ module.exports = View.extend({
   
   template: require('./templates/actor_editor'),
   
-  events: {
-    // tool controls
-    'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
-    'click .tool .connection': 'toggleMode',
-    'click .tool .moneyMode .small': 'toggleMoneyMode',
-    'click .tool .connection .eye': 'toggleVisibility',
-    'click .tool .toggleMonitoring': 'toggleMonitoring',
+  events: function(){
+    var _events = {
+      // tool controls
+      'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
+      'click .tool .connection': 'toggleMode',
+      'click .tool .moneyMode .small': 'toggleMoneyMode',
+      'click .tool .connection .eye': 'toggleVisibility',
+      'click .tool .toggleMonitoring': 'toggleMonitoring',
     
-    // view controls
-    'click .zoom.in': 'zoomIn',
-    'click .zoom.out': 'zoomOut',
-    'click .fit.screen': 'fitToScreen',
+      // view controls
+      'click .zoom.in': 'zoomIn',
+      'click .zoom.out': 'zoomOut',
+      'click .fit.screen': 'fitToScreen',
     
-    // start to pan..
-    'mousedown': 'dragStart',
+      // dont pan when the input touches the controls
+      'click .controls': 'dontPan',
     
-    // ..except when your mouse touches the controls
-    'mousedown .controls': 'stopPropagation',
-    'click .controls': 'stopPropagation',
+      // unselect when clicking into empty space
+      'click': 'unselect'
+    };
     
-    // unselect when clicking into empty space
-    'click': 'unselect'
-  },
-  
-  transEndEventNames: {
-    'WebkitTransition' : 'webkitTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'msTransition'     : 'MSTransitionEnd',
-    'transition'       : 'transitionend'
+    // add dynamic input event handler (touch or mouse)
+    _events[ this.inputDownEvent ] = 'panStart';
+    
+    // ..and 
+    _events[ this.inputDownEvent + ' .controls' ] = 'dontPan';
+    
+    return _events;
   },
 
   initializeProperties: function(){
@@ -104,9 +102,6 @@ module.exports = View.extend({
   initialize: function(options){
     // initialize all of the editor's properties
     this.initializeProperties();
-
-    // specific editor properties
-    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
@@ -121,12 +116,12 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addPushedActor', 'checkDrop', 'onSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
-    $(document).on('viewSelected', this.actorSelected);
+    $(document).on('viewSelected', this.onSelected);
 
     // react to socket events
     socket.on(this.country + ':actor', this.addPushedActor);
@@ -140,7 +135,7 @@ module.exports = View.extend({
     this.appendActor(this.actors.get(actor._id), false);
   },
   
-  stopPropagation: function(event){
+  dontPan: function(event){
     event.stopPropagation();
   },
   
@@ -228,7 +223,7 @@ module.exports = View.extend({
     };
   },
   
-  actorSelected: function(event, view){
+  onSelected: function(event, view){
     var type = view.model.get('type');
     if(type == 'actor'){
       this.selectedActorView = view;
@@ -457,22 +452,23 @@ module.exports = View.extend({
     if(view) view.model.set({pos: {x: 0, y:0 }});
   },
   
-  dragStart: function(event){
+  panStart: function(event){
+    event.preventDefault();
     event.stopPropagation();
     
-    this.startX = event.pageX - this.offset.left;
-    this.startY = event.pageY - this.offset.top;
+    this.startX = this.normalizedX(event) - this.offset.left;
+    this.startY = this.normalizedY(event) - this.offset.top;
     
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
+    $(document).on(this.inputMoveEvent, this.pan);
+    $(document).one(this.inputUpEvent, this.panStop);
   },
 
-  drag: function(event, silent){
+  pan: function(event, silent){
     if(silent === undefined) 
       silent = true;
     
-    var x = (event.pageX - this.startX) * this.zoom.sqrt;
-    var y = (event.pageY - this.startY) * this.zoom.sqrt;
+    var x = (this.normalizedX(event) - this.startX) * this.zoom.sqrt;
+    var y = (this.normalizedY(event) - this.startY) * this.zoom.sqrt;
     
     this.moveTo(x, y, silent);
   },
@@ -508,10 +504,10 @@ module.exports = View.extend({
     
   },
   
-  dragStop : function(event){
-    this.drag(event, false);
+  panStop : function(event){
+    this.pan(event, false);
     
-    $(document).unbind('mousemove.global');
+    $(document).unbind(this.inputMoveEvent, this.pan);
   },
 
   calculateGridLines: function(event, view){
@@ -621,7 +617,7 @@ module.exports = View.extend({
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignOrigin);
     
-    this.slider = this.$('.bar').slider({ 
+    this.slider = this.$('.view.controls .bar').slider({ 
       orientation: "vertical",
       min: this.zoom.min,
       max: this.zoom.max,
@@ -653,10 +649,10 @@ module.exports = View.extend({
       view.destroy();
     });
     
-    $(document).unbind('mousemove.global', this.drag);
+    $(document).unbind(this.inputMoveEvent, this.pan);
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
-    $(document).off('viewSelected', this.actorSelected);
+    $(document).off('viewSelected', this.onSelected);
     $(document).off('viewdragstop', this.checkDrop);
 
     $(window).unbind('resize', this.realignOrigin);
