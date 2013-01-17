@@ -88,10 +88,10 @@ module.exports = Backbone.View.extend({
   },
   
   normalizedX: function(event){
-    return Modernizr.touch ? event.originalEvent.touches[0].pageX : event.pageX;
+    return Modernizr.touch ? event.originalEvent.changedTouches[0].pageX : event.pageX;
   },
   
   normalizedY: function(event){
-    return Modernizr.touch ? event.originalEvent.touches[0].pageY : event.pageY;
+    return Modernizr.touch ? event.originalEvent.changedTouches[0].pageY : event.pageY;
   }
 });
