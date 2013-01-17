@@ -41,6 +41,26 @@ module.exports = Actor.extend({
 
   removeFromGroup: function(){
     this.set('actors', this.actors.pluck('_id'));
-    this.save();
+    if(!_.isEmpty(this.get('actors')))
+      this.save();
+  },
+
+  turnIntoNormalActor: function(){
+    var myData = this.toJSON();
+    
+    // delete actor group specific data
+    delete myData.actors;
+    delete myData.actorType;
+    delete myData.locked;
+    delete myData._id;
+    delete myData._rev;
+    
+    // remove it from the collection
+    if(this.collection)
+      this.collection.remove(this);
+
+    this.destroy();
+
+    return new Actor(myData);
   }
 });

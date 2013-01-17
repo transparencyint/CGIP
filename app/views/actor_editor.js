@@ -112,6 +112,10 @@ module.exports = View.extend({
     this.actors.on('add', this.appendNewActor, this);
     // remove actor view when actor is removed
     this.actors.on('remove', this.removeActor, this);
+    // add ActorGroups when they're added
+    this.actorGroups.on('add', this.appendActorGroup, this);
+    // remove actorGroups when they're deleted
+    this.actorGroups.on('remove', this.removeActorGroup, this);
 
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
@@ -121,7 +125,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -130,6 +134,7 @@ module.exports = View.extend({
 
     // react to socket events
     socket.on(this.country + ':actor', this.addActorWithoutPopup);
+    socket.on(this.country + ':actorGroup', function(){ debugger; });
     socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
     socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
     socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
@@ -137,7 +142,7 @@ module.exports = View.extend({
 
   addActorWithoutPopup: function(actor){
     this.actors.add(actor, {silent: true});
-    this.appendActor(this.actors.get(actor._id), false);
+    this.appendActor(this.actors.get((actor._id || actor.id)), false);
   },
   
   stopPropagation: function(event){
@@ -276,6 +281,7 @@ module.exports = View.extend({
   removeActor: function(actor){
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
+    delete this.actorViews[actor.id];
   },
 
   appendActorGroup: function(actorGroup){
@@ -283,6 +289,12 @@ module.exports = View.extend({
     actorGroupView.render();
     this.workspace.append(actorGroupView.el);
     this.actorGroupViews[actorGroup.id] = actorGroupView;
+  },
+
+  removeActorGroup: function(actorGroup){
+    var view = this.actorGroupViews[actorGroup.id];
+    if(view) view.destroy();
+    delete this.actorGroupViews[actorGroup.id];
   },
 
   appendConnection: function(connection){

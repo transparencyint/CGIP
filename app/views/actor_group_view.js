@@ -93,6 +93,12 @@ module.exports = DraggableView.extend({
   
   isEmpty: function(){
     this.$el.addClass('empty');
+    // turn this group into a normal actor
+    var actor = this.model.turnIntoNormalActor();
+    var editor = this.editor;
+    actor.save().done(function(){
+      editor.addActorWithoutPopup(actor);
+    });
   },
 
   dragByDelta: function(dx, dy){
