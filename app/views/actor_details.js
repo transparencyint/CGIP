@@ -1,6 +1,5 @@
 var View = require('./view');
 
-// Base class for all views.
 module.exports = View.extend({
 
   template: require('./templates/actor_details'),

@@ -1,0 +1,289 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Climate Change Governance Integrity Program</title>
+<style>
+  @font-face{
+    font-family: "HelveticaNeueW01-57Cn";
+    src: url("HelveticaNeueW01-57Cn.woff") format("woff");
+  }
+  
+  html {
+    min-height: 100%;
+    background: #82d480;
+    background: -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%));
+  }
+  body { 
+    width: 960px;
+    margin: 0 auto;
+    color: #5d5d5d;
+    font: 15px/27px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  a {
+    color: hsl(205,68%,52%);
+    text-decoration: none;
+  }
+  h1 {
+    display: block;
+    margin: 30px 0;
+    padding: 0 13px 17px;
+    color: #333;
+    font-size: 24px;
+    font-family: "HelveticaNeueW01-57Cn";
+    font-weight: normal;
+    background: url(images/bg-title.png) repeat-x 0 100%;
+  }
+  .map {
+    position: relative;
+    height: 500px;
+    width: 1134px;
+    margin-left: -87px;
+    -webkit-perspective: 1000;
+  }
+  .map:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: url(images/greenWorld.png) no-repeat center;
+    background-size: contain;
+    opacity: .5;
+  }
+  .point {
+    position: absolute;
+    margin: -4px 0 0 -4px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid hsl(205,68%,40%);
+    background: hsl(205,68%,53%);
+    box-shadow: 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34);
+    border-radius: 100%;
+    opacity: 0;
+    -webkit-transform: translateZ(200px);
+    -webkit-transform-style: preserve-3d;
+  }
+  .point.appear {
+    opacity: 1;
+    -webkit-transform: translateZ(0);
+    -webkit-transition: -webkit-transform 500ms, opacity 500ms;
+  }
+    .label {
+      position: absolute;
+      white-space: nowrap;
+      left: -18px;
+      top: -44px;
+      opacity: 0;
+      -webkit-transform: translateY(-13px);
+    }
+    .point.appear .label {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+      -webkit-transition: -webkit-transform 500ms 500ms, opacity 500ms 500ms;
+    }
+    .point:active .label {
+      top: -43px;
+    }
+      .below .label {
+        top: 19px;
+        -webkit-transform: translateY(13px);
+      }
+      .point.below:active .label {
+        top: 20px;
+      }
+      .right .label {
+        left: auto;
+        right: -18px;
+      }
+    .label a {
+      display: block;
+      padding: 8px 13px 7px;
+      color: white;
+      line-height: 1;
+      text-decoration: none;
+      border-radius: 3px;
+      border: 1px solid hsl(205,68%,40%);
+      background: hsl(205,68%,53%);
+      box-shadow: 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34);
+    }
+    .arrow {
+      position: absolute;
+      bottom: -9px;
+      left: 14px;
+      overflow: hidden;
+      width: 16px;
+      height: 10px;
+    }
+      .below .arrow {
+        bottom: auto;
+        top: -8px;
+        height: 10px;
+      }
+      .right .arrow {
+        left: auto;
+        right: 14px;
+      }
+    .arrow:before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: -6px;
+      width: 10px;
+      height: 10px;
+      -webkit-transform: rotate(45deg);
+      border: 1px solid hsl(205,68%,40%);
+      background: hsl(205,68%,53%);
+      box-shadow: 0 1px 2px hsla(205,100%,13%,.34);
+    }
+      .below .arrow:before {
+        top: 4px;
+      }
+  .mexico {
+    left: 219px;
+    top: 209px;
+  }
+  .peru {
+    left: 302px;
+    top: 329px;
+  }
+  .dominicanRepublic {
+    left: 314px;
+    top: 214px;
+  }
+  .kenya {
+    left: 654px;
+    top: 279px;
+  }
+  .maledives {
+    left: 757px;
+    top: 289px;
+  }
+  .vietnam {
+    left: 869px;
+    top: 219px;
+  }
+  .indonesia {
+    left: 909px;
+    top: 299px;
+  }
+  .papuaNewGuinea {
+    left: 994px;
+    top: 304px;
+  }
+  
+  footer {
+    margin-top: 21px;
+    padding: 13px;
+    font-size: 13px;
+    border-top: 1px solid rgba(0,0,0,.21);
+    overflow: hidden;
+    box-shadow: 0 1px hsla(104,100%,86%,.55) inset;
+  }
+    footer .left {
+      float: left;
+    }
+    footer .right {
+      float: right;
+    }
+</style>
+
+<h1>Climate Change Governance Integrity Program</h1>
+<div class="map">
+  <div class="point mexico">
+    <div class="label">
+      <a href="#">Mexico</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point peru">
+    <div class="label">
+      <a href="#">Peru</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point dominicanRepublic">
+    <div class="label">
+      <a href="#">Dominican Republic</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point kenya">
+    <div class="label">
+      <a href="#">Kenya</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point maledives">
+    <div class="label">
+      <a href="#">Maledives</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point vietnam">
+    <div class="label">
+      <a href="#">Vietnam</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point indonesia">
+    <div class="label">
+      <a href="#">Indonesia</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+  <div class="point papuaNewGuinea below">
+    <div class="label">
+      <a href="#">Papua New Guinea</a>
+      <div class="arrow"></div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="left">
+    <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+  </div>
+  <div class="right">
+    <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
+  </div>
+</footer>
+
+<script src="underscore-min.js"></script>
+<script>
+  var points = document.querySelectorAll('.point');
+  var mapWidth = document.querySelector('.map').clientWidth;
+  var start = { hue: 200, saturation: 74 };
+  var end =   { hue: 200, saturation: 74  };
+  var selectorTemplate = '%s, %s a, %s .arrow:before';
+  var valueTemplate = 'text-shadow: 0 1px 1px hsl(%h,%s%,30%);' +
+    'border: 1px solid hsl(%h,%s%,30%);' +
+    'background: hsl(%h,%s%,52%);' +
+    'box-shadow: 0 1px hsl(%h,%s%,75%) inset,' +
+               ' 0 1px 2px hsla(%h,%s%,13%,.34);';
+  var delay = 1000;
+  var i = 0;
+  var count = points.length;
+  
+  // sort by position on the map: left to right
+  points = _.sortBy(points, function(point){ return point.offsetLeft; });
+  
+  _.each(points, rainbow);
+
+  function rainbow(point){
+    // "point mexico" -> ".point.mexico"
+    var selector = '.' + point.className.split(" ").join(".");
+    
+    // 0.56
+    var percentage = point.offsetLeft/mapWidth;
+    
+    // 178
+    var hue = start.hue + percentage * (end.hue - start.hue);
+    var saturation = start.saturation + percentage * (end.saturation - start.saturation);
+    
+    var fullSelector = selectorTemplate.replace(/%s/g, selector);
+    var value = valueTemplate.replace(/%h/g, hue).replace(/%s/g, saturation);
+    
+    document.styleSheets[0].addRule(fullSelector, value);
+    
+    setTimeout(function(){ point.classList.add('appear'); }, Math.sqrt(++i/count) * delay);
+  }
+</script>

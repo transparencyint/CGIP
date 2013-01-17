@@ -1,0 +1,33 @@
+.column
+  float left
+  display inline
+  margin-left 10px
+  margin-right 10px
+
+.index
+  padding 15px
+
+  section
+    margin 10px
+
+  ul.countrys
+    @extends .column
+    width 250px
+    
+    li
+      width auto
+      cursor pointer
+
+      a
+        color white
+        display block
+
+        &:hover
+          color white
+
+  .description
+    width 600px
+    @extends .column
+
+    p
+      margin-top 0
