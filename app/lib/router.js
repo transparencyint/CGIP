@@ -1,4 +1,6 @@
 var AsyncRouter = require('./async_router');
+var IndexView = require('views/index_view');
+var CountryMapView = require('views/presentation/country_map_view');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var EditCountriesView = require('views/edit_countries_view');
@@ -15,6 +17,8 @@ module.exports = AsyncRouter.extend({
   routes: {
     '': 'index',
     '/': 'index',
+    'show/:country': 'showCountry',
+    'show/:country/': 'showCountry',
     'login': 'login',
     'login?forward_to=:forward': 'login',
     'login/': 'login',
@@ -30,7 +34,22 @@ module.exports = AsyncRouter.extend({
   },
 
   index: function(){
-    this.navigate('/edit', { trigger: true });
+    this.switchToView(new IndexView({countries: this.app.countries}));
+  },
+
+  showCountry: function(country){
+    var router = this;
+    var actors = new Actors();
+    actors.country = country;
+
+    var connections = new Connections();
+    connections.country = country;
+
+    // fetch all actors and all connections
+    $.when(actors.fetch(), connections.fetch()).done(function(){
+      // instantiate the editor
+      router.switchToView(new CountryMapView({connections: connections, actors: actors, country: country}));
+    });
   },
 
   login: function(forward){

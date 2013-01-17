@@ -39,9 +39,16 @@ module.exports = View.extend({
     'click': 'unselect'
   },
   
-  initialize: function(options){
-    this.country = options.country;
-    
+  transEndEventNames: {
+    'WebkitTransition' : 'webkitTransitionEnd',
+    'MozTransition'    : 'transitionend',
+    'OTransition'      : 'oTransitionEnd',
+    'msTransition'     : 'MSTransitionEnd',
+    'transition'       : 'transitionend'
+  },
+
+  initializeProperties: function(){
+    this.country = this.options.country;
     this.actorHeight = 40;
     this.actorWidth = 120;
 
@@ -50,23 +57,6 @@ module.exports = View.extend({
 
     this.radius = 60;
     this.smallRadius = 44;
-    
-    // padding for fit-to-screen and for placing the details
-    this.padding = this.actorWidth/4;
-
-    // initialize the collections
-    this.actors = options.actors;
-    this.actorViews = {};
-
-    // filter the actor groups
-    this.actorGroups = this.actors.filterGroups();
-    this.actorGroupViews = {};
-
-    this.connections = options.connections;
-    var filteredConnections = this.connections.filterConnections();
-    this.moneyConnections = filteredConnections.money;
-    this.accountabilityConnections = filteredConnections.accountability;
-    this.monitoringConnections = filteredConnections.monitoring;
 
     this.zoom = {
       value: 1,
@@ -90,6 +80,33 @@ module.exports = View.extend({
     };
     
     this.gridSize = this.actorHeight;
+    
+    // padding for fit-to-screen and for placing the details
+    this.padding = this.actorWidth/4;
+
+    // initialize the collections
+    this.actors = this.options.actors;
+    this.actorViews = {};
+
+    // filter the actor groups
+    this.actorGroups = this.actors.filterGroups();
+    this.actorGroupViews = {};
+
+    // filter the connections
+    this.connections = this.options.connections;
+    var filteredConnections = this.connections.filterConnections();
+    this.moneyConnections = filteredConnections.money;
+    this.accountabilityConnections = filteredConnections.accountability;
+    this.monitoringConnections = filteredConnections.monitoring;
+
+  },
+
+  initialize: function(options){
+    // initialize all of the editor's properties
+    this.initializeProperties();
+
+    // specific editor properties
+    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
