@@ -36,6 +36,9 @@ $(function() {
 
   window.t = $.jsperanto.translate;
   
+  // remove click delay on mobile device
+  new FastClick(document.body);
+  
   application.initialize(function(){
     Backbone.history.start({pushState: (window.history && window.history.pushState)});
   });
