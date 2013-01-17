@@ -121,7 +121,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -129,13 +129,13 @@ module.exports = View.extend({
     $(document).on('viewSelected', this.actorSelected);
 
     // react to socket events
-    socket.on(this.country + ':actor', this.addPushedActor);
+    socket.on(this.country + ':actor', this.addActorWithoutPopup);
     socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
     socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
     socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
   },
 
-  addPushedActor: function(actor){
+  addActorWithoutPopup: function(actor){
     this.actors.add(actor, {silent: true});
     this.appendActor(this.actors.get(actor._id), false);
   },
@@ -406,10 +406,10 @@ module.exports = View.extend({
 
   // an actor view from a group has been dragged here
   actorGroupActorDropped: function(view){
+    // add it to the editor's actors
+    this.addActorWithoutPopup(view.model.toJSON());
     // remove it from the group
     view.model.collection.remove(view.model);
-    // add it to this actor
-    this.actors.add(view.model);
   },
   
   slideActorIn: function(){
