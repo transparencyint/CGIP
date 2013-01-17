@@ -50,6 +50,7 @@
   <div class="view controls vertical">
     <div class="fit screen icon control"></div>
   </div>
+  <% if !@touchDevice: %>
   <div class="view controls vertical">
     <div class="zoom in icon control"></div>
     <div class="range control">
@@ -57,6 +58,7 @@
     </div>
     <div class="zoom out icon control"></div>
   </div>
+  <% end %>
 </div>
 
 <div class="gridline" id="gridlineV"></div>

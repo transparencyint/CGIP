@@ -570,10 +570,8 @@ module.exports = View.extend({
   },
   
   render: function(){
-    var editor = this;
-
-    this.$el.html( this.template() );
-    this.fakeActorView = new FakeActorView({editor: this});
+    this.$el.html( this.template( this.getRenderData() ) );
+    this.fakeActorView = new FakeActorView({ editor: this });
     this.fakeActorView.render();
     this.$('.newActor .dock').append(this.fakeActorView.el);
 
@@ -584,7 +582,7 @@ module.exports = View.extend({
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
-    this.rbw = new RoleBackgroundView({ editor: editor });
+    this.rbw = new RoleBackgroundView({ editor: this });
     this.workspace.before(this.rbw.render()); 
 
     this.actors.each(this.appendActor);
@@ -606,10 +604,12 @@ module.exports = View.extend({
   initializeDimensions: function(){
     this.origin.left = this.$el.width()/2;
   },
+  
+  getRenderData: function() {
+    return { touchDevice: Modernizr.touch };
+  },
 
   afterRender: function(){
-    var editor = this;
-
     $(document).on('viewdragstop', this.checkDrop);
 
     this.$('#disbursedMoney').addClass("active");
