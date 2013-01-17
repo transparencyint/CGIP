@@ -5,22 +5,23 @@ var ActorGroupEntryPresentationView = require('./actor_group_entry_presentation_
 
 module.exports = View.extend({
 
-	className: 'actor-group',
+  className: 'actor-group',
 
-	template : require('views/templates/presentation/actor_presentation_group'),
-	
-	events: {
-		'click .dropdown-control' : 'toggle'
-	},
+  template : require('views/templates/presentation/actor_presentation_group'),
+  
+  events: {
+    'click .dropdown-control' : 'toggle'
+  },
 
-	initialize: function(){
-		_.bindAll(this, 'addSubActorView');
-	},
+  initialize: function(){
+    View.prototype.initialize.call(this);
+    _.bindAll(this, 'addSubActorView');
+  },
 
-	determineName: ActorView.prototype.determineName,
-	getRenderData: ActorGroupView.prototype.getRenderData,
+  determineName: ActorView.prototype.determineName,
+  getRenderData: ActorGroupView.prototype.getRenderData,
 
-	updatePosition: function(){
+  updatePosition: function(){
     var pos = this.model.get('pos');
     
     this.$el.css({
@@ -42,9 +43,9 @@ module.exports = View.extend({
     this.$('.arrow').toggleClass('toggleArrow');
   },
 
-	afterRender: function(){
-		this.updatePosition();		
-		this.actorViews = {};
+  afterRender: function(){
+    this.updatePosition();    
+    this.actorViews = {};
 
     this.model.actors.each(this.addSubActorView);
     this.$el.attr('id', this.model.id);

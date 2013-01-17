@@ -3,20 +3,20 @@ var ActorView = require('../actor_view');
 
 module.exports = View.extend({
 
-	template : require('views/templates/presentation/actor_presentation'),
+  template : require('views/templates/presentation/actor_presentation'),
 
-	className : 'actor',
+  className : 'actor',
 
-	events: {},
+  events: {},
 
-	initialize: function(){
+  initialize: function(){
+    View.prototype.initialize.call(this);
+  },
 
-	},
+  determineName: ActorView.prototype.determineName,
+  getRenderData: ActorView.prototype.getRenderData,
 
-	determineName: ActorView.prototype.determineName,
-	getRenderData: ActorView.prototype.getRenderData,
-
-	updatePosition: function(){
+  updatePosition: function(){
     var pos = this.model.get('pos');
     
     this.$el.css({
@@ -25,8 +25,8 @@ module.exports = View.extend({
     });
   },
 
-	afterRender: function(){
-		this.updatePosition();
+  afterRender: function(){
+    this.updatePosition();
     this.$el.attr('id', this.model.id);
   },
 
