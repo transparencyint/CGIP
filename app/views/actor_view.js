@@ -63,8 +63,6 @@ module.exports = DraggableView.extend({
   },
 
   destroy: function(){
-    // TODO: call the proper destroy method and clean up the editor's view instances
-    // TODO: call lightbox destroy as well
     var self = this;
     this.$el.one(this.transEndEventName, function(){
       DraggableView.prototype.destroy.call(self);

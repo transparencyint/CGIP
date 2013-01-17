@@ -134,7 +134,6 @@ module.exports = View.extend({
 
     // react to socket events
     socket.on(this.country + ':actor', this.addActorWithoutPopup);
-    socket.on(this.country + ':actorGroup', function(){ debugger; });
     socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
     socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
     socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
