@@ -25,15 +25,19 @@ module.exports = View.extend({
       'click .tool .toggleMonitoring': 'toggleMonitoring',
     
       // view controls
-      'click .zoom.in': 'zoomIn',
-      'click .zoom.out': 'zoomOut',
+      'click .zoom .in': 'zoomIn',
+      'click .zoom .out': 'zoomOut',
       'click .fit.screen': 'fitToScreen',
     
       // dont pan when the input touches the controls
       'click .controls': 'dontPan',
     
       // unselect when clicking into empty space
-      'click': 'unselect'
+      'click': 'unselect',
+      
+      // zoom gesture
+      'gesturestart': 'pinchStart',
+      'gesturechange': 'pinch'
     };
     
     // add dynamic input event handler (touch or mouse)
@@ -142,6 +146,19 @@ module.exports = View.extend({
   deleteOnDelKey: function(){
     if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
       this.selectedActorView.model.destroy();
+  },
+  
+  pinchStart: function(event){
+    console.log("start zoom");
+    this.startZoom = this.zoom.value;
+    
+    // stop panning
+    //$(document).trigger(this.inputUpEvent);
+  },
+  
+  pinch: function(event){
+    console.log(event.originalEvent.scale);
+    this.zoomTo(this.startZoom + (1 - event.originalEvent.scale)/5);
   },
   
   slideZoom: function(event, ui){
@@ -463,14 +480,11 @@ module.exports = View.extend({
     $(document).one(this.inputUpEvent, this.panStop);
   },
 
-  pan: function(event, silent){
-    if(silent === undefined) 
-      silent = true;
-    
-    var x = (this.normalizedX(event) - this.startX) * this.zoom.sqrt;
-    var y = (this.normalizedY(event) - this.startY) * this.zoom.sqrt;
-    
-    this.moveTo(x, y, silent);
+  pan: function(event){
+    this.panX = (this.normalizedX(event) - this.startX) * this.zoom.sqrt;
+    this.panY = (this.normalizedY(event) - this.startY) * this.zoom.sqrt;
+  
+    this.moveTo(this.panX, this.panY, true);
   },
   
   moveTo: function(x, y, silent){
@@ -498,14 +512,15 @@ module.exports = View.extend({
     });
     
     this.trigger('pan', x, y);
-    this.$el.css('background-position', x +'px, '+ y + 'px');
+    this.$el.css('background-position', x +'px '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
     
   },
   
   panStop : function(event){
-    this.pan(event, false);
+    // update (non-silent)
+    this.moveTo(this.panX, this.panY);
     
     $(document).unbind(this.inputMoveEvent, this.pan);
   },
