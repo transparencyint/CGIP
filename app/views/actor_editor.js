@@ -149,15 +149,10 @@ module.exports = View.extend({
   },
   
   pinchStart: function(event){
-    console.log("start zoom");
     this.startZoom = this.zoom.value;
-    
-    // stop panning
-    //$(document).trigger(this.inputUpEvent);
   },
   
   pinch: function(event){
-    console.log(event.originalEvent.scale);
     this.zoomTo(this.startZoom + (1 - event.originalEvent.scale)/5);
   },
   
