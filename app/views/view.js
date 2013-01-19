@@ -87,6 +87,15 @@ module.exports = Backbone.View.extend({
       this.$el.removeClass('locked');
   },
   
+  /*
+    touch / mouse normalizers
+    =========================
+    
+    - changedTouches is needed because this gets called from 'touchend'
+    in 'connection_view.js', where both touches and targetTouches might
+    be empty
+     
+  */
   normalizedX: function(event){
     return Modernizr.touch ? event.originalEvent.changedTouches[0].pageX : event.pageX;
   },
