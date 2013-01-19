@@ -5,37 +5,41 @@ module.exports = View.extend({
   template: require('./templates/actor_details'),
   className: 'modal hidden actorDetails',
 
-  events: {
-    // live updates on the input fields
-    // input gets triggered everytime 
-    // the input's content changes
-    'input [type=text]': 'submitForm',
-    'change [type=checkbox]': 'submitForm',
-    'change select': 'submitForm',
-    'change textarea': 'submitForm',
-    'keydown [data-type=text]': 'allowEnter',
+  events: function(){
+    var _events = {
+      // live updates on the input fields
+      // input gets triggered everytime 
+      // the input's content changes
+      'input [type=text]': 'submitForm',
+      'change [type=checkbox]': 'submitForm',
+      'change select': 'submitForm',
+      'change textarea': 'submitForm',
+      'keydown [data-type=text]': 'allowEnter',
     
-    // show/hide the 'other' input field on 'Type'
-    // and the Corruption Risk details
-    'change .hasAdditionalInfo': 'toggleAdditionalInfo',
+      // show/hide the 'other' input field on 'Type'
+      // and the Corruption Risk details
+      'change .hasAdditionalInfo': 'toggleAdditionalInfo',
     
-    // the buttons at the bottom
-    'click .delete': 'deleteActor',
-    'click .cancel': 'cancel',
-    'click .done': 'submitAndClose',
+      // the buttons at the bottom
+      'click .delete': 'deleteActor',
+      'click .cancel': 'cancel',
+      'click .done': 'submitAndClose',
     
-    // submit on enter
-    'form submit': 'submitAndClose',
+      // submit on enter
+      'form submit': 'submitAndClose'
+    };
     
     // make the whole thing draggable..
-    'mousedown': 'dragStart',
+    _events[ this.inputDownEvent ] = 'dragStart';
     
     // ..except all the text, buttons and inputs
-    'mousedown label': 'dontDrag',
-    'mousedown input': 'dontDrag',
-    'mousedown textarea': 'dontDrag',
-    'mousedown select': 'dontDrag',
-    'mousedown button': 'dontDrag'
+    _events[ this.inputDownEvent + ' label'   ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' input'   ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' textarea'] = 'dontDrag';
+    _events[ this.inputDownEvent + ' select'  ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' button'  ] = 'dontDrag';
+    
+    return _events;
   }, 
 
   initialize: function(options){
@@ -82,11 +86,12 @@ module.exports = View.extend({
   
   dragStart: function(event){
     event.stopPropagation();
+    event.preventDefault();
 
     var pos = this.$el.offset();
     
-    this.startX = event.pageX - pos.left;
-    this.startY = event.pageY - pos.top;
+    this.startX = this.normalizedX(event) - pos.left;
+    this.startY = this.normalizedY(event) - pos.top;
     
     // stop when the user is clicking onto a scrollbar (chrome bug)
     if(this.pressOnScrollbar(this.startX))
@@ -94,19 +99,19 @@ module.exports = View.extend({
 
     this.$el.addClass('moved');
   
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
+    $(document).on(this.inputMoveEvent, this.drag);
+    $(document).one(this.inputUpEvent, this.dragStop);
   },
 
   drag: function(event){ 
     this.$el.css({
-      left: event.pageX - this.startX,
-      top: event.pageY - this.startY
+      left: this.normalizedX(event) - this.startX,
+      top:  this.normalizedY(event) - this.startY
     })
   },
   
   dragStop : function(){
-    $(document).unbind('mousemove.global');
+    $(document).unbind(this.inputMoveEvent, this.drag);
   },
 
   updateName: function(){
@@ -165,6 +170,8 @@ module.exports = View.extend({
 
   destroy: function(){
     if(!this.unlockedModel) this.model.unlock();
+    
+    this.clickCatcher.unbind(this.inputDownEvent, this.submitAndClose);
 
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
@@ -242,7 +249,7 @@ module.exports = View.extend({
   
   addClickCatcher: function(){
     this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
-    this.clickCatcher.on('click', this.submitAndClose);
+    this.clickCatcher.on(this.inputDownEvent, this.submitAndClose);
   },
 
   afterRender: function() {
