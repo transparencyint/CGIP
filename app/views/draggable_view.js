@@ -10,7 +10,10 @@ module.exports = View.extend({
     _.bindAll(this, 'dragStop', 'drag');
 
     this.editor = this.options.editor;
-    this.dontDrag = false;
+    
+    this.wasOrIsDragging = false;
+    this.dragDistance = 0;
+    this.dragThreshold = 5;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
@@ -41,6 +44,10 @@ module.exports = View.extend({
     if(!this.dontDrag){
       event.stopPropagation();
       event.preventDefault();
+      
+      this.dragDistance = 0;
+      this.wasOrIsDragging = false;
+      
       var pos = this.model.get('pos');
       
       this.startX = this.normalizedX(event) - pos.x;
@@ -54,9 +61,13 @@ module.exports = View.extend({
   drag: function(event){ 
     var pos = this.model.get('pos');
     
-    this.isDragging = true;
     var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
+    
+    this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+    
+    if(this.dragDistance > this.dragThreshold)
+      this.wasOrIsDragging = true;
 
     this.dragByDelta(dx, dy);
 
@@ -88,8 +99,6 @@ module.exports = View.extend({
     }
       
     $(document).off(this.inputMoveEvent, this.drag);
-
-    this.isDragging = false;
   },
 
   overlapsWith: function(view){

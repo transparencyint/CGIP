@@ -171,7 +171,7 @@ module.exports = DraggableView.extend({
   },
 
   showActors: function(event){
-    if(this.hovered || this.isDragging) return;
+    if(this.hovered || this.wasOrIsDragging) return;
 
     this.toggle();
   },
