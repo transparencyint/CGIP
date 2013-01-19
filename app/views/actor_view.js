@@ -9,16 +9,13 @@ module.exports = DraggableView.extend({
   className : 'actor',
 
   events: function(){
-    var parentEvents = DraggableView.prototype.events;
+    var _events = DraggableView.prototype.events;
     
     // bind dynamic input event (touch or mouse)
-    parentEvents[ this.inputDownEvent ] = 'dragStart';
-    
-    // merge the parent events and the current events
-    return _.defaults({
-      'dblclick'  : 'showDetails',
-      'click'     : 'stopPropagation'
-    }, parentEvents);
+    _events[ this.inputDownEvent ] = 'dragStart';
+    _events[ this.inputUpEvent ] = 'showDetails';
+  
+    return _events;
   },
   
   initialize: function(options){
@@ -37,14 +34,13 @@ module.exports = DraggableView.extend({
     this.model.moveByDelta(dx, dy);
   },
 
-  showDetails: function(){
+  showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
-  },
-
-  stopPropagation: function(event){
-    event.stopPropagation();
+    
+    if(!this.wasOrIsDragging){
+      this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+      this.options.editor.$el.append(this.modal.render().el);
+    }
   },
   
   determineName: function(){

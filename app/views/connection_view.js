@@ -10,13 +10,17 @@ module.exports = View.extend({
   className : 'connection',
   selectable : true,
 
-  events: {
-    'mouseover' : 'showMetadata',
-    'mousemove' : 'stickMetadata',
-    'mouseout' : 'hideMetadata',
-    'mousedown' : 'hideMetadata',
-    'dblclick' : 'showDetails',
-    'click' : 'select'
+  events: function(){
+    var _events = {
+      'mouseover' : 'showMetadata',
+      'mousemove' : 'stickMetadata',
+      'mouseout' : 'hideMetadata',
+      'mousedown' : 'hideMetadata',
+    };
+    
+    _events[ this.inputUpEvent ] = 'showDetails';
+    
+    return _events;
   },
 
   initialize: function(options){
@@ -450,10 +454,18 @@ module.exports = View.extend({
     this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
 
-  showDetails: function(){
+  showDetails: function(event){    
     if(this.model.isLocked()) return; // don't show when model is locked
+    
+    event.stopPropagation();
+    this.select();
+    
+    var mousePosition = {
+      left: this.normalizedX(event),
+      top: this.normalizedY(event)
+    };
 
-    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this, mousePosition: mousePosition });
     this.editor.$el.append(cfw.render().el);
   },
 
