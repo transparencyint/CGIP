@@ -20,7 +20,6 @@ module.exports = View.extend({
 
   initializeProperties: ActorEditor.prototype.initializeProperties,
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
-  //realignOrigin: ActorEditor.prototype.realignOrigin,
   moveTo: ActorEditor.prototype.moveTo,
   initializeDimensions: ActorEditor.prototype.initializeDimensions,
 
@@ -65,12 +64,14 @@ module.exports = View.extend({
     this.moneyConnections.each(this.appendConnection);
     this.monitoringConnections.each(this.appendConnection);
 
+    this.afterRender();
+
     _.defer(this.realignOrigin);
   },
 
   afterRender: function(){
     $(window).resize(this.realignOrigin);
-    
+
     this.slider = this.$('.bar').slider({ 
       orientation: "vertical",
       min: this.zoom.min,
@@ -80,14 +81,6 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
-
-    //check if monitoring role is hidden and hide monitoring elements
-    if(!this.country.get('showMonitoring')){
-      this.$('#toggleMonitoringText').html('Off').removeClass('active');
-      this.$('#monitoring').css({'display': 'none'});
-      this.$('.draghandle.last').hide();
-      this.$('span[rel=monitoring]').hide();
-    }
   },
 
 });
