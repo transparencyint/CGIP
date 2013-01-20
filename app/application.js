@@ -20,7 +20,7 @@ Application = {
     // render navigation view
     this.nav = new NavigationView({ router: this.router, countries: this.countries });
 
-    // fetch the countries, lod the dictionary and start the app
+    // fetch the countries, load the dictionary and start the app
     $.when(this.countries.fetch(), $.jsperanto.init({fallbackLang: 'en', dicoPath: '/locales'})).done(function(){
       app.nav.render();
       $(document.body).append(app.nav.el);
