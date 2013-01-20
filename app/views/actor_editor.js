@@ -9,6 +9,7 @@ var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
+var SettingsView = require('./settings_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -590,6 +591,9 @@ module.exports = View.extend({
 
     this.rbw = new RoleBackgroundView({ editor: editor });
     this.workspace.before(this.rbw.render()); 
+    
+    this.settings = new SettingsView({ editor: editor });
+    this.$('.topBar').append(this.settings.render().el);
 
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);

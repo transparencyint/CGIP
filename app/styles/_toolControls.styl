@@ -1,11 +1,10 @@
 .tool.controls
-  position absolute
-  left 0
-  right 0
+  width 100%
+  box(center, center, horizontal)
+  border-left none
+  border-right none
   z-index 5
-  .inner
-    width 100%
-    box(center, center, horizontal)
+  position relative
   .newActor  
     height 50px
     border-right 1px solid hsl(213,55%,28%)
@@ -116,7 +115,7 @@
       margin-top 4px
       display block
     .name
-      font-size 11px
+      font-size 12px
       text-align center
       display block
       white-space nowrap
