@@ -10,11 +10,25 @@ module.exports = View.extend({
 
   template: require('views/templates/presentation/country_map'),
 
+  events: {
+    // view controls
+    'click .zoom.in': 'zoomIn',
+    'click .zoom.out': 'zoomOut',
+    'click .fit.screen': 'fitToScreen',
+    
+    // start to pan..
+    'mousedown': 'dragStart',
+    
+    // ..except when your mouse touches the controls
+    'mousedown .controls': 'stopPropagation',
+    'click .controls': 'stopPropagation',
+  },
+
   initialize: function(){
 		this.initializeProperties();
     this.initializeDimensions();
 
-		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo');
+		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom');
   
   },
 
@@ -22,6 +36,16 @@ module.exports = View.extend({
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
   moveTo: ActorEditor.prototype.moveTo,
   initializeDimensions: ActorEditor.prototype.initializeDimensions,
+
+  //zoomFunctions
+  zoomIn: ActorEditor.prototype.zoomIn,
+  zoomOut: ActorEditor.prototype.zoomOut,
+  zoomTo: ActorEditor.prototype.zoomTo,
+  slideZoom: ActorEditor.prototype.slideZoom,
+  fitToScreen: ActorEditor.prototype.fitToScreen,
+  dragStart: ActorEditor.prototype.dragStart,
+  stopPropagation: ActorEditor.prototype.stopPropagation,
+  getBoundingBox: ActorEditor.prototype.getBoundingBox,
 
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
