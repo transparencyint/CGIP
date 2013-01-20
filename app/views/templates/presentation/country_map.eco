@@ -1,1 +1,17 @@
+<div class="tool controls top"></div>
+
+<div class="sidebar">
+  <div class="view controls vertical">
+    <div class="fit screen icon control"></div>
+  </div>
+  <div class="view controls vertical">
+    <div class="zoom in icon control"></div>
+    <div class="range control">
+      <div class="bar"></div>
+    </div>
+    <div class="zoom out icon control"></div>
+  </div>
+</div>
+
+<div class="centerLine"></div>
 <div class="workspace"></div>
