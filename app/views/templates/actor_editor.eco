@@ -3,6 +3,7 @@
     <div class="newActor">
       <div class="description">
         <span class="name"><i class="plus">+</i> <%= t('add_actor') %></span>
+        <div class="dockBorder"></div>
       </div>
       <div class="dock">
         <div class="cancel"><span>Drop here to cancel</span></div>
