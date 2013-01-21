@@ -12,6 +12,9 @@ module.exports = Actor.extend({
     this.actors = new Backbone.Collection();
     this.actors.model = Actor;
 
+    // needed for calculations
+    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+
     // remove the actor from the array
     this.actors.on('remove', this.removeFromGroup, this);
   },
@@ -21,8 +24,9 @@ module.exports = Actor.extend({
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
     if(!alreadyAdded){
-      // remove it from its current collection
-      actor.collection.remove(actor);
+      // remove it from its current collection, if there is one
+      if(actor.collection)
+        actor.collection.remove(actor);
 
       // add actor to the model
       actors.push(actor.id);

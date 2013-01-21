@@ -1,7 +1,9 @@
 var View = require('./view');
 
 module.exports = View.extend({
-  events: {},
+  events: {
+    'click' : 'dontUnselect'
+  },
 
   initialize: function(){
     View.prototype.initialize.call(this);
@@ -15,6 +17,10 @@ module.exports = View.extend({
 
     this.model.on('change:pos', this.updatePosition, this);
   },
+  
+  dontUnselect: function(event){
+    event.stopPropagation();
+  },
 
   disableDraggable: function(){
     this.dontDrag = true;
@@ -25,6 +31,11 @@ module.exports = View.extend({
   },
 
   dragStart: function(event){
+    if(this.model && this.model.isLocked()) return;
+
+    if(this.model && this.model.lockable)
+      this.model.lock();
+
     this.select(event);
 
     if(!this.dontDrag){
@@ -66,6 +77,9 @@ module.exports = View.extend({
   },
   
   dragStop : function(){
+    if(this.model && this.model.lockable)
+      this.model.unlock();
+
     if(this.isDragging){
       this.snapToGrid();
       // emit a global dragstop event
@@ -100,7 +114,7 @@ module.exports = View.extend({
     //move the actor to the nearest grid point
     var x = Math.round(pos.x / gridSize) * gridSize;
     var y = Math.round(pos.y / gridSize) * gridSize;
-    
+
     var dx = x - pos.x;
     var dy = y - pos.y;
     
@@ -119,7 +133,14 @@ module.exports = View.extend({
         },
         duration: 100,
         complete: function(){
-          view.model.save();
+
+          //fix the last animation step to generate integer values
+          view.model.save({
+            pos : {
+              x: x,
+              y: y
+            }
+          });
         }
       });
     } else {
@@ -131,5 +152,6 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     $(document).off('mousemove.global', this.drag);
     $(document).off('mouseup', this.dragStop);
+    this.model.unregisterLockEvents();
   }
 });

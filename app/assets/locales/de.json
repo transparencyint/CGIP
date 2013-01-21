@@ -1,7 +1,8 @@
 {
   "project_name": "CGIP",
   "logout": "Ausloggen",
-  "dashboard": "Übersicht",
+  "Countries": "Länder",
+  "Dashboard": "Übersicht",
   "cgip_countries_headline": "CGIP Länder",
   "edit_map": "Map editieren",
   "edit_money_connections": "Geldverbindungen editirieren",
@@ -13,5 +14,9 @@
   "money": "Geld",
   "money_mode": "Geld Modus",
   "disbursed": "ausgezahlt",
-  "pledged": "versprochen"
+  "pledged": "versprochen",
+  "funding": "Finanzierung",
+  "coordination": "Koordinierung",
+  "implementation": "Umsetzung",
+  "monitoring": "Beobachtung"
 }

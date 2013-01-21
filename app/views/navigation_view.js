@@ -29,7 +29,8 @@ module.exports = View.extend({
     return { 
       locationName: name,
       locationType: this.locationTable[ this.currentRoute ],
-      isoLocation: this.currentLocation
+      isoLocation: this.currentLocation,
+      currentRoute: this.currentRoute
     };
   },
   
@@ -41,7 +42,7 @@ module.exports = View.extend({
     if(!route) return;
 
     // remove the current location
-    if(this.currentLocation) this.$el.removeClass( this.currentLocation );    
+    if(this.currentLocation) this.$el.removeClass( this.currentLocation );
     
     this.currentLocation = '';
 

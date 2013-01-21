@@ -20,6 +20,7 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
+    View.prototype.initialize.call(this, options);
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
@@ -42,7 +43,7 @@ module.exports = View.extend({
       this.model.to.on('change:pos', this.update, this);
 
     this.model.on('destroy', this.destroy, this);
-    
+
     this.isMoney = this.model.get('connectionType') === 'money';
   },
 
@@ -58,7 +59,9 @@ module.exports = View.extend({
       
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
-      
+    
+    this.model.unregisterLockEvents();
+    
     View.prototype.destroy.call(this);
   },
   
@@ -82,6 +85,7 @@ module.exports = View.extend({
       this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
     }
 
+
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.strokeWidth
@@ -91,6 +95,12 @@ module.exports = View.extend({
 
     var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
+
+      this.toggleZeroConnection();
+
+      // also creates something crucial for the other connections
+      this.createCoinDefinitions();
+
       
     var selectedArrowSize = this.markerRatio - 0.5;
       
@@ -101,6 +111,7 @@ module.exports = View.extend({
     this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
 
     if(this.isMoney){
+      this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
     }
@@ -112,6 +123,13 @@ module.exports = View.extend({
     this.$el.addClass( this.model.get("connectionType") );
   },
 
+  toggleZeroConnection: function(){
+    this.$el.removeClass('amountUnknown');
+    if(this.model.isZeroAmount) {
+      this.$el.addClass('amountUnknown');
+    }
+  },
+
   updateConnection: function(){
     this.update();
   },
@@ -120,7 +138,8 @@ module.exports = View.extend({
     return (this.model.from && this.model.to);
   },
 
-  update: function(){    
+  update: function(){
+
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
@@ -403,10 +422,10 @@ module.exports = View.extend({
   },
 
   showDetails: function(){
-    if(this.isMoney){
-      var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
-      this.editor.$el.append(cfw.render().el);
-    }
+    if(this.model.isLocked()) return; // don't show when model is locked
+
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
+    this.editor.$el.append(cfw.render().el);
   },
 
   showMetadata: function(e){
@@ -418,12 +437,14 @@ module.exports = View.extend({
   },
   
   stickMetadata: function(e){
-    var x = e.pageX - this.editor.center - this.editor.offset.left - this.pos.x;
-    var y = e.pageY - this.editor.offset.top - this.pos.y;
+    var pos = this.editor.offsetToCoords({ 
+      left: e.pageX - this.pos.x, 
+      top: e.pageY - this.pos.y
+    });
     
     this.$('.metadata').css({
-      left: x + 30, 
-      top: y + 10
+      left: pos.x + 30, 
+      top: pos.y + 10
     });
   },
 

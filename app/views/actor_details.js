@@ -1,6 +1,5 @@
 var View = require('./view');
 
-// Base class for all views.
 module.exports = View.extend({
 
   template: require('./templates/actor_details'),
@@ -40,11 +39,19 @@ module.exports = View.extend({
   }, 
 
   initialize: function(options){
+    // handle lock-states
+    if(this.model.isLocked()){
+      this.close();
+      return;
+    }else{
+      this.model.lock();
+    }
+
     View.prototype.initialize.call(this);
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.actor = options.actor;
-    this.editor = this.actor.editor;
+    this.editor = options.editor;
     this.width = 360;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
@@ -118,7 +125,7 @@ module.exports = View.extend({
     if(this.model) 
       this.model.destroy();
 
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
@@ -126,7 +133,7 @@ module.exports = View.extend({
   
   cancel: function(){
     this.model.save(this.backup);
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
@@ -135,24 +142,34 @@ module.exports = View.extend({
   submitAndClose: function(){
     
     this.saveFormData();
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
   },
+  
+  close: function(){
+    // unlock the model
+    this.model.unlock();
+    this.unlockedModel = true;
 
-  destroy: function(){
-    View.prototype.destroy.call(this);
-    
-    // remove autosize helper
-    $('.actorDetailsAutosizeHelper').remove();
+    this.$el.one(this.transEndEventName, this.destroy);
     
     if(this.clickCatcher)
       this.clickCatcher.remove();
-    this.clickCatcher = null;
     
-    $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keydown', this.handleKeys);
+    
+    this.$el.addClass('hidden');
+  },
+
+  destroy: function(){
+    if(!this.unlockedModel) this.model.unlock();
+
+    // remove autosize helper
+    $('.actorDetailsAutosizeHelper').remove();
+
+    View.prototype.destroy.call(this);
   },
 
   handleKeys: function(event){

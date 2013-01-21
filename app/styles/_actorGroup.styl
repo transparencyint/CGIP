@@ -1,29 +1,105 @@
 .actor-group
-  position absolute
-  padding 10px
-  background-color #EEE
-  color #222
-  border-radius 5px
-  z-index 2
-
+  width 120px
+  margin -24px 0 0 -64px
+  padding-right 2px
+  padding-bottom 2px
+  &, &:before
+    content ""
+    left 0
+    top 0
+    position absolute
+    border-radius 3px
+    background linear-gradient(top, #f5f5f5, #fbfbfb)
+    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+  &:before
+    width 100%
+    height 100%
+    margin 2px 0 0 2px
+  &.selected
+    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  .actor
+    display block
+    position relative
+    top 4px
+    left 4px
+    margin 0
+    padding 0
+    height auto
+  .caption
+    height 40px
+    line-height 40px
+    position relative
+    .name
+      display block
+      position absolute
+      padding 0 5px
+      left 0
+      top 0
+      bottom 0
+      right 28px
+    .dropdown-control
+      position absolute
+      right 0
+      top 0
+      bottom 0
+      width 28px
+      text-align center
+      color #bbb
+      border-left 1px solid rgba(0,0,0,.05)
+      cursor pointer
+      .arrow
+        transform translateY(1px) rotate(90deg)
+      .toggleArrow
+        transform none  
+  &.open.selected .dropdown-control .arrow
+      transform none
+  &.open.selected .dropdown-control:active .arrow, 
+  .dropdown-control:active .arrow
+    transform translateY(1px) rotate(45deg)
+  &.empty .caption 
+    .name 
+      right 0
+    .dropdown-control
+      display none
   .actors
     display none
-    list-style none
-    padding 0
+    padding 1px
     margin 0
-    width 200px
+    border-top 1px solid rgba(0,0,0,0.08)
 
-  &.show-actors
+  &.open.selected:not(.empty)
     .actors
       display block
 
 .actor-group-actor
-  display inline
   line-height 30px
-  margin-right 3px
-  padding 3px
-  border 2px solid black
-  border-radius 3px
+  height 30px
+  width 110px
+  margin 5px 4px
+  padding 0 5px
+  list-style none
+  text-align center
+  border-radius 1px
+  background linear-gradient(top, #fff, #fafafa)
+  box-shadow 0 1px white inset, 0 1px 1px 1px rgba(0,0,0,.21), 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
+  
+  &.hidden
+    display block
+    background none
+    box-shadow none
+    color transparent
+    font 0/0 a
+    text-shadow none
+    border 1px dashed rgba(0,0,0,.21)
 
   &.dragging
+    width 120px
+    height 40px
     position absolute
+    margin -20px 0 0 -60px
+    font-size 14px
+    color black
+    line-height 40px
+    border-radius 3px
+    background linear-gradient(top, #f5f5f5, #fbfbfb)
+    z-index 2

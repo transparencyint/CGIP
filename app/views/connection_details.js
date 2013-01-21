@@ -45,7 +45,15 @@ module.exports = View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose');
+    // handle lock-states
+    if(this.model.isLocked()){
+      this.close();
+      return;
+    }else{
+      this.model.lock();
+    }
+
+    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
     this.connection = options.connection;
     this.connectionType = this.model.get('connectionType');
@@ -255,7 +263,7 @@ module.exports = View.extend({
     
     switch(type){
       case 'integer':
-        value = parseInt(event.target.value, 10);
+        value = parseInt(event.target.value, 10) || 0;
         break;
       case 'string': case 'text':
         value = event.target.value;
@@ -296,7 +304,7 @@ module.exports = View.extend({
     if(this.model) 
       this.model.destroy();
 
-    this.destroy();  
+    this.close();  
     
     // prevent form forwarding
     return false;
@@ -304,35 +312,48 @@ module.exports = View.extend({
 
   cancel: function(event){
     this.model.save(this.backup);
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
   },
 
   submitAndClose: function(){
-    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10);
-    var _pledged = parseInt(this.$el.find('#pledged').val(), 10);
+    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10) || 0;
+    var _pledged = parseInt(this.$el.find('#pledged').val(), 10) || 0;
 
     this.model.save({
       disbursed: _disbursed,
       pledged: _pledged
     });
 
-    this.destroy();
+    this.close();
     
     // prevent form forwarding
     return false;
   },
+  
+  close: function(){
+    // unlock the model
+    this.model.unlock();
+    this.unlockedModel = true;
 
-  destroy: function(){
-    View.prototype.destroy.call(this);
-    
-    this.clickCatcher.remove();
-    
-    // remove autosize helper
-    $('.actorDetailsAutosizeHelper').remove();
+    this.$el.one(this.transEndEventName, this.destroy);
+
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
     
     $(document).unbind('keydown', this.handleKeys);
+    
+    this.$el.addClass('hidden');
+  },
+
+  destroy: function(){
+    // remove autosize helper
+    $('.actorDetailsAutosizeHelper').remove();
+
+    if(!this.unlockedModel) this.model.unlock();
+
+    View.prototype.destroy.call(this);
   }
 });
