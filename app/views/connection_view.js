@@ -71,80 +71,49 @@ module.exports = View.extend({
     this.defs = this.svg.defs();
     
     this.$el.addClass(this.model.get('connectionType'));
-    
-    this.pathSettings = {
-      class_: 'path', 
-      strokeWidth: this.isMoney ? 1 : this.strokeWidth
-    };
-    
+  
     this.selectSettings = {
       class_: 'selectPath'
     };
-    
+
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
+      this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
+    }
 
-      this.createCoinDefinitions();
+    this.pathSettings = {
+      class_: 'path', 
+      strokeWidth: this.strokeWidth
+    };
+    
+    this.markerSize = this.strokeWidth/2 * this.markerRatio;
+
+    var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
+    this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
       
-      this.pathSettings['marker-start'] = "url(#"+ this.coinReference +")";
-      this.pathSettings['marker-mid'] = "url(#"+ this.coinReference +")";
-      this.pathSettings['marker-end'] = "url(#"+ this.coinReference +")";
+    var selectedArrowSize = this.markerRatio - 0.5;
+      
+    var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
+    this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
 
-      this.markerSize = 0;
+    this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
+    this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
 
+    if(this.isMoney){
       this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.updateConnection, this);
-
-    } else {
-      // also creates something crucial for the other connections
-      this.createCoinDefinitions();
-      
-      this.markerSize = this.strokeWidth/2 * this.markerRatio;
-      
-      var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
-      this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
-      
-      var selectedArrowSize = this.markerRatio - 0.5;
-      
-      var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-      this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
-
-      this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
-      this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
     }
 
     this.g = this.svg.group();    
-    createGlobalDefs();
-
+ 
     this.update();
 
     this.$el.addClass( this.model.get("connectionType") );
   },
 
   updateConnection: function(){
-    this.createCoinDefinitions();
     this.update();
-  },
-  
-  createCoinDefinitions: function(){
-    // case: coin size gets changed
-    // then: remove coinMarker if its already there
-    if(this.coinMarker)
-      this.svg.remove(this.coinMarker);
-    
-    // coin definition
-    this.coinDistance = 4 * this.model.coinSizeFactor;
-    this.coinReference = this.model.id + "-coin";
-  
-    this.coinWidth = 7 * this.model.coinSizeFactor;
-    this.coinHeight = 12 * this.model.coinSizeFactor;
-
-    //only set the marker if it is a money connection
-    if(this.isMoney){
-      this.coinMarker = this.svg.marker(this.defs, this.coinReference, this.coinWidth/2, this.coinHeight/2, this.coinWidth, this.coinHeight, "auto");
-      this.svg.use(this.coinMarker, 0, 0, this.coinWidth, this.coinHeight, '#coinSymbol');
-    }
   },
 
   hasBothConnections: function(){
@@ -163,9 +132,6 @@ module.exports = View.extend({
     
     var overlap = Math.max(this.strokeWidth + this.markerSize + this.selectionBorderSize, this.clickAreaRadius);
     this.offset = 2 * overlap;
-    
-    if(this.isMoney)
-      this.offset = this.coinHeight*2;
     
     this.pos = {
       x : Math.min(from.x, to.x),
@@ -421,7 +387,7 @@ module.exports = View.extend({
     if(this.clickArea) this.svg.remove(this.clickArea);
     
     // recalculate select-border size (depending on strokeWidth)
-    var pathWidth = this.isMoney ? this.coinHeight : this.strokeWidth;
+    var pathWidth = this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
 
     // render all paths and clones
@@ -466,182 +432,26 @@ module.exports = View.extend({
     metadata.hide();  
   },
   
-  // slices a line from a to b into segments
-  // returns 
-  //    segments: a space seperated string of numbers
-  //    endPosition: the last position on the path (rest)
-  slicedPathSegments: function(a, b, distance){
-    var length = Math.abs(b - a);
-    var sign = a > b ? -1 : 1;
-    var count = Math.floor(length / distance);
-    var segments = [];
-    
-    for(var i=1; i<=count; i++){
-      segments.push(a + sign*i*distance);
-    }
-    
-    //segments.push(b);
-    
-    return segments.join(" ");
-  },
-  
-  /*
-    sweepFlag 
-      0: anti-clockwise
-      1: clockwise
-  */
-  slicedQuarterCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
-    //calculation the coin distance depending on the money connection thickness
-    //if the maximum money connection is changed the multiplied value may be changed
-    var dis = distance / (this.model.coinSizeFactor*1.0);
-
-    var length = Math.PI/2 * radius;
-    var count = Math.floor(length / dis);
-    var segments = [];
-    var signX = 1;
-    var signY = 1;
-    var alpha = 2 * Math.asin(dis / (2*radius));
-    var dx, dy;
-    var sumX = 0;
-    var sumY = 0;
- 
-    if(x1 < x0){
-      signX *= -1;
-    }
-    if(y1 < y0){
-      signY *= -1;
-    }
-
-    var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
-    
-    //drawing every single path segment
-    for(var i=1; i<=count; i++){ 
-      //getting the right circle direction 
-      if(hasRightDirection){
-        dx = radius * (1-Math.cos (i*alpha)) - sumX;
-        dy = radius * Math.sin (i*alpha) - sumY;
-      }
-      else{
-        dx = radius * Math.sin (i*alpha) - sumX;
-        dy = radius * (1-Math.cos (i*alpha)) - sumY;
-      }
-
-      sumX += dx;
-      sumY += dy;
-      
-      segments.push(path + signX*dx + ' ' + signY*dy);
-    }
-    
-    // move back to last
-    segments.push(path + signX*(radius-sumX) + ' ' + signY*(radius-sumY));
-    
-    return segments.join(" ");
-  },
-
-    slicedEdgeCircleSegments: function(x0, y0, x1, y1, radius, sweepFlag, distance, hasRightDirection){
-    //calculation the coin distance depending on the money connection thickness
-    //if the maximum money connection is changed the multiplied value may be changed
-    var dis = distance / (this.model.coinSizeFactor*1.0);
-
-    var length = Math.PI/2 * radius;
-    var count = Math.floor(length / dis);
-    var segments = [];
-    var signX = 1;
-    var signY = 1;
-    var alpha = 2 * Math.asin(dis / (2*radius));
-    var dx, dy;
-    var sumX = 0;
-    var sumY = 0;
- 
-    if(x1 < x0){
-      signX *= -1;
-    }
-    if(y1 < y0){
-      signY *= -1;
-    }
-
-    var path = ' a ' + radius + ' ' + radius + ' 0 0 ' + sweepFlag + ' ';
-    
-    //drawing every single path segment
-    for(var i=1; i<=count; i++){ 
-      //getting the right circle direction 
-      if(hasRightDirection){
-        dx = radius * (1-Math.cos (i*alpha)) - sumX;
-        dy = radius * Math.sin (i*alpha) - sumY;
-      }
-      else{
-        dx = radius * Math.sin (i*alpha) - sumX;
-        dy = radius * (1-Math.cos (i*alpha)) - sumY;
-      }
-
-      sumX += dx;
-      sumY += dy;
-      
-      segments.push(path + signX*dx*1.5 + ' ' + signY*dy);
-    }
-    
-    // move back to last
-    segments.push(path + signX*(radius-sumX) + ' ' + signY*(radius-sumY));
-    
-    return segments.join(" ");
-  },
-
   definePath1Line: function(start, end, direction){
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
-
-    if(this.model.get("connectionType") === 'money'){
-      if(start.y === end.y){
-        // path goes horizontal
-        this.path += ' H ' + this.slicedPathSegments(start.x, end.x, this.coinDistance);
-      } else {
-        // path goes vertical
-        this.path += ' V '  + this.slicedPathSegments(start.y, end.y, this.coinDistance);
-      }
-    }
-    else{
-      this.path += ' L ' + end.x + ' ' + end.y;
-      if(navigator.userAgent.indexOf('Firefox') != -1){
-        this.addArrowFirefox(end, direction);
-      }
-    }
+    this.path += ' L ' + end.x + ' ' + end.y;
   },
   
-
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection, direction){
 
     this.path = 'M ' + start.x + ' ' + start.y;
 
     if(start.x < end.x){
-      if(this.model.get("connectionType") === 'money'){
-        this.addPathSegment(start.x, end2.x, this.coinDistance, ' H ');
-        this.path += this.slicedQuarterCircleSegments(end2.x, start.y, end.x, start2.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-        this.addPathSegment(start2.y, end.y, this.coinDistance, ' V ');
-      }
-      else{
-        this.path += ' L ' + end2.x + ' ' + start.y;
-        this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
-        this.path += ' L ' + end.x + ' ' + end.y; 
-        
-      }
+      this.path += ' L ' + end2.x + ' ' + start.y;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
+      this.path += ' L ' + end.x + ' ' + end.y;  
     }
     else{
-      if(this.model.get("connectionType") === 'money'){
-        this.addPathSegment(start.y, end2.y, this.coinDistance, ' V ');
-        this.path += this.slicedQuarterCircleSegments(start.x, end2.y, start2.x, end.y, edgeRadius, sweepFlag, this.coinDistance, hasRightDirection);
-        this.addPathSegment(start2.x, end.x, this.coinDistance, ' H ');
-        //TO DO: ADD HERE THE DRAWING OF THE MONEY CONNECTION ARROW (AS A FUNCTION CALL)
-      }
-      else{
-        this.path += ' L ' + start.x + ' ' + end2.y;
-        this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ' ' + end.y;
-        this.path += ' L ' + end.x + ' ' + end.y; 
-        
-      }
+      this.path += ' L ' + start.x + ' ' + end2.y;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ' ' + end.y;
+      this.path += ' L ' + end.x + ' ' + end.y; 
     }
-    if(navigator.userAgent.indexOf('Firefox') != -1){
-          this.addArrowFirefox(end, direction);
-        }
   },
 
   definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2, direction){
@@ -672,24 +482,12 @@ module.exports = View.extend({
       
     //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
-
-    if(this.model.get("connectionType") === 'money'){
-      this.addPathSegment(start.x, firstX, this.coinDistance, ' H ');
-      this.path += this.slicedQuarterCircleSegments(firstX, start.y, halfX, firstY, edgeRadius, sweepFlag1, this.coinDistance, false);
-      this.addPathSegment(firstY, secondY, this.coinDistance, ' V ');
-      this.path += this.slicedQuarterCircleSegments(halfX, secondY, secondX, end.y, edgeRadius, sweepFlag2, this.coinDistance, true);
-      this.addPathSegment(secondX, end.x, this.coinDistance, ' H ');
-    }
-    else{
-      this.path += ' L ' + firstX + ' ' + start.y;
-      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ' ' + firstY;
-      this.path += ' L ' + halfX + ' ' + secondY;
-      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
-      this.path += ' L ' + end.x + ' ' + end.y; 
-      if(navigator.userAgent.indexOf('Firefox') != -1){
-        this.addArrowFirefox(end, direction);
-      }
-    }
+    this.path += ' L ' + firstX + ' ' + start.y;
+    this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ' ' + firstY;
+    this.path += ' L ' + halfX + ' ' + secondY;
+    this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
+    this.path += ' L ' + end.x + ' ' + end.y; 
+    
   },
 
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, direction){
@@ -722,82 +520,11 @@ module.exports = View.extend({
 
     //add all connection parts
     this.path = 'M ' + start.x + ' ' + start.y;
-
-    if(this.model.get("connectionType") === 'money'){
-      this.addPathSegment(start.y, firstY, this.coinDistance, ' V ');
-      this.path += this.slicedQuarterCircleSegments(start.x,firstY,firstX,halfY,edgeRadius, sweepFlag1, this.coinDistance, true);
-      this.addPathSegment(firstX, secondX, this.coinDistance, ' H ');
-      this.path += this.slicedQuarterCircleSegments(secondX,halfY,end.x,secondY,edgeRadius, sweepFlag2, this.coinDistance, false);
-      this.addPathSegment(secondY, end.y, this.coinDistance, ' V ');
-    }
-    else{
-      this.path += ' L ' + start.x + ' ' + firstY;
-      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + firstX + ' ' + halfY;
-      this.path += ' L ' + secondX + ' ' + halfY;
-      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
-      this.path += ' L ' + end.x + ' ' + end.y;
-      if(navigator.userAgent.indexOf('Firefox') != -1){
-        this.addArrowFirefox(end, direction);
-      }
-    }
+    this.path += ' L ' + start.x + ' ' + firstY;
+    this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + firstX + ' ' + halfY;
+    this.path += ' L ' + secondX + ' ' + halfY;
+    this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
+    this.path += ' L ' + end.x + ' ' + end.y;
+    
   },
-
-  //creates a straight line
-  addPathSegment: function(start, end, distance, direction){
-    var pathSegments = this.slicedPathSegments(start, end, distance);
-    if (pathSegments && pathSegments != " " && pathSegments != "" && pathSegments != undefined)
-      this.path += direction + pathSegments;
-  },
-
-  //creates the arrows for non-money-connections in firefox
-  //direction:
-  // 0: top, 1: right, 2: bottom, 3: left
-  addArrowFirefox: function(end, direction){
-    var prefix = 1;
-    if (direction == 0 || direction == 3){
-      prefix = -1;
-    }
-
-    //top or bottom
-    if (direction == 0 || direction == 2){
-      //go to the real endpoint
-      this.path += ' L ' + end.x + ' ' + (end.y + prefix * this.markerSize/2);
-      //draw 3 lines for the arrow
-      this.path += ' L ' + (end.x + this.markerSize/4) + ' ' + end.y;
-      this.path += ' L ' + (end.x - this.markerSize/4) + ' ' + end.y;
-      this.path += ' L ' + end.x + ' ' + (end.y + prefix * this.markerSize/2);
-    }
-    //left or right
-    else{
-      //go to the real endpoint
-      this.path += ' L ' + (end.x + prefix * this.markerSize/2) + ' ' + end.y;
-      //draw 3 lines for the arrow
-      this.path += ' L ' + end.x + ' ' + (end.y - this.markerSize/4);
-      this.path += ' L ' + end.x + ' ' + (end.y + this.markerSize/4);
-      this.path += ' L ' + (end.x + prefix * this.markerSize/2) + ' ' + end.y;
-    }
-  }
 });
-
-function createGlobalDefs(){
-  if(this.svg === undefined){
-    $('body').svg().find('> svg').attr('id', 'svgDefinitions');
-    this.svg = $('body').svg('get');
-    var defs = this.svg.defs();
-    
-    // coin definition
-    var yellowStops = [['0%', '#fbd54d'], ['25%', '#fae167'], ['50%', '#fcd852'], ['100%', '#f7eb7a']];
-    this.svg.linearGradient(defs, 'moneyGradient', yellowStops, 0, 0, 0, "100%");
-    
-    var highlightStop = [['0%', 'white'], ['100%', 'white', '0']];
-    this.svg.linearGradient(defs, 'whiteToTransparent', highlightStop, "100%", 0, 0, "100%");
-    
-    var highlightMask = this.svg.mask(defs, 'coinHighlightMask', 0, 0, 6, 11);
-    this.svg.rect(highlightMask, 1, 1, 6, 11, 1.5, 1.5, { fill: 'white' });
-    this.svg.rect(highlightMask, -2, 1, 6, 11, 1.5, 1.5, { fill: 'black' });
-    
-    var coinSymbol = this.svg.symbol(defs, 'coinSymbol', 0, 0, 6, 11);
-    this.svg.rect(coinSymbol, 0.5, 0.5, 6, 11, 2, 2, { fill: 'url(#moneyGradient)', stroke: '#eaab51', 'stroke-width': 1 });
-    this.svg.rect(coinSymbol, -1, 1, 6, 11, 1.5, 1.5, { fill: 'url(#whiteToTransparent)',  mask: 'url(#coinHighlightMask)' }); 
-  }
-}
