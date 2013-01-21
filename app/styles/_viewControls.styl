@@ -81,13 +81,25 @@
     border none
     z-index auto
     &.open 
-      .modal
-        display block
-    .modal
-      display none
-      left 49px
+      .options
+        z-index 11
+        left 49px
+        opacity 1
+        transform rotateY(0)
+        transition 250ms
+        .option.fold
+          transform rotateX(0)
+          transition 500ms 250ms
+    .options
+      position absolute
       top 1px
-      z-index 11
+      left 44px
+      z-index 5
+      opacity 0
+      transform-origin left
+      transform rotateY(-90deg)
+      transition 250ms 500ms
+      perspective 1000px
       .option
         position relative
         height 42px
@@ -97,17 +109,30 @@
         text-shadow none
         color hsl(0,0%,8%)
         border-bottom 1px solid hsl(0,0%,81%)
-        box-shadow 0 1px white inset
         cursor pointer
+        &.fold
+          transform-origin top
+          transform rotateX(-180deg)
+          transition 500ms
+          backface-visibility hidden
+          &:after
+            display none
+            content ""
+            width 100%
+            height 100%
+            position absolute
+            left 0
+            top 0
+            border-radius 0 0 3px 3px
+            background red
+            transform rotateX(-180deg)
         &:first-child
-          border-radius 4px 4px 0 0
-          box-shadow none
+          border-radius 3px 3px 0 0
         &:last-child  
-          border-radius 0 0 4px 4px
+          border-radius 0 0 3px 3px
           border-bottom none
         &:hover
           background hsl(0,0%,87%)
-          box-shadow 0 1px hsl(0,0%,90%) inset
         &.active:before
           content ""
           position absolute

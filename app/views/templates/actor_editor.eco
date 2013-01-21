@@ -52,9 +52,9 @@
       <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">
         <div class="corner"></div>
       </div>
-      <div class="modal">
-        <div class="option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
-        <div class="option" data-mode="pledgedMode"><%= t('Pledged') %></div>
+      <div class="options">
+        <div class="modal option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
+        <div class="modal option fold" data-mode="pledgedMode"><%= t('Pledged') %></div>
       </div>
     </div>
   </div>
