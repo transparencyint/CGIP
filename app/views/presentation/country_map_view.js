@@ -3,6 +3,7 @@ var ActorEditor = require('../actor_editor');
 var PresentationConnectionView = require('./presentation_connection_view');
 var PresentationActorView = require('./presentation_actor_view');
 var PresentationActorGroupView = require('./presentation_actor_group_view');
+var PresentationRoleBackgroundView = require('./presentation_role_background_view');
 
 module.exports = View.extend({
   
@@ -75,7 +76,9 @@ module.exports = View.extend({
   },
   
   render: function(){
-		this.$el.html( this.template() );
+		var editor = this;
+
+    this.$el.html( this.template() );
 
 		this.workspace = this.$('.workspace');
 
@@ -87,6 +90,11 @@ module.exports = View.extend({
     this.accountabilityConnections.each(this.appendConnection);
     this.moneyConnections.each(this.appendConnection);
     this.monitoringConnections.each(this.appendConnection);
+
+    //display the role backgrounds
+    console.log(editor);
+    this.presentationRoleBackgroundView = new PresentationRoleBackgroundView({ editor: editor });
+    this.workspace.before(this.presentationRoleBackgroundView.render()); 
 
     this.afterRender();
 
@@ -105,6 +113,7 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
+
   },
 
 });
