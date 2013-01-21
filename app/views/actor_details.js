@@ -153,6 +153,9 @@ module.exports = View.extend({
     // unlock the model
     this.model.unlock();
     this.unlockedModel = true;
+    
+    if(this.clickCatcher)
+      this.clickCatcher.destroy();
 
     this.$el.one(this.transEndEventName, this.destroy);
     
@@ -239,7 +242,7 @@ module.exports = View.extend({
   },
 
   afterRender: function() {
-    new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
+    this.clickCatcher = new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
     
     $(document).keydown(this.handleKeys);
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
