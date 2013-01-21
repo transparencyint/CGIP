@@ -30,14 +30,90 @@
         box-shadow 0 1px 3px black
         outline none
   .icon
-    width 40px
-    height 40px
+    width 41px
+    height 41px
     background-position center
     background-repeat no-repeat
     cursor pointer
+    position relative
     &.fit
       background-image url(../images/fit_screen.png)
     &.in
       background-image url(../images/zoom_in.png)
     &.out
       background-image url(../images/zoom_out.png)
+    &.point
+      width 43px
+      height 43px
+      .corner
+        position absolute
+        right 2px
+        bottom 2px
+        width 10px
+        height 10px
+        overflow hidden
+        &:after
+          content ""
+          position absolute
+          width 20px
+          height 20px
+          left 2px
+          top 2px
+          background hsl(217,55%,24%)
+          transform rotate(45deg)
+      &:before
+        content ""
+        position absolute
+        left 14px
+        top 14px
+        width 13px
+        height 13px
+        background hsl(50,100%,50%)
+        border-radius 100%
+        box-shadow 0 1px hsl(50,100%,90%) inset, 0 1px 3px black
+      &[data-mode=pledgedMode]:before
+        opacity 0.5
+  &.moneyMode
+    margin-top -1px
+    position relative
+    background none
+    box-shadow none
+    border none
+    z-index auto
+    &.open 
+      .modal
+        display block
+    .modal
+      display none
+      left 49px
+      top 1px
+      z-index 11
+      .option
+        position relative
+        height 42px
+        padding 0 21px 0 34px
+        font-size 12px
+        line-height 42px
+        text-shadow none
+        color hsl(0,0%,8%)
+        border-bottom 1px solid hsl(0,0%,81%)
+        box-shadow 0 1px white inset
+        cursor pointer
+        &:first-child
+          border-radius 4px 4px 0 0
+          box-shadow none
+        &:last-child  
+          border-radius 0 0 4px 4px
+          border-bottom none
+        &:hover
+          background hsl(0,0%,87%)
+          box-shadow 0 1px hsl(0,0%,90%) inset
+        &.active:before
+          content ""
+          position absolute
+          left 17px
+          top 17px
+          width 7px
+          height 7px
+          background black
+          border-radius 100%

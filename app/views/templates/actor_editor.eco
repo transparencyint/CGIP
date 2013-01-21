@@ -5,9 +5,7 @@
         <span class="name"><i class="plus">+</i> <%= t('add_actor') %></span>
         <div class="dockBorder"></div>
       </div>
-      <div class="dock">
-        <div class="cancel"><span>Drop here to cancel</span></div>
-      </div>
+      <div class="dock"></div>
     </div>
 
     <div class="connection accountability control" data-connectionType="accountability">
@@ -33,27 +31,32 @@
         <img src="/images/moneyflow.png">
       </div>
     </div>
-  
-    <div class="toggle moneyMode">
-      <span class="name"><%= t('money_mode') %></span>
-      <span id="disbursedMoney" class="small"><%= t('disbursed') %></span>
-      <span id="pledgedMoney" class="small"><%= t('pledged') %></span>
-    </div>
   </div>
   
   <!-- settings get rendered here -->
 </div>
 
 <div class="sidebar">
-  <div class="view controls vertical">
-    <div class="fit screen icon control"></div>
-  </div>
-  <div class="view controls vertical">
-    <div class="zoom in icon control"></div>
-    <div class="range control">
-      <div class="bar"></div>
+  <div class="inner">
+    <div class="view controls vertical">
+      <div class="fit screen icon control"></div>
     </div>
-    <div class="zoom out icon control"></div>
+    <div class="view controls vertical">
+      <div class="zoom in icon control"></div>
+      <div class="range control">
+        <div class="bar"></div>
+      </div>
+      <div class="zoom out icon control"></div>
+    </div>
+    <div class="view controls moneyMode hasModal">
+      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">
+        <div class="corner"></div>
+      </div>
+      <div class="modal">
+        <div class="option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
+        <div class="option" data-mode="pledgedMode"><%= t('Pledged') %></div>
+      </div>
+    </div>
   </div>
 </div>
 
