@@ -1,7 +1,8 @@
-var DraggableView = require('./draggable_view');
+var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
 
-module.exports = DraggableView.extend({
+module.exports = DraggableDroppableView.extend({
+  dropClasses: ['actor'],
   selectable: true,
   
   template : require('./templates/actor'),
@@ -9,7 +10,7 @@ module.exports = DraggableView.extend({
   className : 'actor',
 
   events: function(){
-    var parentEvents = DraggableView.prototype.events;
+    var parentEvents = DraggableDroppableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
       'mousedown' : 'dragStart',
@@ -19,7 +20,7 @@ module.exports = DraggableView.extend({
   },
   
   initialize: function(options){
-    DraggableView.prototype.initialize.call(this, options);
+    DraggableDroppableView.prototype.initialize.call(this, options);
     _.bindAll(this, 'destroy');
 
     this.width = options.editor.actorWidth;
@@ -28,6 +29,9 @@ module.exports = DraggableView.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+
+    this.$document.on('viewdrag', this.checkHover);
+    this.$document.on('viewdragstop', this.checkDrop);
   },
 
   dragByDelta: function(dx, dy){
@@ -65,7 +69,7 @@ module.exports = DraggableView.extend({
   destroy: function(){
     var self = this;
     this.$el.one(this.transEndEventName, function(){
-      DraggableView.prototype.destroy.call(self);
+      DraggableDroppableView.prototype.destroy.call(self);
     });
     this.$el.addClass('disappear');
 
@@ -73,5 +77,8 @@ module.exports = DraggableView.extend({
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
     this.editor.off('enableDraggable', this.enableDraggable, this);
+
+    this.$document.off('viewdrag', this.checkHover);
+    this.$document.off('viewdragstop', this.checkDrop);
   }
 });

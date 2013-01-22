@@ -1,31 +1,25 @@
-var DraggableView = require('./draggable_view');
+var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 
-module.exports = DraggableView.extend({
+module.exports = DraggableDroppableView.extend({
+  dropClasses: ['actor'],
   selectable: true,
 
   className: 'actor-group empty',
   template : require('./templates/actor_group'),
 
   initialize: function(){
-    DraggableView.prototype.initialize.call(this);
+    DraggableDroppableView.prototype.initialize.call(this);
 
     _.bindAll(this, 'checkHover', 'checkDrop');
-
-    // the current hover state
-    this.hovered = false;
-    this.$document = $(document);
-
-    this.$document.on('viewdrag', this.checkHover);
-    this.$document.on('viewdragstop', this.checkDrop);
 
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
   },
 
   events: function(){
-    var parentEvents = DraggableView.prototype.events;
+    var parentEvents = DraggableDroppableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
       'mousedown'               : 'dragStart',
@@ -34,14 +28,14 @@ module.exports = DraggableView.extend({
   },
 
   getRenderData: function(){
-    var data = DraggableView.prototype.getRenderData.call(this);
+    var data = DraggableDroppableView.prototype.getRenderData.call(this);
     data.actors = this.model.actors.toJSON();
     return data;
   },
 
   render: function(){
     // call the super function
-    DraggableView.prototype.render.call(this);
+    DraggableDroppableView.prototype.render.call(this);
 
     _.bindAll(this, 'addSubActorView');
 
@@ -105,44 +99,15 @@ module.exports = DraggableView.extend({
     this.model.moveByDelta(dx, dy);
   },
 
-  checkHover: function(event, view){
-    // return if it's this view
-    if(view === this) return
-
-    if(view.$el.hasClass('actor')){
-      // if it overlaps, give feedback
-      if(this.overlapsWith(view))
-        this.dragHover(view);
-      else
-        if(this.hovered){
-          this.dragOut();
-        }
-    }
-  },
-
   dragHover: function(view){
-    this.hovered = true;
-    this.hoveredView = view;
-    this.hoveredView.$el.css('opacity', .5);
     this.open();
   },
 
   dragOut: function(){
-    this.hovered = false;
     this.close();
-    if(this.hoveredView){
-      this.hoveredView.$el.css('opacity', 1);
-      this.hoveredView = null;
-    }
   },
 
   checkDrop: function(event, view){
-    if(this.model.isLocked()) return; // return if model is locked
-    if(event.isPropagationStopped()) return; // return if others stopped the propagation
-    
-    // return if it's this view
-    if(view === this) return;
-
     // Don't allow to add FakeActorViews
     if(view instanceof FakeActorView && this.overlapsWith(view)){
       event.stopPropagation();
@@ -168,9 +133,6 @@ module.exports = DraggableView.extend({
         });
       }
     }
-
-    if(this.hovered)
-      this.dragOut();
       
     // then it was dragged out
     this.close();   
@@ -183,13 +145,10 @@ module.exports = DraggableView.extend({
   },
 
   destroy: function(){
-    DraggableView.prototype.destroy.call(this);
+    DraggableDroppableView.prototype.destroy.call(this);
 
     // destroy all sub actors
     _.each(this.actorViews, function(actorView){ actorView.destroy(); });
-
-    this.$document.off('viewdrag', this.checkHover);
-    this.$document.off('viewdragstop', this.checkDrop);
 
     this.model.actors.off('add', this.addSubActorView);
     this.model.actors.off('remove', this.removeSubActorView);
