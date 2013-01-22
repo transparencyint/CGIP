@@ -30,6 +30,10 @@ module.exports = Model.extend({
     thisPos.x += dx;
     thisPos.y += dy;
     this.set('pos', thisPos);
+  },
+
+  turnIntoGroup: function(firstActor){
+    debugger
   }
 
 });

@@ -2,7 +2,6 @@ var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
 
 module.exports = DraggableDroppableView.extend({
-  dropClasses: ['actor'],
   selectable: true,
   
   template : require('./templates/actor'),
@@ -26,12 +25,11 @@ module.exports = DraggableDroppableView.extend({
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
+    this.dropClasses = [require('./actor_view')];
+
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
-
-    this.$document.on('viewdrag', this.checkHover);
-    this.$document.on('viewdragstop', this.checkDrop);
   },
 
   dragByDelta: function(dx, dy){
@@ -56,6 +54,10 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.determineName() );
   },
   
+  checkDrop: function(event, view){
+    this.model.turnIntoGroup(view.model);
+  },
+
   getRenderData: function() {
     return { name: this.determineName() };
   },

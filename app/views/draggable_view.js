@@ -105,6 +105,9 @@ module.exports = View.extend({
     return overlaps;
   },
 
+  // resets the view to the state before the dragging was started
+  reset: function(){},
+
   snapToGrid: function(){
     if(this.dontSnap) return;
     //make drag available along a simple grid

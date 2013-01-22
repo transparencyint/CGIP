@@ -18,17 +18,19 @@ module.exports = DraggableView.extend({
     this.$document.on('viewdragstop', this._checkDrop);
   },
 
+  isAllowedToDrop: function(view){
+    if(this.dropClasses.length == 0) return false;
+    return _.some(this.dropClasses, function(dropClass){ 
+      if(view instanceof dropClass)
+        return true;
+    });
+  },
+
   checkHover: function(event, view){
     // return if it's this view
     if(view === this) return
 
-    var isAllowedToDrop = false;
-    _.each(this.dropClasses, function(dropClass){ 
-      if(view.$el.hasClass(dropClass))
-        isAllowedToDrop = true;
-    });
-
-    if(isAllowedToDrop){
+    if(this.isAllowedToDrop(view)){
       // if it overlaps, give feedback
       if(this.overlapsWith(view))
         this._dragHover(view);
@@ -59,8 +61,6 @@ module.exports = DraggableView.extend({
 
   dragOut: function(){},
 
-  checkHover: function(){},
-
   _checkDrop: function(event, view){
     if(this.model.isLocked()) return; // return if model is locked
     if(event.isPropagationStopped()) return; // return if others stopped the propagation
@@ -68,10 +68,14 @@ module.exports = DraggableView.extend({
     // return if it's this view
     if(view === this) return;
 
-    this.checkDrop(event, view);
-
-    if(this.hovered)
-      this.dragOut();
+    if(this.overlapsWith(view)){
+      if(this.isAllowedToDrop(view)){
+        event.stopPropagation();
+        this.checkDrop(event, view);
+      }
+      if(this.hovered)
+        this._dragOut();
+    }
   },
 
   checkDrop: function(){},

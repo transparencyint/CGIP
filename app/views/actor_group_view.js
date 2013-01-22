@@ -1,9 +1,10 @@
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
+var ActorView = require('./actor_view');
 
 module.exports = DraggableDroppableView.extend({
-  dropClasses: ['actor'],
+  dropClasses: [ActorView, ActorGroupActorView, FakeActorView],
   selectable: true,
 
   className: 'actor-group empty',
@@ -12,7 +13,7 @@ module.exports = DraggableDroppableView.extend({
   initialize: function(){
     DraggableDroppableView.prototype.initialize.call(this);
 
-    _.bindAll(this, 'checkHover', 'checkDrop');
+    _.bindAll(this, 'checkDrop');
 
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
@@ -108,14 +109,10 @@ module.exports = DraggableDroppableView.extend({
   },
 
   checkDrop: function(event, view){
-    // Don't allow to add FakeActorViews
-    if(view instanceof FakeActorView && this.overlapsWith(view)){
-      event.stopPropagation();
-      view.reset();
-      return;
-    }
-
-    if(this.overlapsWith(view)){
+    // Reset FakeActorViews
+    if(view instanceof FakeActorView){
+      return view.reset();
+    }else{
       // is it already in the list?
       if(this.model.actors.contains(view.model)){
         // stop propagation and do nothing
@@ -133,14 +130,10 @@ module.exports = DraggableDroppableView.extend({
         });
       }
     }
-      
-    // then it was dragged out
-    this.close();   
   },
 
   showActors: function(event){
     if(this.hovered || this.isDragging) return;
-
     this.toggle();
   },
 
