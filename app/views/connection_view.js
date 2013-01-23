@@ -18,6 +18,7 @@ module.exports = View.extend({
       'mousedown' : 'hideMetadata',
     };
     
+    _events[ this.inputDownEvent ] = 'stopPropagation';
     _events[ this.inputUpEvent ] = 'showDetails';
     
     return _events;
@@ -49,6 +50,10 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
   },
 
   render: function(){
@@ -457,7 +462,6 @@ module.exports = View.extend({
   showDetails: function(event){    
     if(this.model.isLocked()) return; // don't show when model is locked
     
-    event.stopPropagation();
     this.select();
     
     var mousePosition = {
@@ -467,6 +471,8 @@ module.exports = View.extend({
 
     var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this, mousePosition: mousePosition });
     this.editor.$el.append(cfw.render().el);
+    
+    return false;
   },
 
   showMetadata: function(e){
