@@ -7,7 +7,7 @@
   </div>
 
 	<div>
-		<span><%= t('type')</span>
+		<span><%= t('type')%></span>
 		<div class="organizationType clearfix">
       <% if @organizationType != 'other': %>
         <%= @organizationType %>
@@ -19,7 +19,7 @@
 
   <% if @role: %> 
   <div class="role clearfix">
-    <span><%= t('role')</span>    
+    <span><%= t('role')%></span>    
     <% for role in @role: %> 
       <%= role %>
     <% end %>  
