@@ -50,6 +50,7 @@
     </div>
     <div class="view controls moneyMode hasModal">
       <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">
+        <div class="coin"></div>
         <div class="corner"></div>
       </div>
       <div class="options">
