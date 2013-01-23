@@ -1,0 +1,62 @@
+<div class="arrow"></div>
+
+<div class="holder">
+  <div>
+    <h2 id="name"><%= @name %></h2>
+    <h2 id="abbreviation"><%= @abbreviation %></h2>
+  </div>
+
+	<div>
+		<label for="organizationType">Type</label>
+		<div class="organizationType clearfix">
+      <% if @organizationType != 'other': %>
+        <%= @organizationType %>
+      <% else: %>
+        <%= @typeOther %>
+      <% end %>
+    </div>
+	</div>
+
+  <div class="role clearfix">
+    <label>Role</label>
+    <% if @role: %> 
+      <% for role in @role: %> 
+        <%= role %>
+      <% end %>
+    <% end %>
+  </div>
+   
+  <div class="purpose clearfix">
+    <label>Purpose</label>
+    <% if @purpose: %> 
+      <% for purpose in @purpose: %> 
+        <%= purpose %>
+      <% end %>
+    <% end %>
+  </div>
+
+	<div class="corruptionRisk clearfix">
+	  <% if @hasCorruptionRisk: %>  
+      <%= t('There is a corruption Risk'); %>
+      <p><%= @corruptionRisk %></p>
+
+      <% if @corruptionRiskSource: %>
+        <p class="corruption-risk-source"> <%= @corruptionRiskSource %> </p>
+      <% end %>
+    <% end %>
+	</div>
+	
+  <% if @description: %>
+  	<div>
+  	  <label for="description">Note</label>
+  		<%= @description%>
+  	</div> 
+  <% end %>
+
+</div><!-- /.holder -->
+
+<div class="controls clearfix">
+  <div class="row right">
+    <button type="submit" class="close">Close</button>
+  </div>
+</div>
