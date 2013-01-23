@@ -148,6 +148,8 @@ module.exports = View.extend({
       this.selectedActorView.model.destroy();
   },
   
+  // pinch gesture for zooming on mobile 
+  // moving two fingers together or apart
   pinchStart: function(event){
     this.startZoom = this.zoom.value;
   },
