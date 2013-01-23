@@ -70,10 +70,9 @@ module.exports = Connection.extend({
       //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
       if(!isMinMaxEqual){
         var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
-        var moneyRange = maxMoneyAmount - minMoneyAmount;
+        var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
         this.collection.each(function(connection){
-
           var amount = connection.get(amountType);
           if(amount !== 0) {
             var amountDif = Math.log(amount - minMoneyAmount + 1);
@@ -83,7 +82,6 @@ module.exports = Connection.extend({
               connection.coinSizeFactor = newCoinSize;
               connection.trigger('change:coinSizeFactor');     
             }
-
           }
           
         });

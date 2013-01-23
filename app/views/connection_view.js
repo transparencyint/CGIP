@@ -33,6 +33,8 @@ module.exports = View.extend({
 
     this.editor = options.editor;
 
+    this.corruptionRisk = this.model.attributes.hasCorruptionRisk;
+
     if(options.noClick)
       this.$el.unbind('click');
 
@@ -99,7 +101,7 @@ module.exports = View.extend({
       this.toggleZeroConnection();
 
       // also creates something crucial for the other connections
-      this.createCoinDefinitions();
+      //this.createCoinDefinitions();
 
       
     var selectedArrowSize = this.markerRatio - 0.5;
@@ -457,6 +459,23 @@ module.exports = View.extend({
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     this.path += ' L ' + end.x + ' ' + end.y;
+    if(this.corruptionRisk){
+      var corrX;
+      var corrY;
+      if (start.x == end.x){
+        corrX = start.x+this.model.from.margins.left/2;
+        corrY = (start.y+end.y)/2;
+        if (start.y + end.y == 0)
+          corrY = 0;
+      }
+      else{
+        corrX = (start.x+end.x)/2;
+        corrY = start.y+this.model.from.margins.top/2
+        if (start.x + end.x == 0)
+          corrX = 0;
+      }
+      this.drawCorruptionFlag(corrX, corrY, start, end);
+    }
   },
   
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection, direction){
@@ -509,6 +528,8 @@ module.exports = View.extend({
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
     this.path += ' L ' + end.x + ' ' + end.y; 
     
+    if(this.corruptionRisk)
+      this.drawCorruptionFlag(((start.x + end.x)/2), ((start.y + end.y)/2));
   },
 
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, direction){
@@ -546,6 +567,17 @@ module.exports = View.extend({
     this.path += ' L ' + secondX + ' ' + halfY;
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
     this.path += ' L ' + end.x + ' ' + end.y;
+
+    if(this.corruptionRisk)
+      this.drawCorruptionFlag(((start.x + end.x)/2), ((start.y + end.y)/2));
+  },
+
+  drawCorruptionFlag: function (x, y, start, end){
+    //console.log('from: ' + start.x + ',' + start.y + ' to: ' + end.x + ',' + end.y);
+    //console.log(x + ' ' + y);
+    var corruptionRisk = this.$('.corruptionRisk');
+    corruptionRisk.css({left: x, top: y});
+    corruptionRisk.show();
     
   },
 });
