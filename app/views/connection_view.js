@@ -475,14 +475,11 @@ module.exports = View.extend({
         if (start.x + end.x == 0)
           corrX = 0;
       }
-      this.drawCorruptionFlag(corrX, corrY, start, end);
+      this.drawCorruptionFlag(corrX, corrY);
     }
   },
   
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
-
-    console.log('from: ' + start.x + ',' + start.y);
-    console.log('to: ' + end.x + ',' + end.y);
 
     this.path = 'M ' + start.x + ' ' + start.y;
     var distanceX = Math.abs(start.x - end.x);
@@ -528,10 +525,9 @@ module.exports = View.extend({
           corrY = start.y - halfSum + this.model.from.margins.top*2;
         }
       }
-      corrX += 20;
-      corrY += 20;
-      console.log(corrX + ',' + corrY);
-      this.drawCorruptionFlag(corrX, corrY, start, end);
+      corrX += this.model.from.margins.top;
+      corrY += this.model.from.margins.top;
+      this.drawCorruptionFlag(corrX, corrY);
     }
 
   },
@@ -621,12 +617,9 @@ module.exports = View.extend({
       
   },
 
-  drawCorruptionFlag: function (x, y, start, end){
-    //console.log('from: ' + start.x + ',' + start.y + ' to: ' + end.x + ',' + end.y);
-    //console.log(x + ' ' + y);
+  drawCorruptionFlag: function (x, y){
     var corruptionRisk = this.$('.corruptionRisk');
     corruptionRisk.css({left: x, top: y});
-    corruptionRisk.show();
-    
+    corruptionRisk.show(); 
   },
 });
