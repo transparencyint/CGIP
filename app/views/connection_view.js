@@ -464,14 +464,14 @@ module.exports = View.extend({
       var corrX;
       var corrY;
       if (start.x == end.x){
-        corrX = start.x+this.model.from.margins.left/2;
-        corrY = (start.y+end.y)/2;
+        corrX = start.x + this.model.from.margins.top*2;
+        corrY = (start.y+end.y)/2 + this.model.from.margins.top;
         if (start.y + end.y == 0)
           corrY = 0;
       }
       else{
-        corrX = (start.x+end.x)/2;
-        corrY = start.y+this.model.from.margins.top/2
+        corrX = (start.x+end.x)/2 + this.model.from.margins.top*2;
+        corrY = start.y+this.model.from.margins.top/2*2
         if (start.x + end.x == 0)
           corrX = 0;
       }
@@ -481,7 +481,13 @@ module.exports = View.extend({
   
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
 
+    console.log('from: ' + start.x + ',' + start.y);
+    console.log('to: ' + end.x + ',' + end.y);
+
     this.path = 'M ' + start.x + ' ' + start.y;
+    var distanceX = Math.abs(start.x - end.x);
+    var distanceY = Math.abs(start.y - end.y);
+    var halfSum = (distanceY + distanceX)/2;
 
     if(start.x < end.x){
       this.path += ' L ' + end2.x + ' ' + start.y;
@@ -493,6 +499,41 @@ module.exports = View.extend({
       this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
       this.path += ' L ' + end.x + ' ' + end.y; 
     }
+
+    if(this.corruptionRisk){
+      var corrX;
+      var corrY;
+      //get the midpoint of the connection
+      if(distanceX > distanceY){
+        if(start.x < end.x){
+          //x1 + halfsum, y1
+          corrX = start.x + halfSum;
+          corrY = start.y;
+        }
+        else{
+          //x1 - halfsum, y1
+          corrX = start.x - halfSum + this.model.from.margins.top;
+          corrY = start.y;
+        }
+      }
+      else{
+        if(start.y < end.y){
+          //x2, y2-halfsum
+          corrX = end.x + this.model.from.margins.top;
+          corrY = end.y - halfSum;
+        }
+        else{
+          //x2, y1-halfsum
+          corrX = end.x + this.model.from.margins.top;
+          corrY = start.y - halfSum + this.model.from.margins.top*2;
+        }
+      }
+      corrX += 20;
+      corrY += 20;
+      console.log(corrX + ',' + corrY);
+      this.drawCorruptionFlag(corrX, corrY, start, end);
+    }
+
   },
 
   definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2){
@@ -529,8 +570,11 @@ module.exports = View.extend({
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
     this.path += ' L ' + end.x + ' ' + end.y; 
     
-    if(this.corruptionRisk)
-      this.drawCorruptionFlag(((start.x + end.x)/2), ((start.y + end.y)/2));
+    if(this.corruptionRisk){
+      var corrX = (start.x + end.x)/2 + this.model.from.margins.top*2;
+      var corrY = (start.y + end.y)/2 + this.model.from.margins.top;
+      this.drawCorruptionFlag(corrX, corrY);
+    }
   },
 
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
@@ -569,8 +613,12 @@ module.exports = View.extend({
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
     this.path += ' L ' + end.x + ' ' + end.y;
 
-    if(this.corruptionRisk)
-      this.drawCorruptionFlag(((start.x + end.x)/2), ((start.y + end.y)/2));
+    if(this.corruptionRisk){
+      var corrX = (start.x + end.x)/2 + this.model.from.margins.top*2;
+      var corrY = (start.y + end.y)/2 + this.model.from.margins.top;
+      this.drawCorruptionFlag(corrX, corrY);
+    }
+      
   },
 
   drawCorruptionFlag: function (x, y, start, end){
