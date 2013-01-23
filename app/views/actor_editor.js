@@ -1,5 +1,6 @@
 var View = require('./view');
 var Actor = require('models/actor');
+var ActorGroup = require('models/actor_group');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
@@ -125,7 +126,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -133,10 +134,18 @@ module.exports = View.extend({
     $(document).on('viewSelected', this.actorSelected);
 
     // react to socket events
-    socket.on(this.country + ':actor', this.addActorWithoutPopup);
-    socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
-    socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
-    socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
+    var country = this.country.get('abbreviation');
+    socket.on(country + ':actor', this.addActorWithoutPopup);
+    socket.on(country + ':actor:group', this.addActorGroupFromRemote);
+    socket.on(country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
+    socket.on(country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    socket.on(country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
+  },
+
+  addActorGroupFromRemote: function(actorGroup){
+    console.log('got a remote actor group')
+    actorGroup = new ActorGroup(actorGroup);
+    this.appendActorGroup(actorGroup);
   },
 
   addActorWithoutPopup: function(actor){
@@ -672,9 +681,11 @@ module.exports = View.extend({
 
     $(window).unbind('resize', this.realignOrigin);
 
-    socket.removeAllListeners(this.country + ':actor');
-    socket.removeAllListeners(this.country + ':connection:money');
-    socket.removeAllListeners(this.country + ':connection:accountability');
-    socket.removeAllListeners(this.country + ':connection:monitoring');
+    var country = this.country.get('abbreviation');
+    socket.removeAllListeners(country + ':actor');
+    socket.removeAllListeners(country + ':actor_group');
+    socket.removeAllListeners(country + ':connection_money');
+    socket.removeAllListeners(country + ':connection_accountability');
+    socket.removeAllListeners(country + ':connection_monitoring');
   }
 });
