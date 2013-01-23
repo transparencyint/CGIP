@@ -7,7 +7,7 @@
   </div>
 
 	<div>
-		<label for="organizationType">Type</label>
+		<span><%= t('type')</span>
 		<div class="organizationType clearfix">
       <% if @organizationType != 'other': %>
         <%= @organizationType %>
@@ -17,38 +17,38 @@
     </div>
 	</div>
 
+  <% if @role: %> 
   <div class="role clearfix">
-    <label>Role</label>
-    <% if @role: %> 
-      <% for role in @role: %> 
-        <%= role %>
-      <% end %>
-    <% end %>
+    <span><%= t('role')</span>    
+    <% for role in @role: %> 
+      <%= role %>
+    <% end %>  
   </div>
-   
-  <div class="purpose clearfix">
-    <label>Purpose</label>
-    <% if @purpose: %> 
-      <% for purpose in @purpose: %> 
-        <%= purpose %>
-      <% end %>
-    <% end %>
-  </div>
+  <% end %>
 
-	<div class="corruptionRisk clearfix">
-	  <% if @hasCorruptionRisk: %>  
+  <% if @purpose: %>  
+  <div class="purpose clearfix">
+    <span><%= t('purpose')%></span>
+    <% for purpose in @purpose: %> 
+      <%= purpose %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <% if @hasCorruptionRisk: %>  
+  	<div class="corruptionRisk clearfix">
       <%= t('There is a corruption Risk'); %>
       <p><%= @corruptionRisk %></p>
 
       <% if @corruptionRiskSource: %>
         <p class="corruption-risk-source"> <%= @corruptionRiskSource %> </p>
       <% end %>
-    <% end %>
-	</div>
+  	</div>
+  <% end %>
 	
   <% if @description: %>
   	<div>
-  	  <label for="description">Note</label>
+  	  <span><%= t('note')%></span>
   		<%= @description%>
   	</div> 
   <% end %>
@@ -57,6 +57,6 @@
 
 <div class="controls clearfix">
   <div class="row right">
-    <button type="submit" class="close">Close</button>
+    <button type="submit" class="close"><%= t('close')%></button>
   </div>
 </div>

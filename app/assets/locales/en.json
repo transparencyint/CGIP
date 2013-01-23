@@ -17,5 +17,10 @@
   "funding": "Funding",
   "coordination": "Coordination",
   "implementation": "Implementation",
-  "monitoring": "Monitoring"
+  "monitoring": "Monitoring",
+  "type": "Type",
+  "role": "Role",
+  "purpose": "Purpose",
+  "note": "Note",
+  "close": "Close"
 }

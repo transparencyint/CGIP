@@ -18,5 +18,10 @@
   "funding": "Finanzierung",
   "coordination": "Koordinierung",
   "implementation": "Umsetzung",
-  "monitoring": "Beobachtung"
+  "monitoring": "Beobachtung",
+  "type": "Typ",
+  "role": "Rolle",
+  "purpose": "Zweck",
+  "note": "Notiz",
+  "close": "Schließen"
 }
