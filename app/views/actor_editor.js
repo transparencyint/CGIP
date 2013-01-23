@@ -117,7 +117,7 @@ module.exports = View.extend({
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+    this.initializeConfig();
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
@@ -609,6 +609,10 @@ module.exports = View.extend({
   
   initializeDimensions: function(){
     this.origin.left = this.$el.width()/2;
+  },
+
+  initializeConfig: function(){
+    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
   },
 
   afterRender: function(){
