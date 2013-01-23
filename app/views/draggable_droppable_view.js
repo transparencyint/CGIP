@@ -12,10 +12,10 @@ module.exports = DraggableView.extend({
 
     if(!this.$document) this.$document = $(document);
 
-    _.bindAll(this, 'checkHover', '_checkDrop');
+    _.bindAll(this, 'checkHover', 'checkDrop');
 
     this.$document.on('viewdrag', this.checkHover);
-    this.$document.on('viewdragstop', this._checkDrop);
+    this.$document.on('viewdragstop', this.checkDrop);
   },
 
   isAllowedToDrop: function(view){
@@ -61,7 +61,7 @@ module.exports = DraggableView.extend({
 
   dragOut: function(){},
 
-  _checkDrop: function(event, view){
+  checkDrop: function(event, view){
     if(this.model.isLocked()) return; // return if model is locked
     if(event.isPropagationStopped()) return; // return if others stopped the propagation
     
@@ -71,14 +71,14 @@ module.exports = DraggableView.extend({
     if(this.overlapsWith(view)){
       if(this.isAllowedToDrop(view)){
         event.stopPropagation();
-        this.checkDrop(event, view);
+        this.drop(event, view);
       }
       if(this.hovered)
         this._dragOut();
     }
   },
 
-  checkDrop: function(){},
+  drop: function(){event, view},
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);

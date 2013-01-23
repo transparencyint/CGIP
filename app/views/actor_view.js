@@ -54,7 +54,9 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.determineName() );
   },
   
-  checkDrop: function(event, view){
+  drop: function(event, view){
+    // stop the actor dragging
+    view.isDragging = false;
     this.model.turnIntoGroup(view.model);
   },
 
@@ -79,8 +81,5 @@ module.exports = DraggableDroppableView.extend({
 
     this.editor.off('disableDraggable', this.disableDraggable, this);
     this.editor.off('enableDraggable', this.enableDraggable, this);
-
-    this.$document.off('viewdrag', this.checkHover);
-    this.$document.off('viewdragstop', this.checkDrop);
   }
 });

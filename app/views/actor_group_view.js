@@ -13,7 +13,7 @@ module.exports = DraggableDroppableView.extend({
   initialize: function(){
     DraggableDroppableView.prototype.initialize.call(this);
 
-    _.bindAll(this, 'checkDrop');
+    _.bindAll(this, 'drop');
 
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
@@ -108,7 +108,7 @@ module.exports = DraggableDroppableView.extend({
     this.close();
   },
 
-  checkDrop: function(event, view){
+  drop: function(event, view){
     // Reset FakeActorViews
     if(view instanceof FakeActorView){
       return view.reset();
