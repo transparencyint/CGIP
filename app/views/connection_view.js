@@ -331,21 +331,22 @@ module.exports = View.extend({
       }
       //case 3a+b
       //
-      //    │
-      //  ←─┘
+      //  ┌──
+      //  │
+      //  ↓
       //
       else {
-        start.y += fromMargins.bottom;
-        end.x += toMargins.right + this.markerSize;
+        start.x -= fromMargins.left;
+        end.y -= toMargins.top + this.markerSize;
         start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
+          x : start.x,
+          y : start.y + this.edgeRadius
         };
         end2 = {
-          x : end.x,
-          y : end.y - this.edgeRadius
+          x : end.x + this.edgeRadius,
+          y : end.y
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
       }
     }
     //case 4
@@ -383,21 +384,21 @@ module.exports = View.extend({
       }
       //case 4a+b
       //
-      //  ←─┐
       //    │
+      //  ←─┘
       //
       else {
-        start.y -= fromMargins.top;
-        end.x += toMargins.right + this.markerSize;
+        start.x -= fromMargins.left;
+        end.y += toMargins.bottom + this.markerSize;
         start2 = {
-          x : start.x - this.edgeRadius,
-          y : start.y
+          x : start.x,
+          y : start.y - this.edgeRadius
         };
         end2 = {
-          x : end.x,
-          y : end.y + this.edgeRadius
+          x : end.x + this.edgeRadius,
+          y : end.y
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
       }
     }
     
@@ -488,8 +489,8 @@ module.exports = View.extend({
       this.path += ' L ' + end.x + ' ' + end.y;  
     }
     else{
-      this.path += ' L ' + start.x + ' ' + end2.y;
-      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + start2.x + ' ' + end.y;
+      this.path += ' L ' + end2.x + ' ' + start.y;
+      this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag + ' ' + end.x + ' ' + start2.y;
       this.path += ' L ' + end.x + ' ' + end.y; 
     }
   },
