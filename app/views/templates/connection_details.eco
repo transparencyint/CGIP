@@ -25,7 +25,7 @@
     </div>
     
     <div>
-  	  <label>Corruption Risk</label>
+  	  <h4>Corruption Risk</h4>
   	  <input class="hasAdditionalInfo" type="checkbox" data-type="boolean" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
