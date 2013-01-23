@@ -29,7 +29,7 @@ module.exports = View.extend({
 		this.initializeProperties();
     this.initializeDimensions();
 
-		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom');
+		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
   
   },
 
@@ -44,9 +44,14 @@ module.exports = View.extend({
   zoomTo: ActorEditor.prototype.zoomTo,
   slideZoom: ActorEditor.prototype.slideZoom,
   fitToScreen: ActorEditor.prototype.fitToScreen,
-  dragStart: ActorEditor.prototype.dragStart,
   stopPropagation: ActorEditor.prototype.stopPropagation,
   getBoundingBox: ActorEditor.prototype.getBoundingBox,
+
+
+  //enable panning
+  dragStart: ActorEditor.prototype.dragStart,
+  drag: ActorEditor.prototype.drag,
+  dragStop: ActorEditor.prototype.dragStop,
 
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
