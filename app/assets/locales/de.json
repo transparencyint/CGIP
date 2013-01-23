@@ -18,5 +18,8 @@
   "funding": "Finanzierung",
   "coordination": "Koordinierung",
   "implementation": "Umsetzung",
-  "monitoring": "Beobachtung"
+  "monitoring": "Beobachtung",
+  "Disbursed": "Ausgezahlt",
+  "Pledged": "Versprochen",
+  "Corruption Risk": "Korruptionsrisiko"
 }
