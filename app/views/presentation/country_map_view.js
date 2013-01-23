@@ -23,11 +23,13 @@ module.exports = View.extend({
     // ..except when your mouse touches the controls
     'mousedown .controls': 'stopPropagation',
     'click .controls': 'stopPropagation',
+    'click .tool .moneyMode .small': 'toggleMoneyMode',
   },
 
   initialize: function(){
 		this.initializeProperties();
     this.initializeDimensions();
+    this.initializeConfig();
 
 		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
   
@@ -37,6 +39,7 @@ module.exports = View.extend({
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
   moveTo: ActorEditor.prototype.moveTo,
   initializeDimensions: ActorEditor.prototype.initializeDimensions,
+  initializeConfig: ActorEditor.prototype.initializeConfig,
 
   //zoomFunctions
   zoomIn: ActorEditor.prototype.zoomIn,
@@ -106,6 +109,9 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
+
+    this.$('#disbursedMoney').addClass("active");
+    
     $(window).resize(this.realignOrigin);
 
     this.slider = this.$('.bar').slider({ 
@@ -119,5 +125,22 @@ module.exports = View.extend({
     });
 
   },
+
+  toggleMoneyMode: function(event){
+    var target = $(event.target);
+
+    var currentID = target.attr('id');
+    if(currentID === 'disbursedMoney')
+      config.set('moneyConnectionMode','disbursedMode'); 
+    else if(currentID === 'pledgedMoney')
+      config.set('moneyConnectionMode','pledgedMode'); 
+  },
+
+  toggleActiveMoneyMode: function(){
+    if(config.get('moneyConnectionMode') === 'disbursedMode')
+      this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
+    else 
+      this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
+  }
 
 });
