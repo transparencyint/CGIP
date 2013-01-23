@@ -57,7 +57,8 @@ module.exports = DraggableDroppableView.extend({
   drop: function(event, view){
     // stop the actor dragging
     view.isDragging = false;
-    this.model.turnIntoGroup(view.model);
+    var newGroup = this.model.turnIntoGroup(view.model);
+    this.editor.actorGroups.add(newGroup);
   },
 
   getRenderData: function() {

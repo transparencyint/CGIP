@@ -3,11 +3,13 @@ var Actor = require('./actor');
 module.exports = Actor.extend({
   defaults: function(){
     return {
-      actors: []
+      actors: [],
+      actorType: 'group'
     };
   },
 
-  initialize: function(){
+  initialize: function(options){
+    Actor.prototype.initialize.call(this, options);
     // todo: create custom collection
     this.actors = new Backbone.Collection();
     this.actors.model = Actor;
