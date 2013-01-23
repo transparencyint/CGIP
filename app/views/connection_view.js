@@ -203,7 +203,7 @@ module.exports = View.extend({
       if(start.y == end.y){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath1Line(start, end, 1);
+        this.definePath1Line(start, end);
       }
       //case 1c
       //
@@ -213,7 +213,7 @@ module.exports = View.extend({
       else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0, 1);
+        this.definePath3LinesX(start, end, 1, 0);
       }
       //case 1d
       //  
@@ -224,7 +224,7 @@ module.exports = View.extend({
       else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1, 2);
+        this.definePath3LinesY(start, end, 0, 1);
       }
       //case 1a+b
       //  
@@ -242,7 +242,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, false, 2);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
       }
     }
     //case 2
@@ -255,7 +255,7 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath1Line(start, end, 0);
+        this.definePath1Line(start, end);
       }
       //case 2c
       //
@@ -265,7 +265,7 @@ module.exports = View.extend({
       else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1, 1);
+        this.definePath3LinesX(start, end, 0, 1);
       }
       //case 2d
       //  
@@ -276,7 +276,7 @@ module.exports = View.extend({
       else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0, 0);
+        this.definePath3LinesY(start, end, 1, 0);
       }
       //case 2a+b
       //  
@@ -294,7 +294,7 @@ module.exports = View.extend({
           x : end.x - this.edgeRadius,
           y : end.y - 10
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, false, 0);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
       }
     }
     //case 3
@@ -306,7 +306,7 @@ module.exports = View.extend({
       if(start.y == end.y){
         start.x -= fromMargins.right;
         end.x += toMargins.left + this.markerSize;
-        this.definePath1Line(start, end, 3);
+        this.definePath1Line(start, end);
       }
       //case 3c
       //
@@ -316,7 +316,7 @@ module.exports = View.extend({
       else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1, 3);
+        this.definePath3LinesX(start, end, 0, 1);
       }
       //case 3d
       //
@@ -327,7 +327,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0, 2);
+        this.definePath3LinesY(start, end, 1, 0);
       }
       //case 3a+b
       //
@@ -345,7 +345,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y - this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius, true, 3);
+        this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
       }
     }
     //case 4
@@ -358,7 +358,7 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath1Line(start, end, 2);
+        this.definePath1Line(start, end);
       }
       //case 4c
       //
@@ -368,7 +368,7 @@ module.exports = View.extend({
       else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0, 3);
+        this.definePath3LinesX(start, end, 1, 0);
       }
       //case 4d
       //
@@ -379,7 +379,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1, 0);
+        this.definePath3LinesY(start, end, 0, 1);
       }
       //case 4a+b
       //
@@ -397,7 +397,7 @@ module.exports = View.extend({
           x : end.x,
           y : end.y + this.edgeRadius
         };
-        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius, true, 3);
+        this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
       }
     }
     
@@ -455,7 +455,7 @@ module.exports = View.extend({
     metadata.hide();  
   },
   
-  definePath1Line: function(start, end, direction){
+  definePath1Line: function(start, end){
     // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     this.path += ' L ' + end.x + ' ' + end.y;
@@ -478,7 +478,7 @@ module.exports = View.extend({
     }
   },
   
-  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius, hasRightDirection, direction){
+  definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
 
     this.path = 'M ' + start.x + ' ' + start.y;
 
@@ -494,7 +494,7 @@ module.exports = View.extend({
     }
   },
 
-  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2, direction){
+  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2){
     var edgeRadius = this.edgeRadius;
     var halfX = start.x + (end.x - start.x)/2;
     var firstY, secondY, firstX, secondX;
@@ -532,7 +532,7 @@ module.exports = View.extend({
       this.drawCorruptionFlag(((start.x + end.x)/2), ((start.y + end.y)/2));
   },
 
-  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, direction){
+  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
     var edgeRadius = this.edgeRadius;
     var halfY = start.y + (end.y - start.y)/2;
     var firstX, secondX, firstY, secondY;
