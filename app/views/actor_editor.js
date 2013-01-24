@@ -612,7 +612,7 @@ module.exports = View.extend({
     this.rbw = new RoleBackgroundView({ editor: this });
     this.workspace.before(this.rbw.render()); 
     
-    this.settings = new SettingsView({ editor: editor });
+    this.settings = new SettingsView({ editor: this });
     this.$('.topBar').append(this.settings.render().el);
 
     this.actors.each(this.appendActor);
