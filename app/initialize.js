@@ -14,10 +14,10 @@ $(function() {
     // decide on location of the socket server
     var socketServer = '';
     if(window.realtimePort)
-      socketServer = location.host + ':' + window.realtimePort;
+      socketServer = 'http://' + location.host + ':' + window.realtimePort;
     else
       socketServer = '127.0.0.1:3000';
-
+    console.log('connect socket to: ', socketServer)
     // connect to the socket
     window.socket = io.connect(socketServer);
     socket.on('connect', function(){
