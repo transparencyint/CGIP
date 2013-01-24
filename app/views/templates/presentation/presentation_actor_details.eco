@@ -26,7 +26,7 @@
         </div>
     <% end %>
 
-    <% if @role: %> 
+    <% if @role.length: %> 
       <div>
         <%= t('Role')%>:   
         <% for role,idx in @role: %> 
@@ -39,7 +39,7 @@
       </div>
     <% end %>
 
-    <% if @purpose: %>  
+    <% if @purpose.length: %>  
       <div>
         <%= t('Purpose')%>:
         <% for purpose,idx in @purpose: %> 
