@@ -26,13 +26,11 @@
 
     <% if @hasCorruptionRisk: %> 
       <div>
-        <p><%= t('There is a corruption Risk.'); %></p>
-
+        <p><%= t('is_corruption_risk'); %></p>
     	  <div class="additionalInfo inlay">
-      	  
-      	 <div class="corruptionText"><%= @corruptionRisk %></div>
-
-          <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+      	  <div class="corruptionText"><%= @corruptionRisk %></div>
+          <% if @corruptionRiskSource: %>
+            <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
       	</div>
     	</div>
     <% end %>
@@ -42,6 +40,6 @@
 
 <div class="controls clearfix">
   <div class="row right">
-    <button class="cancel">Cancel</button>
+    <button class="cancel"><%= t('Close')%></button>
   </div>
 </div>

@@ -32,6 +32,8 @@ module.exports = View.extend({
   pressOnScrollbar: ConnectionDetails.prototype.pressOnScrollbar,
   currentMoneyMode: ConnectionDetails.prototype.currentMoneyMode,
   getRenderData: ConnectionDetails.prototype.getRenderData,
+  fillInActorNames: ConnectionDetails.prototype.fillInActorNames,
+  
 
   initialize: function(options){
 
@@ -88,7 +90,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is accountable for',
+      'accountability': 'is_accountable_for',
       'monitoring': 'monitors',
       'money': 'pays',
     };
@@ -113,13 +115,6 @@ module.exports = View.extend({
       
       self.$('input').first().focus();
     });
-  },
-  
-  fillInActorNames: function(text){
-    var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
-    var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
-
-    this.$('.connectionName').text(from + ' ' + text + ' ' + to);
   },
 
   close: function(){

@@ -2,60 +2,73 @@
 
 <div class="holder">
   <div>
-    <h3><%= @name %> (<%= @abbreviation %>) </h3>
-  </div>
-
-	<div>
-		<span><%= t('type')%></span>
-		<div class="organizationType clearfix">
-      <% if @organizationType != 'other': %>
-        <%= @organizationType %>
+    <h3>
+      <% if @name: %>
+        <%= @name %> <% if @abbreviation: %>(<%= @abbreviation %>)<% end %> 
+      <% else if @abbreviation: %>
+        <%= @abbreviation %>
       <% else: %>
-        <%= @typeOther %>
-      <% end %>
-    </div>
-	</div>
-
-  <% if @role: %> 
-  <div class="role clearfix">
-    <span><%= t('role')%></span>    
-    <% for role in @role: %> 
-      <%= role %>
-    <% end %>  
+        Unknown
+      <% end %> 
+    </h3>
   </div>
-  <% end %>
 
-  <% if @purpose: %>  
-  <div class="purpose clearfix">
-    <span><%= t('purpose')%></span>
-    <% for purpose in @purpose: %> 
-      <%= purpose %>
+  <div class="show">
+
+    <% if @organizationType: %>
+        <div class="clearfix">
+          <%= t('Type')%>: 
+          <% if @organizationType != 'other': %>
+            <%= @organizationType %>
+          <% else: %>
+            <%= @typeOther %>
+          <% end %>
+        </div>
     <% end %>
-  </div>
-  <% end %>
 
-  <% if @hasCorruptionRisk: %>  
-  	<div class="corruptionRisk clearfix">
-      <%= t('There is a corruption Risk'); %>
-      <p><%= @corruptionRisk %></p>
+    <% if @role: %> 
+      <div>
+        <%= t('Role')%>:   
+        <% for role in @role: %> 
+          <%= role %>
+        <% end %>  
+      </div>
+    <% end %>
 
-      <% if @corruptionRiskSource: %>
-        <p class="corruption-risk-source"> <%= @corruptionRiskSource %> </p>
-      <% end %>
-  	</div>
-  <% end %>
-	
-  <% if @description: %>
-  	<div>
-  	  <span><%= t('note')%></span>
-  		<%= @description%>
-  	</div> 
-  <% end %>
+    <% if @purpose: %>  
+      <div>
+        <%= t('Purpose')%>:
+        <% for purpose in @purpose: %> 
+          <%= purpose %>
+        <% end %>
+      </div>
+    <% end %>
 
+    <% if @hasCorruptionRisk: %>  
+    	<div class="clearfix">
+        <p><%= t('is_corruption_risk'); %></p>
+        <div class="additionalInfo inlay">
+          <div class="corruptionText"><%= @corruptionRisk %></div>
+          <% if @corruptionRiskSource: %>
+            <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+        </div>
+        <% end %>
+    	</div>
+    <% end %>
+  	
+    <% if @description: %>
+    	<div class="clearfix">
+    	  <p><%= t('Note')%>:
+    		<%= @description%>
+        </p>
+    	</div> 
+    <% end %>
+
+  </div> 
 </div><!-- /.holder -->
 
 <div class="controls clearfix">
   <div class="row right">
-    <button type="submit" class="close"><%= t('close')%></button>
+    <button type="submit" class="close"><%= t('Close')%></button>
   </div>
 </div>

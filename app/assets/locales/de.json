@@ -22,10 +22,16 @@
   "Disbursed": "Ausgezahlt",
   "Pledged": "Versprochen",
   "Corruption Risk": "Korruptionsrisiko",
-  "type": "Typ",
-  "role": "Rolle",
-  "purpose": "Zweck",
-  "note": "Notiz",
-  "close": "Schließen",
-  "Source": "Quelle"
+  "is_corruption_risk": "Es gibt ein Korruptionsrisiko.",
+  "Type": "Typ",
+  "Role": "Rolle",
+  "Purpose": "Zweck",
+  "Note": "Notiz",
+  "Close": "Schließen",
+  "Save": "Speichern",
+  "Delete": "Löschen",
+  "Source": "Quelle",
+  "is_accountable_for": "ist verantwortlich für",
+  "monitors": "kontrolliert",
+  "pays": "zahlt an"
 }

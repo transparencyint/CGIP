@@ -1,4 +1,5 @@
 var View = require('../view');
+var ActorDetails = require('../actor_details');
 
 module.exports = View.extend({
 
@@ -20,9 +21,17 @@ module.exports = View.extend({
     'mousedown button': 'dontDrag'
   }, 
 
+  dragStart: ActorDetails.prototype.dragStart,
+  dragStop: ActorDetails.prototype.dragStop,
+  drag: ActorDetails.prototype.drag,
+  dontDrag: ActorDetails.prototype.dontDrag,
+  pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
+  placeNextToActor: ActorDetails.prototype.placeNextToActor,
+  
   initialize: function(options){
     View.prototype.initialize.call(this);
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'destroy', 'close');
+
+    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy');
     
     this.actor = options.actor;
     this.editor = options.editor;
@@ -35,39 +44,6 @@ module.exports = View.extend({
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
-  },
-  
-  dontDrag: function(event){
-    event.stopPropagation();
-  },
-  
-  dragStart: function(event){
-    event.stopPropagation();
-
-    var pos = this.$el.offset();
-    
-    this.startX = event.pageX - pos.left;
-    this.startY = event.pageY - pos.top;
-    
-    // stop when the user is clicking onto a scrollbar (chrome bug)
-    if(this.pressOnScrollbar(this.startX))
-      return;
-
-    this.$el.addClass('moved');
-  
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
-  },
-
-  drag: function(event){ 
-    this.$el.css({
-      left: event.pageX - this.startX,
-      top: event.pageY - this.startY
-    })
-  },
-  
-  dragStop : function(){
-    $(document).unbind('mousemove.global');
   },
   
   close: function(){
@@ -93,61 +69,10 @@ module.exports = View.extend({
       case 27: // ESC
         this.close();
         break;
+      case 13: // Enter
+        this.close();
+        break;
     }
-  },
-  
-  placeNextToActor: function(){
-    // absolute position inside the window
-    var pos = this.actor.$el.offset();
-    var padding = this.editor.padding;
-    var arrow = this.$('.arrow');
-    this.height = this.$el.height();
-    var arrowPos = this.height / 2;
-    
-    var actorWidth = this.actor.width * this.editor.zoom.value;
-    var actorHeight = this.actor.height * this.editor.zoom.value;
-    
-    // we want to place the modal next to the actor
-    // on the right
-    pos.left += actorWidth + this.distanceToActor;
-    
-    // if the space on the right is not big enough
-    // place it on the left hand side
-    if(pos.left + padding + this.width > this.editor.$el.width()){
-      pos.left -= (actorWidth + 2*this.distanceToActor + this.width);
-      this.$el.addClass('leftAligned');
-    }
-    
-    // vertically, we want to place the modal centered
-    pos.top += actorHeight/2  - this.height/2;
-    
-    // if the position is too far up
-    // or too down low, adjust the position AND the arrow
-    if(pos.top - padding < 0){
-      arrowPos -= Math.abs(padding - pos.top);
-      pos.top = padding;
-    }
-    else if(pos.top + this.height + padding > this.editor.$el.height()){      
-      arrowPos += Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
-      pos.top = this.editor.$el.height() - padding - this.height;
-    }
-    
-    // keep the arrow positonend inside the boundaries
-    var max = this.height-this.controlsHeight-this.arrowHeight/2;
-    var min = this.borderRadius+this.arrowHeight/2;
-    
-    arrowPos = Math.min(max, Math.max(min, arrowPos));
-    arrow.css('top', arrowPos - this.arrowHeight/2);
-    
-    // limit the maximum height to show scrollbars
-    // if the details would get too high
-    var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
-    this.$('.holder').css('maxHeight', maxHeight);
-
-    this.$el.css({
-      left: pos.left,
-      top: pos.top
-    });
   },
   
   addClickCatcher: function(){

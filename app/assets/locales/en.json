@@ -18,9 +18,6 @@
   "coordination": "Coordination",
   "implementation": "Implementation",
   "monitoring": "Monitoring",
-  "type": "Type",
-  "role": "Role",
-  "purpose": "Purpose",
-  "note": "Note",
-  "close": "Close"
+  "is_accountable_for": "is accountable for",
+  "is_corruption_risk": "There is a corruption risk."
 }
