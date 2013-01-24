@@ -29,8 +29,12 @@
     <% if @role: %> 
       <div>
         <%= t('Role')%>:   
-        <% for role in @role: %> 
-          <%= role %>
+        <% for role,idx in @role: %> 
+          <% if idx == 0: %>
+            <%= role %>
+          <% else: %>
+            / <%= role %> 
+          <% end %>  
         <% end %>  
       </div>
     <% end %>
@@ -38,8 +42,12 @@
     <% if @purpose: %>  
       <div>
         <%= t('Purpose')%>:
-        <% for purpose in @purpose: %> 
-          <%= purpose %>
+        <% for purpose,idx in @purpose: %> 
+          <% if idx == 0: %>
+            <%= purpose %>
+          <% else: %>
+            / <%= purpose %>
+          <% end %>  
         <% end %>
       </div>
     <% end %>
