@@ -12,8 +12,11 @@ html
     script(src="/socket.io/socket.io.js")
     title CGIP
   body
-    script(id="lockedModels")
+    script(id="lm")
       window.lockedModels = !{JSON.stringify(lockedModels)};
+    scrip(id="rp")
+      window.realtimePort = !{realtimePort};
+
     if user
         script(id="user_hash")
           window.user_hash = !{JSON.stringify(user)};
