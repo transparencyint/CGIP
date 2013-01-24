@@ -16,7 +16,7 @@ module.exports = View.extend({
 		this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
-    _.bindAll(this, 'showDetails');
+  	_.bindAll(this, 'showDetails');
 	},
 
 	determineName: ActorView.prototype.determineName,
@@ -27,7 +27,7 @@ module.exports = View.extend({
     this.options.editor.$el.append(this.modal.render().el);
   },
 
-	updatePosition: function(){
+  updatePosition: function(){
     var pos = this.model.get('pos');
     
     this.$el.css({

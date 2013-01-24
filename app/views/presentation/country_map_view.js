@@ -27,12 +27,12 @@ module.exports = View.extend({
   },
 
   initialize: function(){
+
 		this.initializeProperties();
     this.initializeDimensions();
     this.initializeConfig();
 
 		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
-  
   },
 
   initializeProperties: ActorEditor.prototype.initializeProperties,
@@ -57,9 +57,15 @@ module.exports = View.extend({
   dragStop: ActorEditor.prototype.dragStop,
 
   appendActor: function(actor){
+<<<<<<< HEAD
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
 		presentationActorView.render();
 		this.workspace.append(presentationActorView.el);
+=======
+    var actorPresentationView = new ActorPresentationView({ model : actor, editor: this});
+    actorPresentationView.render();
+    this.workspace.append(actorPresentationView.el);
+>>>>>>> master
   },
 
   appendActorGroup: function(actorGroup){
@@ -84,6 +90,7 @@ module.exports = View.extend({
   },
   
   render: function(){
+<<<<<<< HEAD
 		var editor = this;
 
     this.$el.html( this.template() );
@@ -106,6 +113,13 @@ module.exports = View.extend({
     this.afterRender();
 
     _.defer(this.realignOrigin);
+=======
+    this.$el.html( this.template() );
+
+    this.workspace = this.$('.workspace');
+    this.actors.each(this.appendActor);
+    this.actorGroups.each(this.appendActorGroup);
+>>>>>>> master
   },
 
   afterRender: function(){
