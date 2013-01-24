@@ -100,7 +100,6 @@ module.exports = View.extend({
     this.monitoringConnections.each(this.appendConnection);
 
     //display the role backgrounds
-    console.log(editor);
     this.presentationRoleBackgroundView = new PresentationRoleBackgroundView({ editor: editor });
     this.workspace.before(this.presentationRoleBackgroundView.render()); 
 

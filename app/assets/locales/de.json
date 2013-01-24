@@ -21,5 +21,11 @@
   "monitoring": "Beobachtung",
   "Disbursed": "Ausgezahlt",
   "Pledged": "Versprochen",
-  "Corruption Risk": "Korruptionsrisiko"
+  "Corruption Risk": "Korruptionsrisiko",
+  "type": "Typ",
+  "role": "Rolle",
+  "purpose": "Zweck",
+  "note": "Notiz",
+  "close": "Schließen",
+  "Source": "Quelle"
 }

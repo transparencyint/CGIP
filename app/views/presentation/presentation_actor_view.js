@@ -1,5 +1,6 @@
 var View = require('../view');
 var ActorView = require('../actor_view');
+var PresentationActorDetailsView = require('views/presentation/presentation_actor_details_view');
 
 module.exports = View.extend({
 
@@ -7,14 +8,24 @@ module.exports = View.extend({
 
 	className : 'actor',
 
-	events: {},
+	events: {
+		'click': 'showDetails'
+	},
 
-	initialize: function(){
+	initialize: function(options){
+		this.width = options.editor.actorWidth;
+    this.height = options.editor.actorHeight;
 
+    _.bindAll(this, 'showDetails');
 	},
 
 	determineName: ActorView.prototype.determineName,
 	getRenderData: ActorView.prototype.getRenderData,
+
+	showDetails: function(){
+    this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
+  },
 
 	updatePosition: function(){
     var pos = this.model.get('pos');

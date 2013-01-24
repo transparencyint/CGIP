@@ -1,4 +1,5 @@
 var View = require('../view');
+var ConnectionDetails = require('../connection_details');
 
 module.exports = View.extend({
 
@@ -22,13 +23,19 @@ module.exports = View.extend({
     'mousedown button': 'dontDrag'
   },
 
-  dontDrag: function(event){
-    event.stopPropagation();
-  },
+  dragStart: ConnectionDetails.prototype.dragStart,
+  dragStop: ConnectionDetails.prototype.dragStop,
+  drag: ConnectionDetails.prototype.drag,
+  dontDrag: ConnectionDetails.prototype.dontDrag,
+  placeNextToConnection: ConnectionDetails.prototype.placeNextToConnection,
+  updateMoneyConnections: ConnectionDetails.prototype.updateMoneyConnections,
+  pressOnScrollbar: ConnectionDetails.prototype.pressOnScrollbar,
+  currentMoneyMode: ConnectionDetails.prototype.currentMoneyMode,
+  getRenderData: ConnectionDetails.prototype.getRenderData,
 
   initialize: function(options){
 
-    _.bindAll(this, 'handleKeys', 'dragStop', 'drag',  'destroy');
+    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy');
     
     this.connection = options.connection;
     this.connectionType = this.model.get('connectionType');
@@ -41,98 +48,7 @@ module.exports = View.extend({
     this.distanceToConnection = 21;
     
   },
-  
-  dragStart: function(event){
-    event.stopPropagation();
-
-    var pos = this.$el.offset();
     
-    this.startX = event.pageX - pos.left;
-    this.startY = event.pageY - pos.top;
-    
-    // stop when the user is clicking onto a scrollbar (chrome bug)
-    if(this.pressOnScrollbar(this.startX))
-      return;
-  
-    this.$el.addClass('moved');
-    
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
-  },
-
-  drag: function(event){ 
-    this.$el.css({
-      left: event.pageX - this.startX,
-      top: event.pageY - this.startY
-    })
-  },
-  
-  dragStop : function(){
-    $(document).unbind('mousemove.global');
-  },
-
-  currentMoneyMode: function () {
-    this.$('#' + config.get('moneyConnectionMode')).prop("checked", true);
-  },
-
-  getRenderData : function(){
-    return this.model.toJSON();
-  },
-  
-  placeNextToConnection: function(){
-    // absolute position inside the window
-    var pos = this.connection.$el.offset();
-    var padding = this.editor.padding;
-    var arrow = this.$('.arrow');
-    this.height = this.$el.height();
-    var arrowPos = this.height / 2;
-    
-    var connectionWidth = this.connection.$('svg').width() * this.editor.zoom.value;
-    var connectionHeight = this.connection.$('svg').height() * this.editor.zoom.value;
-    
-    // we want to place the modal next to the connection
-    // on the right
-    pos.left += connectionWidth + this.distanceToConnection;
-    
-    // if the space on the right is not big enough
-    // place it on the left hand side
-    if(pos.left + padding + this.width > this.editor.$el.width()){
-      pos.left -= (connectionWidth + 2*this.distanceToConnection + this.width);
-      this.$el.addClass('leftAligned');
-    }
-    
-    // vertically, we want to place the modal centered
-    pos.top += connectionHeight/2  - this.height/2;
-    
-    // if the position is too far up
-    // or too down low, adjust the position AND the arrow
-    if(pos.top - padding < 0){
-      arrowPos -= Math.abs(padding - pos.top);
-      pos.top = padding;
-    }
-    else if(pos.top + this.height + padding > this.editor.$el.height()){      
-      arrowPos += Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
-      pos.top = this.editor.$el.height() - padding - this.height;
-    }
-
-    // keep the arrow positonend inside the boundaries
-    var max = this.height-this.controlsHeight-this.arrowHeight/2;
-    var min = this.borderRadius+this.arrowHeight/2;
-
-    arrowPos = Math.min(max, Math.max(min, arrowPos));
-    arrow.css('top', arrowPos - this.arrowHeight/2);
-
-    // limit the maximum height to show scrollbars
-    // if the details would get too high
-    var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
-    this.$('.holder').css('maxHeight', maxHeight);
-
-    this.$el.css({
-      left: pos.left,
-      top: pos.top
-    });
-  },
-  
   handleKeys: function(event){
     switch (event.keyCode) {
       case 27: // ESC
@@ -199,25 +115,6 @@ module.exports = View.extend({
     });
   },
   
-  /*
-  
-    detects if there is a scrollbar
-    and measures its thickness
-    
-    this is a workaround needed for draggable 
-    because of this bug in Chrome:
-    https://code.google.com/p/chromium/issues/detail?id=14204
-    (no mouseup on scrollbar)
-    
-  */
-  
-  pressOnScrollbar: function(x){ 
-    this.widthWithScrollbar = this.holder.find('div:first-child').width();
-    this.scrollbarThickness = this.widthWithoutScrollbar - this.widthWithScrollbar;
-    
-    return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
-  },
-  
   fillInActorNames: function(text){
     var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
     var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
@@ -225,11 +122,6 @@ module.exports = View.extend({
     this.$('.connectionName').text(from + ' ' + text + ' ' + to);
   },
 
-  updateMoneyConnections: function (event) {
-    config.set('moneyConnectionMode', event.currentTarget.id);
-  },
-
-  
   close: function(){
 
     this.$el.one(this.transEndEventName, this.destroy);

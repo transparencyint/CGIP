@@ -1,0 +1,61 @@
+<div class="arrow"></div>
+
+<div class="holder">
+  <div>
+    <h3><%= @name %> (<%= @abbreviation %>) </h3>
+  </div>
+
+	<div>
+		<span><%= t('type')%></span>
+		<div class="organizationType clearfix">
+      <% if @organizationType != 'other': %>
+        <%= @organizationType %>
+      <% else: %>
+        <%= @typeOther %>
+      <% end %>
+    </div>
+	</div>
+
+  <% if @role: %> 
+  <div class="role clearfix">
+    <span><%= t('role')%></span>    
+    <% for role in @role: %> 
+      <%= role %>
+    <% end %>  
+  </div>
+  <% end %>
+
+  <% if @purpose: %>  
+  <div class="purpose clearfix">
+    <span><%= t('purpose')%></span>
+    <% for purpose in @purpose: %> 
+      <%= purpose %>
+    <% end %>
+  </div>
+  <% end %>
+
+  <% if @hasCorruptionRisk: %>  
+  	<div class="corruptionRisk clearfix">
+      <%= t('There is a corruption Risk'); %>
+      <p><%= @corruptionRisk %></p>
+
+      <% if @corruptionRiskSource: %>
+        <p class="corruption-risk-source"> <%= @corruptionRiskSource %> </p>
+      <% end %>
+  	</div>
+  <% end %>
+	
+  <% if @description: %>
+  	<div>
+  	  <span><%= t('note')%></span>
+  		<%= @description%>
+  	</div> 
+  <% end %>
+
+</div><!-- /.holder -->
+
+<div class="controls clearfix">
+  <div class="row right">
+    <button type="submit" class="close"><%= t('close')%></button>
+  </div>
+</div>
