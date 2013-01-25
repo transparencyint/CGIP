@@ -518,10 +518,7 @@ module.exports = View.extend({
     x += this.origin.left;
     y += this.origin.top;
 
-    this.workspace.css({
-      left: Math.round(x),
-      top: Math.round(y)
-    });
+    this.workspace.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(x) +'px,'+ Math.round(y) +'px,0)');
     
     this.trigger('pan', x, y);
     this.$el.css('background-position', x +'px '+ y + 'px');

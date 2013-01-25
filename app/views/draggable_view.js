@@ -82,10 +82,7 @@ module.exports = View.extend({
   updatePosition: function(){
     var pos = this.model.get('pos');
     
-    this.$el.css({
-      left: pos.x,
-      top: pos.y
-    });
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ pos.x +'px,'+ pos.y +'px,0)');
   },
   
   dragStop : function(){
