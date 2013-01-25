@@ -1,3 +1,4 @@
+var View = require('views/view');
 var ConnectionView = require('views/connection_view');
 
 var connectionTypes = {
@@ -27,7 +28,7 @@ ConnectionMode.prototype.reset = function(){
   this.isActive = true;
   this.connection.set('connectionType', this.connectionType);
 
-  $(document).unbind('mousemove', this._moveDummy);
+  $(document).unbind(View.prototype.inputMoveEvent, this._moveDummy);
   $(document).unbind('keyup', this._keyUp);
 };
 
@@ -46,7 +47,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
     this.connectionView.actorRadius = 0;
     this.connectionView.render();
     this.workspace.append(this.connectionView.el);
-    $(document).bind('mousemove', this._moveDummy);
+    $(document).bind(View.prototype.inputMoveEvent, this._moveDummy);
     $(document).bind('keyup', this._keyUp);
   
   }else if(this.selectedActors.length === 2){
