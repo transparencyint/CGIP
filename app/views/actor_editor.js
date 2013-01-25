@@ -26,14 +26,11 @@ module.exports = View.extend({
       'click .tool .toggleMonitoring': 'toggleMonitoring',
     
       // view controls
-      'click .zoom.in': 'zoomIn',
-      'click .zoom.out': 'zoomOut',
+      'click .zoom .in': 'zoomIn',
+      'click .zoom .out': 'zoomOut',
       'click .fit.screen': 'fitToScreen',
       'click .moneyMode .icon': 'showMoneyModal',
       'click .moneyMode .option': 'chooseMoneyMode',
-    
-      // dont pan when the input touches the controls
-      'click .controls': 'dontPan',
     
       // unselect when clicking into empty space
       'click': 'unselect',
@@ -42,10 +39,11 @@ module.exports = View.extend({
       'gesturestart': 'pinchStart',
       'gesturechange': 'pinch'
     };
+    
     // add dynamic input event handler (touch or mouse)
     _events[ this.inputDownEvent ] = 'panStart';
     
-    // ..and 
+    // ..and prevent them on controls
     _events[ this.inputDownEvent + ' .controls' ] = 'dontPan';
     
     return _events;
@@ -162,6 +160,8 @@ module.exports = View.extend({
   
   slideZoom: function(event, ui){
     event.stopPropagation();
+    var x = this.origin.left + this.offset.left;
+    var y = this.origin.top + this.offset.top;
     
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
@@ -170,7 +170,8 @@ module.exports = View.extend({
     this.zoom.sqrt = Math.sqrt(ui.value);
 
     this.trigger('zoom', this.zoom.value - zoomBefore);
-    this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
+    
+    this.updateWorkspace(x, y, this.zoomlvaue);
     
     this.$el.css('background-size', this.zoom.value*10);
   },
@@ -186,6 +187,10 @@ module.exports = View.extend({
   
   zoomOut: function(){
     this.zoomTo(this.zoom.value - this.zoom.step);
+  },
+  
+  updateWorkspace: function(x, y, scale){
+    this.workspace.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(x) +'px,'+ Math.round(y) +'px,0) scale('+ scale +')');
   },
   
   fitToScreen: function(){
@@ -309,7 +314,6 @@ module.exports = View.extend({
   },
 
   toggleMode: function(event){
-    this.$('.connection.active').removeClass('active');
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
@@ -317,6 +321,7 @@ module.exports = View.extend({
     
     if(this.mode){
       this.deactivateMode();
+      this.$('.connection.active').removeClass('active');
     }
     
     selectedElement.addClass('active');
@@ -518,7 +523,7 @@ module.exports = View.extend({
     x += this.origin.left;
     y += this.origin.top;
 
-    this.workspace.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(x) +'px,'+ Math.round(y) +'px,0)');
+    this.updateWorkspace(x, y, this.zoom.value);
     
     this.trigger('pan', x, y);
     this.$el.css('background-position', x +'px '+ y + 'px');
