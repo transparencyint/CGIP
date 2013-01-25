@@ -56,7 +56,18 @@ module.exports = DraggableDroppableView.extend({
   },
   
   rePickActors: function(){
+    // manually remove the missing actors from the collection
+    var actors = this.model.actors;
+    var remainingActors = [];
+    _.each(this.model.get('actors'), function(id){
+      if(actors.get(id)) remainingActors.push(actors.get(id));
+    });
+    actors.reset(remainingActors, {silent: true});
+
+    // pick out new actors from the editor
     this.model.pickOutActors(this.editor.actors);
+
+    // rerender
     this.render();
   },
 
