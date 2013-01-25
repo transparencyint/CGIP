@@ -15,8 +15,7 @@ module.exports = View.extend({
       'click' : 'stopPropagation'
     };
     
-    _events[ this.inputDownEvent ] = 'stopPropagation';
-    _events[ this.inputUpEvent ] = 'showDetails';
+    _events[ this.inputDownEvent ] = 'showDetails';
     
     return _events;
   },
@@ -463,6 +462,7 @@ module.exports = View.extend({
   showDetails: function(event){    
     if(this.model.isLocked()) return; // don't show when model is locked
     
+    event.preventDefault();
     this.select();
     
     var mousePosition = {
