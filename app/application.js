@@ -31,7 +31,7 @@ Application = {
   hijackLinks: function(router){
     // enable pushState routing for anchors
     // source: https://github.com/chaplinjs/chaplin/blob/0a06ee7a57625cd980011fe316ff78c28f9de88c/src/chaplin/views/layout.coffee#L96
-    $(document).on('click', 'a', function(event){
+    $(document).on('click', 'a[href]', function(event){
       var el = event.currentTarget;
       var $el = $(el);
       var href = $el.attr('href');

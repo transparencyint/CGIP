@@ -42,7 +42,7 @@ module.exports = Backbone.Model.extend({
   },
 
   registerLockEvents: function(){
-    if(socket && this.id && this.lockable == true){
+    if(window.socket && this.id && this.lockable == true){
       var model = this;
       socket.on('lock:' + this.id, function(){ model.set('locked', true) });
       socket.on('unlock:' + this.id, function(){ model.set('locked', false) });

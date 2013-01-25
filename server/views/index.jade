@@ -9,11 +9,17 @@ html
     script(src="/country-translation.js")
     script(src="/javascripts/vendor.js")
     script(src="/javascripts/app.js")
-    script(src="/socket.io/socket.io.js")
+    if realtimePort
+      script(src="http://speculos.taurus.uberspace.de:" + realtimePort + "/socket.io/socket.io.js")
+    else
+      script(src="/socket.io/socket.io.js")
     title CGIP
   body
-    script(id="lockedModels")
+    script(id="lm")
       window.lockedModels = !{JSON.stringify(lockedModels)};
+    script(id="rp")
+      window.realtimePort = !{realtimePort};
+
     if user
         script(id="user_hash")
           window.user_hash = !{JSON.stringify(user)};
