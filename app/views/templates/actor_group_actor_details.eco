@@ -4,6 +4,7 @@
   <div class="holder">
     <div>
       <input type="text" class="name big" id="name" name="name" value="<%= @name %>" placeholder="Name" />
+      <input type="text" class="abbrevation small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
     </div>
 	</div><!-- /.holder -->
 	

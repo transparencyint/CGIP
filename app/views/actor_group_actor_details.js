@@ -2,8 +2,8 @@ var View = require('./view');
 
 module.exports = View.extend({
 
-  template: require('./templates/group_details'),
-  className: 'modal hidden groupDetails',
+  template: require('./templates/actor_group_actor_details'),
+  className: 'modal hidden actorDetails',
 
   events: {
     // live updates on the input fields
@@ -40,16 +40,13 @@ module.exports = View.extend({
     View.prototype.initialize.call(this);
     _.bindAll(this, 'handleKeys', 'dragStop', 'drag', 'submitAndClose', 'destroy');
     
-    this.group = options.group;
+    this.actor = options.actor;
     this.editor = options.editor;
     this.width = 360;
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToActor = 10;
-
-    this.model.on('change:abbreviation', this.updateName, this);
-    this.model.on('change:name', this.updateName, this);
     
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -97,11 +94,6 @@ module.exports = View.extend({
   
   dragStop : function(){
     $(document).unbind('mousemove.global');
-  },
-
-  updateName: function(){
-    var name = this.model.get('name');
-    this.$('.name').text(name);
   },
 
   deleteActor: function(){
@@ -169,14 +161,14 @@ module.exports = View.extend({
   
   placeNextToActor: function(){
     // absolute position inside the window
-    var pos = this.group.$el.offset();
+    var pos = this.actor.$el.offset();
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
     this.height = this.$el.height();
     var arrowPos = (this.height-this.controlsHeight) / 2;
     
-    var actorWidth = this.group.width * this.editor.zoom.value;
-    var actorHeight = this.group.height * this.editor.zoom.value;
+    var actorWidth = this.actor.width * this.editor.zoom.value;
+    var actorHeight = this.actor.height * this.editor.zoom.value;
     
     // we want to place the modal next to the actor
     // on the right

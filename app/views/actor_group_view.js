@@ -2,7 +2,7 @@ var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 var ActorView = require('./actor_view');
-var GroupDetailsView = require('./group_details');
+var ActorDetailsView = require('./actor_details');
 
 module.exports = DraggableDroppableView.extend({
   dropClasses: [ActorView, ActorGroupActorView, FakeActorView],
@@ -10,6 +10,9 @@ module.exports = DraggableDroppableView.extend({
 
   className: 'actor-group empty',
   template : require('./templates/actor_group'),
+  
+  width: 120,
+  height: 42,
 
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
@@ -17,8 +20,6 @@ module.exports = DraggableDroppableView.extend({
     _.bindAll(this, 'drop', 'destroy');
 
     this.editor = options.editor;
-    this.width = 120;
-    this.height = 42;
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
@@ -83,7 +84,7 @@ module.exports = DraggableDroppableView.extend({
   
   showDetails: function(){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    this.modal = new GroupDetailsView({ model: this.model, group: this, editor: this.options.editor });
+    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
   },
 
