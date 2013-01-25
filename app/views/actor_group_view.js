@@ -2,6 +2,7 @@ var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
 var ActorView = require('./actor_view');
+var GroupDetailsView = require('./group_details');
 
 module.exports = DraggableDroppableView.extend({
   dropClasses: [ActorView, ActorGroupActorView, FakeActorView],
@@ -16,11 +17,14 @@ module.exports = DraggableDroppableView.extend({
     _.bindAll(this, 'drop', 'destroy');
 
     this.editor = options.editor;
+    this.width = 120;
+    this.height = 42;
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
+    this.model.on('change:name', this.updateName, this);
   },
 
   events: function(){
@@ -28,6 +32,7 @@ module.exports = DraggableDroppableView.extend({
     // merge the parent events and the current events
     return _.defaults({
       'mousedown'               : 'dragStart',
+      'dblclick'                : 'showDetails',
       'click .dropdown-control' : 'showActors'
     }, parentEvents);
   },
@@ -70,6 +75,16 @@ module.exports = DraggableDroppableView.extend({
 
     // rerender
     this.render();
+  },
+  
+  updateName: function(){
+    this.$('.name').text( this.model.get('name') );
+  },
+  
+  showDetails: function(){
+    if(this.model.isLocked()) return; // don't show it if it's locked
+    this.modal = new GroupDetailsView({ model: this.model, group: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
   },
 
   open: function(){
