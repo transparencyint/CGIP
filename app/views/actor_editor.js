@@ -144,7 +144,7 @@ module.exports = View.extend({
 
   addActorGroupFromRemote: function(actorGroup){
     console.log('got a remote actor group')
-    actorGroup = new ActorGroup(actorGroup);
+    var actorGroup = new ActorGroup(actorGroup);
     this.appendActorGroup(actorGroup);
   },
 
@@ -293,6 +293,7 @@ module.exports = View.extend({
   },
 
   appendActorGroup: function(actorGroup){
+    actorGroup.pickOutActors(this.actors);
     var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
     actorGroupView.render();
     this.workspace.append(actorGroupView.el);

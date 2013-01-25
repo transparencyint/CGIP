@@ -21,6 +21,22 @@ module.exports = Actor.extend({
     this.actors.on('remove', this.removeFromGroup, this);
   },
 
+  // picks out all actors from the given collection
+  pickOutActors: function(actorsCollection){
+    var actorsInGroup = this.get('actors');
+    if(actorsInGroup.length == 0) return; // no need to process if no actors in group
+    
+    var actorGroup = this;
+
+    _.each(actorsInGroup, function(actorId){
+      var foundActor = actorsCollection.get(actorId);
+      if(foundActor){
+        actorsCollection.remove(foundActor);
+        actorGroup.actors.add(foundActor, {silent: true})
+      }
+    });
+  },
+
   // adds an actor to this group
   addToGroup: function(actor){
     var actors = this.get('actors') || [];

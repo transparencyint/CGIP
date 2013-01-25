@@ -34,7 +34,7 @@ module.exports = Model.extend({
 
   turnIntoGroup: function(firstActor){
     // remove them both from their collections
-    firstActor.collection.remove(firstActor);
+    firstActor.collection.trigger('remove', firstActor);
     this.collection.remove(this);
     
     // create the actor group from the data of this actor
@@ -42,6 +42,7 @@ module.exports = Model.extend({
     var newData = this.toJSON();
     delete newData._id;
     delete newData._rev;
+
     var newGroup = new ActorGroup(_.clone(newData));
     newGroup.set('actors', [firstActor.id]);
     newGroup.save().done(function(){

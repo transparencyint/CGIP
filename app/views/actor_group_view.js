@@ -10,11 +10,14 @@ module.exports = DraggableDroppableView.extend({
   className: 'actor-group empty',
   template : require('./templates/actor_group'),
 
-  initialize: function(){
-    DraggableDroppableView.prototype.initialize.call(this);
+  initialize: function(options){
+    DraggableDroppableView.prototype.initialize.call(this, options);
 
     _.bindAll(this, 'drop');
 
+    this.editor = options.editor;
+
+    this.model.on('change:actors', this.rePickActors, this);
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
   },
@@ -52,6 +55,11 @@ module.exports = DraggableDroppableView.extend({
     this.updatePosition();
   },
   
+  rePickActors: function(){
+    this.model.pickOutActors(this.editor.actors);
+    this.render();
+  },
+
   open: function(){
     this.$el.addClass('open');
   },
