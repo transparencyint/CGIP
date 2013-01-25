@@ -12,10 +12,7 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'mouseover' : 'showMetadata',
-      'mousemove' : 'stickMetadata',
-      'mouseout' : 'hideMetadata',
-      'mousedown' : 'hideMetadata',
+      'click' : 'stopPropagation'
     };
     
     _events[ this.inputDownEvent ] = 'stopPropagation';
@@ -26,6 +23,8 @@ module.exports = View.extend({
 
   initialize: function(options){
     View.prototype.initialize.call(this, options);
+    
+    _.bindAll(this, 'moveMetadata');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
@@ -96,6 +95,8 @@ module.exports = View.extend({
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
+      
+      this.$el.bind('mousemove', this.moveMetadata);
 
       this.toggleZeroConnection();
 
@@ -474,30 +475,17 @@ module.exports = View.extend({
     
     return false;
   },
-
-  showMetadata: function(e){
-    if(this.model.get('disbursed')){
-      var metadata = this.$('.metadata');
-      metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.show();
-    }
-  },
   
-  stickMetadata: function(e){
+  moveMetadata: function(event){
     var pos = this.editor.offsetToCoords({ 
-      left: e.pageX - this.pos.x, 
-      top: e.pageY - this.pos.y
+      left: event.pageX - this.pos.x, 
+      top: event.pageY - this.pos.y
     });
     
     this.$('.metadata').css({
       left: pos.x + 30, 
       top: pos.y + 10
     });
-  },
-
-  hideMetadata: function(e){ 
-    var metadata = this.$('.metadata');
-    metadata.hide();  
   },
   
   // slices a line from a to b into segments
