@@ -143,7 +143,6 @@ module.exports = View.extend({
   },
 
   addActorGroupFromRemote: function(actorGroup){
-    console.log('got a remote actor group')
     var actorGroup = new ActorGroup(actorGroup);
     this.appendActorGroup(actorGroup);
   },
@@ -427,10 +426,20 @@ module.exports = View.extend({
 
   // an actor view from a group has been dragged here
   actorGroupActorDropped: function(view){
-    // add it to the editor's actors
-    this.addActorWithoutPopup(view.model.toJSON());
-    // remove it from the group
-    view.model.collection.remove(view.model);
+    var newActor = view.model.toJSON();
+    delete newActor._id;
+    delete newActor._rev;
+    delete newActor.locked;
+    var newActor = new Actor(newActor);
+    var editor = this;
+
+    view.model.destroy().done(function(){
+      newActor.save().done(function(){
+        // add it to the editor's actors
+        editor.addActorWithoutPopup(newActor);
+        socket.emit('new_model', newActor.toJSON())
+      });
+    });
   },
   
   slideActorIn: function(){

@@ -13,11 +13,12 @@ module.exports = DraggableDroppableView.extend({
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop');
+    _.bindAll(this, 'drop', 'destroy');
 
     this.editor = options.editor;
 
     this.model.on('change:actors', this.rePickActors, this);
+    this.model.on('destroy', this.destroy, this);
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
   },
@@ -110,8 +111,9 @@ module.exports = DraggableDroppableView.extend({
     // turn this group into a normal actor
     var actor = this.model.turnIntoNormalActor();
     var editor = this.editor;
-    actor.save().done(function(){
+    actor.save().done(function(){ 
       editor.addActorWithoutPopup(actor);
+      socket.emit('new_model', actor.toJSON());
     });
   },
 
