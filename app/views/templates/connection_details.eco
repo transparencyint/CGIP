@@ -5,6 +5,8 @@
 	  <div>
 	    <h3 class="connectionName"></h3>
 	  </div>
+    
+    <% if( @connectionType is 'money'): %>
 	  <div class="money">
 	    <div>
 	      <div class="clearfix">
@@ -23,6 +25,7 @@
       	</div>
       </div>
     </div>
+    <% end %>
     
     <div>
   	  <label>Corruption Risk</label>
