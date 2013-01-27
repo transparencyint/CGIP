@@ -22,7 +22,6 @@ module.exports = View.extend({
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
     'click .tool .connection .eye': 'toggleVisibility',
-    'click .tool .toggleMonitoring': 'toggleMonitoring',
     
     // view controls
     'click .zoom.in': 'zoomIn',
@@ -346,15 +345,6 @@ module.exports = View.extend({
     
     // highlight current option
     option.addClass('active').siblings('.active').removeClass('active');
-  },
-
-  toggleMonitoring: function(event){
-    this.rbw.toggleMonitoring();
-
-    if($('#toggleMonitoringText').hasClass('active'))
-      $('#toggleMonitoringText').html('Off').removeClass('active');
-    else
-      $('#toggleMonitoringText').html('On').addClass('active');
   },
 
   deactivateMode: function(){

@@ -1,5 +1,6 @@
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
+var RoleBackgroundView = require('./role_background_view');
 
 module.exports = View.extend({
   template: require('./templates/settings'),
@@ -48,7 +49,7 @@ module.exports = View.extend({
   },
   
   toggleMonitoring: function(){
-    
+    this.editor.rbw.toggleMonitoring();
   },
   
   changeLanguage: function(){
@@ -71,6 +72,7 @@ module.exports = View.extend({
       }
     ];
     
-    return { languages: languages, active: $.jsperanto.lang() }
+    return { 
+      languages: languages, active: $.jsperanto.lang(), showMonitoring: this.editor.country.get('showMonitoring') }
   }
 });
