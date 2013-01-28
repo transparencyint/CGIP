@@ -52,8 +52,8 @@ module.exports = View.extend({
     this.editor.rbw.toggleMonitoring();
   },
   
-  changeLanguage: function(){
-    
+  changeLanguage: function(event){
+    config.set('language', this.$('#language').val());
   },
   
   getRenderData: function(){
@@ -65,14 +65,13 @@ module.exports = View.extend({
       {
         name: 'Deutsch',
         code: 'de'
-      },
-      {
-        name: 'Español',
-        code: 'es'
       }
     ];
     
     return { 
-      languages: languages, active: $.jsperanto.lang(), showMonitoring: this.editor.country.get('showMonitoring') }
+      languages: languages,
+      active: config.get('language'),
+      showMonitoring: this.editor.country.get('showMonitoring')
+    };
   }
 });
