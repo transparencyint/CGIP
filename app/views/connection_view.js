@@ -31,7 +31,7 @@ module.exports = View.extend({
     this.clickAreaRadius = 40;
 
     this.editor = options.editor;
-
+    
     if(options.noClick)
       this.$el.unbind('click');
 
