@@ -12,6 +12,9 @@ $(function() {
   // hotfix for missing socket
   window.socket = io.connect();
 
+  // set up the config model
+  window.config = new Config();
+
   // start socket.io
   if(user.isLoggedIn()){
     // connect the socket
@@ -30,9 +33,6 @@ $(function() {
       });
     });
   }
-
-  // set up the config model
-  window.config = new Config();
 
   window.t = $.jsperanto.translate;
   

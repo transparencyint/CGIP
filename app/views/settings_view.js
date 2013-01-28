@@ -53,7 +53,7 @@ module.exports = View.extend({
   },
   
   changeLanguage: function(event){
-    config.set('language', this.$('#language').val());
+    config.set({language: this.$('#language').val()});
   },
   
   getRenderData: function(){

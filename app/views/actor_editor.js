@@ -333,7 +333,7 @@ module.exports = View.extend({
     event.stopPropagation();
     var mode = $(event.currentTarget).data('mode');
     
-    config.set('moneyConnectionMode', mode);
+    config.set({moneyConnectionMode: mode});
   },
 
   toggleActiveMoneyMode: function(){

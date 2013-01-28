@@ -274,7 +274,7 @@ module.exports = View.extend({
   },
 
   updateMoneyConnections: function (event) {
-    config.set('moneyConnectionMode', event.currentTarget.id);
+    config.set({moneyConnectionMode: event.currentTarget.id});
   },
   
   toggleAdditionalInfo: function(event){

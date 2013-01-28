@@ -12,10 +12,11 @@ module.exports = Model.extend({
   },
 
   loadLanguage: function(){
+    var lang = $.jsperanto.lang();
     if(localStorage){
-      var lang = localStorage.getItem('language');
-      if(lang) this.set('language', lang, {silent: true});
+      lang = localStorage.getItem('language') || lang;
     }
+    this.attributes.language = lang;
   },
 
   languageChanged: function(){

@@ -28,8 +28,6 @@ Application = {
 
     // fetch the countries, load the dictionary and start the app
     $.when(this.countries.fetch(), $.jsperanto.init(i18nOptions)).done(function(){
-      // set the language
-      config.set('language', $.jsperanto.lang(), {silent: true});
       // render the navigation
       app.nav.render();
       $(document.body).append(app.nav.el);
