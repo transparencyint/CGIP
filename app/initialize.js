@@ -11,9 +11,18 @@ $(function() {
 
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
-    // hotfix for missing socket
-    window.socket = io.connect();
-    // connect the socket
+    // decide on location of the socket server
+    var socketServer = '';
+    if(window.realtimePort)
+      socketServer = 'http://' + location.host + ':' + window.realtimePort;
+    else
+      socketServer = '127.0.0.1:3000';
+
+    console.log('connect socket to: ', socketServer)
+
+    // connect to the socket
+    window.socket = io.connect(socketServer);
+
     socket.on('connect', function(){
       // register the socket to the server
       socket.emit('register_socket', user.id);
