@@ -80,5 +80,12 @@ module.exports = Actor.extend({
     this.destroy();
 
     return new Actor(myData);
+  },
+
+  destroy: function(){
+    if(confirm('This will also delete all included actors of this group. Proceed?')){
+      this.actors.each(function(actor){ actor.destroy({silent: true}); });
+      Actor.prototype.destroy.call(this);
+    }
   }
 });
