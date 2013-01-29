@@ -28,6 +28,7 @@ module.exports = DraggableView.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
   },
 
   dragByDelta: function(dx, dy){
@@ -51,6 +52,13 @@ module.exports = DraggableView.extend({
   updateName: function(){
     this.$('.name').text( this.determineName() );
   },
+
+  updateCorruptionRisk: function(){
+    if(this.model.get('hasCorruptionRisk'))
+      this.$('.corruptionRisk').show();
+    else
+      this.$('.corruptionRisk').hide();
+  },
   
   getRenderData: function() {
     return { name: this.determineName() };
@@ -60,6 +68,11 @@ module.exports = DraggableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
+
+    if(this.model.get('hasCorruptionRisk')){
+      var corruptionRisk = this.$('.corruptionRisk');
+      corruptionRisk.show(); 
+    }
   },
 
   destroy: function(){
