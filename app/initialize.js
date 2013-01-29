@@ -17,9 +17,12 @@ $(function() {
       socketServer = 'http://' + location.host + ':' + window.realtimePort;
     else
       socketServer = '127.0.0.1:3000';
+
     console.log('connect socket to: ', socketServer)
+
     // connect to the socket
     window.socket = io.connect(socketServer);
+
     socket.on('connect', function(){
       // register the socket to the server
       socket.emit('register_socket', user.id);
@@ -52,4 +55,13 @@ $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
   if(!options.headers) options.headers = {};
   if(!csrf_token) csrf_token = $('meta[name=csrf_token]').attr('content');
   options.headers['x-csrf-token'] = csrf_token;
+});
+
+// show out of sync message on failing requests
+$(document.body).ajaxError(function(event, xhr){
+  var status = xhr.status;
+  // 409 (conflic), 423 (resource locked)
+  if(status == 409 || status == 423){
+    $('#outofsync').text(t('Your data seems to be outdated, please reload your browser to prevent errors.')).addClass('show');
+  }
 });

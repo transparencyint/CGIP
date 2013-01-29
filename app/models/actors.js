@@ -34,7 +34,7 @@ module.exports = Collection.extend({
         // add them to the actor group
         _.each(actorGroup.get('actors'), function(actorId){
           var actor = actorCollection.get(actorId);
-          if(actor){
+          if(actor && actor.get('actorGroup') != 'group'){
             actorCollection.remove(actor, {silent: true});
             actorGroup.actors.add(actor, {silent: true});
           }

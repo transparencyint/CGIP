@@ -72,6 +72,8 @@ module.exports = View.extend({
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
+
+    this.model.on('destroy', this.destroy, this);
   },
   
   dragStart: function(event){
