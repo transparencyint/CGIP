@@ -82,7 +82,7 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.model.get('name') );
   },
   
-  showDetails: function(){
+  showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
     this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);

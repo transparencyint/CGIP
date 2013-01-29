@@ -128,12 +128,12 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'viewSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
     // actor selection
-    $(document).on('viewSelected', this.actorSelected);
+    $(document).on('viewSelected', this.viewSelected);
 
     // react to socket events
     var country = this.country.get('abbreviation');
@@ -159,8 +159,8 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
-      this.selectedActorView.model.destroy();
+    if(this.selectedView && this.selectedView.$el.hasClass('selected'))
+      this.selectedView.model.destroy();
   },
   
   slideZoom: function(event, ui){
@@ -241,18 +241,54 @@ module.exports = View.extend({
       right: right
     };
   },
+
+  scopeElements: function(view){
+    if(view.model.get('type') == 'actor'){
+      this.workspace.find('.actor,.actor-group,.connection').addClass('outOfScope');
+      this.scopeFromActor(view.model);
+    }
+  },
+
+  scopeFromActor: function(startActor){
+    this._scopeFromActor(startActor, startActor, startActor);
+  },
+
+  _scopeFromActor: function(startActor, beforeActor, currentActor){
+    currentActor.trigger('inScope');
+    console.log('in scope', (currentActor.get('abbreviation') || currentActor.get('name')), currentActor.id);
+    var outgoingConnections = this.connections.where({from: currentActor.id});
+    _.each(outgoingConnections, function(connection){
+      // TO
+      var next = connection.get('to');
+      next = this.actors.get(next) || this.actorGroups.get(next);
+      if(!next) return; // stop if no next actor
+
+      // prevent circular movement
+      if(next.id != startActor.id && next.id != beforeActor.id)
+        this._scopeFromActor(startActor, currentActor, next);
+    }.bind(this));
+
+  },
+
+  unScopeElements: function(){
+    this.workspace.find('.outOfScope').removeClass('outOfScope');
+  },
   
-  actorSelected: function(event, view){
+  viewSelected: function(event, view){
     var type = view.model.get('type');
-    if(type == 'actor'){
-      this.selectedActorView = view;
-      if(this.mode)
-        this.mode.actorSelected(view);
+    
+    this.selectedView = view;
+    
+    if(this.mode && this.mode.isActive)
+      this.mode.viewSelected(view);
+    else{
+      this.scopeElements(view);
     }
   },
 
   unselect: function(){
-    this.selectedActorView = null;
+    this.unScopeElements();
+    this.selectedView = null;
     if(this.mode) this.mode.unselect();
     $('.selected').removeClass('selected');
   },
@@ -695,7 +731,7 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global', this.drag);
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
-    $(document).off('viewSelected', this.actorSelected);
+    $(document).off('viewSelected', this.viewSelected);
     $(document).off('viewdragstop', this.checkDrop);
 
     $(window).unbind('resize', this.realignOrigin);

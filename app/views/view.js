@@ -25,7 +25,12 @@ module.exports = Backbone.View.extend({
     this.toggleLocked = _.bind(this.toggleLocked, this);
 
     if(this.model && this.model.lockable == true)
-      this.model.on('change:locked', this.toggleLocked);
+      this.model.on('change:locked', this.toggleLocked, this);
+
+    if(this.model){
+      this.model.on('outOfScope', this.outOfScope, this);
+      this.model.on('inScope', this.inScope, this);
+    }
   },
 
   template: function() {},
@@ -82,6 +87,14 @@ module.exports = Backbone.View.extend({
       this.$el.addClass('locked');
     else
       this.$el.removeClass('locked');
+  },
+
+  outOfScope: function(){
+    this.$el.addClass('outOfScope');
+  },
+
+  inScope: function(){
+    this.$el.removeClass('outOfScope');
   }
 
 });

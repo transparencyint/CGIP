@@ -36,11 +36,15 @@ module.exports = View.extend({
     if(options.noClick)
       this.$el.unbind('click');
 
-    if(this.model.from)
+    if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
+      // only react to scope events from the from-model
+      this.model.from.on('inScope', this.inScope, this);
+    }
       
-    if(this.model.to)
+    if(this.model.to){
       this.model.to.on('change:pos', this.update, this);
+    }
 
     this.model.on('destroy', this.destroy, this);
 
