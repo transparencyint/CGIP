@@ -1,3 +1,5 @@
+<div class="corruptionRisk">
+</div>
 <div class="metadata">
 	$<%= @disbursed %> 
 </div>
