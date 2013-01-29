@@ -480,14 +480,10 @@ module.exports = View.extend({
       if (start.x == end.x){
         corrX = start.x + this.model.from.margins.top*2;
         corrY = (start.y+end.y)/2 + this.model.from.margins.top;
-        if (start.y + end.y == 0)
-          corrY = 0;
       }
       else{
         corrX = (start.x+end.x)/2 + this.model.from.margins.top*2;
         corrY = start.y+this.model.from.margins.top/2*2
-        if (start.x + end.x == 0)
-          corrX = 0;
       }
       this.drawCorruptionFlag(corrX, corrY);
     }
