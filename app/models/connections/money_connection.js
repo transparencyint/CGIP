@@ -28,6 +28,7 @@ module.exports = Connection.extend({
     if(!this.collection) return
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
+
     var oldZeroAmount = this.isZeroAmount;
     this.isZeroAmount = this.get(amountType) === 0;
     if(this.isZeroAmount) {
