@@ -192,7 +192,6 @@ module.exports = View.extend({
 
       this.$('.draghandle.last').show();
 
-      //this.roleDimensions[4] = $('#monitoring').position().left + $('#monitoring').width();
       this.country.set({'showMonitoring' : true});
       this.country.save();
     }

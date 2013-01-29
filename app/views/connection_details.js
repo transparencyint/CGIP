@@ -1,4 +1,5 @@
 var View = require('./view');
+var clickCatcher = require('./click_catcher_view');
 
 module.exports = View.extend({
 
@@ -174,11 +175,6 @@ module.exports = View.extend({
         break;
     }
   },
-  
-  addClickCatcher: function(){
-    this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
-    this.clickCatcher.on('click', this.submitAndClose);
-  },
 
   afterRender: function(){
 
@@ -213,7 +209,7 @@ module.exports = View.extend({
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
-    this.addClickCatcher();
+    this.clickCatcher = new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
 
     $(document).keydown(this.handleKeys);
     
@@ -278,7 +274,7 @@ module.exports = View.extend({
   },
 
   updateMoneyConnections: function (event) {
-    config.set('moneyConnectionMode', event.currentTarget.id);
+    config.set({moneyConnectionMode: event.currentTarget.id});
   },
   
   toggleAdditionalInfo: function(event){
@@ -337,11 +333,11 @@ module.exports = View.extend({
     // unlock the model
     this.model.unlock();
     this.unlockedModel = true;
+    
+    if(this.clickCatcher)
+      this.clickCatcher.destroy();
 
     this.$el.one(this.transEndEventName, this.destroy);
-
-    if(this.clickCatcher)
-      this.clickCatcher.remove();
     
     $(document).unbind('keydown', this.handleKeys);
     
