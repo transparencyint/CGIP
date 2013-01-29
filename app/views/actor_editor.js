@@ -9,6 +9,8 @@ var Connection = require('models/connections/connection');
 var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
+var SettingsView = require('./settings_view');
+var clickCatcher = require('./click_catcher_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -19,14 +21,14 @@ module.exports = View.extend({
     // tool controls
     'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
     'click .tool .connection': 'toggleMode',
-    'click .tool .moneyMode .small': 'toggleMoneyMode',
     'click .tool .connection .eye': 'toggleVisibility',
-    'click .tool .toggleMonitoring': 'toggleMonitoring',
     
     // view controls
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
+    'click .moneyMode .icon': 'showMoneyModal',
+    'click .moneyMode .option': 'chooseMoneyMode',
     
     // start to pan..
     'mousedown': 'dragStart',
@@ -121,7 +123,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'closeMoneyModal', 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -315,30 +317,34 @@ module.exports = View.extend({
     this.trigger('disableDraggable');
   },
 
-  toggleMoneyMode: function(event){
-    var target = $(event.target);
-
-    var currentID = target.attr('id');
-    if(currentID === 'disbursedMoney')
-      config.set('moneyConnectionMode','disbursedMode'); 
-    else if(currentID === 'pledgedMoney')
-      config.set('moneyConnectionMode','pledgedMode'); 
+  showMoneyModal: function(event){
+    this.$('.moneyMode').addClass('open');
+    
+    // wherever you click around the modal
+    // will close the modal (also the button)
+    new clickCatcher({ callback: this.closeMoneyModal, holder: this.$el });
+  },
+  
+  closeMoneyModal: function(){
+    this.$('.moneyMode').removeClass('open');
+  },
+  
+  chooseMoneyMode: function(event){
+    event.stopPropagation();
+    var mode = $(event.currentTarget).data('mode');
+    
+    config.set({moneyConnectionMode: mode});
   },
 
   toggleActiveMoneyMode: function(){
-    if(config.get('moneyConnectionMode') === 'disbursedMode')
-      this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
-    else 
-      this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
-  },
-
-  toggleMonitoring: function(event){
-    this.rbw.toggleMonitoring();
-
-    if($('#toggleMonitoringText').hasClass('active'))
-      $('#toggleMonitoringText').html('Off').removeClass('active');
-    else
-      $('#toggleMonitoringText').html('On').addClass('active');
+    var mode = config.get('moneyConnectionMode');
+    var option = this.$('.option[data-mode='+ mode +']');
+    
+    // change point color
+    option.parent().siblings('.point').attr('data-mode', mode);
+    
+    // highlight current option
+    option.addClass('active').siblings('.active').removeClass('active');
   },
 
   deactivateMode: function(){
@@ -590,6 +596,9 @@ module.exports = View.extend({
 
     this.rbw = new RoleBackgroundView({ editor: editor });
     this.workspace.before(this.rbw.render()); 
+    
+    this.settings = new SettingsView({ editor: editor });
+    this.$('.topBar').append(this.settings.render().el);
 
     this.actors.each(this.appendActor);
     this.actorGroups.each(this.appendActorGroup);

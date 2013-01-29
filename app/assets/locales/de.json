@@ -12,11 +12,13 @@
   "accountability": "Verantwortung",
   "monitoring": "Kontrolle",
   "money": "Geld",
-  "money_mode": "Geld Modus",
-  "disbursed": "ausgezahlt",
-  "pledged": "versprochen",
+  "Disbursed": "Ausgezahlt",
+  "Pledged": "Versprochen",
   "funding": "Finanzierung",
   "coordination": "Koordinierung",
   "implementation": "Umsetzung",
-  "monitoring": "Beobachtung"
+  "monitoring": "Beobachtung",
+  "Settings": "Einstellungen",
+  "Show Monitoring": "Monitoring anzeigen",
+  "Language": "Sprache"
 }
