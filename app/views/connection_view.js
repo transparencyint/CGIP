@@ -489,8 +489,6 @@ module.exports = View.extend({
         corrY = start.y+this.model.from.margins.top/2*2
       }
       this.drawCorruptionFlag(corrX, corrY);
-    } else {
-
     }
   },
   
