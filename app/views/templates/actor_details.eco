@@ -8,7 +8,7 @@
     </div>
   
   	<div>
-  		<label for="organizationType">Type</label>
+  		<h4><label for="organizationType">Type</label></h4>
   		<div class="organizationType clearfix">
   		  <select id="organizationType" class="hasAdditionalInfo" name="organizationType">
   		    <option value="">Unknown</option>
@@ -36,7 +36,7 @@
   	</div>
 
     <div class="multiCheckboxes role clearfix">
-      <label>Role</label>
+      <h4>Role</h4>
       <table>
         <tr>
           <td>
@@ -82,7 +82,7 @@
     </div>
      
     <div class="multiCheckboxes clearfix">
-      <label>Purpose</label>
+      <h4>Purpose</h4>
       <table>
         <tr>
           <td>
@@ -147,7 +147,7 @@
     </div>
   
   	<div>
-  	  <label>Corruption Risk</label>
+  	  <h4>Corruption Risk</h4>
   	  <input class="hasAdditionalInfo" type="checkbox" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
   	  <label for="hasCorruptionRisk">Yes</label>
   	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
@@ -159,7 +159,7 @@
   	</div>
   	
   	<div>
-  	  <label for="description">Note</label>
+  	  <h4><label for="description">Note</label></h4>
   		<textarea id="description" name="description" data-type="text"><%= @description%></textarea>
   	</div> 
 	</div><!-- /.holder -->

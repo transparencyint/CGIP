@@ -12,12 +12,17 @@
   "accountability": "Verantwortung",
   "monitoring": "Kontrolle",
   "money": "Geld",
-  "money_mode": "Geld Modus",
-  "disbursed": "ausgezahlt",
-  "pledged": "versprochen",
+  "Disbursed": "Ausgezahlt",
+  "Pledged": "Versprochen",
   "funding": "Finanzierung",
   "coordination": "Koordinierung",
   "implementation": "Umsetzung",
   "monitoring": "Beobachtung",
+<<<<<<< HEAD
   "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu."
+=======
+  "Settings": "Einstellungen",
+  "Show Monitoring": "Monitoring anzeigen",
+  "Language": "Sprache"
+>>>>>>> f-actor-groups-features
 }
