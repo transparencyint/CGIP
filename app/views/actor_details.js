@@ -60,6 +60,7 @@ module.exports = View.extend({
 
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('destroy', this.destroy, this);
     
     // backup data for cancel
     this.backup = this.model.toJSON();
