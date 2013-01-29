@@ -1,11 +1,4 @@
 <div class="tool controls top">
-  <div class="inner">
-    <div class="toggle moneyMode">
-      <span class="name"><%= t('money_mode') %></span>
-      <span id="disbursedMoney" class="small"><%= t('disbursed') %></span>
-      <span id="pledgedMoney" class="small"><%= t('pledged') %></span>
-    </div>
-  </div>
 </div>
 
 <div class="sidebar">
