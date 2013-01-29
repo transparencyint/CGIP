@@ -60,6 +60,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.$el.attr('id', this.model.id);
   },
   
   rePickActors: function(){

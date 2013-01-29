@@ -41,8 +41,6 @@ module.exports = View.extend({
 
     if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
-      // only react to scope events from the from-model
-      this.model.from.on('inScope', this.inScope, this);
     }
       
     if(this.model.to){
@@ -50,6 +48,7 @@ module.exports = View.extend({
     }
 
     this.model.on('destroy', this.destroy, this);
+    this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
   },
@@ -73,7 +72,6 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    
     this.path = "";
     this.$el.svg();
 
@@ -116,6 +114,8 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
   },
+
+  inScope: function(){ this.$el.removeClass('outOfScope'); },
 
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');

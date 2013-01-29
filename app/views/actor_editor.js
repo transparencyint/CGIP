@@ -244,30 +244,43 @@ module.exports = View.extend({
 
   scopeElements: function(view){
     if(view.model.get('type') == 'actor'){
-      this.workspace.find('.actor,.actor-group,.connection').addClass('outOfScope');
+      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
       this.scopeFromActor(view.model);
     }
   },
 
   scopeFromActor: function(startActor){
-    this._scopeFromActor(startActor, startActor, startActor);
+    var elementsInScope = [];
+    this._scopeFromActor(startActor, startActor, startActor, elementsInScope);
+    var editor = this;
+    _.each(elementsInScope, function(model){
+      if(model.get('type') == 'actor')
+        $('#' + model.id).removeClass('outOfScope');
+      else
+        if(model.get('type') == 'connection'){
+          var connection = editor.moneyConnections.get(model.id)
+                            || editor.accountabilityConnections.get(model.id)
+                            || editor.monitoringConnections.get(model.id);
+          connection.trigger('inScope');
+        }
+    })
   },
 
-  _scopeFromActor: function(startActor, beforeActor, currentActor){
-    currentActor.trigger('inScope');
-    console.log('in scope', (currentActor.get('abbreviation') || currentActor.get('name')), currentActor.id);
+  _scopeFromActor: function(startActor, beforeActor, currentActor, elementsInScope){
+    elementsInScope.push(currentActor);
+    //console.log('in scope', (currentActor.get('abbreviation') || currentActor.get('name')), currentActor.id);
     var outgoingConnections = this.connections.where({from: currentActor.id});
     _.each(outgoingConnections, function(connection){
-      // TO
       var next = connection.get('to');
       next = this.actors.get(next) || this.actorGroups.get(next);
       if(!next) return; // stop if no next actor
-
+      elementsInScope.push(connection);
       // prevent circular movement
-      if(next.id != startActor.id && next.id != beforeActor.id)
-        this._scopeFromActor(startActor, currentActor, next);
+      if(next.id != startActor.id && next.id != beforeActor.id && next.id != currentActor.id && _.indexOf(elementsInScope, next) < 0)
+        this._scopeFromActor(startActor, currentActor, next, elementsInScope);
+      else
+        elementsInScope.push(next);
     }.bind(this));
-
   },
 
   unScopeElements: function(){
