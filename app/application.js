@@ -20,10 +20,18 @@ Application = {
     // render navigation view
     this.nav = new NavigationView({ router: this.router, countries: this.countries });
 
-    // fetch the countries, lod the dictionary and start the app
-    $.when(this.countries.fetch(), $.jsperanto.init({fallbackLang: 'en', dicoPath: '/locales'})).done(function(){
+    var i18nOptions = {
+      lang: config.get('language') || false,
+      fallbackLang: 'en',
+      dicoPath: '/locales'
+    };
+
+    // fetch the countries, load the dictionary and start the app
+    $.when(this.countries.fetch(), $.jsperanto.init(i18nOptions)).done(function(){
+      // render the navigation
       app.nav.render();
       $(document.body).append(app.nav.el);
+      // we're finished, start the application
       done();
     });
   },
