@@ -8,18 +8,28 @@
   </div>
 </div>
 
-
-
 <div class="sidebar">
-  <div class="view controls vertical">
-    <div class="fit screen icon control"></div>
-  </div>
-  <div class="view controls vertical">
-    <div class="zoom in icon control"></div>
-    <div class="range control">
-      <div class="bar"></div>
+  <div class="inner">
+    <div class="view controls vertical">
+      <div class="fit screen icon control"></div>
     </div>
-    <div class="zoom out icon control"></div>
+    <div class="view controls vertical">
+      <div class="zoom in icon control"></div>
+      <div class="range control">
+        <div class="bar"></div>
+      </div>
+      <div class="zoom out icon control"></div>
+    </div>
+    <div class="view controls moneyMode hasModal">
+      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">
+        <div class="coin"></div>
+        <div class="corner"></div>
+      </div>
+      <div class="options">
+        <div class="modal option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
+        <div class="modal option fold" data-mode="pledgedMode"><%= t('Pledged') %></div>
+      </div>
+    </div>
   </div>
 </div>
 

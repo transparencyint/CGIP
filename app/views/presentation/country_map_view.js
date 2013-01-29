@@ -16,14 +16,15 @@ module.exports = View.extend({
     'click .zoom.in': 'zoomIn',
     'click .zoom.out': 'zoomOut',
     'click .fit.screen': 'fitToScreen',
+    'click .moneyMode .icon': 'showMoneyModal',
+    'click .moneyMode .option': 'chooseMoneyMode',
     
     // start to pan..
     'mousedown': 'dragStart',
     
     // ..except when your mouse touches the controls
     'mousedown .controls': 'stopPropagation',
-    'click .controls': 'stopPropagation',
-    'click .tool .moneyMode .small': 'toggleMoneyMode',
+    'click .controls': 'stopPropagation'
   },
 
   initialize: function(){
@@ -32,7 +33,8 @@ module.exports = View.extend({
     this.initializeDimensions();
     this.initializeConfig();
 
-		_.bindAll(this, 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
+		_.bindAll(this, 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
+
   },
 
   initializeProperties: ActorEditor.prototype.initializeProperties,
@@ -47,8 +49,12 @@ module.exports = View.extend({
   zoomTo: ActorEditor.prototype.zoomTo,
   slideZoom: ActorEditor.prototype.slideZoom,
   fitToScreen: ActorEditor.prototype.fitToScreen,
+  showMoneyModal: ActorEditor.prototype.showMoneyModal,
+  chooseMoneyMode: ActorEditor.prototype.chooseMoneyMode,
+  closeMoneyModal: ActorEditor.prototype.closeMoneyModal,
   stopPropagation: ActorEditor.prototype.stopPropagation,
   getBoundingBox: ActorEditor.prototype.getBoundingBox,
+  toggleActiveMoneyMode: ActorEditor.prototype.toggleActiveMoneyMode,
 
 
   //enable panning
@@ -124,23 +130,6 @@ module.exports = View.extend({
       change: this.slideZoom
     });
 
-  },
-
-  toggleMoneyMode: function(event){
-    var target = $(event.target);
-
-    var currentID = target.attr('id');
-    if(currentID === 'disbursedMoney')
-      config.set('moneyConnectionMode','disbursedMode'); 
-    else if(currentID === 'pledgedMoney')
-      config.set('moneyConnectionMode','pledgedMode'); 
-  },
-
-  toggleActiveMoneyMode: function(){
-    if(config.get('moneyConnectionMode') === 'disbursedMode')
-      this.$('#disbursedMoney').addClass("active").siblings().removeClass("active");
-    else 
-      this.$('#pledgedMoney').addClass("active").siblings().removeClass("active");
   }
 
 });
