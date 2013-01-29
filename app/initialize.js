@@ -9,15 +9,17 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
-  // hotfix for missing socket
-  window.socket = io.connect();
-
-  // set up the config model
-  window.config = new Config();
-
-  // start socket.io
+  // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
-    // connect the socket
+    // decide on location of the socket server
+    var socketServer = '';
+    if(window.realtimePort)
+      socketServer = 'http://' + location.host + ':' + window.realtimePort;
+    else
+      socketServer = '127.0.0.1:3000';
+    console.log('connect socket to: ', socketServer)
+    // connect to the socket
+    window.socket = io.connect(socketServer);
     socket.on('connect', function(){
       // register the socket to the server
       socket.emit('register_socket', user.id);
@@ -33,6 +35,9 @@ $(function() {
       });
     });
   }
+
+  // set up the config model
+  window.config = new Config();
 
   window.t = $.jsperanto.translate;
   

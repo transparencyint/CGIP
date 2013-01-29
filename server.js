@@ -69,13 +69,14 @@ app.configure(function(){
 
 /** TODO: find out why res.redirect('/') is not working on uberhost */
 var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
+var realtimePort = (process.env['NODE_ENV'] === 'production') ? 51584 : false;
 
 /** Performs general routing actions */
 var routeHandler = {
 
   /** Simply renders the index */
   renderIndex: function(req, res){
-    res.render('index', { user: (req.user || null), lockedModels: lockedModels });
+    res.render('index', { user: (req.user || null), lockedModels: lockedModels, realtimePort: realtimePort });
   },
 
   /** Redirects to the login when the user is not logged in */
@@ -84,7 +85,7 @@ var routeHandler = {
       var user = {};
       user._id = req.user.id;
       user._rev = req.user._rev;
-      res.render('index', { user: user, lockedModels: lockedModels });
+      res.render('index', { user: user, lockedModels: lockedModels, realtimePort: realtimePort });
     }else{
       res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
     }
@@ -95,7 +96,7 @@ var routeHandler = {
     if(req.user){
       res.redirect(baseURL + '/edit');
     }else{
-      res.render('index', { user: null, lockedModels: lockedModels });
+      res.render('index', { user: null, lockedModels: lockedModels, realtimePort: realtimePort });
     }
   }
 };
@@ -244,7 +245,8 @@ console.log('Server is up and running on port: ' + port);
 var lockedModels = [];
 
 // Realtime stuff
-var io = io.listen(server);
+var io = (process.env.NODE_ENV == 'production') ? io.listen(51584) : io.listen(server);
+
 // a less noisy log level
 io.set('log level', 1)
 
