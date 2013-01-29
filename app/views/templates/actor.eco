@@ -1,2 +1,1 @@
 <div class="name"><%= @name %></div>
-<div class="corruptionRisk"></div>

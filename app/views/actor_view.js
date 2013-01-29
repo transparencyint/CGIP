@@ -54,10 +54,7 @@ module.exports = DraggableView.extend({
   },
 
   updateCorruptionRisk: function(){
-    if(this.model.get('hasCorruptionRisk'))
-      this.$('.corruptionRisk').show();
-    else
-      this.$('.corruptionRisk').hide();
+    this.$el.toggleClass('hasCorruptionRisk', this.model.get('hasCorruptionRisk'));
   },
   
   getRenderData: function() {
@@ -68,11 +65,8 @@ module.exports = DraggableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
-
-    if(this.model.get('hasCorruptionRisk')){
-      var corruptionRisk = this.$('.corruptionRisk');
-      corruptionRisk.show(); 
-    }
+    
+    this.updateCorruptionRisk();
   },
 
   destroy: function(){

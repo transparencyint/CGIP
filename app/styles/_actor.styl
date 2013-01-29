@@ -2,8 +2,7 @@
   width 120px
   height 40px
   position absolute
-  display table
-  table-layout fixed
+  line-height 40px
   padding 0 5px
   margin -20px 0 0 -60px
   color black
@@ -26,18 +25,19 @@
     opacity 0
     transform scale(0.5) translateY(10px)
     transition 250ms
+  &.hasCorruptionRisk
+    &:after
+      content ""
+      background-image url(/images/redFlag.png)
+      width 13px
+      height 20px
+      right 13px
+      top 10px
+      position absolute
+    .name
+      width 79px
   .name
-    display table-cell
     text-align center
-    vertical-align middle
     white-space nowrap
     overflow hidden
     text-overflow ellipsis
-  .corruptionRisk
-    background-image url(/images/redFlag.png)
-    position absolute
-    width 13px
-    height 20px
-    right 10px
-    top 10px
-    display none
