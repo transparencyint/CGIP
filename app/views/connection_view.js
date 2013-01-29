@@ -87,30 +87,19 @@ module.exports = View.extend({
       this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
     }
 
-
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.strokeWidth
     };
     
-    this.markerSize = this.strokeWidth/2 * this.markerRatio;
+    
 
     var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
-      this.toggleZeroConnection();
-
-      // also creates something crucial for the other connections
-      //this.createCoinDefinitions();
-
+    this.toggleZeroConnection();
       
-    var selectedArrowSize = this.markerRatio - 0.5;
-      
-    var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-    this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
 
-    this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
-    this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
@@ -145,6 +134,34 @@ module.exports = View.extend({
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
+    //recalculating the line thickness and the arrow size
+    if(this.isMoney){
+      this.strokeWidth = 6 * this.model.coinSizeFactor;
+    }
+
+    this.pathSettings = {
+      class_: 'path', 
+      strokeWidth: this.strokeWidth
+    };
+
+    this.markerSize = this.strokeWidth/2 * this.markerRatio;
+
+    var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
+    this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
+      
+    var selectedArrowSize = this.markerRatio - 0.5;
+      
+    var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
+    this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
+
+    this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
+    this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
+
+    // recalculate select-border size (depending on strokeWidth)
+    var pathWidth = this.strokeWidth;
+    this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
+
+    //getting the positions of both actors
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
 
@@ -189,6 +206,7 @@ module.exports = View.extend({
       'height': height
     });
 
+    //defining waypoints for the connection path
     var halfX;
     var halfY;
     var start2, end2;
@@ -407,10 +425,6 @@ module.exports = View.extend({
     if(this.selectPath) this.svg.remove(this.selectPath);
     if(this.pathElement) this.svg.remove(this.pathElement);
     if(this.clickArea) this.svg.remove(this.clickArea);
-    
-    // recalculate select-border size (depending on strokeWidth)
-    var pathWidth = this.strokeWidth;
-    this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
 
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
