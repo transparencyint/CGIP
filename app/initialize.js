@@ -56,3 +56,12 @@ $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
   if(!csrf_token) csrf_token = $('meta[name=csrf_token]').attr('content');
   options.headers['x-csrf-token'] = csrf_token;
 });
+
+// show out of sync message on failing requests
+$(document.body).ajaxError(function(event, xhr){
+  var status = xhr.status;
+  // 409 (conflic), 423 (resource locked)
+  if(status == 409 || status == 423){
+    $('#outofsync').text(t('Your data seems to be outdated, please reload your browser to prevent errors.')).addClass('show');
+  }
+});
