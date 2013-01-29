@@ -33,7 +33,8 @@ module.exports = View.extend({
 
     this.editor = options.editor;
 
-    this.corruptionRisk = this.model.attributes.hasCorruptionRisk;
+    this.corruptionRisk = this.model.get('hasCorruptionRisk');
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
 
     if(options.noClick)
       this.$el.unbind('click');
@@ -92,7 +93,6 @@ module.exports = View.extend({
       strokeWidth: this.strokeWidth
     };
     
-    
 
     var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
@@ -100,11 +100,10 @@ module.exports = View.extend({
     this.toggleZeroConnection();
       
 
-
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
       this.model.on('change:disbursed', this.updateDisbursed, this);
-      this.model.on('change:coinSizeFactor', this.updateConnection, this);
+      this.model.on('change:coinSizeFactor', this.update, this);
     }
 
     this.g = this.svg.group();    
@@ -114,15 +113,19 @@ module.exports = View.extend({
     this.$el.addClass( this.model.get("connectionType") );
   },
 
+  updateCorruptionRisk: function(){
+    this.corruptionRisk = this.model.get('hasCorruptionRisk');
+    if(this.corruptionRisk)
+      this.update();
+    else
+      this.$('.corruptionRisk').hide();
+  },
+
   toggleZeroConnection: function(){
     this.$el.removeClass('amountUnknown');
     if(this.model.isZeroAmount) {
       this.$el.addClass('amountUnknown');
     }
-  },
-
-  updateConnection: function(){
-    this.update();
   },
 
   hasBothConnections: function(){
@@ -486,6 +489,8 @@ module.exports = View.extend({
         corrY = start.y+this.model.from.margins.top/2*2
       }
       this.drawCorruptionFlag(corrX, corrY);
+    } else {
+
     }
   },
   
