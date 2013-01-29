@@ -1,5 +1,6 @@
 .controls
   z-index 3
+  position relative
   text-shadow 0 -1px hsl(213,55%,34%)
   background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,50%))
   border 1px solid hsl(213,55%,28%)
@@ -36,21 +37,12 @@
     &.left
       left 0
       border-bottom-left-radius 0
-
-.controls.top
-  .control
-    &:first-child
-      border-radius 3px 0 0 3px
-    &:last-child
-      border-radius 0 3px 3px 0
-    &:only-child
-      border-radius 3px
     
 .controls.vertical
   .control
     &:first-child
-      border-radius 3px 3px 0 0
+      border-radius 2px 2px 0 0
     &:last-child
-      border-radius 0 0 3px 3px
+      border-radius 0 0 2px 2px
     &:only-child
-      border-radius 3px
+      border-radius 2px
