@@ -66,6 +66,9 @@ module.exports = View.extend({
     this.borderRadius = 5;
     this.distanceToConnection = 21;
     
+    // fix double save calls problem
+    this.model.save = _.debounce(this.model.save, 50);
+
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
