@@ -32,6 +32,7 @@ module.exports = DraggableDroppableView.extend({
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
     this.model.on('change:organizationType',this.updateType,this);
+    this.updateType();
   },
 
   dragByDelta: function(dx, dy){
@@ -58,6 +59,10 @@ module.exports = DraggableDroppableView.extend({
 
   updateType: function(){
     this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    console.log(this.orgaType);
+    if(this.orgaType === "")
+      this.orgaType = "Unknown";
+
     var value = 'url(/images/pictograms/' + this.orgaType + '.png)';
     this.$('.pictogram').css('background-image', value);
   },
@@ -74,7 +79,6 @@ module.exports = DraggableDroppableView.extend({
   },
 
   getRenderData: function() {
-    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
     return { name: this.determineName(), orgaType: this.orgaType};
   },
 
