@@ -243,17 +243,23 @@ module.exports = View.extend({
   },
 
   scopeElements: function(view){
-    if(view.model.get('type') == 'actor'){
+    var type = view.model.get('type');
+    var scopedElements = [];
+    
+    if(type == 'actor' || type == 'connection')
       this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
-      this.scopeFromActor(view.model);
-    }
-  },
 
-  scopeFromActor: function(startActor){
-    var elementsInScope = [];
-    this._scopeFromActor(startActor, startActor, startActor, elementsInScope);
+    if(type == 'actor'){
+      scopedElements = this.scopeFromActor(view.model);
+    }else if(type == 'connection'){
+      if(view.model.get('connectionType') == 'money')
+        scopedElements = this.scopeFromMoneyConnection(view.model);
+      else
+        scopedElements = this.scopeFromConnection(view.model);
+    }
+
     var editor = this;
-    _.each(elementsInScope, function(model){
+    _.each(scopedElements, function(model){
       if(model.get('type') == 'actor')
         $('#' + model.id).removeClass('outOfScope');
       else
@@ -263,23 +269,75 @@ module.exports = View.extend({
                             || editor.monitoringConnections.get(model.id);
           connection.trigger('inScope');
         }
-    })
+    });
   },
 
-  _scopeFromActor: function(startActor, beforeActor, currentActor, elementsInScope){
-    elementsInScope.push(currentActor);
-    //console.log('in scope', (currentActor.get('abbreviation') || currentActor.get('name')), currentActor.id);
-    var outgoingConnections = this.connections.where({from: currentActor.id});
-    _.each(outgoingConnections, function(connection){
-      var next = connection.get('to');
-      next = this.actors.get(next) || this.actorGroups.get(next);
-      if(!next) return; // stop if no next actor
-      elementsInScope.push(connection);
-      // prevent circular movement
-      if(next.id != startActor.id && next.id != beforeActor.id && next.id != currentActor.id && _.indexOf(elementsInScope, next) < 0)
-        this._scopeFromActor(startActor, currentActor, next, elementsInScope);
-      else
-        elementsInScope.push(next);
+  // Selects only the elements which are connected diretly to the actor
+  scopeFromActor: function(startActor){
+    var scopedElements = [startActor];
+
+    var selectScopeElements = function(connections, direction){
+      _.each(connections, function(connection){
+        var next = connection.get(direction);
+        next = this.actors.get(next) || this.actorGroups.get(next);
+        
+        if(!next || next == startActor) return; // stop if no next actor or self again
+        
+        scopedElements.push(connection);
+        scopedElements.push(next);    
+      }.bind(this))
+    }.bind(this);
+
+    // elements that come from this actor
+    var outgoingConnections = this.connections.where({from: startActor.id});
+    selectScopeElements(outgoingConnections, 'to');
+    
+    // elements that point to this actor
+    var incoming = this.connections.where({to: startActor.id});
+    selectScopeElements(incoming, 'from');
+
+    return scopedElements;
+  },
+
+  // select the connection and both connected actors
+  scopeFromConnection: function(connection){
+    var scopedElements = [connection];
+    if(connection.to) scopedElements.push(connection.to);
+    if(connection.from) scopedElements.push(connection.from);
+    return scopedElements;
+  },
+
+  // scope elements based on their money relationships
+  scopeFromMoneyConnection: function(connection){
+    var scopedElements = [connection];
+    var currentActor = null;
+    
+    // get all actors and connections that lead here
+    if(connection.from){
+      this._scopeFromMoneyConnection(connection.from, scopedElements, 'to', 'from');
+    }
+
+    // get all actors and connections that start from here
+    if(connection.to){
+      this._scopeFromMoneyConnection(connection.to, scopedElements, 'from', 'to');
+    }
+
+    return scopedElements;
+  },
+
+  _scopeFromMoneyConnection: function(startActor, scopedElements, dir1, dir2){
+    scopedElements.push(startActor);
+    // get all connections that point into dir1 from the startActor
+    var query = {};
+    query[dir1] = startActor.id;
+    var connections = this.moneyConnections.where(query);
+    // add each connection and all actors
+    _.each(connections, function(conn){
+      scopedElements.push(conn);
+      var next = this.actors.get(conn.get(dir2)) || this.actorGroups.get(conn.get(dir2));
+      if(next && _.indexOf(scopedElements, next) < 0){
+        this._scopeFromMoneyConnection(next, scopedElements, dir1, dir2);
+      }
     }.bind(this));
   },
 
