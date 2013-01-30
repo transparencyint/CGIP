@@ -30,6 +30,7 @@ module.exports = DraggableDroppableView.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
   },
 
   dragByDelta: function(dx, dy){
@@ -53,6 +54,10 @@ module.exports = DraggableDroppableView.extend({
   updateName: function(){
     this.$('.name').text( this.determineName() );
   },
+
+  updateCorruptionRisk: function(){
+    this.$el.toggleClass('hasCorruptionRisk', this.model.get('hasCorruptionRisk'));
+  },
   
   drop: function(event, view){
     // stop the actor dragging
@@ -69,6 +74,8 @@ module.exports = DraggableDroppableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
+    
+    this.updateCorruptionRisk();
   },
 
   destroy: function(){
