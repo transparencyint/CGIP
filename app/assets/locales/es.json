@@ -20,5 +20,14 @@
   "implementation": "Implementación",
   "Settings": "ajustes",
   "Show Monitoring": "Mostrar monitoreo",
-  "Language": "Idioma"
+  "Language": "Idioma",
+  "Type": "Tipo",
+  "Role": "Papel",
+  "Purpose": "Propósito",
+  "Note": "Nota",
+  "Close": "Cerrar",
+  "Save": "Ahorrar",
+  "Delete": "Borrar",
+  "Source": "Fuente",
+  "monitors": "monitores"
 }

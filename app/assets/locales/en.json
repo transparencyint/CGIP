@@ -1,8 +1,8 @@
 {
-  "project_name": "CGIP",
+  "project_name": "CFIP",
   "logout": "Logout",
   "dashboard": "Dashboard",
-  "cgip_countries_headline": "CGIP Countries",
+  "cgip_countries_headline": "CFIP Countries",
   "edit_map": "Edit Map",
   "edit_money_connections": "Edit Money Connections",
   "import_csv": "Import CSV",

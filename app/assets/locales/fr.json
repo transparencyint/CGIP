@@ -1,9 +1,9 @@
 {
-  "project_name": "CGIP",
+  "project_name": "CFIP",
   "logout": "Déconnexion",
   "Countries": "Pays",
   "Dashboard": "Sondage",
-  "cgip_countries_headline": "CGIP Pays",
+  "cgip_countries_headline": "CFIP Pays",
   "edit_map": "Éditer carte",
   "edit_money_connections": "Modifier les connexions d'argent",
   "import_csv": "Importer CSV",
@@ -20,5 +20,14 @@
   "monitoring": "Surveillance",
   "Settings": "Paramètres",
   "Show Monitoring": "Montrer la surveillance",
-  "Language": "Langue"
+  "Language": "Langue",
+  "Type": "Type",
+  "Role": "Rôle",
+  "Purpose": "Objectif",
+  "Note": "Noter",
+  "Close": "Fermer",
+  "Save": "Sauver",
+  "Delete": "Effacer",
+  "Source": "Source",
+  "monitors": "moniteurs"
 }
