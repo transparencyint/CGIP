@@ -280,13 +280,13 @@ io.sockets.on('connection', function (socket) {
       user_id: socket.user_id,
       model_id: model_id
     };
-    
+
     // don't allow to lock models that are already locked
     var alreadyLocked = _.find(lockedModels, function(locked){ return locked.model_id == model_id; });
     if(alreadyLocked) return;
 
     lockedModels.push(lock);
-    socket.broadcast.emit('lock', lock);
+    socket.broadcast.emit('lock', model_id);
     socket.broadcast.emit('lock:'+model_id, null);
   });
 

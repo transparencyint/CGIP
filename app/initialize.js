@@ -16,7 +16,7 @@ $(function() {
     if(window.realtimePort)
       socketServer = 'http://' + location.host + ':' + window.realtimePort;
     else
-      socketServer = '127.0.0.1:3000';
+      socketServer = location.host;
 
     console.log('connect socket to: ', socketServer)
 
