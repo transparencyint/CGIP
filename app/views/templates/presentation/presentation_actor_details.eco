@@ -1,0 +1,83 @@
+<div class="arrow"></div>
+
+<div class="holder">
+  <div>
+    <h3>
+      <% if @name: %>
+        <%= @name %> <% if @abbreviation: %>(<%= @abbreviation %>)<% end %> 
+      <% else if @abbreviation: %>
+        <%= @abbreviation %>
+      <% else: %>
+        Unknown
+      <% end %> 
+    </h3>
+  </div>
+
+  <div class="show">
+
+    <% if @organizationType: %>
+        <div class="showType clearfix">
+          <%= t('Type')%>: 
+          <span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
+          <% if @organizationType != 'other': %>
+            <%= @organizationType %>
+          <% else: %>
+            <%= @typeOther %>
+          <% end %>
+        </div>
+    <% end %>
+
+    <% if @role.length: %> 
+      <div class="clearfix">
+        <%= t('Role')%>:   
+        <% for role,idx in @role: %> 
+          <% if idx == 0: %>
+            <%= role %>
+          <% else: %>
+            / <%= role %> 
+          <% end %>  
+        <% end %>  
+      </div>
+    <% end %>
+
+    <% if @purpose.length: %>  
+      <div>
+        <%= t('Purpose')%>:
+        <% for purpose,idx in @purpose: %> 
+          <% if idx == 0: %>
+            <%= purpose %>
+          <% else: %>
+            / <%= purpose %>
+          <% end %>  
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @hasCorruptionRisk: %>  
+    	<div class="clearfix">
+        <p><%= t('is_corruption_risk'); %></p>
+        <div class="additionalInfo inlay">
+          <div class="corruptionText"><%= @corruptionRisk %></div>
+          <% if @corruptionRiskSource: %>
+            <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+        </div>
+        <% end %>
+    	</div>
+    <% end %>
+  	
+    <% if @description: %>
+    	<div class="clearfix">
+    	  <p><%= t('Note')%>:
+    		<%= @description%>
+        </p>
+    	</div> 
+    <% end %>
+
+  </div> 
+</div><!-- /.holder -->
+
+<div class="controls clearfix">
+  <div class="row right">
+    <button type="submit" class="close"><%= t('Close')%></button>
+  </div>
+</div>
