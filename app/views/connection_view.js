@@ -47,6 +47,20 @@ module.exports = View.extend({
     this.model.on('destroy', this.destroy, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
+
+    if(this.hasBothConnections){
+      mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'),this.test, this);
+      mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
+    }
+  },
+
+  test: function(strokeWidth, id){
+    if(this.model.id == id) return;
+    this.strokeWidth = strokeWidth * 1.7;
+    console.log("test" + strokeWidth);
+    this.markerRatio /= 1.8;
+
+    this.update();
   },
 
   render: function(){
@@ -145,7 +159,7 @@ module.exports = View.extend({
     //monitoring: look for money connections with same start and end point
     //monitoring: take money thickness and make it a bit thicker
     if(this.model.get('connectionType') === 'monitoring'){
-      console.log(this.editor.connections.models);
+      //console.log(this.editor.connections.models);
     }
 
     //accountability: look for money and monitoring connections with same start and end point
@@ -445,6 +459,11 @@ module.exports = View.extend({
     this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
     this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
     this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
+    
+    if(this.isMoney){
+      mediator.trigger(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.strokeWidth, this.model.id);
+      mediator.trigger(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.strokeWidth, this.model.id);
+      }
   },
 
   updateDisbursed: function(){ 

@@ -41,6 +41,7 @@ $(function() {
 
   // set up the config model
   window.config = new Config();
+  window.mediator = _.clone(Backbone.Events);
 
   window.t = $.jsperanto.translate;
   
