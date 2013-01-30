@@ -31,6 +31,7 @@ module.exports = DraggableDroppableView.extend({
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
+    this.model.on('change:organizationType',this.updateType,this);
   },
 
   dragByDelta: function(dx, dy){
@@ -55,6 +56,12 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.determineName() );
   },
 
+  updateType: function(){
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    var value = 'url(/images/pictograms/' + this.orgaType + '.png)';
+    this.$('.pictogram').css('background-image', value);
+  },
+
   updateCorruptionRisk: function(){
     this.$el.toggleClass('hasCorruptionRisk', this.model.get('hasCorruptionRisk'));
   },
@@ -67,7 +74,8 @@ module.exports = DraggableDroppableView.extend({
   },
 
   getRenderData: function() {
-    return { name: this.determineName() };
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    return { name: this.determineName(), orgaType: this.orgaType};
   },
 
   afterRender: function(){

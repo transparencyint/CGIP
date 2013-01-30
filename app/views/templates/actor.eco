@@ -1,1 +1,6 @@
-<div class="name"><%= @name %></div>
+<div class="name">
+	<% if @orgaType: %>
+	<span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
+	<% end %>
+	<span class="text"> <%= @name %></span>
+</div>
