@@ -18,7 +18,7 @@
     <% if @organizationType: %>
         <div class="showType clearfix">
           <%= t('Type')%>: 
-          <span class="pictogram" style="background-image: url(/images/pictograms/<%= @organizationType %>.png);"></span>
+          <span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
           <% if @organizationType != 'other': %>
             <%= @organizationType %>
           <% else: %>
