@@ -19,5 +19,6 @@
   "implementation": "Implementation",
   "monitoring": "Monitoring",
   "is_accountable_for": "is accountable for",
-  "is_corruption_risk": "There is a corruption risk."
+  "is_corruption_risk": "There is a corruption risk.",
+  "not_given": "Not given"
 }

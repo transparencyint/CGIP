@@ -28,7 +28,8 @@ module.exports = View.extend({
   pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
   placeNextToActor: ActorDetails.prototype.placeNextToActor,
   getRenderData: ActorDetails.prototype.getRenderData,
-  
+  initOrganizationType: ActorDetails.prototype.initOrganizationType,
+    
   initialize: function(options){
     View.prototype.initialize.call(this);
 
@@ -41,6 +42,8 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToActor = 10;
+
+    this.initOrganizationType();
 
     // backup data for cancel
     this.backup = this.model.toJSON();

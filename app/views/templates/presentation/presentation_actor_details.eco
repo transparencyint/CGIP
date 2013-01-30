@@ -15,17 +15,17 @@
 
   <div class="show">
 
-    <% if @organizationType: %>
-        <div class="showType clearfix">
-          <%= t('Type')%>: 
-          <span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
-          <% if @organizationType != 'other': %>
-            <%= @organizationType %>
-          <% else: %>
-            <%= @typeOther %>
-          <% end %>
-        </div>
-    <% end %>
+    <div class="showType clearfix">
+      <%= t('Type')%>: 
+      <span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
+      <% if @organizationType == 'other': %>
+        <%= @typeOther %>
+      <% else if @organizationType: %>
+        <%= @organizationType %>
+      <% else: %>
+        <%= t('not_given')%>
+      <% end %>
+    </div>
 
     <% if @role.length: %> 
       <div class="clearfix">

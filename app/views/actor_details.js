@@ -63,6 +63,7 @@ module.exports = View.extend({
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:organizationType',this.updateType,this);
+    this.initOrganizationType();
     
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -123,10 +124,17 @@ module.exports = View.extend({
       this.$('#title').text("Unknown");
   },
 
+  initOrganizationType: function(){
+    //removes whitespaces
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, "");
+    if(this.orgaType === "")
+      this.orgaType = "Unknown";
+  },
+
   updateType: function(){
-    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    this.initOrganizationType();
     var value = 'url(/images/pictograms/' + this.orgaType + '.png)';
-    this.$('#icon').css('background-image', value);
+    this.$('.pictogram').css('background-image', value);
   },
 
   deleteActor: function(){
@@ -250,8 +258,6 @@ module.exports = View.extend({
   },
 
   getRenderData : function(){
-    //removes whitespaces
-    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
     var data = this.model.toJSON();
     data.orgaType = this.orgaType;
     return data;

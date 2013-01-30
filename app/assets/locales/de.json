@@ -34,5 +34,7 @@
   "Settings": "Einstellungen",
   "Show Monitoring": "Monitoring anzeigen",
   "Language": "Sprache",
-  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?"
+  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
+  "not_given": "Keine Angabe"
+
 }

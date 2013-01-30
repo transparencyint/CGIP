@@ -16,11 +16,14 @@ module.exports = View.extend({
 		this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
+    this.initOrganizationType();
+    
   	_.bindAll(this, 'showDetails');
 	},
 
 	determineName: ActorView.prototype.determineName,
-	getRenderData: ActorView.prototype.getRenderData,
+  getRenderData: ActorView.prototype.getRenderData,
+	initOrganizationType: ActorView.prototype.initOrganizationType,
 
 	showDetails: function(){
     this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
