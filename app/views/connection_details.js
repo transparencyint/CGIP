@@ -180,12 +180,8 @@ module.exports = View.extend({
 
   afterRender: function(){
 
-    //set the money part to invisible per default
-    this.$('.money').hide();
-
     // detect which connection type we have and show/hide related fields
     if(this.connectionType === 'money'){
-      this.$('.money').show();
 
       var _disbursed = this.model.get('disbursed');
       var _pledged = this.model.get('pledged');
