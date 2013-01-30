@@ -65,10 +65,12 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToConnection = 21;
-    
+
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
+
+    this.model.on('destroy', this.destroy, this);
   },
   
   dragStart: function(event){
