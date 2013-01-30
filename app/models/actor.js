@@ -32,6 +32,26 @@ module.exports = Model.extend({
     thisPos.x += dx;
     thisPos.y += dy;
     this.set('pos', thisPos);
+  },
+
+  turnIntoGroup: function(firstActor){
+    // remove them both from their collections
+    firstActor.collection.trigger('remove', firstActor);
+    this.collection.remove(this);
+    
+    // create the actor group from the data of this actor
+    var ActorGroup = require('./actor_group');
+    var newData = this.toJSON();
+    delete newData._id;
+    delete newData._rev;
+
+    var newGroup = new ActorGroup(_.clone(newData));
+    newGroup.set('actors', [firstActor.id]);
+    newGroup.save().done(function(){
+      socket.emit('new_model', newGroup.toJSON());
+    });
+    this.destroy();
+    return newGroup;
   }
 
 });

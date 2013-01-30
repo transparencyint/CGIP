@@ -1,7 +1,7 @@
-var DraggableView = require('./draggable_view');
+var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
 
-module.exports = DraggableView.extend({
+module.exports = DraggableDroppableView.extend({
   selectable: true,
   
   template : require('./templates/actor'),
@@ -9,7 +9,7 @@ module.exports = DraggableView.extend({
   className : 'actor',
 
   events: function(){
-    var parentEvents = DraggableView.prototype.events;
+    var parentEvents = DraggableDroppableView.prototype.events;
     // merge the parent events and the current events
     return _.defaults({
       'mousedown' : 'dragStart',
@@ -19,15 +19,18 @@ module.exports = DraggableView.extend({
   },
   
   initialize: function(options){
-    DraggableView.prototype.initialize.call(this, options);
+    DraggableDroppableView.prototype.initialize.call(this, options);
     _.bindAll(this, 'destroy');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
+    this.dropClasses = [require('./actor_view')];
+
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
   },
 
   dragByDelta: function(dx, dy){
@@ -51,7 +54,18 @@ module.exports = DraggableView.extend({
   updateName: function(){
     this.$('.name').text( this.determineName() );
   },
+
+  updateCorruptionRisk: function(){
+    this.$el.toggleClass('hasCorruptionRisk', this.model.get('hasCorruptionRisk'));
+  },
   
+  drop: function(event, view){
+    // stop the actor dragging
+    view.isDragging = false;
+    var newGroup = this.model.turnIntoGroup(view.model);
+    this.editor.actorGroups.add(newGroup);
+  },
+
   getRenderData: function() {
     return { name: this.determineName() };
   },
@@ -60,14 +74,14 @@ module.exports = DraggableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.id);
+    
+    this.updateCorruptionRisk();
   },
 
   destroy: function(){
-    // TODO: call the proper destroy method and clean up the editor's view instances
-    // TODO: call lightbox destroy as well
     var self = this;
     this.$el.one(this.transEndEventName, function(){
-      DraggableView.prototype.destroy.call(self);
+      DraggableDroppableView.prototype.destroy.call(self);
     });
     this.$el.addClass('disappear');
 
