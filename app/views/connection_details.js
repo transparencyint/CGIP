@@ -197,7 +197,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is accountable for',
+      'accountability': 'is_accountable_for',
       'monitoring': 'monitors',
       'money': 'pays',
     };
@@ -247,7 +247,7 @@ module.exports = View.extend({
     var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
     var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
 
-    this.$('.connectionName').text(from + ' ' + text + ' ' + to);
+    this.$('.connectionName').text(from + ' ' + t(text) + ' ' + to);
   },
 
   updateValue: function(event) {
