@@ -65,6 +65,14 @@ module.exports = View.extend({
       {
         name: 'Deutsch',
         code: 'de'
+      },
+      {
+        name: 'Francais',
+        code: 'fr'
+      },
+      {
+        name: 'Espanol',
+        code: 'es'
       }
     ];
     

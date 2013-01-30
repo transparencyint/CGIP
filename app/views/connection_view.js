@@ -137,8 +137,22 @@ module.exports = View.extend({
     if(!this.hasBothConnections()) return
 
     //recalculating the line thickness and the arrow size
+
+    //money: just calculate the connection thickness by using the money amout
     if(this.isMoney){
       this.strokeWidth = 6 * this.model.coinSizeFactor;
+    }
+
+    //monitoring: look for money connections with same start and end point
+    //monitoring: take money thickness and make it a bit thicker
+    if(this.model.get('connectionType') === 'monitoring'){
+      console.log(this.editor.connections.models);
+    }
+
+    //accountability: look for money and monitoring connections with same start and end point
+    //accountability: take money or monitoring thickness and make it a bit thicker
+    if(this.model.get('connectionType') === 'accountability'){
+
     }
 
     this.pathSettings = {
@@ -151,8 +165,6 @@ module.exports = View.extend({
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
     this.toggleZeroConnection();
-        
-    
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
