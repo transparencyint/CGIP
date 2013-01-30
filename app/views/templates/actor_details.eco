@@ -29,6 +29,7 @@
     			</optgroup>
     			<option value="other" <% if @organizationType == 'other': %> selected <% end %>>Other</option>
     		</select>
+        <span id="icon" class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
     		<div class="additionalInfo <% if @organizationType != 'other': %> hidden <% end %>">
     		  <input type="text" id="typeOther" value="<%= @typeOther %>" class="small" name="typeOther">
     		</div>

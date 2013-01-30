@@ -62,6 +62,7 @@ module.exports = View.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+    this.model.on('change:organizationType',this.updateType,this);
     
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -120,6 +121,12 @@ module.exports = View.extend({
       this.$('#title').text(name);
     else
       this.$('#title').text("Unknown");
+  },
+
+  updateType: function(){
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    var value = 'url(/images/pictograms/' + this.orgaType + '.png)';
+    this.$('#icon').css('background-image', value);
   },
 
   deleteActor: function(){
@@ -240,6 +247,14 @@ module.exports = View.extend({
       left: pos.left,
       top: pos.top
     });
+  },
+
+  getRenderData : function(){
+    //removes whitespaces
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, ""); 
+    var data = this.model.toJSON();
+    data.orgaType = this.orgaType;
+    return data;
   },
 
   afterRender: function() {

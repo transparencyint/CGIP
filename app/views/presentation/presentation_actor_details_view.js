@@ -27,6 +27,7 @@ module.exports = View.extend({
   dontDrag: ActorDetails.prototype.dontDrag,
   pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
   placeNextToActor: ActorDetails.prototype.placeNextToActor,
+  getRenderData: ActorDetails.prototype.getRenderData,
   
   initialize: function(options){
     View.prototype.initialize.call(this);
@@ -78,14 +79,6 @@ module.exports = View.extend({
   addClickCatcher: function(){
     this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
     this.clickCatcher.on('click', this.close);
-  },
-
-  getRenderData : function(){
-    var orgaType = this.model.get('organizationType');
-    orgaType = orgaType.replace(/\s/g, ""); 
-    var data = this.model.toJSON();
-    data.orgaType = orgaType;
-    return data;
   },
 
   afterRender: function() {
