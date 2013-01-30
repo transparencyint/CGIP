@@ -20,7 +20,7 @@
           <%= t('Type')%>: 
           <span class="pictogram" style="background-image: url(/images/pictograms/<%= @organizationType %>.png);"></span>
           <% if @organizationType != 'other': %>
-            <%= @organizationType.type %>
+            <%= @organizationType %>
           <% else: %>
             <%= @typeOther %>
           <% end %>

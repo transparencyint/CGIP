@@ -14,7 +14,7 @@
   		    <option value="">Unknown</option>
     		  <optgroup label="Funding">
     		    <option value="Bank" <% if @organizationType == 'Bank': %> selected <% end%>>Bank</option>
-    	  		<option value="BilateralOrganization" <% if @organizationType == 'Bilateral Organization': %> selected <% end%>>Bilateral Organization</option>
+    	  		<option value="Bilateral Organization" <% if @organizationType == 'Bilateral Organization': %> selected <% end%>>Bilateral Organization</option>
       			<option value="Multilateral Organization" <% if @organizationType == 'Multilateral Organization': %> selected <% end%>>Multilateral Organization</option>
       			<option value="Trust Fund" <% if @organizationType == 'Trust Fund': %> selected <% end%>>Trust Fund</option>
           </optgroup>
