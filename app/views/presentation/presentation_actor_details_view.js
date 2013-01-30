@@ -82,9 +82,7 @@ module.exports = View.extend({
 
   getRenderData : function(){
     var orgaType = this.model.get('organizationType');
-    orgaType = orgaType.replace(/\s/g, "");
-    console.log("orgaType",orgaType);
-     
+    orgaType = orgaType.replace(/\s/g, ""); 
     var data = this.model.toJSON();
     data.orgaType = orgaType;
     return data;
