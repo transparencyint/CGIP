@@ -16,8 +16,9 @@
   <div class="show">
 
     <% if @organizationType: %>
-        <div class="clearfix">
+        <div class="showType clearfix">
           <%= t('Type')%>: 
+          <span class="pictogram" style="background-image: url(/images/pictograms/<%= @organizationType %>.png);"></span>
           <% if @organizationType != 'other': %>
             <%= @organizationType %>
           <% else: %>
@@ -27,7 +28,7 @@
     <% end %>
 
     <% if @role.length: %> 
-      <div>
+      <div class="clearfix">
         <%= t('Role')%>:   
         <% for role,idx in @role: %> 
           <% if idx == 0: %>
