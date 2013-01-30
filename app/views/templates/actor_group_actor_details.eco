@@ -1,0 +1,20 @@
+<div class="arrow"></div>
+
+<form>
+  <div class="holder">
+    <div>
+      <input type="text" class="name big" id="name" name="name" value="<%= @name %>" placeholder="Name" />
+      <input type="text" class="abbrevation small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
+    </div>
+	</div><!-- /.holder -->
+	
+	<div class="controls clearfix">
+    <div class="row right">
+      <button type="submit" class="done">Save</button>
+      <button class="cancel">Cancel</button>
+    </div>
+    <div class="row left">
+      <button class="delete">Delete</button>
+    </div>
+  </div>
+</form>
