@@ -2,7 +2,6 @@ var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
 
 module.exports = View.extend({
-  selectable: true,
 
   template: require('./templates/connection'),
 

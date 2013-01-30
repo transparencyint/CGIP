@@ -6,7 +6,7 @@ module.exports = View.extend({
   tagName: 'li',
   
   className: 'actor-group-actor',
-  template : require('views/templates/presentation/actor_group_entry_presentation'),
+  template : require('views/templates/presentation/presentation_actor_group_actor'),
 
   width: 110,
   height: 30,

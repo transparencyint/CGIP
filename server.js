@@ -98,6 +98,18 @@ var routeHandler = {
     }else{
       res.render('index', { user: null, lockedModels: lockedModels, realtimePort: realtimePort });
     }
+  },
+
+  /** Returns an error when the requested model is locked */
+  failIfModelLocked: function(req, res, next){
+    var id = req.params.actor_id || req.params.connection_id;
+    var alreadyLocked = _.find(lockedModels, function(locked){ return locked.model_id == id; });
+    // Model already locked by another user
+    if(alreadyLocked && req.user._id != alreadyLocked.user_id){
+      res.json({error: 'Model is locked'}, 423);
+    }else{
+      next();
+    }
   }
 };
 
@@ -146,15 +158,17 @@ app.post('/:country/actors', auth.ensureAuthenticated, function(req, res){
   });
 });
 
-app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
+app.put('/:country/actors/:actor_id', auth.ensureAuthenticated, routeHandler.failIfModelLocked, function(req, res){
   Actor.edit(req.params.actor_id, req.body, function(err, actor){
-    if(err) return res.json(err, 404);
+    if(err)
+      if(err.error == 'conflict') return res.json(err, 409); // conflict
+      else return res.json(err, 404);                        // not found
     io.sockets.emit('change:' + req.params.actor_id, actor);
     res.json(actor);
   });
 });
 
-app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, function(req, res){
+app.del('/:country/actors/:actor_id', auth.ensureAuthenticated, routeHandler.failIfModelLocked, function(req, res){
   Actor.remove(req.params.actor_id, function(err, actor){
     io.sockets.emit('destroy:' + req.params.actor_id, actor);
     res.json(actor);
@@ -183,15 +197,17 @@ app.post('/:country/connections', auth.ensureAuthenticated, function(req, res){
   });
 });
 
-app.put('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
+app.put('/:country/connections/:connection_id', auth.ensureAuthenticated, routeHandler.failIfModelLocked, function(req, res){
   Connection.edit(req.params.connection_id, req.body, function(err, connection){
-    if(err) return res.json(err, 404);
+    if(err)
+      if(err.error == 'conflict') return res.json(err, 409); // conflict
+      else return res.json(err, 404);                        // not found
     io.sockets.emit('change:' + req.params.connection_id, connection);
     res.json(connection);
   });
 });
 
-app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, function(req, res){
+app.del('/:country/connections/:connection_id', auth.ensureAuthenticated, routeHandler.failIfModelLocked, function(req, res){
   Connection.remove(req.params.connection_id, function(err, connection){
     io.sockets.emit('destroy:' + req.params.connection_id, null);
     res.json(connection);
@@ -264,8 +280,13 @@ io.sockets.on('connection', function (socket) {
       user_id: socket.user_id,
       model_id: model_id
     };
+
+    // don't allow to lock models that are already locked
+    var alreadyLocked = _.find(lockedModels, function(locked){ return locked.model_id == model_id; });
+    if(alreadyLocked) return;
+
     lockedModels.push(lock);
-    socket.broadcast.emit('lock', lock);
+    socket.broadcast.emit('lock', model_id);
     socket.broadcast.emit('lock:'+model_id, null);
   });
 
