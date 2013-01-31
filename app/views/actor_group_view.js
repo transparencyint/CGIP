@@ -29,13 +29,20 @@ module.exports = DraggableDroppableView.extend({
   },
 
   events: function(){
-    var parentEvents = DraggableDroppableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown'               : 'dragStart',
-      'dblclick'                : 'showDetails',
-      'click .dropdown-control' : 'showActors'
-    }, parentEvents);
+    var _parentEvents = DraggableDroppableView.prototype.events;
+    var _events = _.defaults({}, _parentEvents);
+    
+    // bind arrow
+    _events[ this.inputUpEvent + ' .dropdown-control' ] = 'arrowClicked';
+    
+    // bind dynamic input event (touch or mouse)
+    _events[ this.inputDownEvent ] = 'dragStart';
+    _events[ this.inputUpEvent ] = 'showDetails';
+    
+    // disable dragging on the arrow
+    _events[ this.inputDownEvent + ' .dropdown-control' ] = 'dontDrag';
+    
+    return _events;
   },
 
   getRenderData: function(){
@@ -84,8 +91,12 @@ module.exports = DraggableDroppableView.extend({
   
   showDetails: function(){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
+    
+    console.log("showDetails");
+    if(!this.wasOrIsDragging){
+      this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+      this.options.editor.$el.append(this.modal.render().el);
+    }
   },
 
   open: function(){
@@ -169,9 +180,11 @@ module.exports = DraggableDroppableView.extend({
     }
   },
 
-  showActors: function(event){
+  arrowClicked: function(event){
     if(this.hovered || this.wasOrIsDragging) return;
-
+    
+    event.stopPropagation();
+    this.select();
     this.toggle();
   },
 
