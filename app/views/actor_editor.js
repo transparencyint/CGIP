@@ -124,7 +124,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'addPushedActor', 'checkDrop', 'onSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'onSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
