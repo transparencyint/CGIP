@@ -257,6 +257,7 @@ module.exports = View.extend({
   
   onSelected: function(event, view){
     var type = view.model.get('type');
+    this.selectedView = view;
     if(type == 'actor'){
       this.selectedActorView = view;
       if(this.mode)
