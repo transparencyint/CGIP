@@ -92,7 +92,6 @@ module.exports = DraggableDroppableView.extend({
   showDetails: function(){
     if(this.model.isLocked()) return; // don't show it if it's locked
     
-    console.log("showDetails");
     if(!this.wasOrIsDragging){
       this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
       this.options.editor.$el.append(this.modal.render().el);
