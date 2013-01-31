@@ -5,7 +5,7 @@
   "Dashboard": "Übersicht",
   "cgip_countries_headline": "CGIP Länder",
   "edit_map": "Map editieren",
-  "edit_money_connections": "Geldverbindungen editirieren",
+  "edit_money_connections": "Geldverbindungen editieren",
   "import_csv": "CSV importieren",
   "edit_countries": "Länder editieren",
   "add_actor": "Actor hinzufügen",
@@ -34,5 +34,6 @@
   "Settings": "Einstellungen",
   "Show Monitoring": "Monitoring anzeigen",
   "Language": "Sprache",
-  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?"
+  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
+  "unknown amount": "Unbekannte Summe"
 }
