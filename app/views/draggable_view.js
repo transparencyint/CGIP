@@ -45,7 +45,8 @@ module.exports = View.extend({
     if(this.model && this.model.lockable)
       this.model.lock();
     
-    this.select();
+    if(this.editor.selectedView != this)
+      this.select();
     
     if(this.isDraggable){
       event.stopPropagation();
