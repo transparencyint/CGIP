@@ -5,7 +5,7 @@
   <div class="table">
     <div class="row">
       <label for="showMonitoring"><%= t('Show Monitoring') %></label>
-      <input type="checkbox" id="showMonitoring">
+      <input type="checkbox" id="showMonitoring" <% if(@showMonitoring): %> checked <% end%> >
     </div>
     <div class="row">
       <label for="language"><%= t('Language') %></label>

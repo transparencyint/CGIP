@@ -1,4 +1,5 @@
 var DraggableView = require('./draggable_view');
+var GroupActorDetailsView = require('./actor_group_actor_details');
 
 module.exports = DraggableView.extend({
 
@@ -14,7 +15,7 @@ module.exports = DraggableView.extend({
     // merge the parent events and the current events
     return _.defaults({
       'mousedown' : 'dragStart',
-      'click'     : 'showInfo'
+      'click'     : 'showDetails'
     }, parentEvents);
   },
 
@@ -48,9 +49,11 @@ module.exports = DraggableView.extend({
     this.$el.removeClass('hidden');
   },
 
-  showInfo: function(event){
+  showDetails: function(event){
     event.stopPropagation();
     // add code for info display here
+    this.modal = new GroupActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
     return false;
   },
 

@@ -9,7 +9,7 @@ module.exports = Backbone.Model.extend({
     // check if model is in the initially locked models
     if(this.id){
       var id = this.id;
-      var isLocked = _.find(lockedModels, function(model){ return model.model_id == id; });
+      var isLocked = _.find(lockedModels, function(model){ if(model) return model == id; });
       if(isLocked) this.set('locked', true);
     }
 

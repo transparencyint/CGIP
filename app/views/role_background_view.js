@@ -66,6 +66,8 @@ module.exports = View.extend({
 
   drag: function(event){
 
+    $('#actorEditor').addClass('dragcursor');
+
     // get the current drag x coordinate
     var roleSelector = event.data.roleSelector;
     var roleIndex = this.roles.indexOf(roleSelector);
@@ -120,6 +122,7 @@ module.exports = View.extend({
     this.country.save();
 
     $(document).unbind(this.inputMoveEvent, this.drag);
+    $('#actorEditor').removeClass('dragcursor');
   },
 
   zoom: function(zoomValue){
@@ -190,7 +193,6 @@ module.exports = View.extend({
 
       this.$('.draghandle.last').show();
 
-      //this.roleDimensions[4] = $('#monitoring').position().left + $('#monitoring').width();
       this.country.set({'showMonitoring' : true});
       this.country.save();
     }

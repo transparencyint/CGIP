@@ -74,6 +74,8 @@ module.exports = View.extend({
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
+
+    this.model.on('destroy', this.destroy, this);
   },
   
   dragStart: function(event){
@@ -180,12 +182,8 @@ module.exports = View.extend({
 
   afterRender: function(){
 
-    //set the money part to invisible per default
-    this.$('.money').hide();
-
     // detect which connection type we have and show/hide related fields
     if(this.connectionType === 'money'){
-      this.$('.money').show();
 
       var _disbursed = this.model.get('disbursed');
       var _pledged = this.model.get('pledged');
@@ -201,7 +199,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is accountable for',
+      'accountability': 'is_accountable_for',
       'monitoring': 'monitors',
       'money': 'pays',
     };
@@ -251,7 +249,7 @@ module.exports = View.extend({
     var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
     var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
 
-    this.$('.connectionName').text(from + ' ' + text + ' ' + to);
+    this.$('.connectionName').text(from + ' ' + t(text) + ' ' + to);
   },
 
   updateValue: function(event) {
@@ -276,7 +274,7 @@ module.exports = View.extend({
   },
 
   updateMoneyConnections: function (event) {
-    config.set('moneyConnectionMode', event.currentTarget.id);
+    config.set({moneyConnectionMode: event.currentTarget.id});
   },
   
   toggleAdditionalInfo: function(event){

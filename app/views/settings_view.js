@@ -1,5 +1,6 @@
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
+var RoleBackgroundView = require('./role_background_view');
 
 module.exports = View.extend({
   template: require('./templates/settings'),
@@ -48,11 +49,11 @@ module.exports = View.extend({
   },
   
   toggleMonitoring: function(){
-    
+    this.editor.rbw.toggleMonitoring();
   },
   
-  changeLanguage: function(){
-    
+  changeLanguage: function(event){
+    config.set({language: this.$('#language').val()});
   },
   
   getRenderData: function(){
@@ -64,13 +65,13 @@ module.exports = View.extend({
       {
         name: 'Deutsch',
         code: 'de'
-      },
-      {
-        name: 'Español',
-        code: 'es'
       }
     ];
     
-    return { languages: languages, active: $.jsperanto.lang() }
+    return { 
+      languages: languages,
+      active: config.get('language'),
+      showMonitoring: this.editor.country.get('showMonitoring')
+    };
   }
 });

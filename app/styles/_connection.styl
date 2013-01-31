@@ -10,6 +10,11 @@
     pointer-events visiblePainted
   marker
     fill none
+  &.money
+    .arrow
+      fill rgb(250, 223, 54)
+    .path
+      stroke rgb(250, 223, 54)
   &.pledgedMode
     path
       stroke hsl(60,20%,60%)
@@ -34,8 +39,12 @@
       stroke hsl(205,100%,55%)
     .selected-arrow
       fill hsl(205,100%,55%)
-  &:hover .metadata
-    display block
+  .corruptionRisk
+    background-image url(/images/redFlag.png)
+    position absolute
+    width 13px
+    height 20px
+    display none
   .metadata
     position absolute
     padding 1px 10px
