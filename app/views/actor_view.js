@@ -9,7 +9,9 @@ module.exports = DraggableDroppableView.extend({
   className : 'actor',
 
   events: function(){
-    var _events = DraggableDroppableView.prototype.events;
+    var _parentEvents = DraggableDroppableView.prototype.events;
+    // clone parent events
+    var _events = _.defaults({}, _parentEvents);
     
     // bind dynamic input event (touch or mouse)
     _events[ this.inputDownEvent ] = 'dragStart';
