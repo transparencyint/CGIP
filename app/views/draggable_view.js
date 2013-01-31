@@ -1,6 +1,8 @@
 var View = require('./view');
 
 module.exports = View.extend({
+  isDraggable: true,
+  
   events: {
     'click' : 'dontUnselect'
   },
@@ -26,11 +28,15 @@ module.exports = View.extend({
   },
 
   disableDraggable: function(){
-    this.dontDrag = true;
+    this.isDraggable = false;
   },
 
   enableDraggable: function(){
-    this.dontDrag = false;
+    this.isDraggable = true;
+  },
+  
+  dontDrag: function(event){
+    event.stopPropagation();
   },
 
   dragStart: function(event){
@@ -40,8 +46,8 @@ module.exports = View.extend({
       this.model.lock();
     
     this.select();
-
-    if(!this.dontDrag){
+    
+    if(this.isDraggable){
       event.stopPropagation();
       event.preventDefault();
       
