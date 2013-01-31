@@ -184,7 +184,10 @@ module.exports = DraggableDroppableView.extend({
     if(this.hovered || this.wasOrIsDragging) return;
     
     event.stopPropagation();
-    this.select();
+    
+    if(this.editor.selectedView != this)
+      this.select();
+    
     this.toggle();
   },
 
