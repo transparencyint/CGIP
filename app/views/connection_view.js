@@ -11,14 +11,11 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'mouseover' : 'showMetadata',
-      'mousemove' : 'stickMetadata',
-      'mouseout' : 'hideMetadata',
-      'mousedown' : 'hideMetadata',
       'click' : 'select'
     };
     
     _events[ this.inputDownEvent ] = 'showDetails';
+    _events[ this.inputMoveEvent ] = 'moveMetadata';
     
     return _events;
   },
@@ -59,6 +56,20 @@ module.exports = View.extend({
   stopPropagation: function(event){
     event.stopPropagation();
   },
+  
+  getRenderData: function(){
+    var disbursed = this.model.get('disbursed');
+    
+    if(disbursed < 1)
+      disbursed = t('unknown amount');
+    else
+      disbursed = '$ ' + disbursed;
+    
+    return { 
+      disbursed: disbursed, 
+      connectionType: this.model.get('connectionType')
+    };
+  },
 
   render: function(){
     // only render if it's a valid view
@@ -95,13 +106,8 @@ module.exports = View.extend({
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateCoinSize();
-<<<<<<< HEAD
-      
-      this.$el.bind('mousemove', this.moveMetadata);
-=======
       this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
     }
->>>>>>> 8836828ba31231b23464b37fbb33a6bfd2a6de5b
 
     this.pathSettings = {
       class_: 'path', 
