@@ -17,14 +17,19 @@ module.exports = View.extend({
       _this.destroy();
     };
     
-    _.bindAll('callback');
+    _.bindAll(this, 'callback', 'stopPropagation');
     
     this.render();
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
   },
   
   render: function(){
     this.$el.css('z-index', this.zIndex);
     this.$el.appendTo(this.holder);
-    this.$el.on( this.inputDownEvent, this.callback);
+    this.$el.on(this.inputDownEvent, this.stopPropagation);
+    this.$el.on(this.inputUpEvent, this.callback);
   }
 });
