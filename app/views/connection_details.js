@@ -188,8 +188,10 @@ module.exports = View.extend({
       var _disbursed = this.model.get('disbursed');
       var _pledged = this.model.get('pledged');
 
-      this.$('#disbursed').val(_disbursed);
-      this.$('#pledged').val(_pledged);   
+      if(_disbursed > 0)
+        this.$('#disbursed').val(_disbursed);
+      if(_pledged > 0)
+        this.$('#pledged').val(_pledged);   
 
       this.$('#disbursed').numeric();
       this.$('#pledged').numeric();
