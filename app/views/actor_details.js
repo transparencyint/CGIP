@@ -106,14 +106,17 @@ module.exports = View.extend({
   },
 
   drag: function(event){ 
-    this.$el.css({
-      left: this.normalizedX(event) - this.startX,
-      top:  this.normalizedY(event) - this.startY
-    })
+    var x = this.normalizedX(event) - this.startX;
+    var y = this.normalizedY(event) - this.startY;
+    this.place(x, y);
   },
   
-  dragStop : function(){
+  dragStop: function(){
     $(document).unbind(this.inputMoveEvent, this.drag);
+  },
+  
+  place: function(x, y){
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ x +'px,'+ y +'px,0)');
   },
 
   updateName: function(){
@@ -243,10 +246,7 @@ module.exports = View.extend({
     var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
     this.$('.holder').css('maxHeight', maxHeight);
 
-    this.$el.css({
-      left: pos.left,
-      top: pos.top
-    });
+    this.place(pos.left, pos.top);
   },
 
   afterRender: function() {
@@ -256,7 +256,6 @@ module.exports = View.extend({
     this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
-    // focus first input field
     var self = this;
     _.defer(function(){ 
       self.placeNextToActor();
@@ -265,7 +264,9 @@ module.exports = View.extend({
       self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
       self.holder.css('overflow', 'auto');
       
-      self.$('input').first().focus();
+      // on desktop browsers: focus first input field
+      if(!Modernizr.touch) 
+        self.$('input').first().focus();
     });
   },
   

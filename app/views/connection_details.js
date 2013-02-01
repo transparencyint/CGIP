@@ -98,14 +98,17 @@ module.exports = View.extend({
   },
 
   drag: function(event){ 
-    this.$el.css({
-      left: this.normalizedX(event) - this.startX,
-      top:  this.normalizedY(event) - this.startY
-    })
+    var x = this.normalizedX(event) - this.startX;
+    var y = this.normalizedY(event) - this.startY;
+    this.place(x, y);
   },
   
   dragStop : function(){
     $(document).unbind(this.inputMoveEvent, this.drag);
+  },
+  
+  place: function(x, y){
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ x +'px,'+ y +'px,0)');
   },
 
   currentMoneyMode: function () {
@@ -160,10 +163,7 @@ module.exports = View.extend({
     var maxHeight = this.editor.$el.height() - this.mousePosition.top - padding - this.controlsHeight;
     this.$('.holder').css('maxHeight', maxHeight);
 
-    this.$el.css({
-      left: this.mousePosition.left,
-      top: this.mousePosition.top
-    });
+    this.place(this.mousePosition.left, this.mousePosition.top);
   },
   
   handleKeys: function(event){
@@ -215,7 +215,6 @@ module.exports = View.extend({
 
     $(document).keydown(this.handleKeys);
     
-    // focus first input field
     var self = this;
     _.defer(function(){ 
       self.placeNextToConnection();
@@ -224,7 +223,9 @@ module.exports = View.extend({
       self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
       self.holder.css('overflow', 'auto');
       
-      self.$('input').first().focus();
+      // on desktop browsers: focus first input field
+      if(!Modernizr.touch) 
+        self.$('input').first().focus();
     });
   },
   
