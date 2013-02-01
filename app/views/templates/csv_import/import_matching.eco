@@ -1,7 +1,7 @@
-<h1>Import CSV</h1>
+<h1><%= t('import_csv') %></h1>
 
-<div id="confirmInfo"><p>All in green marked lines have two matching actors and therefore will be added to the database.<br />Please comfirm the import by pressing the button.</p></div>
-<div id="successInfo"><p>All changes successfully changed.</p></div>
-<div id="failureInfo"><p>An error occured. Changes are not saved.<br />Check if you are logged in to save information.</p></div>
-<input type="button" id="confirmButton" value="Confirm Import">
+<div id="confirmInfo"><p><%= t('green_lines') %><br /><%= t('confirm_by_pressing_button') %></p></div>
+<div id="successInfo"><p><%= t('changes_saved') %></p></div>
+<div id="failureInfo"><p><%= t('error_occured') %><br /><%= t('check_login') %></p></div>
+<input type="button" id="confirmButton" value="<%= t('confirm_import') %>">
 
