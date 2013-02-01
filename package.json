@@ -30,7 +30,6 @@
         "underscore": "1.4.3",
         "prompt": "0.1.12",
         "uglify-js": "1.3.4",
-        "gzippo": "0.2",
         "socket.io": "0.9.3",
         "jade": "0.28.1",
         "brunch": "1.4.3"
