@@ -41,7 +41,7 @@
     <div class="view controls vertical">
       <div class="fit screen icon control"></div>
     </div>
-    <div class="zoom view controls vertical <%= 'hidden' if @touchDevice %>">
+    <div class="zoom view controls vertical <%= 'hidden' if @gestureSupport %>">
       <div class="in icon control"></div>
       <div class="range control">
         <div class="bar"></div>

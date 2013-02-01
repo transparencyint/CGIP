@@ -659,7 +659,7 @@ module.exports = View.extend({
   },
   
   getRenderData: function() {
-    return { touchDevice: Modernizr.touch };
+    return { gestureSupport: Modernizr.gesture };
   },
 
   initializeConfig: function(){
