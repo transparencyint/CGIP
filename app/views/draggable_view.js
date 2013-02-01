@@ -96,7 +96,7 @@ module.exports = View.extend({
     if(this.model && this.model.lockable)
       this.model.unlock();
 
-    if(this.isDragging){
+    if(this.wasOrIsDragging){
       // emit a global dragstop event
       $(document).trigger('viewdragstop', this);
 
@@ -124,7 +124,7 @@ module.exports = View.extend({
   reset: function(){},
 
   snapToGrid: function(){
-    if(this.dontSnap || !this.isDragging) return;
+    if(this.dontSnap || !this.wasOrIsDragging) return;
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
     var pos =  this.model.get('pos');     
