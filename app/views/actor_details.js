@@ -246,7 +246,6 @@ module.exports = View.extend({
     this.clickCatcher = new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
     
     $(document).keydown(this.handleKeys);
-    this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
     // focus first input field
@@ -260,8 +259,8 @@ module.exports = View.extend({
       
       self.$('input').first().focus();
 
-      // fixes wron height calculation of the textareas
-      self.$('textarea').trigger('autosize');
+      // fixes wrong height calculation of the textareas
+      self.autosize = self.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     });
   },
   
