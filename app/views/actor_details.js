@@ -259,6 +259,9 @@ module.exports = View.extend({
       self.holder.css('overflow', 'auto');
       
       self.$('input').first().focus();
+
+      // fixes wron height calculation of the textareas
+      self.$('textarea').trigger('autosize');
     });
   },
   
