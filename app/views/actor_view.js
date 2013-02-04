@@ -11,24 +11,29 @@ module.exports = DraggableDroppableView.extend({
   events: function(){
     var _parentEvents = DraggableDroppableView.prototype.events;
     // clone parent events
-    var _events = _.defaults({}, _parentEvents);
+    var _events = _.defaults({
+      'dblclick' : 'showDetails'
+    }, _parentEvents);
     
     // bind dynamic input event (touch or mouse)
-    _events[ this.inputDownEvent ] = 'dragStart';
-    _events[ this.inputUpEvent ] = 'showDetails';
+    _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
   
     return _events;
   },
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy');
+    _.bindAll(this, 'destroy', 'showDetails');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
+    this.longPressDelay = 500;
 
     this.dropClasses = [require('./actor_view')];
-
+    
+    this.on('dragging', this.cancelLongPress, this);
+    
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
@@ -38,14 +43,24 @@ module.exports = DraggableDroppableView.extend({
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
   },
+  
+  longPress: function(event){
+    // fire dragstart
+    this.dragStart(event);
+    
+    // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+    this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
+  },
+  
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
+  },
 
   showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
     
-    if(!this.wasOrIsDragging){
-      this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-      this.options.editor.$el.append(this.modal.render().el);
-    }
+    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
   },
   
   determineName: function(){
