@@ -25,7 +25,6 @@ ConnectionMode.prototype.reset = function(){
   this.connection.to = new Backbone.Model();
   this.connection.disbursed = 0;
   this.connection.pledged = 0;
-  this.isActive = true;
   this.connection.set('connectionType', this.connectionType);
 
   $(document).unbind(View.prototype.inputMoveEvent, this._moveDummy);
@@ -42,9 +41,10 @@ ConnectionMode.prototype.actorSelected = function(actor){
   if(this.selectedActors.length === 1){
     this.connection.from = actor.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
-    this.connection.to.margins = {top: 0, right:0, bottom:0, left:0};
+    this.connection.to.margins = { top: 0, right:0, bottom:0, left:0 };
+    this.connection.to.width = 0;
+    this.connection.to.height = 0;
     this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
-    this.connectionView.actorRadius = 0;
     this.connectionView.render();
     this.workspace.append(this.connectionView.el);
     $(document).bind(View.prototype.inputMoveEvent, this._moveDummy);
@@ -97,19 +97,10 @@ ConnectionMode.prototype.cancel = function(){
   this.reset();
 };
 
-ConnectionMode.prototype.abort = function(){
-  this.cancel();
-  this.isActive = false;
-};
-
-ConnectionMode.prototype.unselect = function(){
-  this.cancel();
-};
-
 ConnectionMode.prototype._moveDummy = function(event){
   var pos = this.connection.to.get('pos');
-  var dx = (event.pageX - pos.x - this.editor.offset.left - this.editor.origin.left) / this.editor.zoom.value;
-  var dy = (event.pageY - pos.y - this.editor.offset.top - this.editor.origin.top) / this.editor.zoom.value;
+  var dx = (View.prototype.normalizedX(event) - pos.x - this.editor.offset.left - this.editor.origin.left) / this.editor.zoom.value;
+  var dy = (View.prototype.normalizedY(event) - pos.y - this.editor.offset.top - this.editor.origin.top) / this.editor.zoom.value;
 
   this.connection.to.set({
     pos: {
