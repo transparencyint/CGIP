@@ -1,5 +1,5 @@
 <div class="inner">
-  <h1>Edit Countries</h1>
+  <h1><%= t('edit_countries') %></h1>
 
   <div id="add-country">
     <input type="text" placeholder="type to add country..." /><button><%= t('add_country') %></button>

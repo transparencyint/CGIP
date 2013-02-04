@@ -3,7 +3,7 @@
 <form>
   <div class="holder">
     <div>
-      <input type="text" class="big" id="name" name="name" value="<%= @name %>" placeholder="Full Name" />
+      <input type="text" class="big" id="name" name="name" value="<%= @name %>" placeholder="<%= t('Full_Name') %>" />
       <input type="text" class="small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
     </div>
   
