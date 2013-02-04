@@ -6,6 +6,7 @@
   "add_con": "Agregar conexión",
   "add_content": "Añadir contenido",
   "add_country": "Añadir país",
+  "Are you sure you want to remove": "¿Está seguro que desea eliminar",
   "Bank": "Banco",
   "bilateral_org": "Organización bilateral",
   "Cancel": "Cancel",
@@ -26,6 +27,7 @@
   "corr_risk": "Corrupción de Riesgos",
   "Corruption Risk": "Corrupción de Riesgos",
   "Countries": "Países",
+  "country_selection": "Selección de país",
   "create": "Crear!",
   "Dashboard": "Salpicadero",
   "Delete": "Borrar",
@@ -90,6 +92,7 @@
   "To": "a",
   "trust_fund": "Fondo Fiduciario",
   "Type": "Tipo",
+  "type to add country": "escribir para agregar país...",
   "Unknown": "Desconocido",
   "wrong_uname_pw": "Nombre de usuario o contraseña incorrecta!",
   "Your data seems to be outdated, please reload your browser to prevent errors.": "Sus datos parece estar desactualizada, por favor, vuelva a cargar el navegador para evitar errores."

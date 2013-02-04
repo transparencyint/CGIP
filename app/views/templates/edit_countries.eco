@@ -2,7 +2,7 @@
   <h1><%= t('edit_countries') %></h1>
 
   <div id="add-country">
-    <input type="text" placeholder="type to add country..." /><button><%= t('add_country') %></button>
+    <input type="text" placeholder="<%= t('type to add country...') %>" /><button><%= t('add_country') %></button>
     <ul></ul>
   </div>
 
