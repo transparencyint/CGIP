@@ -32,6 +32,9 @@ module.exports = View.extend({
 
     this.editor = options.editor;
 
+    this.isSecondConnection = false;
+    this.distanceSecond = 0;
+
     this.corruptionRisk = this.model.get('hasCorruptionRisk');
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
 
@@ -49,16 +52,18 @@ module.exports = View.extend({
     this.isMoney = this.model.get('connectionType') === 'money';
 
     if(this.hasBothConnections){
-      mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'),this.test, this);
-      mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
+    mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
+    mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
     }
   },
 
   test: function(strokeWidth, id){
     if(this.model.id == id) return;
-    this.strokeWidth = strokeWidth * 1.7;
+    //this.strokeWidth = strokeWidth * 1.7;
     console.log("test" + strokeWidth);
-    this.markerRatio /= 1.8;
+    //this.markerRatio /= 1.8;
+    this.isSecondConnection = true;
+    this.distanceSecond = strokeWidth;
 
     this.update();
   },
@@ -149,25 +154,6 @@ module.exports = View.extend({
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
-    //recalculating the line thickness and the arrow size
-
-    //money: just calculate the connection thickness by using the money amout
-    if(this.isMoney){
-      this.strokeWidth = 6 * this.model.coinSizeFactor;
-    }
-
-    //monitoring: look for money connections with same start and end point
-    //monitoring: take money thickness and make it a bit thicker
-    if(this.model.get('connectionType') === 'monitoring'){
-      //console.log(this.editor.connections.models);
-    }
-
-    //accountability: look for money and monitoring connections with same start and end point
-    //accountability: take money or monitoring thickness and make it a bit thicker
-    if(this.model.get('connectionType') === 'accountability'){
-
-    }
-
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.strokeWidth
@@ -246,8 +232,12 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
+        if(this.isSecondConnection)
+          console.log(this.distanceSecond);
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
+        start.y -= this.distanceSecond;
+        end.y -= this.distanceSecond;
         this.definePath1Line(start, end);
       }
       //case 1c
@@ -255,10 +245,10 @@ module.exports = View.extend({
       // ──┐
       //   └──➝
       //  
-      else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius){
+      else if(end.y - start.y <= (fromMargins.bottom + toMargins.top)/2+this.edgeRadius*3){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0);
+        this.definePath3LinesX(start, end, 1, 0, -1);
       }
       //case 1d
       //  
@@ -269,7 +259,7 @@ module.exports = View.extend({
       else if(end.x - start.x <= (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1);
+        this.definePath3LinesY(start, end, 0, 1, 1);
       }
       //case 1a+b
       //  
@@ -279,6 +269,8 @@ module.exports = View.extend({
       else {
         start.x += fromMargins.right;
         end.y -= toMargins.top + this.markerSize;
+        start.y -= this.distanceSecond;
+        end.x += this.distanceSecond;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -300,6 +292,8 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
+        start.x += this.distanceSecond;
+        end.x += this.distanceSecond;
         this.definePath1Line(start, end);
       }
       //case 2c
@@ -310,7 +304,7 @@ module.exports = View.extend({
       else if(start.y - end.y <  (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1);
+        this.definePath3LinesX(start, end, 0, 1, 1);
       }
       //case 2d
       //  
@@ -321,7 +315,7 @@ module.exports = View.extend({
       else if(end.x - start.x < (fromMargins.right + toMargins.left)/2 + this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0);
+        this.definePath3LinesY(start, end, 1, 0, -1);
       }
       //case 2a+b
       //  
@@ -331,6 +325,8 @@ module.exports = View.extend({
       else {
         start.x += fromMargins.right;
         end.y += toMargins.bottom + this.markerSize;
+        start.y += this.distanceSecond;
+        end.x += this.distanceSecond;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -351,6 +347,8 @@ module.exports = View.extend({
       if(start.y == end.y){
         start.x -= fromMargins.right;
         end.x += toMargins.left + this.markerSize;
+        start.y -= this.distanceSecond;
+        end.y -= this.distanceSecond;
         this.definePath1Line(start, end);
       }
       //case 3c
@@ -358,10 +356,10 @@ module.exports = View.extend({
       //    ┌──
       //  ←─┘
       //
-      else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius){
+      else if(end.y - start.y < (fromMargins.bottom + toMargins.top)/2 + this.edgeRadius*3){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 0, 1);
+        this.definePath3LinesX(start, end, 0, 1, 1);
       }
       //case 3d
       //
@@ -372,7 +370,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
-        this.definePath3LinesY(start, end, 1, 0);
+        this.definePath3LinesY(start, end, 1, 0, -1);
       }
       //case 3a+b
       //
@@ -383,6 +381,8 @@ module.exports = View.extend({
       else {
         start.x -= fromMargins.left;
         end.y -= toMargins.top + this.markerSize;
+        start.y -= this.distanceSecond;
+        end.x -= this.distanceSecond;
         start2 = {
           x : start.x,
           y : start.y + this.edgeRadius
@@ -404,6 +404,8 @@ module.exports = View.extend({
       if(start.x == end.x){
         start.y += fromMargins.bottom;
         end.y -= toMargins.top + this.markerSize;
+        start.x += this.distanceSecond;
+        end.x += this.distanceSecond;
         this.definePath1Line(start, end);
       }
       //case 4c
@@ -411,10 +413,10 @@ module.exports = View.extend({
       //  ←─┐
       //    └──
       //
-      else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius){
+      else if(start.y - end.y < (fromMargins.top + toMargins.bottom)/2 + this.edgeRadius*3){
         start.x -= fromMargins.left;
         end.x += toMargins.right + this.markerSize;
-        this.definePath3LinesX(start, end, 1, 0);
+        this.definePath3LinesX(start, end, 1, 0, -1);
       }
       //case 4d
       //
@@ -425,7 +427,7 @@ module.exports = View.extend({
       else if(start.x - end.x < (fromMargins.left + toMargins.right)/2 + 3*this.edgeRadius){
         start.y -= fromMargins.top;
         end.y += toMargins.bottom + this.markerSize;
-        this.definePath3LinesY(start, end, 0, 1);
+        this.definePath3LinesY(start, end, 0, 1, 1);
       }
       //case 4a+b
       //
@@ -435,6 +437,8 @@ module.exports = View.extend({
       else {
         start.x -= fromMargins.left;
         end.y += toMargins.bottom + this.markerSize;
+        start.y += this.distanceSecond;
+        end.x -= this.distanceSecond;
         start2 = {
           x : start.x,
           y : start.y - this.edgeRadius
@@ -574,9 +578,13 @@ module.exports = View.extend({
 
   },
 
-  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2){
+  definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2, prefixSecondDistance){
+    start.y += this.distanceSecond;
+    end.y += this.distanceSecond;
+
     var edgeRadius = this.edgeRadius;
     var halfX = start.x + (end.x - start.x)/2;
+    halfX += this.distanceSecond * prefixSecondDistance;
     var firstY, secondY, firstX, secondX;
     var dy = Math.abs(end.y - start.y);
     
@@ -615,9 +623,13 @@ module.exports = View.extend({
     }
   },
 
-  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2){
+  definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, prefixSecondDistance){
+    start.x -= this.distanceSecond;
+    end.x -= this.distanceSecond;
+
     var edgeRadius = this.edgeRadius;
     var halfY = start.y + (end.y - start.y)/2;
+    halfY += this.distanceSecond * prefixSecondDistance
     var firstX, secondX, firstY, secondY;
     var dx = Math.abs(end.x - start.x);
 
