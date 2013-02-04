@@ -30,6 +30,6 @@ module.exports = View.extend({
     this.$el.css('z-index', this.zIndex);
     this.$el.appendTo(this.holder);
     this.$el.on(this.inputDownEvent, this.stopPropagation);
-    this.$el.on('click', this.callback);
+    this.$el.on(this.inputUpEvent, this.callback);
   }
 });
