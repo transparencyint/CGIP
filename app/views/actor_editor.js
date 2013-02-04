@@ -31,9 +31,6 @@ module.exports = View.extend({
       'click .fit.screen': 'fitToScreen',
       'click .moneyMode .icon': 'showMoneyModal',
       'click .moneyMode .option': 'chooseMoneyMode',
-    
-      // unselect when clicking into empty space
-      'click': 'unselect',
       
       // zoom gesture
       'gesturestart': 'pinchStart',
@@ -266,9 +263,13 @@ module.exports = View.extend({
   },
 
   unselect: function(){
+    if(this.mode)
+      this.deactivateMode();
+    
+    this.$('.selected').removeClass('selected');
     this.selectedActorView = null;
-    if(this.mode) this.mode.unselect();
-    $('.selected').removeClass('selected');
+    this.selectedView = null;
+    this.selectedActorView = null;
   },
 
   createActorAt: function(x, y){
@@ -334,21 +335,31 @@ module.exports = View.extend({
   },
 
   toggleMode: function(event){
+    event.stopPropagation();
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
     var collection = this[ connectionType + "Connections" ];
     
-    if(this.mode){
+    if(this.mode)
       this.deactivateMode();
-      this.$('.connection.active').removeClass('active');
-    }
     
     selectedElement.addClass('active');
     this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
+  },
+
+  deactivateMode: function(){
+    console.log("disable mode");
+    this.$('.connection.active').removeClass('active');
+    
+    // re-enable draggables
+    this.trigger('enableDraggable');
+    
+    this.mode.cancel();
+    this.mode = null;
   },
 
   showMoneyModal: function(event){
@@ -379,15 +390,6 @@ module.exports = View.extend({
     
     // highlight current option
     option.addClass('active').siblings('.active').removeClass('active');
-  },
-
-  deactivateMode: function(){
-    this.$('.connection').removeClass('active');
-    this.mode.abort();
-    this.mode = null;
-
-    // re-enable draggables
-    this.trigger('enableDraggable');
   },
 
   keyUp: function(event){
@@ -510,6 +512,9 @@ module.exports = View.extend({
   panStart: function(event){
     event.preventDefault();
     event.stopPropagation();
+    
+    // unselect when clicking into empty space
+    this.unselect();
     
     this.startX = this.normalizedX(event) - this.offset.left;
     this.startY = this.normalizedY(event) - this.offset.top;
