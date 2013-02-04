@@ -40,6 +40,9 @@ module.exports = View.extend({
     _events[ this.inputDownEvent + ' select'  ] = 'dontDrag';
     _events[ this.inputDownEvent + ' button'  ] = 'dontDrag';
     
+    // don't bubble inputUp (cause the clickCatcher listens on it)
+    _events[ this.inputUpEvent + ' button'  ] = 'stopPropagation';
+    
     return _events;
   }, 
 
@@ -76,6 +79,10 @@ module.exports = View.extend({
     this.saveFormData = _.debounce(this.saveFormData, 500);
     
     this.updateName();
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
   },
   
   dontDrag: function(event){
