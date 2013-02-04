@@ -52,8 +52,8 @@ module.exports = View.extend({
     this.isMoney = this.model.get('connectionType') === 'money';
 
     if(this.hasBothConnections){
-    mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
-    mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
+      mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
+      mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
     }
   },
 
@@ -153,6 +153,11 @@ module.exports = View.extend({
 
     // return if not a valid connection
     if(!this.hasBothConnections()) return
+
+    //recalculating the line thickness and the arrow size
+    if(this.isMoney){
+      this.strokeWidth = 6 * this.model.coinSizeFactor;
+    }
 
     this.pathSettings = {
       class_: 'path', 
