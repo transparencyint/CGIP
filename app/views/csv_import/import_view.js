@@ -43,7 +43,7 @@ module.exports = View.extend({
 
     reader.readAsText(f);
   },
-  
+
 
   /**
   Add Drag and Drop capability to import a file

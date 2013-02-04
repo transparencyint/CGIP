@@ -7,7 +7,7 @@ module.exports = View.extend({
   tagName : 'tr',
   
   getRenderData : function(){
-		return this.model;
+	return this.model;
   },
 
   setMarkedActor: function(){

@@ -13,6 +13,9 @@ module.exports = View.extend({
     this.country = options.country;
   },
 
+  getRenderData: function() {
+  },
+
 
   afterRender: function(){
       this.$('#headlines li').draggable({

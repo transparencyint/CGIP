@@ -84,7 +84,6 @@ module.exports = View.extend({
 
     dbActors.fetch({
       success: function(dbActors){
-
         var connections = new Array();
 
         //now create the table and find actors
@@ -167,6 +166,9 @@ module.exports = View.extend({
       }
     });
 
+  },
+
+  getRenderData: function() {
   },
 
   /**

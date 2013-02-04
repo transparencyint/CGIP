@@ -15,11 +15,15 @@ module.exports = View.extend({
     this.country = options.country;
   },
 
+  getRenderData: function() {
+  },
+
   /**
     Shows the table with the matched actors marked in green
   **/
   afterRender: function(){
     var csvdata = this.model;
+    
     this.tableMatchingView = new ImportTableMatchingView({model : csvdata, selectedColumns : this.selectedColumns, country: this.country});
     this.tableMatchingView.render();
     this.$el.append(this.tableMatchingView.el);

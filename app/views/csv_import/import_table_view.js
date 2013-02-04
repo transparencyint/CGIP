@@ -9,6 +9,9 @@ module.exports = View.extend({
   tagName : 'table',
   className : 'darkTable',
 
+  getRenderData: function() {
+  },
+
   /**
     Shows the table from the CSV data and make droppable table headlines 
   **/
