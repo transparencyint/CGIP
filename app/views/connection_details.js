@@ -137,7 +137,7 @@ module.exports = View.extend({
     }
     
     // vertically, we want to place the modal centered
-    this.mousePosition.top -= this.height/2;
+    this.mousePosition.top -= Math.round(this.height/2);
     
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
