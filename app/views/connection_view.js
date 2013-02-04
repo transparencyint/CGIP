@@ -11,11 +11,13 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'click' : 'select'
+      'click': 'select',
+      'dblclick': 'showDetails'
     };
     
-    _events[ this.inputDownEvent ] = 'showDetails';
     _events[ this.inputMoveEvent ] = 'moveMetadata';
+    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
     
     return _events;
   },
@@ -23,13 +25,14 @@ module.exports = View.extend({
   initialize: function(options){
     View.prototype.initialize.call(this, options);
     
-    _.bindAll(this, 'moveMetadata');
+    _.bindAll(this, 'showDetails');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
     this.markerSize = 4;
+    this.longPressDelay = 500;
     
     this.selectionBorderSize = 4;
     this.clickAreaRadius = 40;
@@ -90,6 +93,8 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
+    
+    this.metadata = this.$('.metadata');
     
     this.path = "";
     this.$el.svg();
@@ -460,12 +465,22 @@ module.exports = View.extend({
   updateDisbursed: function(){ 
     this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
+  
+  longPress: function(event){
+    // select
+    event.stopPropagation();
+    this.select();
+       
+    // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+    this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay, event);
+  },
+  
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
+  },
 
   showDetails: function(event){    
     if(this.model.isLocked()) return; // don't show when model is locked
-    
-    event.preventDefault();
-    this.select();
     
     var mousePosition = {
       left: this.normalizedX(event),
@@ -480,11 +495,11 @@ module.exports = View.extend({
   
   moveMetadata: function(event){
     var pos = this.editor.offsetToCoords({ 
-      left: event.pageX - this.pos.x, 
-      top: event.pageY - this.pos.y
+      left: this.normalizedX(event) - this.pos.x, 
+      top: this.normalizedY(event) - this.pos.y
     });
     
-    this.$('.metadata').css({
+    this.metadata.css({
       left: pos.x + 30, 
       top: pos.y + 10
     });
