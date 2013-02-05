@@ -13,9 +13,10 @@ module.exports = Backbone.Model.extend({
       if(isLocked) this.set('locked', true);
     }
 
-    this.registerLockEvents();
+    this.registerRealtimeEvents();
   },
 
+  // Generates a JSON representation of this model
   toJSON: function(){
     var data = Backbone.Model.prototype.toJSON.call(this);
     
@@ -41,8 +42,9 @@ module.exports = Backbone.Model.extend({
     socket.emit('unlock', this.id);
   },
 
-  registerLockEvents: function(){
-    if(window.socket && this.id && this.lockable == true){
+  // Register all realtime events for this specific model
+  registerRealtimeEvents: function(){
+    if(window.socket && config.isRealtimeEnabled() && this.id && this.lockable == true){
       var model = this;
       socket.on('lock:' + this.id, function(){ model.set('locked', true) });
       socket.on('unlock:' + this.id, function(){ model.set('locked', false) });
@@ -53,10 +55,13 @@ module.exports = Backbone.Model.extend({
     }
   },
 
-  unregisterLockEvents: function(){
-    socket.removeAllListeners('lock:' + this.id);
-    socket.removeAllListeners('unlock:' + this.id);
-    socket.removeAllListeners('change:' + this.id);
-    socket.removeAllListeners('destroy:' + this.id);
+  // Remove the realtime listeners for this model
+  unregisterRealtimeEvents: function(){
+    if(window.socket){
+      socket.removeAllListeners('lock:' + this.id);
+      socket.removeAllListeners('unlock:' + this.id);
+      socket.removeAllListeners('change:' + this.id);
+      socket.removeAllListeners('destroy:' + this.id);
+    }
   }
 });

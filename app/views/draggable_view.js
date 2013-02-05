@@ -156,6 +156,6 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     $(document).off('mousemove.global', this.drag);
     $(document).off('mouseup', this.dragStop);
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
   }
 });
