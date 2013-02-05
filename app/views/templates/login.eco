@@ -1,9 +1,9 @@
 <div class="controls">
   <h1>
-    <span><%= t('Climate') %></span> 
-    <span><%= t('Governance') %></span>
-    <span><%= t('Integrity') %></span>
-    <span><%= t('Program') %></span>
+    <span>Climate</span> 
+    <span>Finance</span>
+    <span>Integrity</span>
+    <span>Program</span>
   </h1>
   <form>
     <input type="text" placeholder="username" id="username-input" />
