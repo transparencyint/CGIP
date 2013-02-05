@@ -52,8 +52,8 @@ module.exports = View.extend({
     this.isMoney = this.model.get('connectionType') === 'money';
 
     if(this.hasBothConnections){
-      mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
-      mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
+      //mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
+      //mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
     }
   },
 
@@ -163,20 +163,20 @@ module.exports = View.extend({
     if(this.model.get('connectionType') === 'monitoring'){
       //go through the list of monney connections
       for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
-        if((this.model.from.id == this.editor.moneyConnections.models[i].from.id &&
-          this.model.to.id == this.editor.moneyConnections.models[i].to.id) ||
-          (this.model.from.id == this.editor.moneyConnections.models[i].to.id &&
-          this.model.from.id == this.editor.moneyConnections.models[i].to.id)){
+        if((this.model.from.id == this.editor.moneyConnections.models[i].attributes.from &&
+          this.model.to.id == this.editor.moneyConnections.models[i].attributes.to) ||
+          (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
+          this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
           this.distanceSecond = (6 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
         }
       };
       //if there is no equal money connection, check for equal accountability connections
       for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
-        if((this.model.from.id == this.editor.accountabilityConnections.models[i].from.id &&
-          this.model.to.id == this.editor.accountabilityConnections.models[i].to.id) ||
-          (this.model.from.id == this.editor.accountabilityConnections.models[i].to.id &&
-          this.model.from.id == this.editor.accountabilityConnections.models[i].to.id)){
+        if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
+          this.model.to.id == this.editor.accountabilityConnections.models[i].attributes.to) ||
+          (this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to &&
+          this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to)){
           this.distanceSecond = -6;
         }
       }
