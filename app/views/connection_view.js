@@ -59,9 +59,6 @@ module.exports = View.extend({
 
   test: function(strokeWidth, id){
     if(this.model.id == id) return;
-    //this.strokeWidth = strokeWidth * 1.7;
-    console.log("test" + strokeWidth);
-    //this.markerRatio /= 1.8;
     this.isSecondConnection = true;
     this.distanceSecond = strokeWidth;
 
@@ -154,10 +151,39 @@ module.exports = View.extend({
     // return if not a valid connection
     if(!this.hasBothConnections()) return
 
+    //when it is a money connection just
     //recalculating the line thickness and the arrow size
     if(this.isMoney){
       this.strokeWidth = 6 * this.model.coinSizeFactor;
     }
+
+    //if it is a monitoring connection or an accountability connection
+    //check if there are any money connections with the same start and end point
+    //if yes: move the line so that they are parallel
+    if(this.model.get('connectionType') === 'monitoring'){
+      for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
+        if(this.model.from.id == this.editor.moneyConnections.models[i].from.id &&
+          this.model.to.id == this.editor.moneyConnections.models[i].to.id){
+          this.isSecondConnection;
+          if(this.model.get('connectionType') === 'accountability')
+            this.distanceSecond = (6 * this.editor.moneyConnections.models[i].coinSizeFactor);
+          else
+            this.distanceSecond = (6 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
+          //console.log(this.editor.moneyConnections.models[i]);
+          //console.log("is second connection");
+          //console.log("distance: " + this.distanceSecond);
+        }
+      };
+  
+    }
+
+    //if(this.model.get('connectionType') === 'accountability'){
+    //  console.log(this.editor.moneyConnections.models[0].to);
+    //}
+
+
+    //this.editor.connections bzw. editor.moneyConnections, editor.accountabilityConnections, editor.monitoringConnections
+      
 
     this.pathSettings = {
       class_: 'path', 
