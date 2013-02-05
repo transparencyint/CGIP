@@ -161,14 +161,25 @@ module.exports = View.extend({
     //check if there are any money connection with the same start and end point
     //if yes: move the line so that they are parallel
     if(this.model.get('connectionType') === 'monitoring'){
+      //go through the list of monney connections
       for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
-        if(this.model.from.id == this.editor.moneyConnections.models[i].from.id &&
-          this.model.to.id == this.editor.moneyConnections.models[i].to.id){
-          this.isSecondConnection;
+        if((this.model.from.id == this.editor.moneyConnections.models[i].from.id &&
+          this.model.to.id == this.editor.moneyConnections.models[i].to.id) ||
+          (this.model.from.id == this.editor.moneyConnections.models[i].to.id &&
+          this.model.from.id == this.editor.moneyConnections.models[i].to.id)){
+          this.isSecondConnection = true;
           this.distanceSecond = (6 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
         }
       };
-  
+      //if there is no equal money connection, check for equal accountability connections
+      for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
+        if((this.model.from.id == this.editor.accountabilityConnections.models[i].from.id &&
+          this.model.to.id == this.editor.accountabilityConnections.models[i].to.id) ||
+          (this.model.from.id == this.editor.accountabilityConnections.models[i].to.id &&
+          this.model.from.id == this.editor.accountabilityConnections.models[i].to.id)){
+          this.distanceSecond = -6;
+        }
+      }
     }
 
     //do this only for the initalizing
@@ -179,15 +190,15 @@ module.exports = View.extend({
     if(!this.isSecondConnection){
       if(this.model.get('connectionType') === 'accountability'){
         for (var i = 0; i < this.editor.connections.models.length; i++) {
-          if(this.model.from.id === this.editor.connections.models[i].attributes.from &&
-            this.model.to.id === this.editor.connections.models[i].attributes.to && 
+          if(((this.model.from.id === this.editor.connections.models[i].attributes.from &&
+            this.model.to.id === this.editor.connections.models[i].attributes.to) ||
+            (this.model.from.id === this.editor.connections.models[i].attributes.to &&
+            this.model.from.id === this.editor.connections.models[i].attributes.to)) && 
             this.model.id != this.editor.connections.models[i].attributes.id){
             if(this.editor.connections.models[i].attributes.connectionType === 'monitoring')
               this.distanceSecond = 6;
-            if(this.editor.connections.models[i].attributes.connectionType === 'money'){
-              this.distanceSecond = 20*2;
-              console.log(this.editor.monitoringConnections.models);
-            }
+            if(this.editor.connections.models[i].attributes.connectionType === 'money')
+              this.distanceSecond = 6;
           }
         };
       }
@@ -271,8 +282,6 @@ module.exports = View.extend({
       // ────➝
       //
       if(start.y == end.y){
-        if(this.isSecondConnection)
-          console.log(this.distanceSecond);
         start.x += fromMargins.right;
         end.x -= toMargins.left + this.markerSize;
         start.y -= this.distanceSecond;
