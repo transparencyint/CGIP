@@ -306,6 +306,10 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit(key, model);
   });
 
+  socket.on('moveToGroup', function(actor_id){
+    socket.broadcast.emit('moveToGroup:' + actor_id);
+  });
+
   socket.on('disconnect', function(){
     var user_id = socket.user_id;
     console.log('disconnect socket', user_id);

@@ -38,6 +38,11 @@ module.exports = Model.extend({
     // remove them both from their collections
     firstActor.collection.trigger('remove', firstActor);
     this.collection.remove(this);
+
+    // simulate a destroy event in order to clean up the views
+    // and also tell the other clients that it moved to a group
+    firstActor.trigger('moveToGroup');
+    socket.emit('moveToGroup', firstActor.id);
     
     // create the actor group from the data of this actor
     var ActorGroup = require('./actor_group');

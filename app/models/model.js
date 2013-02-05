@@ -52,6 +52,7 @@ module.exports = Backbone.Model.extend({
       // we can't call the normal model.destroy() here because it'll be already deleted on the server
       // instead we just trigger the destroy event, which will have the same effect
       socket.on('destroy:' + this.id, function(){ model.trigger('destroy'); });
+      socket.on('moveToGroup:' + this.id, function(){ model.trigger('moveToGroup'); });
     }
   },
 
@@ -62,6 +63,7 @@ module.exports = Backbone.Model.extend({
       socket.removeAllListeners('unlock:' + this.id);
       socket.removeAllListeners('change:' + this.id);
       socket.removeAllListeners('destroy:' + this.id);
+      socket.removeAllListeners('moveToGroup:' + this.id);
     }
   }
 });
