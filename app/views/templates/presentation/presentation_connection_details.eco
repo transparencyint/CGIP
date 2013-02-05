@@ -37,9 +37,3 @@
 
   </div>
 </div>
-
-<div class="controls clearfix">
-  <div class="row right">
-    <button class="cancel"><%= t('Close')%></button>
-  </div>
-</div>
