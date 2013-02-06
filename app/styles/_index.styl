@@ -1,33 +1,156 @@
-.column
-  float left
-  display inline
-  margin-left 10px
-  margin-right 10px
+@font-face
+  font-family HelveticaNeueW01-57Cn
+  src url(/HelveticaNeueW01-57Cn.woff) format(woff)   
 
-.index
-  padding 15px
+html 
+  min-height 100%
+  background #82d480
+  background -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
 
-  section
-    margin 10px
+#container
+  background none !important
+  
+#worldMap
+  width 960px
+  margin 0 auto
+  color #5d5d5d
+  font 15px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  a
+    color hsl(205,68%,52%)
+    text-decoration none
+  h1 
+    display block
+    margin 30px 0
+    padding 0 13px 17px
+    color #333
+    font-size 24px
+    font-family "HelveticaNeueW01-57Cn"
+    font-weight normal
+    background url(/images/bg-title.png) repeat-x 0 100%
+  .map 
+    position relative
+    height 500px
+    width 1134px
+    margin-left -87px
+    -webkit-perspective 1000
+  .map:before 
+    content ""
+    position absolute
+    left 0
+    top 0
+    right 0
+    bottom 0
+    background url(/images/greenWorld.png) no-repeat center
+    background-size contain
+    opacity .5
+  .point 
+    position absolute
+    margin -4px 0 0 -4px
+    width 8px
+    height 8px
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
+    border-radius 100%
+    opacity 0
+    -webkit-transform translateZ(200px)
+    -webkit-transform-style preserve-3d
+  .point.appear 
+    opacity 1
+    -webkit-transform translateZ(0)
+    -webkit-transition -webkit-transform 500ms, opacity 500ms
+  .label 
+    position absolute
+    white-space nowrap
+    left -18px
+    top -44px
+    opacity 0
+    -webkit-transform translateY(-13px)
+  .point.appear .label 
+    opacity 1
+    -webkit-transform translateY(0)
+    -webkit-transition -webkit-transform 500ms 500ms, opacity 500ms 500ms
+  .point:active .label 
+    top -43px
+  .below .label 
+    top 19px
+    -webkit-transform translateY(13px)
+  .point.below:active .label 
+    top 20px
+  .right .label 
+    left auto
+    right -18px
+  .label a 
+    display block
+    padding 8px 13px 7px
+    color white
+    line-height 1
+    text-decoration none
+    border-radius 3px
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
+  .arrow 
+    position absolute
+    bottom -9px
+    left 14px
+    overflow hidden
+    width 16px
+    height 10px
+  .below .arrow 
+    bottom auto
+    top -8px
+    height 10px
+  .right .arrow 
+    left auto
+    right 14px    
+  .arrow:before 
+    content ""
+    position absolute
+    left 2px
+    top -6px
+    width 10px
+    height 10px
+    -webkit-transform rotate(45deg)
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px 2px hsla(205,100%,13%,.34)
+  .below .arrow:before 
+    top 4px 
+  .mexico 
+    left 219px
+    top 209px
+  .peru 
+    left 302px
+    top 329px
+  .dominicanRepublic 
+    left 314px
+    top 214px
+  .kenya 
+    left 654px
+    top 279px
+  .maledives 
+    left 757px
+    top 289px
+  .vietnam 
+    left 869px
+    top 219px
+  .indonesia 
+    left 909px
+    top 299px
+  .papuaNewGuinea 
+    left 994px
+    top 304px
 
-  ul.countrys
-    @extends .column
-    width 250px
+  footer 
+    margin-top 21px
+    padding 13px
+    font-size 13px
+    border-top 1px solid rgba(0,0,0,.21)
+    overflow hidden
+    box-shadow 0 1px hsla(104,100%,86%,.55) inset
+    footer .left 
+      float left
+    footer .right 
+      float right
     
-    li
-      width auto
-      cursor pointer
-
-      a
-        color white
-        display block
-
-        &:hover
-          color white
-
-  .description
-    width 600px
-    @extends .column
-
-    p
-      margin-top 0
