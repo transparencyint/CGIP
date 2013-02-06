@@ -1,4 +1,4 @@
-<span class="button presentation rightAligned"><%= t('Presentation') %></span>
+<a href="<%= @presentationLink %>" class="button presentation rightAligned"><%= t('Presentation') %></a>
 <span class="button icon cog rightAligned"></span>
 
 <div class="modal">
