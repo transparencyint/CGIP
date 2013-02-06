@@ -323,9 +323,8 @@ module.exports = View.extend({
   submitForm: function(){
     
     var formData = this.$('form').serializeArray();
-    var sets = [ 'role', 'purpose' ];
+    var sets = [ 'purpose' ];
     var cleanedData = {
-      'role' : [],
       'purpose' : []
     };
     var checkboxes = [ 'hasCorruptionRisk' ];
