@@ -16,7 +16,7 @@ $(function() {
     if(window.realtimePort)
       socketServer = 'http://' + location.host + ':' + window.realtimePort;
     else
-      socketServer = '127.0.0.1:3000';
+      socketServer = location.host;
 
     console.log('connect socket to: ', socketServer)
 
@@ -34,7 +34,7 @@ $(function() {
 
       // remove from the locked models
       socket.on('unlock', function(model_id){
-        lockedModels = _.reject(lockedModels, function(model){ return model.model_id == model_id; });
+        lockedModels = _.reject(lockedModels, function(model){ if(model) return model == model_id; });
       });
     });
   }

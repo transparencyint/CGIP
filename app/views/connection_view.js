@@ -2,7 +2,6 @@ var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
 
 module.exports = View.extend({
-  selectable: true,
 
   template: require('./templates/connection'),
 
@@ -94,13 +93,12 @@ module.exports = View.extend({
       class_: 'path', 
       strokeWidth: this.strokeWidth
     };
+
+    this.selectedArrowSize = this.markerRatio - 0.5;
+
+    this.arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
+    this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
     
-
-    var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
-    this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
-
-    this.toggleZeroConnection();
-      
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
@@ -153,13 +151,13 @@ module.exports = View.extend({
 
     this.markerSize = this.strokeWidth/2 * this.markerRatio;
 
-    var arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
-    this.svg.path(arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
+    this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
+
+    this.toggleZeroConnection();
+        
+    
       
-    var selectedArrowSize = this.markerRatio - 0.5;
-      
-    var selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', selectedArrowSize/2.5, selectedArrowSize/2, selectedArrowSize, selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-    this.svg.path(selectedArrow, 'M 0 0 L '+ selectedArrowSize +' '+ selectedArrowSize/2 +' L 0 '+ selectedArrowSize +' z');
+    this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
     this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
     this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
@@ -493,8 +491,6 @@ module.exports = View.extend({
         corrY = start.y+this.model.from.margins.top/2*2
       }
       this.drawCorruptionFlag(corrX, corrY);
-    } else {
-
     }
   },
   

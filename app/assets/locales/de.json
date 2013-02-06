@@ -10,7 +10,6 @@
   "edit_countries": "Länder editieren",
   "add_actor": "Actor hinzufügen",
   "accountability": "Verantwortung",
-  "monitoring": "Kontrolle",
   "money": "Geld",
   "Disbursed": "Ausgezahlt",
   "Pledged": "Versprochen",
@@ -18,11 +17,22 @@
   "coordination": "Koordinierung",
   "implementation": "Umsetzung",
   "monitoring": "Beobachtung",
-<<<<<<< HEAD
-  "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu."
-=======
+  "Corruption Risk": "Korruptionsrisiko",
+  "is_corruption_risk": "Es gibt ein Korruptionsrisiko.",
+  "Type": "Typ",
+  "Role": "Rolle",
+  "Purpose": "Zweck",
+  "Note": "Notiz",
+  "Close": "Schließen",
+  "Save": "Speichern",
+  "Delete": "Löschen",
+  "Source": "Quelle",
+  "is_accountable_for": "ist verantwortlich für",
+  "monitors": "kontrolliert",
+  "pays": "zahlt an",
+  "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu.",
   "Settings": "Einstellungen",
   "Show Monitoring": "Monitoring anzeigen",
-  "Language": "Sprache"
->>>>>>> f-actor-groups-features
+  "Language": "Sprache",
+  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?"
 }

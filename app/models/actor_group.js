@@ -83,7 +83,8 @@ module.exports = Actor.extend({
   },
 
   destroy: function(){
-    if(confirm('This will also delete all included actors of this group. Proceed?')){
+    var actorsLength = this.get('actors').length;
+    if(actorsLength < 2 || (actorsLength > 1 && confirm(t('This will also delete all included actors of this group. Proceed?')))){
       this.actors.each(function(actor){ actor.destroy({silent: true}); });
       Actor.prototype.destroy.call(this);
     }

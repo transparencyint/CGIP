@@ -3,7 +3,6 @@ var _ = require('underscore');
 var http = require('http');
 var url = require('url');
 var express = require('express');
-var gzippo = require('gzippo');
 var io = require('socket.io');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
@@ -48,7 +47,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.favicon());
-  app.use(gzippo.staticGzip(__dirname + '/public'));
+  app.use(express.static(__dirname + '/public'));
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
@@ -280,13 +279,13 @@ io.sockets.on('connection', function (socket) {
       user_id: socket.user_id,
       model_id: model_id
     };
-    
+
     // don't allow to lock models that are already locked
     var alreadyLocked = _.find(lockedModels, function(locked){ return locked.model_id == model_id; });
     if(alreadyLocked) return;
 
     lockedModels.push(lock);
-    socket.broadcast.emit('lock', lock);
+    socket.broadcast.emit('lock', model_id);
     socket.broadcast.emit('lock:'+model_id, null);
   });
 

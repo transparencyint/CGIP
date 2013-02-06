@@ -16,7 +16,9 @@ module.exports = Model.extend({
     abbreviation: '',
     type: 'actor',
     hasCorruptionRisk: false,
-    pos: {x: 0, y: 0}
+    pos: {x: 0, y: 0},
+    purpose: [],
+    role: []
   },
 
   initialize: function(values){

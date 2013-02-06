@@ -1,4 +1,4 @@
-#actorEditor
+#actorPresentation
   top 0
   left 0
   right 0
@@ -10,8 +10,6 @@
   cursor url(/images/openhand_8_8.cur) 8 8, default
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
-  &:active.dragcursor
-    cursor col-resize
   &.zoom200
     background-size 200px
   &.zoom175
@@ -29,6 +27,8 @@
   &.connectionMode
     .actor
       cursor default
+  .tool.controls
+    height 51px
   .centerLine
     top 0
     left 50%
@@ -42,16 +42,13 @@
     right 0
     bottom 0
     left 0
-    z-index 10
+    z-index 3
     position absolute
     cursor default
+  .roleLabels
+    span
+      margin-top 0
 
-.topBar
-  position absolute
-  top 0
-  right 0
-  left 0
-    
 .sidebar  
   position absolute
   left 34px
@@ -60,7 +57,7 @@
   .inner
     height 100%
     box(center, center, vertical)
-    
+
 .workspace
   position absolute
   left 50%
@@ -76,19 +73,3 @@
       display none
   .connection
     position absolute
-  .outOfScope
-    opacity .1
-
-.gridline
-  position fixed
-  display none
-  background rgba(255,255,255,.55)
-.gridline#gridlineV
-  width 1px
-  top 0
-  bottom 0
-.gridline#gridlineH
-  margin-top 75px
-  height 1px
-  left 0
-  right 0

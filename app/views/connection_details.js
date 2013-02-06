@@ -74,6 +74,10 @@ module.exports = View.extend({
     delete this.backup._rev;
 
     this.model.on('destroy', this.destroy, this);
+    
+    // debounce form realtime updates 
+    // http://underscorejs.org/#debounce
+    this.saveFormData = _.debounce(this.saveFormData, 500);
   },
   
   dragStart: function(event){
@@ -183,12 +187,8 @@ module.exports = View.extend({
 
   afterRender: function(){
 
-    //set the money part to invisible per default
-    this.$('.money').hide();
-
     // detect which connection type we have and show/hide related fields
     if(this.connectionType === 'money'){
-      this.$('.money').show();
 
       var _disbursed = this.model.get('disbursed');
       var _pledged = this.model.get('pledged');
@@ -204,7 +204,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is accountable for',
+      'accountability': 'is_accountable_for',
       'monitoring': 'monitors',
       'money': 'pays',
     };
@@ -254,7 +254,7 @@ module.exports = View.extend({
     var from = this.model.from.get('abbreviation') || this.model.from.get('name') || 'Unknown';
     var to = this.model.to.get('abbreviation') || this.model.to.get('name') || 'Unknown';
 
-    this.$('.connectionName').text(from + ' ' + text + ' ' + to);
+    this.$('.connectionName').text(from + ' ' + t(text) + ' ' + to);
   },
 
   updateValue: function(event) {
@@ -276,6 +276,7 @@ module.exports = View.extend({
     attributes[event.target.name] = value;
     
     this.model.set(attributes);
+    this.saveFormData();
   },
 
   updateMoneyConnections: function (event) {
@@ -320,18 +321,16 @@ module.exports = View.extend({
   },
 
   submitAndClose: function(){
-    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10) || 0;
-    var _pledged = parseInt(this.$el.find('#pledged').val(), 10) || 0;
-
-    this.model.save({
-      disbursed: _disbursed,
-      pledged: _pledged
-    });
-
+    this.saveFormData();
     this.close();
     
     // prevent form forwarding
     return false;
+  },
+  
+  // don't sync in realtime but just every 500ms
+  saveFormData: function(){
+    this.model.save();
   },
   
   close: function(){

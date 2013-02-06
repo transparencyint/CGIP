@@ -5,6 +5,8 @@
 	  <div>
 	    <h3 class="connectionName"></h3>
 	  </div>
+    
+    <% if( @connectionType is 'money'): %>
 	  <div class="money">
 	    <div>
 	      <div class="clearfix">
@@ -23,6 +25,7 @@
       	</div>
       </div>
     </div>
+    <% end %>
     
     <div>
   	  <h4>Corruption Risk</h4>
@@ -38,11 +41,11 @@
   </div>
 	<div class="controls clearfix">
     <div class="row right">
-      <button type="submit" class="done">Save</button>
-      <button class="cancel">Cancel</button>
+      <button type="submit" class="done"><%= t('Save')%></button>
+      <button class="cancel"><%= t('Close')%></button>
     </div>
     <div class="row left">
-      <button class="delete">Delete</button>
+      <button class="delete"><%= t('Delete')%></button>
     </div>
   </div>
 </form>
