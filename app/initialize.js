@@ -11,8 +11,10 @@ $(function() {
     "->", Modernizr.inlinesvg,
     "->", Modernizr.history);
 
+  $('.browserSupport').show();
+    
   if(!Modernizr.csstransitions || !Modernizr.flexboxlegacy || !Modernizr.svg || !Modernizr.inlinesvg || !Modernizr.history) {
-    $('.browserSupport').show();  
+    return;  
   }
 
   // create the user model
