@@ -168,16 +168,19 @@ module.exports = View.extend({
           (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
           this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
-          this.distanceSecond = (6 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
+          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
+          this.distanceSecond = -10;
         }
       };
       //if there is no equal money connection, check for equal accountability connections
-      for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
-        if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
-          this.model.to.id == this.editor.accountabilityConnections.models[i].attributes.to) ||
-          (this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to &&
-          this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to)){
-          this.distanceSecond = -6;
+      if(!this.isSecondConnection){
+        for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
+          if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
+            this.model.to.id == this.editor.accountabilityConnections.models[i].attributes.to) ||
+            (this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to &&
+            this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to)){
+            this.distanceSecond = -10;
+          }
         }
       }
     }
@@ -190,15 +193,34 @@ module.exports = View.extend({
     if(!this.isSecondConnection){
       if(this.model.get('connectionType') === 'accountability'){
         for (var i = 0; i < this.editor.connections.models.length; i++) {
+          
+          //ONLY FOR TESTING
+          //DO NOT UNCOMMENT THIS DURING LIVE SYSTEM
+          //console.log("this.model.from");
+          //console.log(this.model.from.id);
+          //console.log("this.model.to");
+          //console.log(this.model.to.id);
+          //console.log("models[i].attributes.from");
+          //console.log(this.editor.connections.models[i].attributes.from);
+          //console.log("models[i].attributes.to");
+          //console.log(this.editor.connections.models[i].attributes.to);
+          //if(this.model.id != this.editor.connections.models[i].attributes.id){
+          //  if(this.model.from.id === this.editor.connections.models[i].attributes.from &&
+          //  this.model.to.id === this.editor.connections.models[i].attributes.to)
+          //    console.log("same start and end point");
+          //  if(this.model.from.id === this.editor.connections.models[i].attributes.to &&
+          //  this.model.to.id === this.editor.connections.models[i].attributes.from)
+          //    console.log("same start and end point reversed");
+          //}
+          //else
+          //  console.log("same connection compared");
+
           if(((this.model.from.id === this.editor.connections.models[i].attributes.from &&
             this.model.to.id === this.editor.connections.models[i].attributes.to) ||
             (this.model.from.id === this.editor.connections.models[i].attributes.to &&
-            this.model.from.id === this.editor.connections.models[i].attributes.to)) && 
+            this.model.to.id === this.editor.connections.models[i].attributes.from)) && 
             this.model.id != this.editor.connections.models[i].attributes.id){
-            if(this.editor.connections.models[i].attributes.connectionType === 'monitoring')
-              this.distanceSecond = 6;
-            if(this.editor.connections.models[i].attributes.connectionType === 'money')
-              this.distanceSecond = 6;
+            this.distanceSecond = 10;
           }
         };
       }
