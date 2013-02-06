@@ -15,11 +15,10 @@ module.exports = DraggableDroppableView.extend({
   height: 42,
 
   initialize: function(options){
+    this.editor = options.editor;
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop', 'destroy');
-
-    this.editor = options.editor;
+    _.bindAll(this, 'drop', 'destroy', 'showDetails');
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
@@ -29,15 +28,11 @@ module.exports = DraggableDroppableView.extend({
   },
 
   events: function(){
-    var _parentEvents = DraggableDroppableView.prototype.events;
+    var _parentEvents = DraggableDroppableView.prototype.events();
     var _events = _.defaults({}, _parentEvents);
-    
+
     // bind arrow
     _events[ this.inputUpEvent + ' .dropdown-control' ] = 'arrowClicked';
-    
-    // bind dynamic input event (touch or mouse)
-    _events[ this.inputDownEvent ] = 'dragStart';
-    _events[ this.inputUpEvent ] = 'showDetails';
     
     // disable dragging on the arrow
     _events[ this.inputDownEvent + ' .dropdown-control' ] = 'dontDrag';
@@ -67,6 +62,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.$el.attr('id', this.model.id);
   },
   
   rePickActors: function(){
@@ -91,7 +87,8 @@ module.exports = DraggableDroppableView.extend({
   
   showDetails: function(){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    
+    if(!this.isDraggable) return;
+
     if(!this.wasOrIsDragging){
       this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
       this.options.editor.$el.append(this.modal.render().el);

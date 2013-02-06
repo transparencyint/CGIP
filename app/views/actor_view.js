@@ -9,15 +9,9 @@ module.exports = DraggableDroppableView.extend({
   className : 'actor',
 
   events: function(){
-    var _parentEvents = DraggableDroppableView.prototype.events;
+    var _parentEvents = DraggableDroppableView.prototype.events();
     // clone parent events
-    var _events = _.defaults({
-      'dblclick' : 'showDetails'
-    }, _parentEvents);
-    
-    // bind dynamic input event (touch or mouse)
-    _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
-    _events[ this.inputUpEvent ] = 'cancelLongPress';
+    var _events = _.defaults({}, _parentEvents);
   
     return _events;
   },
@@ -28,7 +22,6 @@ module.exports = DraggableDroppableView.extend({
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
-    this.longPressDelay = 500;
 
     this.dropClasses = [require('./actor_view')];
     
@@ -42,18 +35,6 @@ module.exports = DraggableDroppableView.extend({
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
-  },
-  
-  longPress: function(event){
-    // fire dragstart
-    this.dragStart(event);
-    
-    // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
-    this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
-  },
-  
-  cancelLongPress: function(){
-    clearTimeout(this.longPressTimeout);
   },
 
   showDetails: function(event){

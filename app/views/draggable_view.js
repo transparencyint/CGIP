@@ -3,8 +3,18 @@ var View = require('./view');
 module.exports = View.extend({
   isDraggable: true,
   
-  events: {
-    'click' : 'dontUnselect'
+  events: function(){
+    var _events = {
+      'click' : 'dontUnselect'
+    };
+    
+    // bind dynamic input event (touch or mouse)
+    _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
+
+    _events[ 'dblclick' ] = 'showDetails';
+
+    return _events;
   },
 
   initialize: function(){
@@ -16,11 +26,24 @@ module.exports = View.extend({
     this.wasOrIsDragging = false;
     this.dragDistance = 0;
     this.dragThreshold = 5;
+    this.longPressDelay = 500;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
+  },
+
+  longPress: function(event){
+    // fire dragstart
+    this.dragStart(event);
+    if(this.isDraggable)
+      // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+      this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
+  },
+  
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
   },
   
   dontUnselect: function(event){
@@ -48,9 +71,10 @@ module.exports = View.extend({
     if(this.editor.selectedView != this)
       this.select();
     
+    event.stopPropagation();
+    event.preventDefault();
+
     if(this.isDraggable){
-      event.stopPropagation();
-      event.preventDefault();
       
       this.dragDistance = 0;
       this.wasOrIsDragging = false;
