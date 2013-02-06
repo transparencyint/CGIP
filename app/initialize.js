@@ -8,7 +8,8 @@ $(function() {
   if(!Modernizr.csstransitions || !Modernizr.flexboxlegacy || !Modernizr.svg || !Modernizr.inlinesvg || !Modernizr.history) {
     $('.browserSupport').show();
     return;  
-  }
+  }else
+    $('.browserSupport').remove();
 
   // create the user model
   window.user = new User(window.user_hash);
