@@ -1,8 +1,8 @@
 <div class="inner">
-  <h1>Edit Countries</h1>
+  <h1><%= t('edit_countries') %></h1>
 
   <div id="add-country">
-    <input type="text" placeholder="type to add country..." /><button>Add Country</button>
+    <input type="text" placeholder="<%= t('type to add country...') %>" /><button><%= t('add_country') %></button>
     <ul></ul>
   </div>
 
@@ -11,7 +11,7 @@
       <li>
         <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
         <span class="name"><%= country.name %></span>
-        <span class="delete" data-country-id="<%= country._id %>">Delete</span>
+        <span class="delete" data-country-id="<%= country._id %>"><%= t('Delete') %></span>
       </li>
     <% end %>
   </ul>

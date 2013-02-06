@@ -1,6 +1,6 @@
 <div class="inner">
   <h1><%= t('cgip_countries_headline') %></h1>
-  <p>Logged in as: <%= @user._id %> <a href="/logout" external><button class="small"><%= t('logout') %></button></a></p>
+  <p><%= t('logged_in_as') %>: <%= @user._id %> <a href="/logout" external><button class="small"><%= t('logout') %></button></a></p>
   <ul class="countrys clearfix">
     <% for country in @countries: %>
       <li>

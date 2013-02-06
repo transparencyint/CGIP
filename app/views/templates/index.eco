@@ -1,5 +1,5 @@
 <section>
-  <h1>Climate Governance Integrity Program</h1>
+  <h1><%= t('cfip') %></h1>
 </section>
 
 <ul class="countrys">
