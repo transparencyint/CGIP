@@ -11,7 +11,7 @@ module.exports = View.extend({
   currentLocation: '',
   locationTable: {
     'money_connections_list': 'Money List',
-    'edit_countries': 'Country Selection'
+    'edit_countries': 'country_selection'
   },
 
   initialize: function(options){
@@ -26,9 +26,13 @@ module.exports = View.extend({
       return country['alpha-2'] === currentLocation;
     });
     var name = currentCountry ? currentCountry.name : '';
+
+    if(this.locationTable[ this.currentRoute ])
+      var type = t(this.locationTable[ this.currentRoute ]);
+
     return { 
       locationName: name,
-      locationType: this.locationTable[ this.currentRoute ],
+      locationType: type,
       isoLocation: this.currentLocation,
       currentRoute: this.currentRoute
     };
