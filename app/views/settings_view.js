@@ -12,9 +12,6 @@ module.exports = View.extend({
     // the show/hide button
     'click .cog': 'toggle',
     
-    // go to presentation
-    'click .presentation': 'goToPresentation',
-    
     'change #showMonitoring': 'toggleMonitoring',
     'change #language': 'changeLanguage'
   },
@@ -26,10 +23,6 @@ module.exports = View.extend({
   
   stopPropagation: function(event){
     event.stopPropagation();
-  },
-  
-  goToPresentation: function(){
-    // go to presentation
   },
   
   toggle: function(){
@@ -76,6 +69,7 @@ module.exports = View.extend({
     ];
     
     return { 
+      presentationLink: '/show/' + this.editor.country.get('abbreviation'),
       languages: languages,
       active: config.get('language'),
       showMonitoring: this.editor.country.get('showMonitoring')
