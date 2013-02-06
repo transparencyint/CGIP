@@ -39,6 +39,10 @@ module.exports = View.extend({
     _events[ this.inputDownEvent + ' textarea'] = 'dontDrag';
     _events[ this.inputDownEvent + ' select'  ] = 'dontDrag';
     _events[ this.inputDownEvent + ' button'  ] = 'dontDrag';
+
+    _events[ this.inputDownEvent + ' .delete'  ] = 'deleteActor';
+    _events[ this.inputDownEvent + ' .cancel'  ] = 'cancel';
+    _events[ this.inputDownEvent + ' .done'  ] = 'submitAndClose';
     
     // don't bubble inputUp (cause the clickCatcher listens on it)
     _events[ this.inputUpEvent + ' button'  ] = 'stopPropagation';
