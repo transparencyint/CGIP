@@ -27,7 +27,7 @@ module.exports = Backbone.View.extend({
     this.toggleLocked = _.bind(this.toggleLocked, this);
 
     if(this.model && this.model.lockable == true)
-      this.model.on('change:locked', this.toggleLocked);
+      this.model.on('change:locked', this.toggleLocked, this);
   },
 
   template: function() {},
@@ -85,5 +85,4 @@ module.exports = Backbone.View.extend({
     else
       this.$el.removeClass('locked');
   }
-
 });

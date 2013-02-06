@@ -38,13 +38,16 @@ module.exports = View.extend({
     if(options.noClick)
       this.$el.unbind('click');
 
-    if(this.model.from)
+    if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
+    }
       
-    if(this.model.to)
+    if(this.model.to){
       this.model.to.on('change:pos', this.update, this);
+    }
 
     this.model.on('destroy', this.destroy, this);
+    this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
   },
@@ -68,7 +71,6 @@ module.exports = View.extend({
   },
   
   afterRender: function(){
-    
     this.path = "";
     this.$el.svg();
 
@@ -109,6 +111,8 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
   },
+
+  inScope: function(){ this.$el.removeClass('outOfScope'); },
 
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');

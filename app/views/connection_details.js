@@ -65,7 +65,7 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToConnection = 21;
-
+    
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
@@ -74,7 +74,7 @@ module.exports = View.extend({
     
     // debounce form realtime updates 
     // http://underscorejs.org/#debounce
-    this.saveFormData = _.debounce(this.saveFormData, 500);
+    this.saveFormData = _.debounce(this.saveFormData, 50);
   },
   
   dragStart: function(event){

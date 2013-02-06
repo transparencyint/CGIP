@@ -31,15 +31,17 @@ ConnectionMode.prototype.reset = function(){
   $(document).unbind('keyup', this._keyUp);
 };
 
-ConnectionMode.prototype.actorSelected = function(actor){  
-  //connection to the same actor (itself) is not possible
-  if(this.connection.from !== actor.model){
-    this.selectedActors.push(actor.model);
+ConnectionMode.prototype.viewSelected = function(view){
+  if(view.model.get('type') != 'actor') return; // only handle actors
+  
+  // connection to the same actor (itself) is not possible
+  if(this.connection.from !== view.model){
+    this.selectedActors.push(view.model);
   }else
     return;
   
   if(this.selectedActors.length === 1){
-    this.connection.from = actor.model;
+    this.connection.from = view.model;
     this.connection.to.set('pos', _.clone(this.connection.from.get('pos')));
     this.connection.to.margins = {top: 0, right:0, bottom:0, left:0};
     this.connectionView = new ConnectionView({model: this.connection, editor: this.editor, noClick: true});
@@ -53,7 +55,7 @@ ConnectionMode.prototype.actorSelected = function(actor){
     // unlock the first actor
     this.selectedActors[0].unlock();
     
-    this.connection.to = actor.model;
+    this.connection.to = view.model;
     var mode = this;
     //check whether or not same from-to connection already exists
     var connectionAlreadyExists = false;
