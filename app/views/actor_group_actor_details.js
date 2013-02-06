@@ -1,9 +1,8 @@
 var View = require('./view');
-var clickCatcher = require('./click_catcher_view');
 
 module.exports = View.extend({
 
-  template: require('./templates/actor_details'),
+  template: require('./templates/actor_group_actor_details'),
   className: 'modal hidden actorDetails',
 
   events: {
@@ -11,14 +10,6 @@ module.exports = View.extend({
     // input gets triggered everytime 
     // the input's content changes
     'input [type=text]': 'submitForm',
-    'change [type=checkbox]': 'submitForm',
-    'change select': 'submitForm',
-    'change textarea': 'submitForm',
-    'keydown [data-type=text]': 'allowEnter',
-    
-    // show/hide the 'other' input field on 'Type'
-    // and the Corruption Risk details
-    'change .hasAdditionalInfo': 'toggleAdditionalInfo',
     
     // the buttons at the bottom
     'click .delete': 'deleteActor',
@@ -34,8 +25,6 @@ module.exports = View.extend({
     // ..except all the text, buttons and inputs
     'mousedown label': 'dontDrag',
     'mousedown input': 'dontDrag',
-    'mousedown textarea': 'dontDrag',
-    'mousedown select': 'dontDrag',
     'mousedown button': 'dontDrag'
   }, 
 
@@ -58,10 +47,6 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToActor = 10;
-
-    this.model.on('change:abbreviation', this.updateName, this);
-    this.model.on('change:name', this.updateName, this);
-    this.model.on('destroy', this.destroy, this);
     
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -111,17 +96,6 @@ module.exports = View.extend({
     $(document).unbind('mousemove.global');
   },
 
-  updateName: function(){
-    var abbrev = this.model.get('abbreviation');
-    var name = this.model.get('name');
-    if(abbrev !== "")
-      this.$('#title').text(abbrev);
-    else if(name !== "")
-      this.$('#title').text(name);
-    else
-      this.$('#title').text("Unknown");
-  },
-
   deleteActor: function(){
 
     if(this.model) 
@@ -154,11 +128,11 @@ module.exports = View.extend({
     // unlock the model
     this.model.unlock();
     this.unlockedModel = true;
-    
-    if(this.clickCatcher)
-      this.clickCatcher.destroy();
 
     this.$el.one(this.transEndEventName, this.destroy);
+    
+    if(this.clickCatcher)
+      this.clickCatcher.remove();
     
     $(document).unbind('keydown', this.handleKeys);
     
@@ -167,9 +141,6 @@ module.exports = View.extend({
 
   destroy: function(){
     if(!this.unlockedModel) this.model.unlock();
-
-    // remove autosize helper
-    $('.actorDetailsAutosizeHelper').remove();
 
     View.prototype.destroy.call(this);
   },
@@ -194,7 +165,7 @@ module.exports = View.extend({
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
     this.height = this.$el.height();
-    var arrowPos = this.height / 2;
+    var arrowPos = (this.height-this.controlsHeight) / 2;
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
     var actorHeight = this.actor.height * this.editor.zoom.value;
@@ -211,7 +182,7 @@ module.exports = View.extend({
     }
     
     // vertically, we want to place the modal centered
-    pos.top += actorHeight/2  - this.height/2;
+    pos.top += actorHeight/2  - (this.height-this.controlsHeight)/2;
     
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
@@ -241,9 +212,14 @@ module.exports = View.extend({
       top: pos.top
     });
   },
+  
+  addClickCatcher: function(){
+    this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
+    this.clickCatcher.on('click', this.submitAndClose);
+  },
 
   afterRender: function() {
-    this.clickCatcher = new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
+    this.addClickCatcher();
     
     $(document).keydown(this.handleKeys);
     this.holder = this.$('.holder');
@@ -258,9 +234,6 @@ module.exports = View.extend({
       self.holder.css('overflow', 'auto');
       
       self.$('input').first().focus();
-
-      // fixes wrong height calculation of the textareas
-      self.autosize = self.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     });
   },
   
@@ -281,40 +254,6 @@ module.exports = View.extend({
     this.scrollbarThickness = this.widthWithoutScrollbar - this.widthWithScrollbar;
     
     return this.scrollbarThickness > 0 && x >= this.width - this.scrollbarThickness;
-  },
-
-  toggleAdditionalInfo: function(event){
-    var additionalInfo = $(event.target).nextAll('.additionalInfo');
-    var toggle = $(event.target);
-    var shouldSelectFirst = false;
-    
-    if(toggle.attr('type') == 'checkbox'){
-      //
-      // Case: Corruption Risk checkbox
-      // Does: show/hide the textarea and input field for description and source
-      //
-      if(toggle.prop('checked')){
-        additionalInfo.slideDown();
-        shouldSelectFirst = true;
-      } else {
-        this.$el.addClass('moved');
-        additionalInfo.slideUp();
-      }
-    }
-    else {
-      //
-      // Case: dropdown 'Type' when chaning the value
-      // Does: show/hide the input field when type is 'other
-      //
-      var shouldHide = toggle.val() === 'other' ? false : true;
-      additionalInfo.toggleClass('hidden', shouldHide);
-      
-      shouldSelectFirst = !shouldHide;
-    }
-    
-    // Does: focus the first input inside the additonal info
-    if(shouldSelectFirst)
-      additionalInfo.find('textarea, input').first().select();
   },
 
   /**

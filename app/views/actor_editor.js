@@ -1,5 +1,6 @@
 var View = require('./view');
 var Actor = require('models/actor');
+var ActorGroup = require('models/actor_group');
 var ActorGroupView = require('./actor_group_view');
 var Actors = require('models/actors');
 var ActorView = require('./actor_view');
@@ -114,16 +115,20 @@ module.exports = View.extend({
     this.actors.on('add', this.appendNewActor, this);
     // remove actor view when actor is removed
     this.actors.on('remove', this.removeActor, this);
+    // add ActorGroups when they're added
+    this.actorGroups.on('add', this.appendActorGroup, this);
+    // remove actorGroups when they're deleted
+    this.actorGroups.on('remove', this.removeActorGroup, this);
 
     this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
-    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+    this.initializeConfig();
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'closeMoneyModal', 'addPushedActor', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'actorSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -131,15 +136,22 @@ module.exports = View.extend({
     $(document).on('viewSelected', this.actorSelected);
 
     // react to socket events
-    socket.on(this.country + ':actor', this.addPushedActor);
-    socket.on(this.country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
-    socket.on(this.country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
-    socket.on(this.country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
+    var country = this.country.get('abbreviation');
+    socket.on(country + ':actor', this.addActorWithoutPopup);
+    socket.on(country + ':actor:group', this.addActorGroupFromRemote);
+    socket.on(country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
+    socket.on(country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    socket.on(country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
   },
 
-  addPushedActor: function(actor){
+  addActorGroupFromRemote: function(actorGroup){
+    var actorGroup = new ActorGroup(actorGroup);
+    this.appendActorGroup(actorGroup);
+  },
+
+  addActorWithoutPopup: function(actor){
     this.actors.add(actor, {silent: true});
-    this.appendActor(this.actors.get(actor._id), false);
+    this.appendActor(this.actors.get((actor._id || actor.id)), false);
   },
   
   stopPropagation: function(event){
@@ -278,13 +290,21 @@ module.exports = View.extend({
   removeActor: function(actor){
     var view = this.actorViews[actor.id];
     if(view) view.destroy();
+    delete this.actorViews[actor.id];
   },
 
   appendActorGroup: function(actorGroup){
+    actorGroup.pickOutActors(this.actors);
     var actorGroupView = new ActorGroupView({ model : actorGroup, editor: this});
     actorGroupView.render();
     this.workspace.append(actorGroupView.el);
     this.actorGroupViews[actorGroup.id] = actorGroupView;
+  },
+
+  removeActorGroup: function(actorGroup){
+    var view = this.actorGroupViews[actorGroup.id];
+    if(view) view.destroy();
+    delete this.actorGroupViews[actorGroup.id];
   },
 
   appendConnection: function(connection){
@@ -412,10 +432,20 @@ module.exports = View.extend({
 
   // an actor view from a group has been dragged here
   actorGroupActorDropped: function(view){
-    // remove it from the group
-    view.model.collection.remove(view.model);
-    // add it to this actor
-    this.actors.add(view.model);
+    var newActor = view.model.toJSON();
+    delete newActor._id;
+    delete newActor._rev;
+    delete newActor.locked;
+    var newActor = new Actor(newActor);
+    var editor = this;
+
+    view.model.destroy().done(function(){
+      newActor.save().done(function(){
+        // add it to the editor's actors
+        editor.addActorWithoutPopup(newActor);
+        socket.emit('new_model', newActor.toJSON())
+      });
+    });
   },
   
   slideActorIn: function(){
@@ -620,6 +650,10 @@ module.exports = View.extend({
     this.origin.left = this.$el.width()/2;
   },
 
+  initializeConfig: function(){
+    config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
+  },
+
   afterRender: function(){
     var editor = this;
 
@@ -670,9 +704,11 @@ module.exports = View.extend({
 
     $(window).unbind('resize', this.realignOrigin);
 
-    socket.removeAllListeners(this.country + ':actor');
-    socket.removeAllListeners(this.country + ':connection:money');
-    socket.removeAllListeners(this.country + ':connection:accountability');
-    socket.removeAllListeners(this.country + ':connection:monitoring');
+    var country = this.country.get('abbreviation');
+    socket.removeAllListeners(country + ':actor');
+    socket.removeAllListeners(country + ':actor_group');
+    socket.removeAllListeners(country + ':connection_money');
+    socket.removeAllListeners(country + ':connection_accountability');
+    socket.removeAllListeners(country + ':connection_monitoring');
   }
 });
