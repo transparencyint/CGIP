@@ -17,6 +17,8 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  // should the model get saved after snapping to the grid?
+  saveAfterSnap: true,
   
   transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
 
