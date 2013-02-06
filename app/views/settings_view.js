@@ -10,7 +10,10 @@ module.exports = View.extend({
     'click': 'stopPropagation',
     
     // the show/hide button
-    'click .button': 'toggle',
+    'click .cog': 'toggle',
+    
+    // go to presentation
+    'click .presentation': 'goToPresentation',
     
     'change #showMonitoring': 'toggleMonitoring',
     'change #language': 'changeLanguage'
@@ -23,6 +26,10 @@ module.exports = View.extend({
   
   stopPropagation: function(event){
     event.stopPropagation();
+  },
+  
+  goToPresentation: function(){
+    // go to presentation
   },
   
   toggle: function(){

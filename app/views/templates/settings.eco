@@ -1,4 +1,5 @@
-<span class="button cog"></span>
+<span class="button presentation rightAligned"><%= t('Presentation') %></span>
+<span class="button icon cog rightAligned"></span>
 
 <div class="modal">
   <h4><%= t('Settings') %></h4>
