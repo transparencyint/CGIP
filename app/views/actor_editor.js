@@ -389,7 +389,7 @@ module.exports = View.extend({
   actorSelected: function(event, view){
     this.selectedActorView = view;
     if(this.mode)
-      this.mode.actorSelected(view);
+      this.mode.viewSelected(view);
   },
 
   connectionSelected: function(event, view){
