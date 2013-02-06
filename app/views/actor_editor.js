@@ -455,6 +455,7 @@ module.exports = View.extend({
   },
 
   appendConnection: function(connection){
+    this.connections.add(connection);
     connection.pickOutActors(this.actors, this.actorGroups);
 
     var connView = new ConnectionView({ model : connection, editor: this});
