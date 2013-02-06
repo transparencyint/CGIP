@@ -2,6 +2,7 @@ var DraggableView = require('./draggable_view');
 var GroupActorDetailsView = require('./actor_group_actor_details');
 
 module.exports = DraggableView.extend({
+  saveAfterSnap: false,
 
   tagName: 'li',
   className: 'actor-group-actor',
