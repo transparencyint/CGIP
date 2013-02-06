@@ -360,6 +360,7 @@ module.exports = View.extend({
     
     this.mode.cancel();
     this.mode = null;
+    this.unselect();
   },
 
   showMoneyModal: function(event){

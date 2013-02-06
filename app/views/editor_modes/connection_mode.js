@@ -14,7 +14,11 @@ var ConnectionMode = function(workspace, collection, connectionType, editor){
   this.connectionType = connectionType;
   this.reset();
 
-  _.bindAll(this, '_moveDummy', '_keyUp');
+  // throttle the rendering
+  if(Modernizr.touch)
+    this._moveDummy = _.throttle(this._moveDummy, 50);
+  
+  _.bindAll(this, '_moveDummy', '_keyUp', '_checkUp');
 };
 
 ConnectionMode.prototype.reset = function(){
@@ -29,6 +33,7 @@ ConnectionMode.prototype.reset = function(){
 
   $(document).unbind(View.prototype.inputMoveEvent, this._moveDummy);
   $(document).unbind('keyup', this._keyUp);
+  if(Modernizr.touch) $(document).off(View.prototype.inputUpEvent, this._checkUp);
 };
 
 ConnectionMode.prototype.actorSelected = function(actor){  
@@ -49,6 +54,8 @@ ConnectionMode.prototype.actorSelected = function(actor){
     this.workspace.append(this.connectionView.el);
     $(document).bind(View.prototype.inputMoveEvent, this._moveDummy);
     $(document).bind('keyup', this._keyUp);
+    
+    if(Modernizr.touch) $(document).on(View.prototype.inputUpEvent, '.actor,.actor-group', this._checkUp);
   
   }else if(this.selectedActors.length === 2){
     // unlock the first actor
@@ -112,6 +119,30 @@ ConnectionMode.prototype._moveDummy = function(event){
 
 ConnectionMode.prototype._keyUp = function(event){
   if(event.keyCode === 27) this.cancel(); // cancel on ESC
+};
+
+ConnectionMode.prototype._checkUp = function(event){
+  // only check it on mobile
+  if(!Modernizr.touch) return;
+  if(this.selectedActors.length == 1){
+    var x = View.prototype.normalizedX(event);
+    var y = View.prototype.normalizedY(event);
+    
+    var currEl = $(document.elementFromPoint(x, y));
+    
+    if(!currEl.hasClass('actor')){
+      currEl = currEl.parents('.actor,.actor-group');
+    }
+    
+    var id = currEl.attr('id');
+    var theActor = this.editor.actors.get(id) || this.editor.actorGroups.get(id);
+    
+    if(theActor.id != this.selectedActors[0].id){
+      event.stopPropagation();
+      event.preventDefault();
+      currEl.trigger(View.prototype.inputDownEvent)
+    }
+  }
 };
 
 module.exports = ConnectionMode;
