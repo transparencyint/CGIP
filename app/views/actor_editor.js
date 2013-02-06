@@ -128,15 +128,14 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'unScopeElements', 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'viewSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'unScopeElements', 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
     // disable scope mode
     $(document).on('viewdrag', this.unScopeElements);
     // actor selection
-    $(document).on('viewSelected', this.viewSelected);
-
+    $(document).on('viewSelected', this.selected);
 
     // react to socket events
     var country = this.country.get('abbreviation');
@@ -162,8 +161,16 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedView && this.selectedView.$el.hasClass('selected'))
-      this.selectedView.model.destroy();
+    var selectedElement = this.workspace.find('.selected');
+    var selectedView = null;
+
+    if(selectedElement.hasClass('connection'))
+      selectedView = this.selectedConnectionView;
+    else
+      selectedView = this.selectedActorView;
+
+    if(selectedView && selectedView.$el.hasClass('selected'))
+      selectedView.model.destroy();
   },
   
   slideZoom: function(event, ui){
@@ -362,22 +369,37 @@ module.exports = View.extend({
       this.isScoped = false;
     }
   },
-  
-  viewSelected: function(event, view){
+
+  selected: function(event, view){
     var type = view.model.get('type');
-    
-    this.selectedView = view;
     
     if(this.mode && this.mode.isActive)
       this.mode.viewSelected(view);
-    else{
+    else{  
       this.scopeElements(view);
     }
+
+    if(type == 'actor'){
+      this.actorSelected(event, view);
+    }else if(type == 'connection'){
+      this.connectionSelected(event, view);
+    }
+  },
+
+  actorSelected: function(event, view){
+    this.selectedActorView = view;
+    if(this.mode)
+      this.mode.actorSelected(view);
+  },
+
+  connectionSelected: function(event, view){
+    this.selectedConnectionView = view;
   },
 
   unselect: function(){
     this.unScopeElements();
-    this.selectedView = null;
+    this.selectedActorView = null;
+    this.selectedConnectionView = null;
     if(this.mode) this.mode.unselect();
     $('.selected').removeClass('selected');
   },

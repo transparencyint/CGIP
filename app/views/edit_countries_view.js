@@ -25,7 +25,7 @@ module.exports = View.extend({
   deleteCountry: function(event){
     var countryId = $(event.currentTarget).data('country-id');
     var country = this.options.countries.get(countryId);
-    if(confirm('Are you sure you want to remove ' + country.get('name') + '?'))
+    if(confirm(t('Are you sure you want to remove') + ' ' +country.get('name') + '?'))
       country.destroy();
   },
 
@@ -126,11 +126,11 @@ module.exports = View.extend({
     if(input.css('visibility') == 'visible'){
       this.clearSearch();
       input.css('visibility', 'hidden');
-      button.text('Add Country');
+      button.text(t('Add Country'));
     }else{
       input.css('visibility', 'visible');
       input.focus();
-      button.text('Close');
+      button.text(t('Close'));
     }
   }
 });

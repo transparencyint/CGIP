@@ -1,9 +1,9 @@
 <tr>
-<th>Provider</th>
-<th>Recipient</th>
-<th>Pledged</th>
-<th>Disbursed</th>
-<th>Source</th>
+<th><%= t('Provider') %></th>
+<th><%= t('Recipient') %></th>
+<th><%= t('Pledged') %></th>
+<th><%= t('Disbursed') %></th>
+<th><%= t('Source') %></th>
 </tr>
 
 

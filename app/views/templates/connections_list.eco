@@ -2,12 +2,12 @@
   <table id="money-connection-list" class="darkTable moneyList">
     <thead>
       <tr>
-        <th>From
-        <th>To
-        <th>Disbursed
-        <th>Pledged
-        <th>Source
-        <th>Action
+        <th><%= t('From') %>
+        <th><%= t('To') %>
+        <th><%= t('Disbursed') %>
+        <th><%= t('Pledged') %>
+        <th><%= t('Source') %>
+        <th><%= t('Action') %>
       </tr>
     </thead>
     <tbody>
@@ -15,5 +15,5 @@
     </tbody>
   </table>
   <div id="new-connection-container"></div>
-  <button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label">Add Connection</span></button>
+  <button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label"><%= t('add_con') %></span></button>
 </div>

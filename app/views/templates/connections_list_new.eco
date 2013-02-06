@@ -4,5 +4,5 @@
   <td><input type="text" id="disbursed" />
   <td><input type="text" id="pledged" />
   <td class="source"><input type="text" id="source" />
-  <td><button id="create">Create!</button>
+  <td><button id="create"><%= t('create') %></button>
 </tr>

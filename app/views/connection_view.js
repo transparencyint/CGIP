@@ -65,7 +65,7 @@ module.exports = View.extend({
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
     
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
     
     View.prototype.destroy.call(this);
   },
@@ -102,7 +102,6 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.update, this);
     }
 
@@ -154,8 +153,6 @@ module.exports = View.extend({
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
     this.toggleZeroConnection();
-        
-    
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
@@ -439,10 +436,6 @@ module.exports = View.extend({
     this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
 
-  updateDisbursed: function(){ 
-    this.$('.metadata').text('$' + this.model.get('disbursed'));
-  },
-
   showDetails: function(){
     if(this.model.isLocked()) return; // don't show when model is locked
 
@@ -451,11 +444,15 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-    if(this.model.get('disbursed')){
-      var metadata = this.$('.metadata');
-      metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.show();
-    }
+    if(!this.isMoney) return
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+
+    var metadata = this.$('.metadata');
+    metadata.text('$' + this.model.get(moneyMode));
+    metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
+    metadata.show();
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },
   
   stickMetadata: function(e){

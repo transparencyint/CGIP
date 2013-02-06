@@ -10,7 +10,7 @@ module.exports = View.extend({
     'click': 'stopPropagation',
     
     // the show/hide button
-    'click .button': 'toggle',
+    'click .cog': 'toggle',
     
     'change #showMonitoring': 'toggleMonitoring',
     'change #language': 'changeLanguage'
@@ -65,10 +65,19 @@ module.exports = View.extend({
       {
         name: 'Deutsch',
         code: 'de'
+      },
+      {
+        name: 'Francais',
+        code: 'fr'
+      },
+      {
+        name: 'Espanol',
+        code: 'es'
       }
     ];
     
     return { 
+      presentationLink: '/show/' + this.editor.country.get('abbreviation'),
       languages: languages,
       active: config.get('language'),
       showMonitoring: this.editor.country.get('showMonitoring')
