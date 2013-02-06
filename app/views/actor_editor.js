@@ -245,6 +245,7 @@ module.exports = View.extend({
     };
   },
 
+  // Scope the editor's container
   scopeElements: function(view){
     // set the state
     this.isScoped = true;
@@ -252,9 +253,11 @@ module.exports = View.extend({
     var type = view.model.get('type');
     var scopedElements = [];
     
+    // set all elements to outOfScope
     if(type == 'actor' || type == 'connection')
       this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
+    // decide on the scope method based on the views type and get the elements in the current scope
     if(type == 'actor'){
       scopedElements = this.scopeFromActor(view.model);
     }else if(type == 'connection'){
@@ -264,6 +267,7 @@ module.exports = View.extend({
         scopedElements = this.scopeFromConnection(view.model);
     }
 
+    // set the found elements to 'inScope'
     var editor = this;
     _.each(scopedElements, function(model){
       if(model.get('type') == 'actor')
@@ -278,7 +282,7 @@ module.exports = View.extend({
     });
   },
 
-  // Selects only the elements which are connected diretly to the actor
+  // Scope by showing all directly connected elements
   scopeFromActor: function(startActor){
     var scopedElements = [startActor];
 
@@ -305,7 +309,7 @@ module.exports = View.extend({
     return scopedElements;
   },
 
-  // select the connection and both connected actors
+  // Scope by selecting the connection and both connected actors
   scopeFromConnection: function(connection){
     var scopedElements = [connection];
     if(connection.to) scopedElements.push(connection.to);
@@ -313,7 +317,10 @@ module.exports = View.extend({
     return scopedElements;
   },
 
-  // scope elements based on their money relationships
+  // Scope elements based on their money relationships
+  // -> Display the complete flow of the money in this connection:
+  // - Iterates up to the root source
+  // - Iterates down to the last receiver
   scopeFromMoneyConnection: function(connection){
     var scopedElements = [connection];
     var currentActor = null;
@@ -331,6 +338,7 @@ module.exports = View.extend({
     return scopedElements;
   },
 
+  // Recursively iterate up or down the money connection tree
   _scopeFromMoneyConnection: function(startActor, scopedElements, dir1, dir2){
     scopedElements.push(startActor);
     // get all connections that point into dir1 from the startActor
@@ -347,6 +355,7 @@ module.exports = View.extend({
     }.bind(this));
   },
 
+  // Resets the scope, so that all elements are shown as before the scope
   unScopeElements: function(){
     if(this.isScoped){
       this.workspace.find('.outOfScope').removeClass('outOfScope');
