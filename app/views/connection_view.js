@@ -447,7 +447,8 @@ module.exports = View.extend({
     metadata.text('$' + this.model.get(moneyMode));
     metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
     metadata.show();
-
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },
   
   stickMetadata: function(e){
