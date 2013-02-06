@@ -440,7 +440,7 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-
+    if(!this.isMoney) return
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
 
     var metadata = this.$('.metadata');
