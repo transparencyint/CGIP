@@ -128,12 +128,15 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'viewSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'unScopeElements', 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'viewSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
+    // disable scope mode
+    $(document).on('viewdrag', this.unScopeElements);
     // actor selection
     $(document).on('viewSelected', this.viewSelected);
+
 
     // react to socket events
     var country = this.country.get('abbreviation');
@@ -243,6 +246,9 @@ module.exports = View.extend({
   },
 
   scopeElements: function(view){
+    // set the state
+    this.isScoped = true;
+
     var type = view.model.get('type');
     var scopedElements = [];
     
@@ -342,7 +348,10 @@ module.exports = View.extend({
   },
 
   unScopeElements: function(){
-    this.workspace.find('.outOfScope').removeClass('outOfScope');
+    if(this.isScoped){
+      this.workspace.find('.outOfScope').removeClass('outOfScope');
+      this.isScoped = false;
+    }
   },
   
   viewSelected: function(event, view){
