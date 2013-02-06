@@ -34,52 +34,6 @@
     		</div>
   		</div>
   	</div>
-
-    <div class="multiCheckboxes role clearfix">
-      <h4><%= t('Role'); %></h4>
-      <table>
-        <tr>
-          <td>
-            <input type="checkbox" name="role" value="funding" id="funding" 
-            <% if @role: %> 
-              <% if 'funding' in @role: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="funding"><%= t('funding') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="role" value="coordination" id="coordination" 
-            <% if @role: %> 
-              <% if 'coordination' in @role: %> 
-                checked
-              <% end %>
-            <% end %>>
-            <label for="coordination"><%= t('coordination') %></label>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="role" value="implementation" id="implementation" 
-            <% if @role: %> 
-              <% if 'implementation' in @role: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="implementation"><%= t('implementation') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="role" value="monitoring" id="monitoring" 
-            <% if @role: %> 
-              <% if 'monitoring' in @role: %> 
-                checked
-              <% end %>
-            <% end%>>
-            <label for="monitoring"><%= t('monitoring') %></label>
-          </td>
-        </tr>
-      </table>
-    </div>
      
     <div class="multiCheckboxes clearfix">
 

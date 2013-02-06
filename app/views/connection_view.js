@@ -62,7 +62,7 @@ module.exports = View.extend({
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
     
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
     
     View.prototype.destroy.call(this);
   },
@@ -440,7 +440,7 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-
+    if(!this.isMoney) return
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
 
     var metadata = this.$('.metadata');

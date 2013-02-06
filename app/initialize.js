@@ -19,6 +19,9 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
+  // dummy socket
+  window.socket = { on: function(){}, emit: function(){}};
+
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
     // decide on location of the socket server
@@ -33,6 +36,7 @@ $(function() {
     // connect to the socket
     window.socket = io.connect(socketServer);
 
+    // socket is connected
     socket.on('connect', function(){
       // register the socket to the server
       socket.emit('register_socket', user.id);
@@ -52,8 +56,21 @@ $(function() {
   // set up the config model
   window.config = new Config();
 
+  // hook into socket.io in order to turn it on/off depending on the config
+  var socketOn = socket.on;
+  var socketEmit = socket.emit;
+  // only call the correct functions if realtime is turned on
+  socket.on = function(eventName, func){
+    if(config.isRealtimeEnabled()) socketOn.apply(socket, arguments);
+  };
+  socket.emit = function(eventName, arg){
+    if(config.isRealtimeEnabled()) socketEmit.apply(socket, arguments);
+  };
+
+  // make the translate function available in global context for easier calls
   window.t = $.jsperanto.translate;
   
+  // initialize the app
   application.initialize(function(){
     Backbone.history.start({pushState: (window.history && window.history.pushState)});
   });
