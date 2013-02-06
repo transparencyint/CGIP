@@ -108,7 +108,7 @@ module.exports = View.extend({
       strokeWidth: this.strokeWidth
     };
 
-    this.selectedArrowSize = this.markerRatio - 0.5;
+    this.selectedArrowSize = this.markerRatio - 1.0;
 
     this.arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
