@@ -364,6 +364,7 @@ module.exports = View.extend({
 
   // Resets the scope, so that all elements are shown as before the scope
   unScopeElements: function(){
+    clearInterval(this.scopeInterval);
     if(this.isScoped){
       this.workspace.find('.outOfScope').removeClass('outOfScope');
       this.isScoped = false;
@@ -375,8 +376,10 @@ module.exports = View.extend({
     
     if(this.mode && this.mode.isActive)
       this.mode.viewSelected(view);
-    else{  
-      this.scopeElements(view);
+    else{
+      var editor = this;
+      clearInterval(this.scopeInterval);
+      this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);
     }
 
     if(type == 'actor'){
