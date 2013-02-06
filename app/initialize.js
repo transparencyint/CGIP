@@ -9,6 +9,9 @@ $(function() {
   window.user = new User(window.user_hash);
   delete window.user_hash;
 
+  // dummy socket
+  window.socket = { on: function(){}, emit: function(){}};
+
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
     // decide on location of the socket server
