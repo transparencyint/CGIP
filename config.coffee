@@ -20,6 +20,7 @@ exports.config =
       # even if they are not present here.
       order:
         before: [
+          'vendor/scripts/modernizr.custom.25180.js'
           'vendor/scripts/console-helper.js',
           'vendor/scripts/jquery-1.7.2.js',
           'vendor/scripts/jquery-ui-1.8.20.custom.js',
@@ -29,7 +30,7 @@ exports.config =
           'vendor/scripts/jquery.svg.min.js',
           'vendor/scripts/jquery.autosize.js',
           'vendor/scripts/jquery.numeric.js',
-          'vendor/scripts/jquery.jsperanto.js'
+          'vendor/scripts/jquery.jsperanto.js'         
         ]
 
     stylesheets:

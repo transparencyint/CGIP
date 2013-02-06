@@ -17,6 +17,13 @@ html
   body
     #outofsync
 
+    .browserSupport
+      h2 Please update your Browser! 
+      h3 It doesn't support all necessary features. Get a new version of Chrome or Firefox!
+      div
+        a(href='http://www.google.com/chrome') Get Chrome
+        a(href='www.mozilla.org/de/firefox/') Get Firefox
+
     script(id="lm")
       window.lockedModels = !{JSON.stringify(lockedModels)};
     script(id="rp")
