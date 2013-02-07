@@ -285,18 +285,13 @@ module.exports = View.extend({
     }
 
     // set the found elements to 'inScope'
-    var editor = this;
+    var elements = $();
+    
     _.each(scopedElements, function(model){
-      if(model.get('type') == 'actor')
-        $('#' + model.id).removeClass('outOfScope');
-      else
-        if(model.get('type') == 'connection'){
-          var connection = editor.moneyConnections.get(model.id)
-                            || editor.accountabilityConnections.get(model.id)
-                            || editor.monitoringConnections.get(model.id);
-          connection.trigger('inScope');
-        }
+      elements = elements.add('#' + model.id);
     });
+    
+    elements.removeClass('outOfScope');
   },
 
   // Scope by showing all directly connected elements
@@ -374,7 +369,6 @@ module.exports = View.extend({
 
   // Resets the scope, so that all elements are shown as before the scope
   unScopeElements: function(){
-    clearInterval(this.scopeInterval);
     if(this.isScoped){
       this.workspace.find('.outOfScope').removeClass('outOfScope');
       this.isScoped = false;
@@ -387,9 +381,7 @@ module.exports = View.extend({
     if(this.mode && this.mode.isActive){
       this.mode.viewSelected(view);
     }else{
-      var editor = this;
-      clearInterval(this.scopeInterval);
-      this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);
+      this.scopeElements(view)
     }
 
     if(type == 'actor'){
