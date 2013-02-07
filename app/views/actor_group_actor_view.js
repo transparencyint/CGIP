@@ -10,13 +10,9 @@ module.exports = DraggableView.extend({
   width: 110,
   height: 30,
 
-  initialize: function(options){
-    this.editor = options.editor;
-    DraggableView.prototype.initialize.call(this, options);
-  },
 
-
-  dragStart: function(event){
+  clone: function(){
+    this.cloned = true;
     // small actor version
     this.originalElement = this.$el;
     
@@ -30,11 +26,10 @@ module.exports = DraggableView.extend({
     
     this.$el.appendTo($('.workspace'));
     this.originalElement.addClass('hidden');
-
-    DraggableView.prototype.dragStart.call(this, event);
   },
 
   dragByDelta: function(dx, dy){
+    if(!this.cloned) this.clone();
     this.model.moveByDelta(dx, dy);
   },
 
@@ -44,6 +39,7 @@ module.exports = DraggableView.extend({
     this.$el.remove();
     this.$el = this.originalElement;
     this.$el.removeClass('hidden');
+    this.cloned = false;
   },
 
   updatePosition: function(){
