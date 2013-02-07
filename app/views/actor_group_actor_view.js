@@ -1,5 +1,4 @@
 var DraggableView = require('./draggable_view');
-var GroupActorDetailsView = require('./actor_group_actor_details');
 
 module.exports = DraggableView.extend({
   saveAfterSnap: false,
@@ -11,16 +10,9 @@ module.exports = DraggableView.extend({
   width: 110,
   height: 30,
 
-  events: function(){
-    var parentEvents = DraggableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown' : 'dragStart',
-      'click'     : 'showDetails'
-    }, parentEvents);
-  },
 
-  dragStart: function(event){
+  clone: function(){
+    this.cloned = true;
     // small actor version
     this.originalElement = this.$el;
     
@@ -34,11 +26,10 @@ module.exports = DraggableView.extend({
     
     this.$el.appendTo($('.workspace'));
     this.originalElement.addClass('hidden');
-
-    DraggableView.prototype.dragStart.call(this, event);
   },
 
   dragByDelta: function(dx, dy){
+    if(!this.cloned) this.clone();
     this.model.moveByDelta(dx, dy);
   },
 
@@ -48,18 +39,12 @@ module.exports = DraggableView.extend({
     this.$el.remove();
     this.$el = this.originalElement;
     this.$el.removeClass('hidden');
+    this.cloned = false;
   },
 
   updatePosition: function(){
-    // don't update it's position
-  },
-
-  showDetails: function(event){
-    event.stopPropagation();
-    // add code for info display here
-    this.modal = new GroupActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
-    return false;
+    if(this.isDragging)
+      DraggableView.prototype.updatePosition.call(this);
   },
 
   destroy: function(){

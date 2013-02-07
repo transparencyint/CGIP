@@ -12,7 +12,8 @@ module.exports = View.extend({
     _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
-    _events[ 'dblclick' ] = 'showDetails';
+    if(this.showDetails)
+      _events[ 'dblclick' ] = 'showDetails';
 
     return _events;
   },
@@ -37,7 +38,7 @@ module.exports = View.extend({
   longPress: function(event){
     // fire dragstart
     this.dragStart(event);
-    if(this.isDraggable)
+    if(this.isDraggable && this.showDetails)
       // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
       this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
   },
@@ -94,11 +95,14 @@ module.exports = View.extend({
     var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
     
-    this.dragDistance += Math.sqrt(dx*dx + dy*dy);
-    
-    if(!this.wasOrIsDragging && this.dragDistance > this.dragThreshold){
-      this.trigger('dragging');
-      this.wasOrIsDragging = true;
+    if(!this.wasOrIsDragging){
+      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+
+      if(this.dragDistance > this.dragThreshold){
+        this.trigger('dragging');
+        this.wasOrIsDragging = true;
+        this.isDragging = true;
+      }
     }
 
     this.dragByDelta(dx, dy);
