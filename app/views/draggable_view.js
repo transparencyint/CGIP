@@ -37,7 +37,7 @@ module.exports = View.extend({
   longPress: function(event){
     // fire dragstart
     this.dragStart(event);
-    if(this.isDraggable)
+    if(this.isDraggable && this.showDetails)
       // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
       this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
   },

@@ -1,5 +1,4 @@
 var DraggableView = require('./draggable_view');
-var GroupActorDetailsView = require('./actor_group_actor_details');
 
 module.exports = DraggableView.extend({
   saveAfterSnap: false,
@@ -14,8 +13,6 @@ module.exports = DraggableView.extend({
   initialize: function(options){
     this.editor = options.editor;
     DraggableView.prototype.initialize.call(this, options);
-
-    _.bindAll(this, 'showDetails');
   },
 
 
@@ -52,16 +49,6 @@ module.exports = DraggableView.extend({
   updatePosition: function(){
     if(this.isDragging)
       DraggableView.prototype.updatePosition.call(this);
-  },
-
-  showDetails: function(event){
-    if(event) event.stopPropagation();
-    if(this.isDragging) return;
-
-    // add code for info display here
-    this.modal = new GroupActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
-    return false;
   },
 
   destroy: function(){
