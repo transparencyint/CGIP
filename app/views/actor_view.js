@@ -1,5 +1,6 @@
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
+var FakeActorView = require('./fake_actor_view');
 
 module.exports = DraggableDroppableView.extend({
   selectable: true,
@@ -23,7 +24,7 @@ module.exports = DraggableDroppableView.extend({
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
-    this.dropClasses = [require('./actor_view')];
+    this.dropClasses = [require('./actor_view'), FakeActorView];
     
     this.on('dragging', this.cancelLongPress, this);
     
@@ -58,9 +59,13 @@ module.exports = DraggableDroppableView.extend({
   
   drop: function(event, view){
     // stop the actor dragging
-    view.isDragging = false;
-    var newGroup = this.model.turnIntoGroup(view.model);
-    this.editor.actorGroups.add(newGroup);
+    if(view instanceof FakeActorView){
+      return view.reset();
+    }else{
+      view.isDragging = false;
+      var newGroup = this.model.turnIntoGroup(view.model);
+      this.editor.actorGroups.add(newGroup);
+    }
   },
 
   getRenderData: function() {

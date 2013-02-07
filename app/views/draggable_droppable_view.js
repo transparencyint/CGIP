@@ -78,7 +78,7 @@ module.exports = DraggableView.extend({
     }
   },
 
-  drop: function(){event, view},
+  drop: function(event, view){},
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);
