@@ -15,7 +15,7 @@ module.exports = View.extend({
       'dblclick': 'showDetails'
     };
     
-    _events[ this.inputMoveEvent ] = 'moveMetadata';
+    _events[ this.inputMoveEvent ] = 'updateMetada';
     _events[ this.inputDownEvent ] = 'longPress';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
     
@@ -127,7 +127,6 @@ module.exports = View.extend({
 
     this.arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-    
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
@@ -496,7 +495,8 @@ module.exports = View.extend({
     return false;
   },
   
-  moveMetadata: function(event){
+  updateMetada: function(event){
+    // update the position
     var pos = this.editor.offsetToCoords({ 
       left: this.normalizedX(event) - this.pos.x, 
       top: this.normalizedY(event) - this.pos.y
@@ -506,6 +506,13 @@ module.exports = View.extend({
       left: pos.x + 30, 
       top: pos.y + 10
     });
+
+    // update the amount
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var metadata = this.$('.metadata');
+    metadata.text('$' + this.model.get(moneyMode));
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },
   
   definePath1Line: function(start, end){
