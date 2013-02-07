@@ -1,4 +1,13 @@
-<h1>Climate Change Governance Integrity Program</h1>
+<h1>Climate Finance Integrity Program</h1>
+
+<div id="link-area">
+  <% if window.user.isLoggedIn(): %>
+    <a href="/edit/">Edit View</a>
+  <% else: %>
+    <a href="/edit/">Edit View</a>
+  <% end %>
+</div>
+
 <div class="map">
   <div class="point mexico">
     <div class="label">
