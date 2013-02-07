@@ -98,6 +98,7 @@ module.exports = View.extend({
   afterRender: function(){
     
     this.metadata = this.$('.metadata');
+    this.$el.attr('id', this.model.id);
     
     this.path = "";
     this.$el.svg();
@@ -458,10 +459,10 @@ module.exports = View.extend({
 
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
-    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
-    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
-    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
-    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
+    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id +'-path' });
+    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.selectSettings);
+    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.pathSettings);
+    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
 
   updateDisbursed: function(){ 
