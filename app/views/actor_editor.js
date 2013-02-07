@@ -269,10 +269,6 @@ module.exports = View.extend({
 
     var type = view.model.get('type');
     var scopedElements = [];
-    
-    // set all elements to outOfScope
-    if(type == 'actor' || type == 'connection')
-      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
     // decide on the scope method based on the views type and get the elements in the current scope
     if(type == 'actor'){
@@ -283,6 +279,12 @@ module.exports = View.extend({
       else
         scopedElements = this.scopeFromConnection(view.model);
     }
+
+    if(scopedElements.length == 1) return; // don't scope when only one element in scope
+
+    // set all elements to outOfScope
+    if(type == 'actor' || type == 'connection')
+      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
     // set the found elements to 'inScope'
     var elements = $();
