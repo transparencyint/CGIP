@@ -19,7 +19,6 @@ module.exports = View.extend({
 
     // bind dynamic input event (touch or mouse)
     _events[ this.inputDownEvent] = 'stopPropagation';
-    _events[ this.inputDownEvent + ' .button'] = 'toggle';
 
     return _events;
   },
