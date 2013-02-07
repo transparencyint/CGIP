@@ -83,7 +83,6 @@
         </tr>
       </table>
     </div>
->>>>>>> master
      
       <div class="multiCheckboxes clearfix">
         <h4><%= t('Purpose')%></h4>
