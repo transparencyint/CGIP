@@ -280,7 +280,7 @@ module.exports = View.extend({
         scopedElements = this.scopeFromConnection(view.model);
     }
 
-    if(scopedElements.length == 1) return; // don't scope when only one element in scope
+    if(scopedElements.length == 1) return this.unScopeElements(); // don't scope when only one element in scope
 
     // set all elements to outOfScope
     if(type == 'actor' || type == 'connection')
