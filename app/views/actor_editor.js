@@ -384,9 +384,9 @@ module.exports = View.extend({
   selected: function(event, view){
     var type = view.model.get('type');
     
-    if(this.mode && this.mode.isActive)
+    if(this.mode && this.mode.isActive){
       this.mode.viewSelected(view);
-    else{
+    }else{
       var editor = this;
       clearInterval(this.scopeInterval);
       this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);

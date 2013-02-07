@@ -38,6 +38,7 @@ ConnectionMode.prototype.reset = function(){
 
 ConnectionMode.prototype.viewSelected = function(view){
   if(view.model.get('type') != 'actor') return; // only handle actors
+  this.editor.unScopeElements(); // unscope the elements
   
   // connection to the same actor (itself) is not possible
   if(this.connection.from !== view.model){
