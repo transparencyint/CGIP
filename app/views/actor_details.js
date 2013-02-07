@@ -274,7 +274,9 @@ module.exports = View.extend({
       self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
       self.holder.css('overflow', 'auto');
       
-      self.$('input').first().focus();
+      // on desktop browsers: focus first input field
+      if(!Modernizr.touch)
+        self.$('input').first().focus();
 
       // fixes wrong height calculation of the textareas
       self.autosize = self.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });

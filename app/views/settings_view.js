@@ -11,22 +11,17 @@ module.exports = View.extend({
       'click': 'stopPropagation',
     
       // the show/hide button
-      'click .button': 'toggle',
-      
+      'click .cog': 'toggle',
+
       'change #showMonitoring': 'toggleMonitoring',
       'change #language': 'changeLanguage'
     };
 
     // bind dynamic input event (touch or mouse)
     _events[ this.inputDownEvent] = 'stopPropagation';
-    //_events[ this.inputDownEvent + ' .button'] = 'toggle'; 
+    _events[ this.inputDownEvent + ' .button'] = 'toggle';
 
     return _events;
-    // the show/hide button
-    'click .cog': 'toggle',
-    
-    'change #showMonitoring': 'toggleMonitoring',
-    'change #language': 'changeLanguage'
   },
   
   initialize: function(options){    
