@@ -1,12 +1,13 @@
+<header>
 <h1>Climate Finance Integrity Program</h1>
-
 <div id="link-area">
   <% if window.user.isLoggedIn(): %>
     <a href="/edit/">Edit View</a>
   <% else: %>
-    <a href="/edit/">Edit View</a>
+    <a href="/login/">Login</a>
   <% end %>
 </div>
+</header>
 
 <div class="map">
   <div class="point mexico">
