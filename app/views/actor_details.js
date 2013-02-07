@@ -264,7 +264,6 @@ module.exports = View.extend({
     this.clickCatcher = new clickCatcher({ callback: this.submitAndClose, holder: this.editor.$el });
     
     $(document).keydown(this.handleKeys);
-    this.autosize = this.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     this.holder = this.$('.holder');
     
     var self = this;
@@ -275,9 +274,10 @@ module.exports = View.extend({
       self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
       self.holder.css('overflow', 'auto');
       
-      // on desktop browsers: focus first input field
-      if(!Modernizr.touch) 
-        self.$('input').first().focus();
+      self.$('input').first().focus();
+
+      // fixes wrong height calculation of the textareas
+      self.autosize = self.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });
     });
   },
   
@@ -340,9 +340,8 @@ module.exports = View.extend({
   submitForm: function(){
     
     var formData = this.$('form').serializeArray();
-    var sets = [ 'role', 'purpose' ];
+    var sets = [ 'purpose' ];
     var cleanedData = {
-      'role' : [],
       'purpose' : []
     };
     var checkboxes = [ 'hasCorruptionRisk' ];

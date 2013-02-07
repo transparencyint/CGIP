@@ -3,7 +3,6 @@ var _ = require('underscore');
 var http = require('http');
 var url = require('url');
 var express = require('express');
-var gzippo = require('gzippo');
 var io = require('socket.io');
 var ConnectCouchdb = require('connect-couchdb')(express);
 var auth = require('./server/auth').auth;
@@ -48,7 +47,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.favicon());
-  app.use(gzippo.staticGzip(__dirname + '/public'));
+  app.use(express.static(__dirname + '/public'));
   app.use(express.session({
     store: sessionStore,
     key: 'cgipsid',
@@ -305,6 +304,10 @@ io.sockets.on('connection', function (socket) {
     if(specificType)
       key += ':' + specificType;
     socket.broadcast.emit(key, model);
+  });
+
+  socket.on('moveToGroup', function(actor_id){
+    socket.broadcast.emit('moveToGroup:' + actor_id);
   });
 
   socket.on('disconnect', function(){

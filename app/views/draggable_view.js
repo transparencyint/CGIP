@@ -164,7 +164,7 @@ module.exports = View.extend({
     
     if(dx !== 0 || dy !== 0){
       var view = this;
-
+      if(!this.saveAfterSnap) return;
       $({percent: 0}).animate({percent: 1}, {
         step: function(){
           var stepX = this.percent * dx;
@@ -188,6 +188,7 @@ module.exports = View.extend({
         }
       });
     } else {
+      if(!this.saveAfterSnap) return;
       view.model.save();
     }
   },
@@ -196,6 +197,6 @@ module.exports = View.extend({
     View.prototype.destroy.call(this);
     $(document).off('mousemove.global', this.drag);
     $(document).off('mouseup', this.dragStop);
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
   }
 });

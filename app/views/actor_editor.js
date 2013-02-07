@@ -121,12 +121,14 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'onSelected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
+    // disable scope mode
+    $(document).on('viewdrag', this.unScopeElements);
     // actor selection
-    $(document).on('viewSelected', this.onSelected);
+    $(document).on('viewSelected', this.selected);
 
     // react to socket events
     var country = this.country.get('abbreviation');
@@ -152,8 +154,16 @@ module.exports = View.extend({
   },
   
   deleteOnDelKey: function(){
-    if(this.selectedActorView && this.selectedActorView.$el.hasClass('selected'))
-      this.selectedActorView.model.destroy();
+    var selectedElement = this.workspace.find('.selected');
+    var selectedView = null;
+
+    if(selectedElement.hasClass('connection'))
+      selectedView = this.selectedConnectionView;
+    else
+      selectedView = this.selectedActorView;
+
+    if(selectedView && selectedView.$el.hasClass('selected'))
+      selectedView.model.destroy();
   },
   
   // pinch gesture for zooming on mobile 
@@ -251,15 +261,152 @@ module.exports = View.extend({
       right: right
     };
   },
-  
-  onSelected: function(event, view){
+
+  // Scope the editor's container
+  scopeElements: function(view){
+    // set the state
+    this.isScoped = true;
+
     var type = view.model.get('type');
-    this.selectedView = view;
+    var scopedElements = [];
+    
+    // set all elements to outOfScope
+    if(type == 'actor' || type == 'connection')
+      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
+
+    // decide on the scope method based on the views type and get the elements in the current scope
     if(type == 'actor'){
-      this.selectedActorView = view;
-      if(this.mode)
-        this.mode.actorSelected(view);
+      scopedElements = this.scopeFromActor(view.model);
+    }else if(type == 'connection'){
+      if(view.model.get('connectionType') == 'money')
+        scopedElements = this.scopeFromMoneyConnection(view.model);
+      else
+        scopedElements = this.scopeFromConnection(view.model);
     }
+
+    // set the found elements to 'inScope'
+    var editor = this;
+    _.each(scopedElements, function(model){
+      if(model.get('type') == 'actor')
+        $('#' + model.id).removeClass('outOfScope');
+      else
+        if(model.get('type') == 'connection'){
+          var connection = editor.moneyConnections.get(model.id)
+                            || editor.accountabilityConnections.get(model.id)
+                            || editor.monitoringConnections.get(model.id);
+          connection.trigger('inScope');
+        }
+    });
+  },
+
+  // Scope by showing all directly connected elements
+  scopeFromActor: function(startActor){
+    var scopedElements = [startActor];
+
+    var selectScopeElements = function(connections, direction){
+      _.each(connections, function(connection){
+        var next = connection.get(direction);
+        next = this.actors.get(next) || this.actorGroups.get(next);
+        
+        if(!next || next == startActor) return; // stop if no next actor or self again
+        
+        scopedElements.push(connection);
+        scopedElements.push(next);    
+      }.bind(this))
+    }.bind(this);
+
+    // elements that come from this actor
+    var outgoingConnections = this.connections.where({from: startActor.id});
+    selectScopeElements(outgoingConnections, 'to');
+    
+    // elements that point to this actor
+    var incoming = this.connections.where({to: startActor.id});
+    selectScopeElements(incoming, 'from');
+
+    return scopedElements;
+  },
+
+  // Scope by selecting the connection and both connected actors
+  scopeFromConnection: function(connection){
+    var scopedElements = [connection];
+    if(connection.to) scopedElements.push(connection.to);
+    if(connection.from) scopedElements.push(connection.from);
+    return scopedElements;
+  },
+
+  // Scope elements based on their money relationships
+  // -> Display the complete flow of the money in this connection:
+  // - Iterates up to the root source
+  // - Iterates down to the last receiver
+  scopeFromMoneyConnection: function(connection){
+    var scopedElements = [connection];
+    var currentActor = null;
+    
+    // get all actors and connections that lead here
+    if(connection.from){
+      this._scopeFromMoneyConnection(connection.from, scopedElements, 'to', 'from');
+    }
+
+    // get all actors and connections that start from here
+    if(connection.to){
+      this._scopeFromMoneyConnection(connection.to, scopedElements, 'from', 'to');
+    }
+
+    return scopedElements;
+  },
+
+  // Recursively iterate up or down the money connection tree
+  _scopeFromMoneyConnection: function(startActor, scopedElements, dir1, dir2){
+    scopedElements.push(startActor);
+    // get all connections that point into dir1 from the startActor
+    var query = {};
+    query[dir1] = startActor.id;
+    var connections = this.moneyConnections.where(query);
+    // add each connection and all actors
+    _.each(connections, function(conn){
+      scopedElements.push(conn);
+      var next = this.actors.get(conn.get(dir2)) || this.actorGroups.get(conn.get(dir2));
+      if(next && _.indexOf(scopedElements, next) < 0){
+        this._scopeFromMoneyConnection(next, scopedElements, dir1, dir2);
+      }
+    }.bind(this));
+  },
+
+  // Resets the scope, so that all elements are shown as before the scope
+  unScopeElements: function(){
+    clearInterval(this.scopeInterval);
+    if(this.isScoped){
+      this.workspace.find('.outOfScope').removeClass('outOfScope');
+      this.isScoped = false;
+    }
+  },
+
+  selected: function(event, view){
+    var type = view.model.get('type');
+    
+    if(this.mode && this.mode.isActive)
+      this.mode.viewSelected(view);
+    else{
+      var editor = this;
+      clearInterval(this.scopeInterval);
+      this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);
+    }
+
+    if(type == 'actor'){
+      this.actorSelected(event, view);
+    }else if(type == 'connection'){
+      this.connectionSelected(event, view);
+    }
+  },
+
+  actorSelected: function(event, view){
+    this.selectedActorView = view;
+    if(this.mode)
+      this.mode.viewSelected(view);
+  },
+
+  connectionSelected: function(event, view){
+    this.selectedConnectionView = view;
   },
 
   unselect: function(){
@@ -270,6 +417,14 @@ module.exports = View.extend({
     this.selectedActorView = null;
     this.selectedView = null;
     this.selectedActorView = null;
+  },
+
+  unselect: function(){
+    this.unScopeElements();
+    this.selectedActorView = null;
+    this.selectedConnectionView = null;
+    if(this.mode) this.mode.unselect();
+    $('.selected').removeClass('selected');
   },
 
   createActorAt: function(x, y){
@@ -323,6 +478,7 @@ module.exports = View.extend({
   },
 
   appendConnection: function(connection){
+    this.connections.add(connection);
     connection.pickOutActors(this.actors, this.actorGroups);
 
     var connView = new ConnectionView({ model : connection, editor: this});
@@ -715,7 +871,7 @@ module.exports = View.extend({
     $(document).unbind(this.inputMoveEvent, this.pan);
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
-    $(document).off('viewSelected', this.onSelected);
+    $(document).off('viewSelected', this.viewSelected);
     $(document).off('viewdragstop', this.checkDrop);
 
     $(window).unbind('resize', this.realignOrigin);

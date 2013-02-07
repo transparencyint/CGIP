@@ -45,13 +45,16 @@ module.exports = View.extend({
     if(options.noClick)
       this.$el.unbind('click');
 
-    if(this.model.from)
+    if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
+    }
       
-    if(this.model.to)
+    if(this.model.to){
       this.model.to.on('change:pos', this.update, this);
+    }
 
     this.model.on('destroy', this.destroy, this);
+    this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
   },
@@ -87,7 +90,7 @@ module.exports = View.extend({
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
     
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
     
     View.prototype.destroy.call(this);
   },
@@ -127,7 +130,6 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.update, this);
     }
 
@@ -137,6 +139,8 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
   },
+
+  inScope: function(){ this.$el.removeClass('outOfScope'); },
 
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');
@@ -177,8 +181,6 @@ module.exports = View.extend({
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
     this.toggleZeroConnection();
-        
-    
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 

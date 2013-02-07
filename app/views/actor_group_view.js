@@ -85,7 +85,7 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.model.get('name') );
   },
   
-  showDetails: function(){
+  showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
     if(!this.isDraggable) return;
 

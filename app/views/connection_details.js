@@ -69,13 +69,17 @@ module.exports = View.extend({
     this.controlsHeight = 46;
     this.arrowHeight = 42;
     this.borderRadius = 5;
-    this.distanceToConnection = 34;
+    this.distanceToConnection = 21;
     
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
 
     this.model.on('destroy', this.destroy, this);
+    
+    // debounce form realtime updates 
+    // http://underscorejs.org/#debounce
+    this.saveFormData = _.debounce(this.saveFormData, 50);
   },
   
   dragStart: function(event){
@@ -274,6 +278,7 @@ module.exports = View.extend({
     attributes[event.target.name] = value;
     
     this.model.set(attributes);
+    this.saveFormData();
   },
 
   updateMoneyConnections: function (event) {
@@ -318,18 +323,16 @@ module.exports = View.extend({
   },
 
   submitAndClose: function(){
-    var _disbursed = parseInt(this.$el.find('#disbursed').val(), 10) || 0;
-    var _pledged = parseInt(this.$el.find('#pledged').val(), 10) || 0;
-
-    this.model.save({
-      disbursed: _disbursed,
-      pledged: _pledged
-    });
-
+    this.saveFormData();
     this.close();
     
     // prevent form forwarding
     return false;
+  },
+  
+  // don't sync in realtime but just every 500ms
+  saveFormData: function(){
+    this.model.save();
   },
   
   close: function(){

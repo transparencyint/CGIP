@@ -17,6 +17,8 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  // should the model get saved after snapping to the grid?
+  saveAfterSnap: true,
   
   transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
   inputDownEvent: Modernizr.touch ? 'touchstart' : 'mousedown',
@@ -28,7 +30,7 @@ module.exports = Backbone.View.extend({
     this.toggleLocked = _.bind(this.toggleLocked, this);
 
     if(this.model && this.model.lockable == true)
-      this.model.on('change:locked', this.toggleLocked);
+      this.model.on('change:locked', this.toggleLocked, this);
   },
 
   template: function() {},
