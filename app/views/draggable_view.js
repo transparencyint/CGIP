@@ -24,6 +24,7 @@ module.exports = View.extend({
     this.editor = this.options.editor;
     
     this.wasOrIsDragging = false;
+    this.isDragging = false;
     this.dragDistance = 0;
     this.dragThreshold = 5;
     this.longPressDelay = 500;
@@ -77,6 +78,7 @@ module.exports = View.extend({
       
       this.dragDistance = 0;
       this.wasOrIsDragging = false;
+      this.isDragging = false;
       
       var pos = this.model.get('pos');
       
