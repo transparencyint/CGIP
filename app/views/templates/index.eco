@@ -1,59 +1,72 @@
-<h1>Climate Change Governance Integrity Program</h1>
-<div class="map">
-  <div class="point mexico">
-    <div class="label">
-      <a href="/show/mx">Mexico</a>
-      <div class="arrow"></div>
+<div class="inner">
+  <header>
+    <h1>Climate Finance Integrity Program</h1>
+    <div id="link-area">
+      <% if window.user.isLoggedIn(): %>
+        <a class="button transparent" href="/edit/">Edit View</a>
+        <a class="button transparent" href="/logout" external>Logout</a>
+      <% else: %>
+        <a class="button transparent" href="/login/">Login</a>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="map">
+    <div class="point mexico">
+      <div class="label">
+        <a href="/show/mx">Mexico</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point peru">
+      <div class="label">
+        <a href="/show/pe">Peru</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point dominicanRepublic">
+      <div class="label">
+        <a href="/show/do">Dominican Republic</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point kenya">
+      <div class="label">
+        <a href="/show/ke">Kenya</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point maledives">
+      <div class="label">
+        <a href="/show/mv">Maledives</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point vietnam">
+      <div class="label">
+        <a href="/show/vn">Vietnam</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point indonesia">
+      <div class="label">
+        <a href="/show/id">Indonesia</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point papuaNewGuinea below">
+      <div class="label">
+        <a href="/show/pg">Papua New Guinea</a>
+        <div class="arrow"></div>
+      </div>
     </div>
   </div>
-  <div class="point peru">
-    <div class="label">
-      <a href="/show/pe">Peru</a>
-      <div class="arrow"></div>
+  <footer>
+    <div class="left">
+      <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
     </div>
-  </div>
-  <div class="point dominicanRepublic">
-    <div class="label">
-      <a href="/show/do">Dominican Republic</a>
-      <div class="arrow"></div>
+    <div class="right">
+      <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
     </div>
-  </div>
-  <div class="point kenya">
-    <div class="label">
-      <a href="/show/ke">Kenya</a>
-      <div class="arrow"></div>
-    </div>
-  </div>
-  <div class="point maledives">
-    <div class="label">
-      <a href="/show/mv">Maledives</a>
-      <div class="arrow"></div>
-    </div>
-  </div>
-  <div class="point vietnam">
-    <div class="label">
-      <a href="/show/vn">Vietnam</a>
-      <div class="arrow"></div>
-    </div>
-  </div>
-  <div class="point indonesia">
-    <div class="label">
-      <a href="/show/id">Indonesia</a>
-      <div class="arrow"></div>
-    </div>
-  </div>
-  <div class="point papuaNewGuinea below">
-    <div class="label">
-      <a href="/show/pg">Papua New Guinea</a>
-      <div class="arrow"></div>
-    </div>
-  </div>
+  </footer>
 </div>
-<footer>
-  <div class="left">
-    <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
-  </div>
-  <div class="right">
-    <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
-  </div>
-</footer>

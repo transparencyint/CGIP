@@ -6,7 +6,7 @@ module.exports = View.extend({
   
   template: require('views/templates/csv_import/import'),
   
-  className : 'importView',
+  className : 'importView box center',
   
   events : {
     "change #importfile" : "preProcessFile"
