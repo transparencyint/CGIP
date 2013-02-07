@@ -56,7 +56,7 @@ module.exports = View.extend({
     // http://underscorejs.org/#debounce
     this.saveFormData = _.debounce(this.saveFormData, 500);
     
-    this.updateName();
+    //this.updateName();
   },
   
   dontDrag: function(event){

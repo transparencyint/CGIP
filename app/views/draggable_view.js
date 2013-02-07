@@ -99,6 +99,7 @@ module.exports = View.extend({
     if(!this.wasOrIsDragging && this.dragDistance > this.dragThreshold){
       this.trigger('dragging');
       this.wasOrIsDragging = true;
+      this.isDragging = true;
     }
 
     this.dragByDelta(dx, dy);

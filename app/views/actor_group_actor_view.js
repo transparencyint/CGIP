@@ -11,14 +11,13 @@ module.exports = DraggableView.extend({
   width: 110,
   height: 30,
 
-  events: function(){
-    var parentEvents = DraggableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown' : 'dragStart',
-      'click'     : 'showDetails'
-    }, parentEvents);
+  initialize: function(options){
+    this.editor = options.editor;
+    DraggableView.prototype.initialize.call(this, options);
+
+    _.bindAll(this, 'showDetails');
   },
+
 
   dragStart: function(event){
     // small actor version
@@ -51,11 +50,12 @@ module.exports = DraggableView.extend({
   },
 
   updatePosition: function(){
-    // don't update it's position
+    if(this.wasOrIsDragging)
+      DraggableView.prototype.updatePosition.call(this);
   },
 
   showDetails: function(event){
-    event.stopPropagation();
+    if(event) event.stopPropagation();
     // add code for info display here
     this.modal = new GroupActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
