@@ -9,23 +9,30 @@ module.exports = View.extend({
   className : 'connection',
   selectable : true,
 
-  events: {
-    'mouseover' : 'showMetadata',
-    'mousemove' : 'stickMetadata',
-    'mouseout' : 'hideMetadata',
-    'mousedown' : 'hideMetadata',
-    'dblclick' : 'showDetails',
-    'click' : 'select'
+  events: function(){
+    var _events = {
+      'click': 'select',
+      'dblclick': 'showDetails'
+    };
+    
+    _events[ this.inputMoveEvent ] = 'moveMetadata';
+    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
+    
+    return _events;
   },
 
   initialize: function(options){
     View.prototype.initialize.call(this, options);
+    
+    _.bindAll(this, 'showDetails');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
     this.markerSize = 4;
+    this.longPressDelay = 500;
     
     this.selectionBorderSize = 4;
     this.clickAreaRadius = 40;
@@ -38,15 +45,36 @@ module.exports = View.extend({
     if(options.noClick)
       this.$el.unbind('click');
 
-    if(this.model.from)
+    if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
+    }
       
-    if(this.model.to)
+    if(this.model.to){
       this.model.to.on('change:pos', this.update, this);
+    }
 
     this.model.on('destroy', this.destroy, this);
+    this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },
+  
+  getRenderData: function(){
+    var disbursed = this.model.get('disbursed');
+    
+    if(disbursed < 1)
+      disbursed = t('unknown amount');
+    else
+      disbursed = '$ ' + disbursed;
+    
+    return { 
+      disbursed: disbursed, 
+      connectionType: this.model.get('connectionType')
+    };
   },
 
   render: function(){
@@ -62,12 +90,14 @@ module.exports = View.extend({
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
     
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
     
     View.prototype.destroy.call(this);
   },
   
   afterRender: function(){
+    
+    this.metadata = this.$('.metadata');
     
     this.path = "";
     this.$el.svg();
@@ -100,7 +130,6 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.update, this);
     }
 
@@ -110,6 +139,8 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
   },
+
+  inScope: function(){ this.$el.removeClass('outOfScope'); },
 
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');
@@ -150,8 +181,6 @@ module.exports = View.extend({
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
     this.toggleZeroConnection();
-        
-    
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
@@ -438,37 +467,44 @@ module.exports = View.extend({
   updateDisbursed: function(){ 
     this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
-
-  showDetails: function(){
-    if(this.model.isLocked()) return; // don't show when model is locked
-
-    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
-    this.editor.$el.append(cfw.render().el);
-  },
-
-  showMetadata: function(e){
-    if(this.model.get('disbursed')){
-      var metadata = this.$('.metadata');
-      metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.show();
-    }
+  
+  longPress: function(event){
+    // select
+    event.stopPropagation();
+    this.select();
+       
+    // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+    this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay, event);
   },
   
-  stickMetadata: function(e){
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
+  },
+
+  showDetails: function(event){    
+    if(this.model.isLocked()) return; // don't show when model is locked
+    
+    var mousePosition = {
+      left: this.normalizedX(event),
+      top: this.normalizedY(event)
+    };
+
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this, mousePosition: mousePosition });
+    this.editor.$el.append(cfw.render().el);
+    
+    return false;
+  },
+  
+  moveMetadata: function(event){
     var pos = this.editor.offsetToCoords({ 
-      left: e.pageX - this.pos.x, 
-      top: e.pageY - this.pos.y
+      left: this.normalizedX(event) - this.pos.x, 
+      top: this.normalizedY(event) - this.pos.y
     });
     
-    this.$('.metadata').css({
+    this.metadata.css({
       left: pos.x + 30, 
       top: pos.y + 10
     });
-  },
-
-  hideMetadata: function(e){ 
-    var metadata = this.$('.metadata');
-    metadata.hide();  
   },
   
   definePath1Line: function(start, end){

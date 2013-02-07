@@ -10,7 +10,7 @@
 
     <div class="connection accountability control" data-connectionType="accountability">
       <div class="eye"></div>
-      <div class="description" title="New Accountability Connection">
+      <div class="description" title="<%= t('new_acc_connection') %>">
         <span class="name"><%= t('accountability') %></span>
         <img src="/images/accountabilityflow.png">
       </div>
@@ -18,7 +18,7 @@
 
     <div class="connection monitoring control" data-connectionType="monitoring">
       <div class="eye"></div>
-      <div class="description" title="New Monitoring Connection">
+      <div class="description" title="<%= t('new_monitor_connection') %>">
         <span class="name"><%= t('monitoring') %></span>
         <img src="/images/monitoringflow.png">
       </div>
@@ -26,7 +26,7 @@
 
     <div class="connection money control" data-connectionType="money">
       <div class="eye"></div>
-      <div class="description" title="New Money Connection">
+      <div class="description" title="<%= t('new_money_connection') %>">
         <span class="name"><%= t('money') %></span>
         <img src="/images/moneyflow.png">
       </div>
@@ -41,12 +41,12 @@
     <div class="view controls vertical">
       <div class="fit screen icon control"></div>
     </div>
-    <div class="view controls vertical">
-      <div class="zoom in icon control"></div>
+    <div class="zoom view controls vertical <%= 'hidden' if @gestureSupport %>">
+      <div class="in icon control"></div>
       <div class="range control">
         <div class="bar"></div>
       </div>
-      <div class="zoom out icon control"></div>
+      <div class="out icon control"></div>
     </div>
     <div class="view controls moneyMode hasModal">
       <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">

@@ -19,5 +19,5 @@
   <input type="text" class="" value="<%= @source %>" data-model-attribute="source" />
 </td>
 <td>
-  <button>Delete</button>
+  <button><%= t('Delete') %></button>
 </td>

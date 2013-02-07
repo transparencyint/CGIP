@@ -4,10 +4,13 @@
   float left
   height 34px
   padding 0 10px
+  margin 0 5px 0
   font-size 12px
   line-height 32px
+  background #4d86cb
   background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,51%))
   border 1px solid hsla(217,55%,39%,.9)
+  border-radius 3px
   box-shadow 0 1px hsl(215,73%,66%) inset, 0 1px hsl(220,73%,60%)
   &:after
     content ""
@@ -16,17 +19,22 @@
     position absolute
     left 0
     top 0
-  &.cog
+  &.rightAligned
+    margin 0 0 0 5px
+  &.icon
     width 34px
   &.cog:after
     background url(/images/cog.png) no-repeat center
-  &:first-of-type:not(:only-of-type)
-    border-radius 3px 0 0 3px
-    border-right none
-  &:last-of-type
-    border-radius 0 3px 3px 0
-  &:only-of-type
-    border-radius 3px
+  &.joined  
+    margin 0
+    border-radius 0
+    &:first-of-type:not(:only-of-type)
+      border-radius 3px 0 0 3px
+      border-right none
+    &:last-of-type
+      border-radius 0 3px 3px 0
+    &:only-of-type
+      border-radius 3px
   &:active,
   &.active
     background linear-gradient(top, hsl(213,55%,49%), hsl(218,55%,48%))

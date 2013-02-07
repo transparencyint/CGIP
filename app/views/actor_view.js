@@ -9,24 +9,24 @@ module.exports = DraggableDroppableView.extend({
   className : 'actor',
 
   events: function(){
-    var parentEvents = DraggableDroppableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown' : 'dragStart',
-      'dblclick'  : 'showDetails',
-      'click'     : 'stopPropagation'
-    }, parentEvents);
+    var _parentEvents = DraggableDroppableView.prototype.events();
+    // clone parent events
+    var _events = _.defaults({}, _parentEvents);
+  
+    return _events;
   },
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy');
+    _.bindAll(this, 'destroy', 'showDetails');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
     this.dropClasses = [require('./actor_view')];
-
+    
+    this.on('dragging', this.cancelLongPress, this);
+    
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
@@ -42,14 +42,11 @@ module.exports = DraggableDroppableView.extend({
     this.model.moveByDelta(dx, dy);
   },
 
-  showDetails: function(){
+  showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
+    
     this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
-  },
-
-  stopPropagation: function(event){
-    event.stopPropagation();
   },
   
   determineName: function(){

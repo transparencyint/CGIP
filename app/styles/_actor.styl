@@ -1,32 +1,27 @@
-.actor
-  cursor pointer
+.actor, .actor-style
+  position absolute
   width 120px
   height 40px
-  position absolute
-  line-height 40px
-  padding 0 5px
   margin -20px 0 0 -60px
-  color black
-  font-size 14px
-  border-radius 3px
-  background linear-gradient(top, #f5f5f5, #fbfbfb)
   z-index 2
-  box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
-  svg
-    display none
-  &.locked
-    opacity .5
-    cursor not-allowed
-  &.selected
+  backface-visibility hidden
+  cursor url(/images/openhand_8_8.cur) 8 8, default
+  .animationHolder
+    position relative
+    width 100%
+    height 100%
+    line-height 40px
+    padding 0 5px
+    color black
+    line-height 40px
+    font-size 14px
+    border-radius 3px
+    background linear-gradient(top, #f5f5f5, #fbfbfb)
+    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+  &.selected .animationHolder
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
-  &:active
-    cursor url(/images/closedhand_8_8.bmp) 8 8, move
-  &.disappear
-    opacity 0
-    transform scale(0.5) translateY(10px)
-    transition 250ms
   &.hasCorruptionRisk
-    &:after
+    .animationHolder:after
       content ""
       background-image url(/images/redFlag.png)
       width 13px
@@ -36,15 +31,19 @@
       position absolute
     .name
       width 79px
-  .content
+  svg
+    display none
+  &.locked
+    opacity .5
+    cursor not-allowed
+  &:active
+    cursor url(/images/closedhand_8_8.bmp) 8 8, move
+  &.disappear .animationHolder
+    opacity 0
+    transform scale(0.5) translateY(10px)
+    transition 250ms
+  .name
+    text-align center
     white-space nowrap
     overflow hidden
     text-overflow ellipsis
-    .pictogram
-      background-size cover
-      width 25px
-      height 25px
-      display inline-block
-      vertical-align middle
-      margin-left 5px
-      margin-bottom: 3px;

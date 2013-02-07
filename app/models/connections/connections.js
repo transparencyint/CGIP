@@ -21,7 +21,7 @@ module.exports = Collection.extend({
       money: new MoneyConnections()
     };
 
-    for(connectionType in connections){
+    for(var connectionType in connections){
       // filter the current connections by its type
       var filtered = this.filter(function(connection){
         return connection.get('connectionType') == connectionType;
