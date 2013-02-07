@@ -638,7 +638,6 @@ module.exports = View.extend({
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
     var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
-    
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top

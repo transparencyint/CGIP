@@ -28,6 +28,10 @@ module.exports = DraggableView.extend({
     this.originalElement.addClass('hidden');
   },
 
+  showDetails: function(){
+    // don't remove
+  },
+
   dragByDelta: function(dx, dy){
     if(!this.cloned) this.clone();
     this.model.moveByDelta(dx, dy);

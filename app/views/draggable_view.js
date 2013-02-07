@@ -12,8 +12,7 @@ module.exports = View.extend({
     _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
-    if(this.showDetails)
-      _events[ 'dblclick' ] = 'showDetails';
+    _events[ 'dblclick' ] = 'showDetails';
 
     return _events;
   },
