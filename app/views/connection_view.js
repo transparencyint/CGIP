@@ -511,6 +511,7 @@ module.exports = View.extend({
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
     var metadata = this.$('.metadata');
     metadata.text('$' + this.model.get(moneyMode));
+    metadata.show();
     clearTimeout(this.metadataTimeout);
     this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },

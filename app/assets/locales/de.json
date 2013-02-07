@@ -98,5 +98,7 @@
   "wrong_uname_pw": "Falscher Nutzername oder Passwort!",
   "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu.",
   "unknown amount": "Unbekannte Summe",
-  "Presentation": "Präsention"
+  "Presentation": "Präsention",
+  "Yes": "Ja",
+  "No": "No"
 }
