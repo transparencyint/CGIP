@@ -95,5 +95,6 @@
   "type to add country": "escribir para agregar país...",
   "Unknown": "Desconocido",
   "wrong_uname_pw": "Nombre de usuario o contraseña incorrecta!",
-  "Your data seems to be outdated, please reload your browser to prevent errors.": "Sus datos parece estar desactualizada, por favor, vuelva a cargar el navegador para evitar errores."
+  "Your data seems to be outdated, please reload your browser to prevent errors.": "Sus datos parece estar desactualizada, por favor, vuelva a cargar el navegador para evitar errores.",
+  "Presentation": "Presentación"
 }

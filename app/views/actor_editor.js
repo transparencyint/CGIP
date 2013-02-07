@@ -269,10 +269,6 @@ module.exports = View.extend({
 
     var type = view.model.get('type');
     var scopedElements = [];
-    
-    // set all elements to outOfScope
-    if(type == 'actor' || type == 'connection')
-      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
     // decide on the scope method based on the views type and get the elements in the current scope
     if(type == 'actor'){
@@ -284,19 +280,20 @@ module.exports = View.extend({
         scopedElements = this.scopeFromConnection(view.model);
     }
 
+    if(scopedElements.length == 1) return this.unScopeElements(); // don't scope when only one element in scope
+
+    // set all elements to outOfScope
+    if(type == 'actor' || type == 'connection')
+      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
+
     // set the found elements to 'inScope'
-    var editor = this;
+    var elements = $();
+    
     _.each(scopedElements, function(model){
-      if(model.get('type') == 'actor')
-        $('#' + model.id).removeClass('outOfScope');
-      else
-        if(model.get('type') == 'connection'){
-          var connection = editor.moneyConnections.get(model.id)
-                            || editor.accountabilityConnections.get(model.id)
-                            || editor.monitoringConnections.get(model.id);
-          connection.trigger('inScope');
-        }
+      elements = elements.add('#' + model.id);
     });
+    
+    elements.removeClass('outOfScope');
   },
 
   // Scope by showing all directly connected elements
@@ -374,7 +371,6 @@ module.exports = View.extend({
 
   // Resets the scope, so that all elements are shown as before the scope
   unScopeElements: function(){
-    clearInterval(this.scopeInterval);
     if(this.isScoped){
       this.workspace.find('.outOfScope').removeClass('outOfScope');
       this.isScoped = false;
@@ -387,9 +383,7 @@ module.exports = View.extend({
     if(this.mode && this.mode.isActive){
       this.mode.viewSelected(view);
     }else{
-      var editor = this;
-      clearInterval(this.scopeInterval);
-      this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);
+      this.scopeElements(view)
     }
 
     if(type == 'actor'){
@@ -646,7 +640,6 @@ module.exports = View.extend({
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
     var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
-    
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top

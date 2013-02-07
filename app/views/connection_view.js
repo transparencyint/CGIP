@@ -15,7 +15,7 @@ module.exports = View.extend({
       'dblclick': 'showDetails'
     };
     
-    _events[ this.inputMoveEvent ] = 'moveMetadata';
+    _events[ this.inputMoveEvent ] = 'updateMetada';
     _events[ this.inputDownEvent ] = 'longPress';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
     
@@ -98,6 +98,7 @@ module.exports = View.extend({
   afterRender: function(){
     
     this.metadata = this.$('.metadata');
+    this.$el.attr('id', this.model.id);
     
     this.path = "";
     this.$el.svg();
@@ -126,7 +127,6 @@ module.exports = View.extend({
 
     this.arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-    
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
@@ -458,10 +458,10 @@ module.exports = View.extend({
 
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
-    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
-    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
-    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
-    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
+    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id +'-path' });
+    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.selectSettings);
+    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.pathSettings);
+    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
 
   updateDisbursed: function(){ 
@@ -495,16 +495,25 @@ module.exports = View.extend({
     return false;
   },
   
-  moveMetadata: function(event){
+  updateMetada: function(event){
+    // update the position
     var pos = this.editor.offsetToCoords({ 
       left: this.normalizedX(event) - this.pos.x, 
       top: this.normalizedY(event) - this.pos.y
-    });
-    
+    },0 ,0);
+
     this.metadata.css({
       left: pos.x + 30, 
       top: pos.y + 10
     });
+
+    // update the amount
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var metadata = this.$('.metadata');
+    metadata.text('$' + this.model.get(moneyMode));
+    metadata.show();
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },
   
   definePath1Line: function(start, end){

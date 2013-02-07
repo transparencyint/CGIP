@@ -102,5 +102,8 @@
   "Language": "Sprache",
   "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
   "not_given": "Keine Angabe"
-  "unknown amount": "Unbekannte Summe"
+  "unknown amount": "Unbekannte Summe",
+  "Presentation": "Präsention",
+  "Yes": "Ja",
+  "No": "No"
 }

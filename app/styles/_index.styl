@@ -2,32 +2,52 @@
   font-family HelveticaNeueW01-57Cn
   src url(/HelveticaNeueW01-57Cn.woff) format(woff)
 
-#container
-  background #2c57a7 !important
-  
 #worldMap
-  width 960px
-  margin 0 auto
-  color #5d5d5d
-  font 15px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  position absolute
+  left 0
+  right 0
+  top 0
+  bottom 0
+  background -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background    -moz-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background     -ms-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background      -o-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background         radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  overflow auto
+  .inner
+    width 960px
+    color #5d5d5d
+  header 
+    height 80px
+    position relative
+    h1 
+      display block
+      margin 30px 0
+      padding 0 13px 17px
+      color #333
+      font-size 24px
+      font-family "HelveticaNeueW01-57Cn"
+      font-weight normal
+      text-shadow none
+      background url(/images/bg-title.png) repeat-x 0 100%
+    #link-area
+      position absolute
+      right 8px
+      top -2px
+      a
+        line-height 27px
+        height 27px
+        color #698147
+        border-color #698147
   a
     color hsl(205,68%,52%)
-    text-decoration none
-  h1 
-    display block
-    margin 30px 0
-    padding 0 13px 17px
-    color #333
-    font-size 24px
-    font-family "HelveticaNeueW01-57Cn"
-    font-weight normal
-    background url(/images/bg-title.png) repeat-x 0 100%
+    text-decoration none 
   .map 
     position relative
-    height 500px
-    width 1134px
-    margin-left -87px
-    -webkit-perspective 1000
+    height 422px
+    width 956px
+    margin-left 2px
+    perspective 1000
   .map:before 
     content ""
     position absolute
@@ -36,7 +56,6 @@
     right 0
     bottom 0
     background url(/images/greenWorld.png) no-repeat center
-    background-size contain
     opacity .5
   .point 
     position absolute
@@ -48,28 +67,28 @@
     box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
     border-radius 100%
     opacity 0
-    -webkit-transform translateZ(200px)
-    -webkit-transform-style preserve-3d
+    transform translateZ(200px)
+    transform-style preserve-3d
   .point.appear 
     opacity 1
-    -webkit-transform translateZ(0)
-    -webkit-transition -webkit-transform 500ms, opacity 500ms
+    transform translateZ(0)
+    transition transform 500ms, opacity 500ms
   .label 
     position absolute
     white-space nowrap
     left -18px
     top -44px
     opacity 0
-    -webkit-transform translateY(-13px)
+    transform translateY(-13px)
   .point.appear .label 
     opacity 1
-    -webkit-transform translateY(0)
-    -webkit-transition -webkit-transform 500ms 500ms, opacity 500ms 500ms
+    transform translateY(0)
+    transition transform 500ms 500ms, opacity 500ms 500ms
   .point:active .label 
     top -43px
   .below .label 
     top 19px
-    -webkit-transform translateY(13px)
+    transform translateY(13px)
   .point.below:active .label 
     top 20px
   .right .label 
@@ -106,37 +125,36 @@
     top -6px
     width 10px
     height 10px
-    -webkit-transform rotate(45deg)
+    transform rotate(45deg)
     border 1px solid hsl(205,68%,40%)
     background hsl(205,68%,53%)
     box-shadow 0 1px 2px hsla(205,100%,13%,.34)
   .below .arrow:before 
     top 4px 
   .mexico 
-    left 219px
-    top 209px
+    left 183px
+    top 169px
   .peru 
-    left 302px
-    top 329px
+    left 252px
+    top 272px
   .dominicanRepublic 
-    left 314px
-    top 214px
+    left 264px
+    top 180px
   .kenya 
-    left 654px
-    top 279px
+    left 554px
+    top 239px
   .maledives 
-    left 757px
-    top 289px
-  .vietnam 
-    left 869px
+    left 647px
     top 219px
+  .vietnam 
+    left 730px
+    top 175px
   .indonesia 
-    left 909px
-    top 299px
+    left 742px
+    top 259px
   .papuaNewGuinea 
-    left 994px
-    top 304px
-
+    left 838px
+    top 258px
   footer 
     margin-top 21px
     padding 13px
@@ -144,8 +162,8 @@
     border-top 1px solid rgba(0,0,0,.21)
     overflow hidden
     box-shadow 0 1px hsla(104,100%,86%,.55) inset
-    footer .left 
+    .left 
       float left
-    footer .right 
+    .right 
       float right
     

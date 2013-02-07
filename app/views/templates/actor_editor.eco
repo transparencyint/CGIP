@@ -54,8 +54,8 @@
         <div class="corner"></div>
       </div>
       <div class="options">
-        <div class="modal option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
-        <div class="modal option fold" data-mode="pledgedMode"><%= t('Pledged') %></div>
+        <div class="modal style option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
+        <div class="modal style option fold" data-mode="pledgedMode"><%= t('Pledged') %></div>
       </div>
     </div>
   </div>

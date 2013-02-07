@@ -32,10 +32,7 @@ module.exports = DraggableDroppableView.extend({
     var _events = _.defaults({}, _parentEvents);
 
     // bind arrow
-    _events[ this.inputUpEvent + ' .dropdown-control' ] = 'arrowClicked';
-    
-    // disable dragging on the arrow
-    _events[ this.inputDownEvent + ' .dropdown-control' ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' .dropdown-control' ] = 'arrowClicked';
     
     return _events;
   },
@@ -177,12 +174,9 @@ module.exports = DraggableDroppableView.extend({
   },
 
   arrowClicked: function(event){
-    if(this.hovered || this.wasOrIsDragging) return;
-    
+    if(this.hovered || this.isDragging) return;
+
     event.stopPropagation();
-    
-    if(this.editor.selectedView != this)
-      this.select();
     
     this.toggle();
   },

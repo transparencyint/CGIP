@@ -24,6 +24,7 @@ module.exports = View.extend({
     this.editor = this.options.editor;
     
     this.wasOrIsDragging = false;
+    this.isDragging = false;
     this.dragDistance = 0;
     this.dragThreshold = 5;
     this.longPressDelay = 500;
@@ -37,7 +38,7 @@ module.exports = View.extend({
   longPress: function(event){
     // fire dragstart
     this.dragStart(event);
-    if(this.isDraggable)
+    if(this.isDraggable && this.showDetails)
       // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
       this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
   },
@@ -68,8 +69,7 @@ module.exports = View.extend({
     if(this.model && this.model.lockable)
       this.model.lock();
     
-    if(this.editor.selectedView != this)
-      this.select();
+    this.select();
     
     event.stopPropagation();
     event.preventDefault();
@@ -78,6 +78,7 @@ module.exports = View.extend({
       
       this.dragDistance = 0;
       this.wasOrIsDragging = false;
+      this.isDragging = false;
       
       var pos = this.model.get('pos');
       
@@ -95,11 +96,14 @@ module.exports = View.extend({
     var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
     
-    this.dragDistance += Math.sqrt(dx*dx + dy*dy);
-    
-    if(!this.wasOrIsDragging && this.dragDistance > this.dragThreshold){
-      this.trigger('dragging');
-      this.wasOrIsDragging = true;
+    if(!this.wasOrIsDragging){
+      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+
+      if(this.dragDistance > this.dragThreshold){
+        this.trigger('dragging');
+        this.wasOrIsDragging = true;
+        this.isDragging = true;
+      }
     }
 
     this.dragByDelta(dx, dy);
@@ -114,7 +118,6 @@ module.exports = View.extend({
 
   updatePosition: function(){
     var pos = this.model.get('pos');
-    
     this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ pos.x +'px,'+ pos.y +'px,0)');
   },
   
@@ -127,6 +130,7 @@ module.exports = View.extend({
       $(document).trigger('viewdragstop', this);
 
       this.snapToGrid();
+      this.wasOrIsDragging = false;
     }
       
     $(document).off(this.inputMoveEvent, this.drag);
