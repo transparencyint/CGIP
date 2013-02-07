@@ -56,9 +56,9 @@
         transform translateY(1px) rotate(90deg)
       .toggleArrow
         transform none  
-  &.open.selected .dropdown-control .arrow
+  &.open .dropdown-control .arrow
       transform none
-  &.open.selected .dropdown-control:active .arrow, 
+  &.open .dropdown-control:active .arrow, 
   .dropdown-control:active .arrow
     transform translateY(1px) rotate(45deg)
   &.empty .caption 
@@ -72,7 +72,7 @@
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.open.selected:not(.empty)
+  &.open:not(.empty)
     .actors
       display block
 

@@ -68,8 +68,7 @@ module.exports = View.extend({
     if(this.model && this.model.lockable)
       this.model.lock();
     
-    if(this.editor.selectedView != this)
-      this.select();
+    this.select();
     
     event.stopPropagation();
     event.preventDefault();
@@ -114,7 +113,6 @@ module.exports = View.extend({
 
   updatePosition: function(){
     var pos = this.model.get('pos');
-    
     this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ pos.x +'px,'+ pos.y +'px,0)');
   },
   

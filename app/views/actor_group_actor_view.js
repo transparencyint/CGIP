@@ -50,6 +50,10 @@ module.exports = DraggableView.extend({
     this.$el.removeClass('hidden');
   },
 
+  updatePosition: function(){
+    // don't update it's position
+  },
+
   showDetails: function(event){
     event.stopPropagation();
     // add code for info display here
