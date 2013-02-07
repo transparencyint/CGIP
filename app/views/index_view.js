@@ -48,13 +48,6 @@ module.exports = View.extend({
 
 			_.each(view.points, view.rainbow);
 		});
-
-    if(window.user.isLoggedIn()){
-      //show the edit link to the edit screen
-
-      var editLink = $('');
-
-    }
   },
 
   rainbow: function(point){
