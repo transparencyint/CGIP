@@ -1,9 +1,6 @@
 @font-face
   font-family HelveticaNeueW01-57Cn
   src url(/HelveticaNeueW01-57Cn.woff) format(woff)
-
-#container
-  background #2c57a7 !important
   
 #worldMap
   width 960px
@@ -21,13 +18,14 @@
     font-size 24px
     font-family "HelveticaNeueW01-57Cn"
     font-weight normal
+    text-shadow none
     background url(/images/bg-title.png) repeat-x 0 100%
   .map 
     position relative
     height 500px
     width 1134px
     margin-left -87px
-    -webkit-perspective 1000
+    perspective 1000
   .map:before 
     content ""
     position absolute
@@ -48,28 +46,28 @@
     box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
     border-radius 100%
     opacity 0
-    -webkit-transform translateZ(200px)
-    -webkit-transform-style preserve-3d
+    transform translateZ(200px)
+    transform-style preserve-3d
   .point.appear 
     opacity 1
-    -webkit-transform translateZ(0)
-    -webkit-transition -webkit-transform 500ms, opacity 500ms
+    transform translateZ(0)
+    transition transform 500ms, opacity 500ms
   .label 
     position absolute
     white-space nowrap
     left -18px
     top -44px
     opacity 0
-    -webkit-transform translateY(-13px)
+    transform translateY(-13px)
   .point.appear .label 
     opacity 1
-    -webkit-transform translateY(0)
-    -webkit-transition -webkit-transform 500ms 500ms, opacity 500ms 500ms
+    transform translateY(0)
+    transition transform 500ms 500ms, opacity 500ms 500ms
   .point:active .label 
     top -43px
   .below .label 
     top 19px
-    -webkit-transform translateY(13px)
+    transform translateY(13px)
   .point.below:active .label 
     top 20px
   .right .label 
@@ -106,7 +104,7 @@
     top -6px
     width 10px
     height 10px
-    -webkit-transform rotate(45deg)
+    transform rotate(45deg)
     border 1px solid hsl(205,68%,40%)
     background hsl(205,68%,53%)
     box-shadow 0 1px 2px hsla(205,100%,13%,.34)
@@ -144,8 +142,8 @@
     border-top 1px solid rgba(0,0,0,.21)
     overflow hidden
     box-shadow 0 1px hsla(104,100%,86%,.55) inset
-    footer .left 
+    .left 
       float left
-    footer .right 
+    .right 
       float right
     
