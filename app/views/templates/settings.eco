@@ -1,22 +1,20 @@
 <a href="<%= @presentationLink %>" class="button presentation rightAligned"><%= t('Presentation') %></a>
 <span class="button icon cog rightAligned"></span>
 
-<div class="modal">
-  <div class="animationHolder">
-    <h4><%= t('Settings') %></h4>
-    <div class="table">
-      <div class="row">
-        <label for="showMonitoring"><%= t('Show Monitoring') %></label>
-        <input type="checkbox" id="showMonitoring" <% if(@showMonitoring): %> checked <% end%> >
-      </div>
-      <div class="row">
-        <label for="language"><%= t('Language') %></label>
-        <select id="language">
-          <% for language in @languages: %>
-            <option value="<%= language.code %>" <%= 'selected' if language.code is @active %>><%= language.name %></option>
-          <% end %>
-        </select>
-      </div>
+<div class="modal style">
+  <h4><%= t('Settings') %></h4>
+  <div class="table">
+    <div class="row">
+      <label for="showMonitoring"><%= t('Show Monitoring') %></label>
+      <input type="checkbox" id="showMonitoring" <% if(@showMonitoring): %> checked <% end%> >
+    </div>
+    <div class="row">
+      <label for="language"><%= t('Language') %></label>
+      <select id="language">
+        <% for language in @languages: %>
+          <option value="<%= language.code %>" <%= 'selected' if language.code is @active %>><%= language.name %></option>
+        <% end %>
+      </select>
     </div>
   </div>
 </div>  
