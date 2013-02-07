@@ -1,12 +1,22 @@
 @font-face
   font-family HelveticaNeueW01-57Cn
   src url(/HelveticaNeueW01-57Cn.woff) format(woff)
-  
+
 #worldMap
-  width 960px
-  margin 25px auto 0 auto
-  color #5d5d5d
-  font 15px/27px "Helvetica Neue", Helvetica, Arial, sans-serif
+  position absolute
+  left 0
+  right 0
+  top 0
+  bottom 0
+  background -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background    -moz-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background     -ms-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background      -o-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background         radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  overflow auto
+  .inner
+    width 960px
+    color #5d5d5d
   header 
     height 80px
     position relative
@@ -22,21 +32,21 @@
       background url(/images/bg-title.png) repeat-x 0 100%
     #link-area
       position absolute
-      right 0
-      top 0
-      a.button
-        height auto
-        color #fff
-        padding 0 5px
-        line-height 25px
+      right 8px
+      top -2px
+      a
+        line-height 27px
+        height 27px
+        color #698147
+        border-color #698147
   a
     color hsl(205,68%,52%)
     text-decoration none 
   .map 
     position relative
-    height 500px
-    width 1134px
-    margin-left -87px
+    height 422px
+    width 956px
+    margin-left 2px
     perspective 1000
   .map:before 
     content ""
@@ -46,7 +56,6 @@
     right 0
     bottom 0
     background url(/images/greenWorld.png) no-repeat center
-    background-size contain
     opacity .5
   .point 
     position absolute
@@ -123,29 +132,29 @@
   .below .arrow:before 
     top 4px 
   .mexico 
-    left 219px
-    top 209px
+    left 183px
+    top 169px
   .peru 
-    left 302px
-    top 329px
+    left 252px
+    top 272px
   .dominicanRepublic 
-    left 314px
-    top 214px
+    left 264px
+    top 180px
   .kenya 
-    left 654px
-    top 279px
+    left 554px
+    top 239px
   .maledives 
-    left 757px
-    top 289px
-  .vietnam 
-    left 869px
+    left 647px
     top 219px
+  .vietnam 
+    left 730px
+    top 175px
   .indonesia 
-    left 909px
-    top 299px
+    left 742px
+    top 259px
   .papuaNewGuinea 
-    left 994px
-    top 304px
+    left 838px
+    top 258px
   footer 
     margin-top 21px
     padding 13px
