@@ -2,7 +2,8 @@
 <h1>Climate Finance Integrity Program</h1>
 <div id="link-area">
   <% if window.user.isLoggedIn(): %>
-    <a href="/edit/">Edit View</a>
+    <a href="/edit/">Edit View</a> |
+    <a href="/logout/">Logout</a>
   <% else: %>
     <a href="/login/">Login</a>
   <% end %>
