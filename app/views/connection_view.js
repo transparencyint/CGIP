@@ -499,8 +499,8 @@ module.exports = View.extend({
     var pos = this.editor.offsetToCoords({ 
       left: this.normalizedX(event) - this.pos.x, 
       top: this.normalizedY(event) - this.pos.y
-    });
-    
+    },0 ,0);
+
     this.metadata.css({
       left: pos.x + 30, 
       top: pos.y + 10

@@ -177,7 +177,7 @@ module.exports = DraggableDroppableView.extend({
   },
 
   arrowClicked: function(event){
-    if(this.hovered || this.wasOrIsDragging) return;
+    if(this.hovered || this.isDragging) return;
     
     event.stopPropagation();
     

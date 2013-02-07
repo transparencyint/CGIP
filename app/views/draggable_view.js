@@ -127,6 +127,7 @@ module.exports = View.extend({
       $(document).trigger('viewdragstop', this);
 
       this.snapToGrid();
+      this.wasOrIsDragging = false;
     }
       
     $(document).off(this.inputMoveEvent, this.drag);
