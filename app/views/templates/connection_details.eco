@@ -35,7 +35,7 @@
     	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
       	  <label for="corruptionRisk"><%= t('description') %></label>
       	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
-      	  <label for="corruptionRiskSource">Source</label>
+      	  <label for="corruptionRiskSource"><%= t('Source') %></label>
       	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" data-type="string" placeholder="http://">
       	</div>
     	</div>
