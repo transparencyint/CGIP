@@ -94,12 +94,14 @@ module.exports = View.extend({
     var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
     var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
     
-    this.dragDistance += Math.sqrt(dx*dx + dy*dy);
-    
-    if(!this.wasOrIsDragging && this.dragDistance > this.dragThreshold){
-      this.trigger('dragging');
-      this.wasOrIsDragging = true;
-      this.isDragging = true;
+    if(!this.wasOrIsDragging){
+      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+
+      if(this.dragDistance > this.dragThreshold){
+        this.trigger('dragging');
+        this.wasOrIsDragging = true;
+        this.isDragging = true;
+      }
     }
 
     this.dragByDelta(dx, dy);

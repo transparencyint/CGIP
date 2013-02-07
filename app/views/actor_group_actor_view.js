@@ -50,12 +50,14 @@ module.exports = DraggableView.extend({
   },
 
   updatePosition: function(){
-    if(this.wasOrIsDragging)
+    if(this.isDragging)
       DraggableView.prototype.updatePosition.call(this);
   },
 
   showDetails: function(event){
     if(event) event.stopPropagation();
+    if(this.isDragging) return;
+
     // add code for info display here
     this.modal = new GroupActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
