@@ -13,7 +13,7 @@ module.exports = ConnectionView.extend({
   initialize: function(options){
     View.prototype.initialize.call(this, options);
     
-    _.bindAll(this, 'showDetails');
+    _.bindAll(this, 'showDetails', 'select');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
@@ -53,6 +53,8 @@ module.exports = ConnectionView.extend({
     };
     
     _events[ this.inputMoveEvent ] = 'updateMetada';
+    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
 
     return _events;
   },
