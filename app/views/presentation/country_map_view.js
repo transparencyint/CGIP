@@ -20,7 +20,7 @@ module.exports = View.extend({
     'click .moneyMode .option': 'chooseMoneyMode',
     
     // start to pan..
-    'mousedown': 'dragStart',
+    'mousedown': 'panStart',
     
     // ..except when your mouse touches the controls
     'mousedown .controls': 'stopPropagation',
@@ -33,7 +33,7 @@ module.exports = View.extend({
     this.initializeDimensions();
     this.initializeConfig();
 
-		_.bindAll(this, 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'dragStop', 'drag');
+		_.bindAll(this, 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'panStop', 'pan');
 
   },
 
@@ -55,12 +55,19 @@ module.exports = View.extend({
   stopPropagation: ActorEditor.prototype.stopPropagation,
   getBoundingBox: ActorEditor.prototype.getBoundingBox,
   toggleActiveMoneyMode: ActorEditor.prototype.toggleActiveMoneyMode,
-
+  updateWorkspace: ActorEditor.prototype.updateWorkspace,
 
   //enable panning
-  dragStart: ActorEditor.prototype.dragStart,
-  drag: ActorEditor.prototype.drag,
-  dragStop: ActorEditor.prototype.dragStop,
+  panStart: ActorEditor.prototype.panStart,
+  pan: ActorEditor.prototype.pan,
+  panStop: ActorEditor.prototype.panStop,
+  unselect: ActorEditor.prototype.unselect,
+  place: ActorEditor.prototype.place,
+  unScopeElements: ActorEditor.prototype.unScopeElements,
+
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },
 
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});

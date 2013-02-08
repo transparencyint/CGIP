@@ -128,7 +128,7 @@ module.exports = View.extend({
     var arrow = this.$('.arrow');
     this.height = this.$el.height();
     var arrowPos = this.height / 2;
-    
+  
     // we want to place the modal next to mouse
     // on the right
     this.mousePosition.left += this.distanceToConnection;

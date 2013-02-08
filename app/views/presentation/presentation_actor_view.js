@@ -24,6 +24,7 @@ module.exports = View.extend({
 	determineName: ActorView.prototype.determineName,
   getRenderData: ActorView.prototype.getRenderData,
 	initOrganizationType: ActorView.prototype.initOrganizationType,
+  updateCorruptionRisk: ActorView.prototype.updateCorruptionRisk,
 
 	showDetails: function(){
     this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
@@ -41,6 +42,7 @@ module.exports = View.extend({
 
 	afterRender: function(){
 		this.updatePosition();
+    this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
   },
 

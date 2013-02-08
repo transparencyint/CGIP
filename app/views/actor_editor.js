@@ -264,6 +264,8 @@ module.exports = View.extend({
 
   // Scope the editor's container
   scopeElements: function(view){
+
+    console.log('scoping');
     // set the state
     this.isScoped = true;
 

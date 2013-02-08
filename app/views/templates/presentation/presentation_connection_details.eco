@@ -1,39 +1,41 @@
-<div class="arrow"></div>
+<div class="animationHolder">
+  <div class="arrow"></div>
 
-<div class="holder">
-  <div>
-    <h3 class="connectionName"></h3>
-  </div>
-
-  <div class="show">
-	  <div class="money">
-	    <div>
-	      <div class="clearfix">
-          <div class="amounts"><%= t('Disbursed') %>:  $<%= @disbursed %></div> 
-          <div class="posEye">
-            <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
-          </div> 
-      	</div>
-      	<div class="clearfix">
-          <div class="amounts"><%= t('Pledged') %>:  $<%= @pledged %></div>
-          <div class="posEye">
-            <input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
-          </div>
-      	</div>
-      </div>
+  <div class="holder">
+    <div>
+      <h3 class="connectionName"></h3>
     </div>
-    
 
-    <% if @hasCorruptionRisk: %> 
-      <div>
-        <p><%= t('is_corruption_risk'); %></p>
-    	  <div class="additionalInfo inlay">
-      	  <div class="corruptionText"><%= @corruptionRisk %></div>
-          <% if @corruptionRiskSource: %>
-            <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+    <div class="show">
+  	  <div class="money">
+  	    <div>
+  	      <div class="clearfix">
+            <div class="amounts"><%= t('Disbursed') %>:  $<%= @disbursed %></div> 
+            <div class="posEye">
+              <input type="radio" name="moneyType" id="disbursedMode"><label for="disbursedMode" class="eye"></label>
+            </div> 
+        	</div>
+        	<div class="clearfix">
+            <div class="amounts"><%= t('Pledged') %>:  $<%= @pledged %></div>
+            <div class="posEye">
+              <input type="radio" name="moneyType" id="pledgedMode"><label for="pledgedMode" class="eye"></label>
+            </div>
+        	</div>
+        </div>
+      </div>
+      
+
+      <% if @hasCorruptionRisk: %> 
+        <div>
+          <p><%= t('is_corruption_risk'); %></p>
+      	  <div class="additionalInfo inlay">
+        	  <div class="corruptionText"><%= @corruptionRisk %></div>
+            <% if @corruptionRiskSource: %>
+              <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+        	</div>
       	</div>
-    	</div>
-    <% end %>
+      <% end %>
 
+    </div>
   </div>
 </div>

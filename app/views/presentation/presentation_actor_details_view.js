@@ -27,13 +27,14 @@ module.exports = View.extend({
   dontDrag: ActorDetails.prototype.dontDrag,
   pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
   placeNextToActor: ActorDetails.prototype.placeNextToActor,
+  place: ActorDetails.prototype.place,
   getRenderData: ActorDetails.prototype.getRenderData,
   initOrganizationType: ActorDetails.prototype.initOrganizationType,
     
   initialize: function(options){
     View.prototype.initialize.call(this);
 
-    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy');
+    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy', 'placeNextToActor');
     
     this.actor = options.actor;
     this.editor = options.editor;
