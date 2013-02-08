@@ -711,6 +711,8 @@ module.exports = View.extend({
   },
   
   panStop : function(event){
+    if(!this.panX || !this.panY) return;
+
     // update (non-silent)
     this.moveTo(this.panX, this.panY);
     
