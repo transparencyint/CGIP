@@ -692,8 +692,8 @@ module.exports = View.extend({
     // save new offset  
     // but not when panning (only when we finished panning)
     if(!silent){
-      this.offset.left = x / this.zoom.value;
-      this.offset.top =  y / this.zoom.value;
+      this.offset.left = x / this.zoom.sqrt;
+      this.offset.top =  y / this.zoom.sqrt;
     }
 
     x += this.origin.left;
@@ -709,6 +709,8 @@ module.exports = View.extend({
   },
   
   panStop : function(event){
+    if(!this.panX || !this.panY) return;
+
     // update (non-silent)
     this.moveTo(this.panX, this.panY);
     

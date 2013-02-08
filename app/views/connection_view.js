@@ -18,6 +18,8 @@ module.exports = View.extend({
     _events[ this.inputMoveEvent ] = 'updateMetada';
     _events[ this.inputDownEvent ] = 'longPress';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
+
+    _events[ 'mouseout' ] = 'hideMetadata';
     
     return _events;
   },
@@ -513,7 +515,11 @@ module.exports = View.extend({
     metadata.text('$' + this.model.get(moneyMode));
     metadata.show();
     clearTimeout(this.metadataTimeout);
-    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
+  },
+
+  hideMetadata: function(){
+    this.$('.metadata').hide();
   },
   
   definePath1Line: function(start, end){
