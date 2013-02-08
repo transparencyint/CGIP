@@ -3,13 +3,15 @@ var ActorView = require('../actor_view');
 var PresentationActorDetailsView = require('views/presentation/presentation_actor_details_view');
 
 module.exports = View.extend({
+  selectable: true,
 
 	template : require('views/templates/presentation/presentation_actor'),
 
 	className : 'actor',
 
 	events: {
-		'click': 'showDetails'
+    'click': 'select',
+		'dbclick': 'showDetails'
 	},
 
 	initialize: function(options){
@@ -18,7 +20,7 @@ module.exports = View.extend({
 
     this.initOrganizationType();
     
-  	_.bindAll(this, 'showDetails');
+  	_.bindAll(this, 'showDetails','select');
 	},
 
 	determineName: ActorView.prototype.determineName,

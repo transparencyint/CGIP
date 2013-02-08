@@ -19,7 +19,7 @@ module.exports = DraggableDroppableView.extend({
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy', 'showDetails');
+    _.bindAll(this, 'destroy', 'showDetails','select');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;

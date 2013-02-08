@@ -25,7 +25,7 @@ module.exports = View.extend({
   initialize: function(options){
     View.prototype.initialize.call(this, options);
     
-    _.bindAll(this, 'showDetails');
+    _.bindAll(this, 'showDetails','select');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
