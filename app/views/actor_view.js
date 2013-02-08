@@ -1,5 +1,6 @@
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
+var FakeActorView = require('./fake_actor_view');
 
 module.exports = DraggableDroppableView.extend({
   selectable: true,
@@ -9,29 +10,34 @@ module.exports = DraggableDroppableView.extend({
   className : 'actor',
 
   events: function(){
-    var parentEvents = DraggableDroppableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown' : 'dragStart',
-      'dblclick'  : 'showDetails',
-      'click'     : 'stopPropagation'
-    }, parentEvents);
+    var _parentEvents = DraggableDroppableView.prototype.events();
+    // clone parent events
+    var _events = _.defaults({}, _parentEvents);
+  
+    return _events;
   },
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy');
+    _.bindAll(this, 'destroy', 'showDetails','select');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
 
-    this.dropClasses = [require('./actor_view')];
-
+    this.dropClasses = [require('./actor_view'), FakeActorView];
+    
+    this.on('dragging', this.cancelLongPress, this);
+    
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
+    this.model.on('change:organizationType',this.updateType,this);
+    this.initOrganizationType();
   },
+
+  initOrganizationType: ActorDetailsView.prototype.initOrganizationType,
+  updateType: ActorDetailsView.prototype.updateType,
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
@@ -39,12 +45,9 @@ module.exports = DraggableDroppableView.extend({
 
   showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
+    
     this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
-  },
-
-  stopPropagation: function(event){
-    event.stopPropagation();
   },
   
   determineName: function(){
@@ -61,13 +64,17 @@ module.exports = DraggableDroppableView.extend({
   
   drop: function(event, view){
     // stop the actor dragging
-    view.isDragging = false;
-    var newGroup = this.model.turnIntoGroup(view.model);
-    this.editor.actorGroups.add(newGroup);
+    if(view instanceof FakeActorView){
+      return view.reset();
+    }else{
+      view.isDragging = false;
+      var newGroup = this.model.turnIntoGroup(view.model);
+      this.editor.actorGroups.add(newGroup);
+    }
   },
 
   getRenderData: function() {
-    return { name: this.determineName() };
+    return { name: this.determineName(), orgaType: this.orgaType};
   },
 
   afterRender: function(){

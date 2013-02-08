@@ -1,4 +1,4 @@
-<div class="actor">
+<div class="actor-style">
   <div class="caption">
     <span class="name">
       <%= @abbreviation %>

@@ -15,11 +15,10 @@ module.exports = DraggableDroppableView.extend({
   height: 42,
 
   initialize: function(options){
+    this.editor = options.editor;
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop', 'destroy');
-
-    this.editor = options.editor;
+    _.bindAll(this, 'drop', 'destroy', 'showDetails');
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
@@ -29,13 +28,13 @@ module.exports = DraggableDroppableView.extend({
   },
 
   events: function(){
-    var parentEvents = DraggableDroppableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown'               : 'dragStart',
-      'dblclick'                : 'showDetails',
-      'click .dropdown-control' : 'showActors'
-    }, parentEvents);
+    var _parentEvents = DraggableDroppableView.prototype.events();
+    var _events = _.defaults({}, _parentEvents);
+
+    // bind arrow
+    _events[ this.inputDownEvent + ' .dropdown-control' ] = 'arrowClicked';
+    
+    return _events;
   },
 
   getRenderData: function(){
@@ -85,8 +84,12 @@ module.exports = DraggableDroppableView.extend({
   
   showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
+    if(!this.isDraggable) return;
+
+    if(!this.wasOrIsDragging){
+      this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+      this.options.editor.$el.append(this.modal.render().el);
+    }
   },
 
   open: function(){
@@ -170,8 +173,11 @@ module.exports = DraggableDroppableView.extend({
     }
   },
 
-  showActors: function(event){
+  arrowClicked: function(event){
     if(this.hovered || this.isDragging) return;
+
+    event.stopPropagation();
+    
     this.toggle();
   },
 

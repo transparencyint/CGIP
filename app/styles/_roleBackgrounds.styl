@@ -4,7 +4,7 @@
 .dragHandleBars,   
 .roleHolder
   height 100%
-  position fixed
+  position absolute
 .dragHandleBars
   z-index 4
   height 28px
@@ -22,15 +22,6 @@
       cursor col-resize
       opacity 0.1
 .roleHolder
-  &:before
-    content ""
-    position fixed
-    top 50px
-    left -100%
-    width 300%
-    background hsl(220, 53%, 32%)
-    height 28px
-    border-bottom 1px solid hsl(220, 55%, 24%)
   .roleArea
     width 25%
     min-width 46px
@@ -48,30 +39,35 @@
       background hsla(222, 100%, 43%, 0.18)
       left 75%
 .roleLabels 
-  position fixed
+  position absolute
   z-index 3
-.roleLabels 
-  span
+  top 50px
+  width 100%
+  height 29px
+  border-bottom 1px solid hsl(220, 55%, 24%)
+  .bar
+    position fixed
+    left -100%
+    width 300%
+    background hsl(220, 53%, 32%)
+    height 29px
+    border-bottom 1px solid hsl(220, 55%, 24%)
+  .rolelabel  
+    position absolute
     width 25%
     min-width 46px
-    margin-top 50px
     height 29px
     padding 0 8px
-    display block
-    overflow hidden
     text-align center
     font-size 12px
     line-height 29px
-    position absolute
     text-overflow ellipsis
     color hsl(220, 37%, 90%)
     text-shadow 0 -1px hsl(220, 38%, 15%)
     border 1px solid hsl(220, 55%, 24%)
-    background hsl(220, 53%, 32%)
+    border-bottom none
     box-shadow 1px 0 hsl(220, 43%, 43%) inset
-  &:not(:first-child)
-    span
+    &:not(.first)
       border-left none
-  &:last-child
-    span
+    &.last
       box-shadow 1px 0 hsl(220, 43%, 43%) inset, 1px 0 hsl(220, 43%, 43%)

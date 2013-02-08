@@ -1,8 +1,20 @@
 var View = require('./view');
 
 module.exports = View.extend({
-  events: {
-    'click' : 'dontUnselect'
+  isDraggable: true,
+  
+  events: function(){
+    var _events = {
+      'click' : 'dontUnselect'
+    };
+    
+    // bind dynamic input event (touch or mouse)
+    _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
+
+    _events[ 'dblclick' ] = 'showDetails';
+
+    return _events;
   },
 
   initialize: function(){
@@ -10,12 +22,29 @@ module.exports = View.extend({
     _.bindAll(this, 'dragStop', 'drag');
 
     this.editor = this.options.editor;
-    this.dontDrag = false;
+    
+    this.wasOrIsDragging = false;
+    this.isDragging = false;
+    this.dragDistance = 0;
+    this.dragThreshold = 5;
+    this.longPressDelay = 500;
 
     this.editor.on('disableDraggable', this.disableDraggable, this);
     this.editor.on('enableDraggable', this.enableDraggable, this);
 
     this.model.on('change:pos', this.updatePosition, this);
+  },
+
+  longPress: function(event){
+    // fire dragstart
+    this.dragStart(event);
+    if(this.isDraggable && this.showDetails)
+      // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+      this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
+  },
+  
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
   },
   
   dontUnselect: function(event){
@@ -23,11 +52,15 @@ module.exports = View.extend({
   },
 
   disableDraggable: function(){
-    this.dontDrag = true;
+    this.isDraggable = false;
   },
 
   enableDraggable: function(){
-    this.dontDrag = false;
+    this.isDraggable = true;
+  },
+  
+  dontDrag: function(event){
+    event.stopPropagation();
   },
 
   dragStart: function(event){
@@ -35,27 +68,43 @@ module.exports = View.extend({
 
     if(this.model && this.model.lockable)
       this.model.lock();
+    
+    this.select();
+    
+    event.stopPropagation();
+    event.preventDefault();
 
-    this.select(event);
-
-    if(!this.dontDrag){
-      event.stopPropagation();
+    if(this.isDraggable){
+      
+      this.dragDistance = 0;
+      this.wasOrIsDragging = false;
+      this.isDragging = false;
+      
       var pos = this.model.get('pos');
       
-      this.startX = event.pageX - pos.x;
-      this.startY = event.pageY - pos.y;
+      this.startX = this.normalizedX(event) - pos.x;
+      this.startY = this.normalizedY(event) - pos.y;
     
-      $(document).on('mousemove.global', this.drag);
-      $(document).one('mouseup', this.dragStop);
+      $(document).on(this.inputMoveEvent, this.drag);
+      $(document).one(this.inputUpEvent, this.dragStop);
     }
   },
 
   drag: function(event){ 
     var pos = this.model.get('pos');
     
-    this.isDragging = true;
-    var dx = (event.pageX - pos.x - this.startX) / this.editor.zoom.value;
-    var dy = (event.pageY - pos.y - this.startY) / this.editor.zoom.value;
+    var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
+    var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
+    
+    if(!this.wasOrIsDragging){
+      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+
+      if(this.dragDistance > this.dragThreshold){
+        this.trigger('dragging');
+        this.wasOrIsDragging = true;
+        this.isDragging = true;
+      }
+    }
 
     this.dragByDelta(dx, dy);
 
@@ -69,27 +118,22 @@ module.exports = View.extend({
 
   updatePosition: function(){
     var pos = this.model.get('pos');
-    
-    this.$el.css({
-      left: pos.x,
-      top: pos.y
-    });
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ pos.x +'px,'+ pos.y +'px,0)');
   },
   
   dragStop : function(){
     if(this.model && this.model.lockable)
       this.model.unlock();
 
-    if(this.isDragging){
+    if(this.wasOrIsDragging){
       // emit a global dragstop event
       $(document).trigger('viewdragstop', this);
 
       this.snapToGrid();
+      this.wasOrIsDragging = false;
     }
       
-    $(document).off('mousemove.global', this.drag);
-
-    this.isDragging = false;
+    $(document).off(this.inputMoveEvent, this.drag);
   },
 
   overlapsWith: function(view){
@@ -110,7 +154,7 @@ module.exports = View.extend({
   reset: function(){},
 
   snapToGrid: function(){
-    if(this.dontSnap || !this.isDragging) return;
+    if(this.dontSnap || !this.wasOrIsDragging) return;
     //make drag available along a simple grid
     var gridSize = this.editor.gridSize;
     var pos =  this.model.get('pos');     

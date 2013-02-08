@@ -1,1 +1,6 @@
-<div class="name"><%= @name %></div>
+<div class="animationHolder">
+	<% if @orgaType: %>
+		<span class="pictogram" style="background-image: url(/images/pictograms/<%= @orgaType %>.png);"></span>
+	<% end %>
+  <div class="name"><%= @name %></div>
+</div>

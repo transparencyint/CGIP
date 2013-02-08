@@ -1,5 +1,6 @@
 .workspace .connection
   pointer-events none
+  transition opacity 180ms
   path
     fill none
   marker
@@ -31,7 +32,8 @@
     .path
       stroke black
   &.amountUnknown
-    opacity 0.6
+    svg
+      opacity 0.55
   .clickBorder
     stroke transparent
   &.selected
@@ -45,14 +47,17 @@
     width 13px
     height 20px
     display none
+  &:hover .metadata
+    display block
   .metadata
     position absolute
+    padding 1px 10px
     display none
-    padding 3px 8px
-    color black
+    color #3b533a
+    line-height 1
     white-space nowrap
-    background white
+    background hsl(78,66%,93%)
     z-index	10
-    border-radius 3px
-    box-shadow 0 1px 3px 1px rgba(0, 0, 0, 0.34), 0 1px rgb(251, 251, 251) inset
+    border 2px solid hsl(112,13%,45%)
+    box-shadow 0 0 0 2px hsl(97,33%,92%), 0 1px 2px 3px rgba(0,0,0,0.34)
 

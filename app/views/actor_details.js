@@ -6,37 +6,48 @@ module.exports = View.extend({
   template: require('./templates/actor_details'),
   className: 'modal hidden actorDetails',
 
-  events: {
-    // live updates on the input fields
-    // input gets triggered everytime 
-    // the input's content changes
-    'input [type=text]': 'submitForm',
-    'change [type=checkbox]': 'submitForm',
-    'change select': 'submitForm',
-    'change textarea': 'submitForm',
-    'keydown [data-type=text]': 'allowEnter',
+  events: function(){
+    var _events = {
+      // live updates on the input fields
+      // input gets triggered everytime 
+      // the input's content changes
+      'input [type=text]': 'submitForm',
+      'change [type=checkbox]': 'submitForm',
+      'change select': 'submitForm',
+      'change textarea': 'submitForm',
+      'keydown [data-type=text]': 'allowEnter',
     
-    // show/hide the 'other' input field on 'Type'
-    // and the Corruption Risk details
-    'change .hasAdditionalInfo': 'toggleAdditionalInfo',
+      // show/hide the 'other' input field on 'Type'
+      // and the Corruption Risk details
+      'change .hasAdditionalInfo': 'toggleAdditionalInfo',
     
-    // the buttons at the bottom
-    'click .delete': 'deleteActor',
-    'click .cancel': 'cancel',
-    'click .done': 'submitAndClose',
+      // the buttons at the bottom
+      'click .delete': 'deleteActor',
+      'click .cancel': 'cancel',
+      'click .done': 'submitAndClose',
     
-    // submit on enter
-    'form submit': 'submitAndClose',
+      // submit on enter
+      'form submit': 'submitAndClose'
+    };
     
     // make the whole thing draggable..
-    'mousedown': 'dragStart',
+    _events[ this.inputDownEvent ] = 'dragStart';
     
     // ..except all the text, buttons and inputs
-    'mousedown label': 'dontDrag',
-    'mousedown input': 'dontDrag',
-    'mousedown textarea': 'dontDrag',
-    'mousedown select': 'dontDrag',
-    'mousedown button': 'dontDrag'
+    _events[ this.inputDownEvent + ' label'   ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' input'   ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' textarea'] = 'dontDrag';
+    _events[ this.inputDownEvent + ' select'  ] = 'dontDrag';
+    _events[ this.inputDownEvent + ' button'  ] = 'dontDrag';
+
+    _events[ this.inputDownEvent + ' .delete'  ] = 'deleteActor';
+    _events[ this.inputDownEvent + ' .cancel'  ] = 'cancel';
+    _events[ this.inputDownEvent + ' .done'  ] = 'submitAndClose';
+    
+    // don't bubble inputUp (cause the clickCatcher listens on it)
+    _events[ this.inputUpEvent + ' button'  ] = 'stopPropagation';
+    
+    return _events;
   }, 
 
   initialize: function(options){
@@ -62,6 +73,8 @@ module.exports = View.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
+    this.model.on('change:organizationType',this.updateType,this);
+    this.initOrganizationType();
     
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -74,6 +87,10 @@ module.exports = View.extend({
     this.updateName();
   },
   
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },
+  
   dontDrag: function(event){
     event.stopPropagation();
   },
@@ -84,11 +101,12 @@ module.exports = View.extend({
   
   dragStart: function(event){
     event.stopPropagation();
+    event.preventDefault();
 
     var pos = this.$el.offset();
     
-    this.startX = event.pageX - pos.left;
-    this.startY = event.pageY - pos.top;
+    this.startX = this.normalizedX(event) - pos.left;
+    this.startY = this.normalizedY(event) - pos.top;
     
     // stop when the user is clicking onto a scrollbar (chrome bug)
     if(this.pressOnScrollbar(this.startX))
@@ -96,19 +114,22 @@ module.exports = View.extend({
 
     this.$el.addClass('moved');
   
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
+    $(document).on(this.inputMoveEvent, this.drag);
+    $(document).one(this.inputUpEvent, this.dragStop);
   },
 
   drag: function(event){ 
-    this.$el.css({
-      left: event.pageX - this.startX,
-      top: event.pageY - this.startY
-    })
+    var x = this.normalizedX(event) - this.startX;
+    var y = this.normalizedY(event) - this.startY;
+    this.place(x, y);
   },
   
-  dragStop : function(){
-    $(document).unbind('mousemove.global');
+  dragStop: function(){
+    $(document).unbind(this.inputMoveEvent, this.drag);
+  },
+  
+  place: function(x, y){
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ x +'px,'+ y +'px,0)');
   },
 
   updateName: function(){
@@ -120,6 +141,19 @@ module.exports = View.extend({
       this.$('#title').text(name);
     else
       this.$('#title').text("Unknown");
+  },
+
+  initOrganizationType: function(){
+    //removes whitespaces
+    this.orgaType = this.model.get('organizationType').replace(/\s/g, "");
+    if(this.orgaType === "")
+      this.orgaType = "Unknown";
+  },
+
+  updateType: function(){
+    this.initOrganizationType();
+    var value = 'url(/images/pictograms/' + this.orgaType + '.png)';
+    this.$('.pictogram').css('background-image', value);
   },
 
   deleteActor: function(){
@@ -167,6 +201,8 @@ module.exports = View.extend({
 
   destroy: function(){
     if(!this.unlockedModel) this.model.unlock();
+    
+    this.clickCatcher.unbind(this.inputDownEvent, this.submitAndClose);
 
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
@@ -236,10 +272,13 @@ module.exports = View.extend({
     var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
     this.$('.holder').css('maxHeight', maxHeight);
 
-    this.$el.css({
-      left: pos.left,
-      top: pos.top
-    });
+    this.place(pos.left, pos.top);
+  },
+
+  getRenderData : function(){
+    var data = this.model.toJSON();
+    data.orgaType = this.orgaType;
+    return data;
   },
 
   afterRender: function() {
@@ -248,7 +287,6 @@ module.exports = View.extend({
     $(document).keydown(this.handleKeys);
     this.holder = this.$('.holder');
     
-    // focus first input field
     var self = this;
     _.defer(function(){ 
       self.placeNextToActor();
@@ -257,7 +295,9 @@ module.exports = View.extend({
       self.widthWithoutScrollbar = self.holder.css('overflow', 'hidden').find('div:first-child').width();
       self.holder.css('overflow', 'auto');
       
-      self.$('input').first().focus();
+      // on desktop browsers: focus first input field
+      if(!Modernizr.touch)
+        self.$('input').first().focus();
 
       // fixes wrong height calculation of the textareas
       self.autosize = self.$('textarea').autosize({ className: 'actorDetailsAutosizeHelper' });

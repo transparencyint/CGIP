@@ -6,6 +6,7 @@
 </div>
 
 <div class="roleLabels">
+	<div class="bar"></div>
 	<span class="rolelabel funding" rel="funding"><%= t('funding') %></span>
 	<span class="rolelabel coordination" rel="coordination"><%= t('coordination') %></span>
 	<span class="rolelabel implementation" rel="implementation"><%= t('implementation') %></span>

@@ -6,14 +6,21 @@ module.exports = View.extend({
   template: require('./templates/settings'),
   className: 'settings',
   
-  events: {
-    'click': 'stopPropagation',
+  events: function() {
+    var _events = {
+      'click': 'stopPropagation',
     
-    // the show/hide button
-    'click .cog': 'toggle',
-    
-    'change #showMonitoring': 'toggleMonitoring',
-    'change #language': 'changeLanguage'
+      // the show/hide button
+      'click .cog': 'toggle',
+
+      'change #showMonitoring': 'toggleMonitoring',
+      'change #language': 'changeLanguage'
+    };
+
+    // bind dynamic input event (touch or mouse)
+    _events[ this.inputDownEvent] = 'stopPropagation';
+
+    return _events;
   },
   
   initialize: function(options){    

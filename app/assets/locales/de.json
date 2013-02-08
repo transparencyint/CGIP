@@ -97,12 +97,13 @@
   "Unknown": "Unbekannt",
   "wrong_uname_pw": "Falscher Nutzername oder Passwort!",
   "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu.",
-  "Presentation": "Präsention"
-  }
-  
-
-
-
-
-
-
+  "Settings": "Einstellungen",
+  "Show Monitoring": "Monitoring anzeigen",
+  "Language": "Sprache",
+  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
+  "not_given": "Keine Angabe",
+  "unknown amount": "Unbekannte Summe",
+  "Presentation": "Präsention",
+  "Yes": "Ja",
+  "No": "No"
+}

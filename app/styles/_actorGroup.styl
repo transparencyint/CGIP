@@ -8,7 +8,9 @@
     left 0
     top 0
     position absolute
+    color black
     border-radius 3px
+    z-index 2
     background linear-gradient(top, #f5f5f5, #fbfbfb)
     box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
   &:before
@@ -20,7 +22,7 @@
   &.locked
     opacity .5
     cursor not-allowed
-  .actor
+  .actor-style
     display block
     position relative
     top 4px
@@ -39,13 +41,13 @@
       left 0
       top 0
       bottom 0
-      right 28px
+      right 40px
     .dropdown-control
       position absolute
       right 0
       top 0
       bottom 0
-      width 28px
+      width 40px
       text-align center
       color #bbb
       border-left 1px solid rgba(0,0,0,.05)
@@ -54,9 +56,9 @@
         transform translateY(1px) rotate(90deg)
       .toggleArrow
         transform none  
-  &.open.selected .dropdown-control .arrow
+  &.open .dropdown-control .arrow
       transform none
-  &.open.selected .dropdown-control:active .arrow, 
+  &.open .dropdown-control:active .arrow, 
   .dropdown-control:active .arrow
     transform translateY(1px) rotate(45deg)
   &.empty .caption 
@@ -70,7 +72,7 @@
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.open.selected:not(.empty)
+  &.open:not(.empty)
     .actors
       display block
 

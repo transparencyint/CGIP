@@ -26,8 +26,8 @@ module.exports = AsyncRouter.extend({
     'edit/' : 'country_selection',
     'edit/countries': 'edit_countries',
     'edit/countries/': 'edit_countries',
-    'edit/:country': 'country_edit_index',
-    'edit/:country/': 'country_edit_index',
+    'edit/:country': 'actor_editor',
+    'edit/:country/': 'actor_editor',
     'edit/:country/actors': 'actor_editor',
     'edit/:country/money/list': 'money_connections_list',
     'import/:country/money': 'import'
