@@ -15,8 +15,8 @@ module.exports = View.extend({
     var _events = {
 
       // view controls
-      'click .zoom .in': 'zoomIn',
-      'click .zoom .out': 'zoomOut',
+      'click .zoom.in': 'zoomIn',
+      'click .zoom.out': 'zoomOut',
       'click .fit.screen': 'fitToScreen',
       'click .moneyMode .icon': 'showMoneyModal',
       'click .moneyMode .option': 'chooseMoneyMode',
