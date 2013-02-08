@@ -11,20 +11,28 @@ module.exports = View.extend({
 
   template: require('views/templates/presentation/country_map'),
 
-  events: {
-    // view controls
-    'click .zoom.in': 'zoomIn',
-    'click .zoom.out': 'zoomOut',
-    'click .fit.screen': 'fitToScreen',
-    'click .moneyMode .icon': 'showMoneyModal',
-    'click .moneyMode .option': 'chooseMoneyMode',
+  events: function(){
+    var _events = {
+
+      // view controls
+      'click .zoom .in': 'zoomIn',
+      'click .zoom .out': 'zoomOut',
+      'click .fit.screen': 'fitToScreen',
+      'click .moneyMode .icon': 'showMoneyModal',
+      'click .moneyMode .option': 'chooseMoneyMode',
+      
+      // zoom gesture
+      'gesturestart': 'pinchStart',
+      'gesturechange': 'pinch'
+    };
     
-    // start to pan..
-    'mousedown': 'panStart',
+    // add dynamic input event handler (touch or mouse)
+    _events[ this.inputDownEvent ] = 'panStart';
     
-    // ..except when your mouse touches the controls
-    'mousedown .controls': 'stopPropagation',
-    'click .controls': 'stopPropagation'
+    // ..and prevent them on controls
+    _events[ this.inputDownEvent + ' .controls' ] = 'dontPan';
+    
+    return _events;
   },
 
   initialize: function(){
@@ -67,6 +75,10 @@ module.exports = View.extend({
   pan: ActorEditor.prototype.pan,
   panStop: ActorEditor.prototype.panStop,
   place: ActorEditor.prototype.place,
+
+  pinchStart: ActorEditor.prototype.pinchStart,
+  pinch: ActorEditor.prototype.pinch,
+  dontPan: ActorEditor.prototype.dontPan,
 
   // Scope the editor's container
   scopeElements: function(view){
