@@ -692,8 +692,8 @@ module.exports = View.extend({
     // save new offset  
     // but not when panning (only when we finished panning)
     if(!silent){
-      this.offset.left = x / this.zoom.sqrt;
-      this.offset.top =  y / this.zoom.sqrt;
+      this.offset.left = x / this.zoom.value;
+      this.offset.top =  y / this.zoom.value;
     }
 
     x += this.origin.left;

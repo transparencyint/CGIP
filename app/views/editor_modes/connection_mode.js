@@ -124,6 +124,10 @@ ConnectionMode.prototype._keyUp = function(event){
   if(event.keyCode === 27) this.cancel(); // cancel on ESC
 };
 
+ConnectionMode.prototype.unselect = function(){
+  this.reset();
+};
+
 ConnectionMode.prototype._checkUp = function(event){
   // only check it on mobile
   if(!Modernizr.touch) return;
