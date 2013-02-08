@@ -189,7 +189,7 @@ module.exports = View.extend({
 
     this.trigger('zoom', this.zoom.value - zoomBefore);
     
-    this.updateWorkspace(x, y, this.zoomlvaue);
+    this.updateWorkspace(x, y, this.zoom.value);
     
     this.$el.css('background-size', this.zoom.value*10);
   },
