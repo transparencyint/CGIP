@@ -444,26 +444,27 @@ module.exports = View.extend({
   },
 
   showMetadata: function(e){
-    if(!this.isMoney) return
+    if(!this.isMoney || this.model.isZeroAmount) return
+
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
 
     var metadata = this.$('.metadata');
     metadata.text('$' + this.model.get(moneyMode));
-    metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
+
     metadata.show();
     clearTimeout(this.metadataTimeout);
     this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 5000);
   },
   
   stickMetadata: function(e){
-    var pos = this.editor.offsetToCoords({ 
+    /*var pos = this.editor.offsetToCoords({ 
       left: e.pageX - this.pos.x, 
       top: e.pageY - this.pos.y
-    });
+    });*/
     
     this.$('.metadata').css({
-      left: pos.x + 30, 
-      top: pos.y + 10
+      left: e.offsetX + 20,
+      top: e.offsetY + 10
     });
   },
 
