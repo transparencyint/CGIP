@@ -457,11 +457,7 @@ module.exports = View.extend({
   },
   
   stickMetadata: function(e){
-    /*var pos = this.editor.offsetToCoords({ 
-      left: e.pageX - this.pos.x, 
-      top: e.pageY - this.pos.y
-    });*/
-    
+
     this.$('.metadata').css({
       left: e.offsetX + 20,
       top: e.offsetY + 10
