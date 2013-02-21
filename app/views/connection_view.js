@@ -68,13 +68,8 @@ module.exports = View.extend({
   getRenderData: function(){
     
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.model.get(moneyMode);
-    
-    if(amount < 1)
-      amount = t('unknown amount');
-    else
-      amount = '$ ' + amount;
-
+    var amount = this.checkMetadataMessage();
+        
     return { 
       moneyMode: amount, 
       connectionType: this.model.get('connectionType')
@@ -506,13 +501,9 @@ module.exports = View.extend({
     
     // update the amount
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.model.get(moneyMode);
-    
-    if(amount < 1)
-      amount = t('unknown amount');
-    else
-      amount = '$ ' + amount;
 
+    var amount = this.checkMetadataMessage();
+    
     var metadata = this.$('.metadata');
     metadata.text(amount);
     metadata.show();
@@ -520,6 +511,16 @@ module.exports = View.extend({
     clearTimeout(this.metadataTimeout);
     this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
 
+  },
+
+  checkMetadataMessage: function(){
+    var amount = this.model.get(moneyMode);
+    if(amount < 1)
+      amount = t('unknown amount');
+    else
+      amount = '$ ' + amount;
+
+    return amount;
   },
 
   hideMetadata: function(){
