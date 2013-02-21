@@ -237,7 +237,6 @@ module.exports = View.extend({
       }
     }  
 
-
     this.pathSettings = {
       class_: 'path', 
       strokeWidth: this.strokeWidth
@@ -617,11 +616,11 @@ module.exports = View.extend({
       var corrX;
       var corrY;
       if (start.x == end.x){
-        corrX = start.x + this.model.from.margins.top*2;
+        corrX = start.x + this.model.from.margins.top;
         corrY = (start.y+end.y)/2 + this.model.from.margins.top;
       }
       else{
-        corrX = (start.x+end.x)/2 + this.model.from.margins.top*2;
+        corrX = (start.x+end.x)/2 + this.model.from.margins.top;
         corrY = start.y+this.model.from.margins.top/2*2
       }
       this.drawCorruptionFlag(corrX, corrY);
@@ -720,7 +719,7 @@ module.exports = View.extend({
     this.path += ' L ' + end.x + ' ' + end.y; 
     
     if(this.corruptionRisk){
-      var corrX = (start.x + end.x)/2 + this.model.from.margins.top*2;
+      var corrX = (start.x + end.x)/2 + this.model.from.margins.top + this.distanceSecond * prefixSecondDistance;
       var corrY = (start.y + end.y)/2 + this.model.from.margins.top;
       this.drawCorruptionFlag(corrX, corrY);
     }
@@ -767,8 +766,8 @@ module.exports = View.extend({
     this.path += ' L ' + end.x + ' ' + end.y;
 
     if(this.corruptionRisk){
-      var corrX = (start.x + end.x)/2 + this.model.from.margins.top*2;
-      var corrY = (start.y + end.y)/2 + this.model.from.margins.top;
+      var corrX = (start.x + end.x)/2 + this.model.from.margins.top;
+      var corrY = (start.y + end.y)/2 + this.model.from.margins.top + this.distanceSecond * prefixSecondDistance;
       this.drawCorruptionFlag(corrX, corrY);
     }
       
