@@ -66,15 +66,12 @@ module.exports = View.extend({
   },
   
   getRenderData: function(){
-    var disbursed = this.model.get('disbursed');
     
-    if(disbursed < 1)
-      disbursed = t('unknown amount');
-    else
-      disbursed = '$ ' + disbursed;
-    
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.checkMetadataMessage(moneyMode);
+        
     return { 
-      disbursed: disbursed, 
+      moneyMode: amount, 
       connectionType: this.model.get('connectionType')
     };
   },
@@ -465,10 +462,6 @@ module.exports = View.extend({
     this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.pathSettings);
     this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
-
-  updateDisbursed: function(){ 
-    this.$('.metadata').text('$' + this.model.get('disbursed'));
-  },
   
   longPress: function(event){
     // select
@@ -496,30 +489,41 @@ module.exports = View.extend({
     
     return false;
   },
-  
+
   updateMetada: function(event){
-    // update the position
-    var pos = this.editor.offsetToCoords({ 
-      left: this.normalizedX(event) - this.pos.x, 
-      top: this.normalizedY(event) - this.pos.y
-    },0 ,0);
 
+    if(!this.isMoney) return
+    
     this.metadata.css({
-      left: pos.x + 30, 
-      top: pos.y + 10
+      left: event.offsetX - 20,
+      top: event.offsetY - 30
     });
-
+    
     // update the amount
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.checkMetadataMessage(moneyMode);
+    
     var metadata = this.$('.metadata');
-    metadata.text('$' + this.model.get(moneyMode));
+    metadata.text(amount);
     metadata.show();
+
     clearTimeout(this.metadataTimeout);
     this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
+
+  },
+
+  checkMetadataMessage: function(moneyMode){
+    var amount = this.model.get(moneyMode);
+    if(amount < 1)
+      amount = t('unknown amount');
+    else
+      amount = '$ ' + amount;
+
+    return amount;
   },
 
   hideMetadata: function(){
-    this.$('.metadata').hide();
+    this.metadata.hide();
   },
   
   definePath1Line: function(start, end){
