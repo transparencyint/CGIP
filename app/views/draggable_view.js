@@ -8,8 +8,7 @@ module.exports = View.extend({
       'click' : 'dontUnselect'
     };
     
-    // bind dynamic input event (touch or mouse)
-    _events[ this.inputDownEvent ] = 'longPress'; // and dragStart
+    _events[ this.inputDownEvent ] = 'inputDown';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
     _events[ 'dblclick' ] = 'showDetails';
@@ -35,10 +34,12 @@ module.exports = View.extend({
     this.model.on('change:pos', this.updatePosition, this);
   },
 
-  longPress: function(event){
+  inputDown: function(event){
     // fire dragstart
     this.dragStart(event);
-    if(this.isDraggable && this.showDetails)
+    
+    // only enable the longpress for certain views and touch devices
+    if(this.isDraggable && this.showDetails && Modernizr.touch)
       // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
       this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay);
   },
