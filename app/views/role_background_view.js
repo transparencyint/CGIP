@@ -83,20 +83,13 @@ module.exports = View.extend({
     // check if the dimensions are larger then the minimum role width
     if(roleIndex > 0 && roleIndex != -1){
       if(this.defaultRoleDimensions[roleIndex] - this.defaultRoleDimensions[roleIndex-1] - deltaXAbsolute < this.minRoleWidth){  
-        //console.log('moving to left');
 
         this.dragOver = 'left';
-        // move the ones that are before to the left
-
-        isDraggable = true;
       }else if(this.defaultRoleDimensions[roleIndex] - deltaXAbsolute > this.defaultRoleDimensions[roleIndex+1] - this.minRoleWidth){ 
-        // check if monitoring is inactive
+        
         this.dragOver = 'right';
-        if(roleIndex == 3 && !this.$('#monitoring').is(':visible')){
-          isDraggable = true;
-        }else
-          isDraggable = true;
       }
+      isDraggable = true;
     }else if(roleIndex == 0){
       if(this.defaultRoleDimensions[0] - deltaXAbsolute > this.defaultRoleDimensions[1] - this.minRoleWidth){ 
         isDraggable = false;
