@@ -66,15 +66,17 @@ module.exports = View.extend({
   },
   
   getRenderData: function(){
-    var disbursed = this.model.get('disbursed');
     
-    if(disbursed < 1)
-      disbursed = t('unknown amount');
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.model.get(moneyMode);
+    
+    if(amount < 1)
+      amount = t('unknown amount');
     else
-      disbursed = '$ ' + disbursed;
-    
+      amount = '$ ' + amount;
+
     return { 
-      disbursed: disbursed, 
+      moneyMode: amount, 
       connectionType: this.model.get('connectionType')
     };
   },
@@ -465,10 +467,6 @@ module.exports = View.extend({
     this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.pathSettings);
     this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
-
-  updateDisbursed: function(){ 
-    this.metadata.text('$' + this.model.get('disbursed'));
-  },
   
   longPress: function(event){
     // select
@@ -499,7 +497,7 @@ module.exports = View.extend({
 
   updateMetada: function(event){
 
-    if(!this.isMoney || this.model.isZeroAmount) return
+    if(!this.isMoney) return
     
     this.metadata.css({
       left: event.offsetX - 20,
@@ -508,9 +506,15 @@ module.exports = View.extend({
     
     // update the amount
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.model.get(moneyMode);
+    
+    if(amount < 1)
+      amount = t('unknown amount');
+    else
+      amount = '$ ' + amount;
 
     var metadata = this.$('.metadata');
-    metadata.text('$' + this.model.get(moneyMode));
+    metadata.text(amount);
     metadata.show();
 
     clearTimeout(this.metadataTimeout);
@@ -519,8 +523,7 @@ module.exports = View.extend({
   },
 
   hideMetadata: function(){
-    this.metadata.css({display: "none"});
-    //this.metadata.hide();
+    this.metadata.hide();
   },
   
   definePath1Line: function(start, end){
