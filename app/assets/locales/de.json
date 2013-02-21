@@ -48,7 +48,7 @@
   "Full_Name": "Vollständiger Name",
   "funding": "Finanzierung",
   "Governance": "Regierung",
-  "gov_agency": "regierungsbehörde",
+  "gov_agency": "Regierungsbehörde",
   "gov_ministry": "Regierungs-Ministerium",
   "green_lines": "Alle grün markierten Linien haben zwei passende Actors und werden der Datenbank hinzugefügt.",
   "implementation": "Umsetzung",
@@ -103,7 +103,7 @@
   "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
   "not_given": "Keine Angabe",
   "unknown amount": "Unbekannte Summe",
-  "Presentation": "Präsention",
+  "Presentation": "Präsentation",
   "Yes": "Ja",
   "No": "No"
 }
