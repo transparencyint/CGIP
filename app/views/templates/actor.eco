@@ -1,1 +1,4 @@
-<div class="name"><%= @name %></div>
+<div class="animationHolder">
+  <div class="name"><%= @name %></div>
+  <div class="type"><%= @organizationType %></div>
+</div>

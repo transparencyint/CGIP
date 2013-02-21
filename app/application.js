@@ -30,7 +30,7 @@ Application = {
     $.when(this.countries.fetch(), $.jsperanto.init(i18nOptions)).done(function(){
       // render the navigation
       app.nav.render();
-      $(document.body).append(app.nav.el);
+      $('#container').append(app.nav.el);
       // we're finished, start the application
       done();
     });

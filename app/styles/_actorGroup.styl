@@ -1,6 +1,7 @@
 .actor-group
-  width 120px
-  margin -24px 0 0 -64px
+  width 144px
+  height auto
+  margin -31px 0 0 -74px
   padding-right 2px
   padding-bottom 2px
   &, &:before
@@ -8,7 +9,9 @@
     left 0
     top 0
     position absolute
+    color black
     border-radius 3px
+    z-index 2
     background linear-gradient(top, #f5f5f5, #fbfbfb)
     box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
   &:before
@@ -20,33 +23,33 @@
   &.locked
     opacity .5
     cursor not-allowed
-  .actor
-    display block
+  .actor-style
     position relative
+    z-index 2
     top 4px
     left 4px
+    width inherit
+    height auto
     margin 0
     padding 0
-    height auto
   .caption
-    height 40px
-    line-height 40px
+    height 55px
     position relative
-    .name
-      display block
+    .text
       position absolute
-      padding 0 5px
+      margin 9px 5px
       left 0
       top 0
       bottom 0
-      right 28px
+      right 40px
     .dropdown-control
       position absolute
       right 0
       top 0
       bottom 0
-      width 28px
+      width 40px
       text-align center
+      line-height 55px
       color #bbb
       border-left 1px solid rgba(0,0,0,.05)
       cursor pointer
@@ -54,9 +57,9 @@
         transform translateY(1px) rotate(90deg)
       .toggleArrow
         transform none  
-  &.open.selected .dropdown-control .arrow
+  &.open .dropdown-control .arrow
       transform none
-  &.open.selected .dropdown-control:active .arrow, 
+  &.open .dropdown-control:active .arrow, 
   .dropdown-control:active .arrow
     transform translateY(1px) rotate(45deg)
   &.empty .caption 
@@ -70,14 +73,15 @@
     margin 0
     border-top 1px solid rgba(0,0,0,0.08)
 
-  &.open.selected:not(.empty)
+  &.open:not(.empty)
     .actors
       display block
 
 .actor-group-actor
-  line-height 30px
-  height 30px
-  width 110px
+  position static
+  line-height 45px
+  height 45px
+  width 134px
   margin 5px 4px
   padding 0 5px
   list-style none
@@ -85,6 +89,9 @@
   border-radius 1px
   background linear-gradient(top, #fff, #fafafa)
   box-shadow 0 1px white inset, 0 1px 1px 1px rgba(0,0,0,.21), 0 -2px #f0f0f0 inset, 0 0 0 2px #f9f9f9 inset
+  
+  .type
+    display none
   
   &.hidden
     display block
@@ -96,13 +103,12 @@
     border 1px dashed rgba(0,0,0,.21)
 
   &.dragging
-    width 120px
-    height 40px
+    width 134px
+    height 45px
     position absolute
     margin -20px 0 0 -60px
-    font-size 14px
-    color black
-    line-height 40px
+    
     border-radius 3px
     background linear-gradient(top, #f5f5f5, #fbfbfb)
     z-index 2
+    

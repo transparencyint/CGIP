@@ -33,18 +33,19 @@ module.exports = View.extend({
   currentMoneyMode: ConnectionDetails.prototype.currentMoneyMode,
   getRenderData: ConnectionDetails.prototype.getRenderData,
   fillInActorNames: ConnectionDetails.prototype.fillInActorNames,
+  place: ConnectionDetails.prototype.place,
   
-
   initialize: function(options){
 
-    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy');
+    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy', 'placeNextToConnection');
     
     this.connection = options.connection;
     this.connectionType = this.model.get('connectionType');
     this.editor = options.editor;
-    
+    this.mousePosition = options.mousePosition;
+
     this.width = 320;
-    this.controlsHeight = 46;
+    this.controlsHeight = 0;
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToConnection = 21;

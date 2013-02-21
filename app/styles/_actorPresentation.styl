@@ -1,7 +1,39 @@
 #actorPresentation
-  background none
+  background url(../images/denim.png)
+  
   &:active.dragcursor
     cursor default
+  
+  /* all controls (editor, navigation, zoom) */
+
   /* is empty */
   .tool.controls
-    height 52px
+    height 51px
+    
+  /* every actor */
+  .actor,
+  .actor-style
+    cursor pointer
+  
+  /* the line indicating the center of the map */
+  .centerLine
+    display none
+  
+  /* the role labels */
+  .roleLabels
+    border-color transparent
+    .bar
+      background hsl(218,55%,34%)
+      box-shadow 0 1px 3px rgba(0,0,0,.21)
+    .rolelabel:after,
+    .rolelabel:before
+      content ""
+      position absolute
+      left -1px
+      top 0
+      width 2px
+      height 100%
+      background linear-gradient(top, hsla(218,55%,34%,1), hsla(218,55%,34%,0))
+    .rolelabel:after
+      left auto
+      right -1px

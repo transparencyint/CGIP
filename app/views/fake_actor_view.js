@@ -8,8 +8,12 @@ module.exports = DraggableView.extend({
   className: 'actor new',
   template: require('./templates/fake_actor'),
 
-  events: {
-    'mousedown'  : 'dragStart'
+  events: function(){
+    var _events = {};
+    
+    _events[ this.inputDownEvent ] = 'dragStart';
+    
+    return _events;
   },
 
   initialize: function(){

@@ -5,11 +5,11 @@ module.exports = View.extend({
 
   tagName: 'li',
   
-  className: 'actor-group-actor',
+  className: 'actor-group-actor actor',
   template : require('views/templates/presentation/presentation_actor_group_actor'),
-
-  width: 110,
-  height: 30,
+  
+  width: 134,
+  height: 45,
 
   events: {},
 

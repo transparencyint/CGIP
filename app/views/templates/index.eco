@@ -1,14 +1,6 @@
 <div class="inner">
   <header>
     <h1>Climate Finance Integrity Program</h1>
-    <div id="link-area">
-      <% if window.user.isLoggedIn(): %>
-        <a class="button transparent" href="/edit/">Edit View</a>
-        <a class="button transparent" href="/logout" external>Logout</a>
-      <% else: %>
-        <a class="button transparent" href="/login/">Login</a>
-      <% end %>
-    </div>
   </header>
 
   <div class="map">
@@ -66,7 +58,13 @@
       <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
     </div>
     <div class="right">
-      <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
+      <% if window.user.isLoggedIn(): %>
+        <a href="/edit/">Edit View</a> –
+        <a href="/logout" external>Logout</a>
+      <% else: %>
+        <a href="/login/">Login</a>
+      <% end %>
+      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
     </div>
   </footer>
 </div>

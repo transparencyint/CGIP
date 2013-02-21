@@ -18,48 +18,41 @@ module.exports = View.extend({
   
   template: require('./templates/actor_editor'),
   
-  events: {
-    // tool controls
-    'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
-    'click .tool .connection': 'toggleMode',
-    'click .tool .connection .eye': 'toggleVisibility',
+  events: function(){
+    var _events = {
+      // tool controls
+      'click .newActor:not(.sliding, .slideUp) .description': 'slideActorIn',
+      'click .tool .connection': 'toggleMode',
+      'click .tool .connection .eye': 'toggleVisibility',
     
-    // view controls
-    'click .zoom.in': 'zoomIn',
-    'click .zoom.out': 'zoomOut',
-    'click .fit.screen': 'fitToScreen',
-    'click .moneyMode .icon': 'showMoneyModal',
-    'click .moneyMode .option': 'chooseMoneyMode',
+      // view controls
+      'click .zoom .in': 'zoomIn',
+      'click .zoom .out': 'zoomOut',
+      'click .fit.screen': 'fitToScreen',
+      'click .moneyMode .icon': 'showMoneyModal',
+      'click .moneyMode .option': 'chooseMoneyMode',
+      
+      // zoom gesture
+      'gesturestart': 'pinchStart',
+      'gesturechange': 'pinch'
+    };
     
-    // start to pan..
-    'mousedown': 'dragStart',
+    // add dynamic input event handler (touch or mouse)
+    _events[ this.inputDownEvent ] = 'panStart';
     
-    // ..except when your mouse touches the controls
-    'mousedown .controls': 'stopPropagation',
-    'click .controls': 'stopPropagation',
+    // ..and prevent them on controls
+    _events[ this.inputDownEvent + ' .controls' ] = 'dontPan';
     
-    // unselect when clicking into empty space
-    'click': 'unselect'
-  },
-  
-  transEndEventNames: {
-    'WebkitTransition' : 'webkitTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'msTransition'     : 'MSTransitionEnd',
-    'transition'       : 'transitionend'
+    return _events;
   },
 
   initializeProperties: function(){
     this.country = this.options.country;
-    this.actorHeight = 40;
-    this.actorWidth = 120;
+    this.actorHeight = 55;
+    this.actorWidth = 144;
 
-    this.fakeActorWidth = 88;
-    this.fakeActorHeight = 30;
-
-    this.radius = 60;
-    this.smallRadius = 44;
+    this.fakeActorWidth = 134;
+    this.fakeActorHeight = 45;
 
     this.zoom = {
       value: 1,
@@ -107,9 +100,6 @@ module.exports = View.extend({
   initialize: function(options){
     // initialize all of the editor's properties
     this.initializeProperties();
-
-    // specific editor properties
-    this.transEndEventName = this.transEndEventNames[ Modernizr.prefixed('transition') ];
     
     // add an actor view when a new one is added
     this.actors.on('add', this.appendNewActor, this);
@@ -128,7 +118,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'unScopeElements', 'closeMoneyModal','addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'removeActorGroup', 'keyUp', 'slideZoom', 'dragStop', 'drag', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -156,7 +146,7 @@ module.exports = View.extend({
     this.appendActor(this.actors.get((actor._id || actor.id)), false);
   },
   
-  stopPropagation: function(event){
+  dontPan: function(event){
     event.stopPropagation();
   },
   
@@ -173,8 +163,20 @@ module.exports = View.extend({
       selectedView.model.destroy();
   },
   
+  // pinch gesture for zooming on mobile 
+  // moving two fingers together or apart
+  pinchStart: function(event){
+    this.startZoom = this.zoom.value;
+  },
+  
+  pinch: function(event){
+    this.zoomTo(this.startZoom + (1 - event.originalEvent.scale)/5);
+  },
+  
   slideZoom: function(event, ui){
     event.stopPropagation();
+    var x = this.origin.left + this.offset.left;
+    var y = this.origin.top + this.offset.top;
     
     this.$el.removeClass('zoom'+ (this.zoom.value*100));
 
@@ -183,7 +185,8 @@ module.exports = View.extend({
     this.zoom.sqrt = Math.sqrt(ui.value);
 
     this.trigger('zoom', this.zoom.value - zoomBefore);
-    this.workspace.css( Modernizr.prefixed('transform'), 'scale('+ this.zoom.value +')');
+    
+    this.updateWorkspace(x, y, this.zoom.value);
     
     this.$el.css('background-size', this.zoom.value*10);
   },
@@ -199,6 +202,10 @@ module.exports = View.extend({
   
   zoomOut: function(){
     this.zoomTo(this.zoom.value - this.zoom.step);
+  },
+  
+  updateWorkspace: function(x, y, scale){
+    this.workspace.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(x) +'px,'+ Math.round(y) +'px,0) scale('+ scale +')');
   },
   
   fitToScreen: function(){
@@ -254,15 +261,13 @@ module.exports = View.extend({
 
   // Scope the editor's container
   scopeElements: function(view){
+
+    console.log('scoping');
     // set the state
     this.isScoped = true;
 
     var type = view.model.get('type');
     var scopedElements = [];
-    
-    // set all elements to outOfScope
-    if(type == 'actor' || type == 'connection')
-      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
     // decide on the scope method based on the views type and get the elements in the current scope
     if(type == 'actor'){
@@ -274,19 +279,20 @@ module.exports = View.extend({
         scopedElements = this.scopeFromConnection(view.model);
     }
 
+    if(scopedElements.length == 1) return this.unScopeElements(); // don't scope when only one element in scope
+
+    // set all elements to outOfScope
+    if(type == 'actor' || type == 'connection')
+      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
+
     // set the found elements to 'inScope'
-    var editor = this;
+    var elements = $();
+    
     _.each(scopedElements, function(model){
-      if(model.get('type') == 'actor')
-        $('#' + model.id).removeClass('outOfScope');
-      else
-        if(model.get('type') == 'connection'){
-          var connection = editor.moneyConnections.get(model.id)
-                            || editor.accountabilityConnections.get(model.id)
-                            || editor.monitoringConnections.get(model.id);
-          connection.trigger('inScope');
-        }
+      elements = elements.add('#' + model.id);
     });
+    
+    elements.removeClass('outOfScope');
   },
 
   // Scope by showing all directly connected elements
@@ -364,7 +370,6 @@ module.exports = View.extend({
 
   // Resets the scope, so that all elements are shown as before the scope
   unScopeElements: function(){
-    clearInterval(this.scopeInterval);
     if(this.isScoped){
       this.workspace.find('.outOfScope').removeClass('outOfScope');
       this.isScoped = false;
@@ -374,12 +379,10 @@ module.exports = View.extend({
   selected: function(event, view){
     var type = view.model.get('type');
     
-    if(this.mode && this.mode.isActive)
+    if(this.mode && this.mode.isActive){
       this.mode.viewSelected(view);
-    else{
-      var editor = this;
-      clearInterval(this.scopeInterval);
-      this.scopeInterval = _.delay(function(){ editor.scopeElements(view); }, 150);
+    }else{
+      this.scopeElements(view)
     }
 
     if(type == 'actor'){
@@ -397,6 +400,16 @@ module.exports = View.extend({
 
   connectionSelected: function(event, view){
     this.selectedConnectionView = view;
+  },
+
+  unselect: function(){
+    if(this.mode)
+      this.deactivateMode();
+    
+    this.$('.selected').removeClass('selected');
+    this.selectedActorView = null;
+    this.selectedView = null;
+    this.selectedActorView = null;
   },
 
   unselect: function(){
@@ -471,21 +484,32 @@ module.exports = View.extend({
   },
 
   toggleMode: function(event){
-    this.$('.connection.active').removeClass('active');
+    event.stopPropagation();
     var target = $(event.target);
     var selectedElement = target.hasClass('.connection') ? target : target.parents('.connection');
     var connectionType = selectedElement.attr('data-connectionType');
     var collection = this[ connectionType + "Connections" ];
     
-    if(this.mode){
+    if(this.mode)
       this.deactivateMode();
-    }
     
     selectedElement.addClass('active');
     this.mode = new ConnectionMode(this.workspace, collection, connectionType, this);
 
     // disable all draggables during mode
     this.trigger('disableDraggable');
+  },
+
+  deactivateMode: function(){
+    console.log("disable mode");
+    this.$('.connection.active').removeClass('active');
+    
+    // re-enable draggables
+    this.trigger('enableDraggable');
+    
+    this.mode.cancel();
+    this.mode = null;
+    this.unselect();
   },
 
   showMoneyModal: function(event){
@@ -516,15 +540,6 @@ module.exports = View.extend({
     
     // highlight current option
     option.addClass('active').siblings('.active').removeClass('active');
-  },
-
-  deactivateMode: function(){
-    this.$('.connection').removeClass('active');
-    this.mode.abort();
-    this.mode = null;
-
-    // re-enable draggables
-    this.trigger('enableDraggable');
   },
 
   keyUp: function(event){
@@ -624,7 +639,6 @@ module.exports = View.extend({
   placeActorDouble: function(){
     var offset = this.actorDouble.offset();
     var coords = this.offsetToCoords(offset, this.actorWidth, this.actorHeight);
-    
     this.createActorAt(coords.x, coords.y);
     
     // move actorDouble back to its origin by sliding it in from the top
@@ -644,24 +658,25 @@ module.exports = View.extend({
     if(view) view.model.set({pos: {x: 0, y:0 }});
   },
   
-  dragStart: function(event){
+  panStart: function(event){
+    event.preventDefault();
     event.stopPropagation();
     
-    this.startX = event.pageX - this.offset.left;
-    this.startY = event.pageY - this.offset.top;
+    // unselect when clicking into empty space
+    this.unselect();
     
-    $(document).on('mousemove.global', this.drag);
-    $(document).one('mouseup', this.dragStop);
+    this.startX = this.normalizedX(event) - this.offset.left;
+    this.startY = this.normalizedY(event) - this.offset.top;
+    
+    $(document).on(this.inputMoveEvent, this.pan);
+    $(document).one(this.inputUpEvent, this.panStop);
   },
 
-  drag: function(event, silent){
-    if(silent === undefined) 
-      silent = true;
-    
-    var x = (event.pageX - this.startX) * this.zoom.sqrt;
-    var y = (event.pageY - this.startY) * this.zoom.sqrt;
-    
-    this.moveTo(x, y, silent);
+  pan: function(event){
+    this.panX = (this.normalizedX(event) - this.startX) * this.zoom.sqrt;
+    this.panY = (this.normalizedY(event) - this.startY) * this.zoom.sqrt;
+  
+    this.moveTo(this.panX, this.panY, true);
   },
   
   moveTo: function(x, y, silent){
@@ -683,22 +698,22 @@ module.exports = View.extend({
     x += this.origin.left;
     y += this.origin.top;
 
-    this.workspace.css({
-      left: Math.round(x),
-      top: Math.round(y)
-    });
+    this.updateWorkspace(x, y, this.zoom.value);
     
     this.trigger('pan', x, y);
-    this.$el.css('background-position', x +'px, '+ y + 'px');
+    this.$el.css('background-position', x +'px '+ y + 'px');
     
     this.$('.centerLine').css('left', x);
     
   },
   
-  dragStop : function(event){
-    this.drag(event, false);
+  panStop : function(event){
+    if(!this.panX || !this.panY) return;
+
+    // update (non-silent)
+    this.moveTo(this.panX, this.panY);
     
-    $(document).unbind('mousemove.global');
+    $(document).unbind(this.inputMoveEvent, this.pan);
   },
 
   calculateGridLines: function(event, view){
@@ -761,10 +776,8 @@ module.exports = View.extend({
   },
   
   render: function(){
-    var editor = this;
-
-    this.$el.html( this.template() );
-    this.fakeActorView = new FakeActorView({editor: this});
+    this.$el.html( this.template( this.getRenderData() ) );
+    this.fakeActorView = new FakeActorView({ editor: this });
     this.fakeActorView.render();
     this.$('.newActor .dock').append(this.fakeActorView.el);
 
@@ -775,10 +788,10 @@ module.exports = View.extend({
     this.gridlineV = this.$('#gridlineV');
     this.gridlineH = this.$('#gridlineH');
 
-    this.rbw = new RoleBackgroundView({ editor: editor });
+    this.rbw = new RoleBackgroundView({ editor: this });
     this.workspace.before(this.rbw.render()); 
     
-    this.settings = new SettingsView({ editor: editor });
+    this.settings = new SettingsView({ editor: this });
     this.$('.topBar').append(this.settings.render().el);
 
     this.actors.each(this.appendActor);
@@ -800,14 +813,16 @@ module.exports = View.extend({
   initializeDimensions: function(){
     this.origin.left = this.$el.width()/2;
   },
+  
+  getRenderData: function() {
+    return { gestureSupport: Modernizr.gesture };
+  },
 
   initializeConfig: function(){
     config.on('change:moneyConnectionMode', this.toggleActiveMoneyMode, this);
   },
 
   afterRender: function(){
-    var editor = this;
-
     $(document).on('viewdragstop', this.checkDrop);
 
     this.$('#disbursedMoney').addClass("active");
@@ -815,7 +830,7 @@ module.exports = View.extend({
     $(document).bind('keyup', this.keyUp);
     $(window).resize(this.realignOrigin);
     
-    this.slider = this.$('.bar').slider({ 
+    this.slider = this.$('.view.controls .bar').slider({ 
       orientation: "vertical",
       min: this.zoom.min,
       max: this.zoom.max,
@@ -847,7 +862,7 @@ module.exports = View.extend({
       view.destroy();
     });
     
-    $(document).unbind('mousemove.global', this.drag);
+    $(document).unbind(this.inputMoveEvent, this.pan);
     $(document).unbind('keyup', this.keyUp);
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.viewSelected);

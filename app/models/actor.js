@@ -17,6 +17,7 @@ module.exports = Model.extend({
     type: 'actor',
     hasCorruptionRisk: false,
     pos: {x: 0, y: 0},
+    organizationType: '',
     purpose: [],
     role: []
   },
@@ -24,7 +25,7 @@ module.exports = Model.extend({
   initialize: function(values){
     Model.prototype.initialize.call(this, values);
     
-    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+    this.margins = {top: 27, right: 72, bottom: 28, left: 72};
   },
 
   moveByDelta: function(dx, dy){

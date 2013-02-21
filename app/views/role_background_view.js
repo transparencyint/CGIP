@@ -6,8 +6,12 @@ module.exports = View.extend({
 
   template: require('./templates/role_background'),
 
-  events: {
-    'mousedown .draghandle': 'dragRoleHandle'
+  events: function(){
+    var _events = {};
+    
+    _events[ this.inputDownEvent + ' .draghandle' ] = 'dragStart';
+    
+    return _events;
   },
   
   initialize: function(options){
@@ -39,32 +43,28 @@ module.exports = View.extend({
 
     _.bindAll(
       this, 
-      'dragRoleHandleStart', 
-      'dragRoleHandleStop'
+      'drag', 
+      'dragStop'
     );
   },
-  
-  stopPropagation: function(event){
-    event.stopPropagation();
-  },
 
-  dragRoleHandle: function(event){
+  dragStart: function(event){
+    event.preventDefault();
     event.stopPropagation();
 
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
+    this.roleAreaOffsets.draghandleLeft = this.normalizedX(event);
     
-    $(document).on('mousemove.draghandle', {
-      roleSelector: $(event.currentTarget).attr('rel') }, 
-      this.dragRoleHandleStart
+    $(document).on( this.inputMoveEvent, 
+      {
+        roleSelector: $(event.currentTarget).attr('rel') 
+      }, 
+      this.drag
     );
 
-    $(document).one('mouseup', {
-      roleSelector: $(event.currentTarget).attr('rel') }, 
-      this.dragRoleHandleStop
-    );
+    $(document).one(this.inputUpEvent, this.dragStop);
   },
 
-  dragRoleHandleStart: function(event){
+  drag: function(event){
 
     $('#actorEditor').addClass('dragcursor');
 
@@ -72,9 +72,10 @@ module.exports = View.extend({
     var roleSelector = event.data.roleSelector;
     var roleIndex = this.roles.indexOf(roleSelector);
     var isDraggable = true;
-    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - event.pageX;
+    var inputX = this.normalizedX(event);
+    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - inputX;
 
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
+    this.roleAreaOffsets.draghandleLeft = inputX;
 
     // check if the dimensions are larger then the minimum role width
     if(roleIndex > 0 && roleIndex != -1){
@@ -116,11 +117,11 @@ module.exports = View.extend({
     }
   },
 
-  dragRoleHandleStop: function(event){
+  dragStop: function(event){
     this.country.set({'roleDimensions' : this.defaultRoleDimensions});
     this.country.save();
 
-    $(document).unbind('mousemove.draghandle');
+    $(document).unbind(this.inputMoveEvent, this.drag);
     $('#actorEditor').removeClass('dragcursor');
   },
 

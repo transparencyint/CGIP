@@ -8,18 +8,70 @@ module.exports = ConnectionView.extend({
 
   tagName : 'div',
   className : 'connection',
-  selectable : false,
+  selectable : true,
 
-  events: {
-    'mouseover' : 'showMetadata',
-    'mousemove' : 'stickMetadata',
-    'mouseout' : 'hideMetadata',
-    'mousedown' : 'hideMetadata',
-    'click' : 'showDetails'
+  initialize: function(options){
+    View.prototype.initialize.call(this, options);
+    
+    _.bindAll(this, 'showDetails', 'select');
+
+    this.model.coinSizeFactor = 1;
+    this.edgeRadius = 10;
+    this.strokeWidth = 6;
+    this.markerRatio = 2.5;
+    this.markerSize = 4;
+    this.longPressDelay = 500;
+    
+    this.selectionBorderSize = 4;
+    this.clickAreaRadius = 40;
+
+    this.editor = options.editor;
+
+    this.corruptionRisk = this.model.get('hasCorruptionRisk');
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
+
+    if(options.noClick)
+      this.$el.unbind('click');
+
+    if(this.model.from){
+      this.model.from.on('change:pos', this.update, this);
+    }
+      
+    if(this.model.to){
+      this.model.to.on('change:pos', this.update, this);
+    }
+
+    this.model.on('inScope', this.inScope, this);
+
+    this.isMoney = this.model.get('connectionType') === 'money';
   },
 
+  events: function(){
+    var _events = {
+      'click': 'select',
+      'dblclick': 'showDetails'
+    };
+    
+    _events[ this.inputMoveEvent ] = 'updateMetada';
+    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
+
+    return _events;
+  },
+
+  updateMetada: ConnectionView.prototype.updateMetada,
+  select: View.prototype.select,
+  longPress: ConnectionView.prototype.longPress,
+  inScope: ConnectionView.prototype.inScope,
+
   showDetails: function(){
-    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this});
+    
+    var mousePosition = {
+      left: this.normalizedX(event),
+      top: this.normalizedY(event)
+    };
+
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this, mousePosition: mousePosition});
     this.editor.$el.append(cfw.render().el);
   }
   
