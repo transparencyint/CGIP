@@ -62,11 +62,6 @@ module.exports = View.extend({
     this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
-
-    if(this.hasBothConnections){
-      //mediator.on(['change', 'thickness', this.model.from.id, this.model.to.id].join(':'), this.test, this);
-      //mediator.on(['change', 'thickness', this.model.to.id, this.model.from.id].join(':'), this.test, this);
-    }
   },
 
   test: function(strokeWidth, id){
@@ -664,13 +659,13 @@ module.exports = View.extend({
       else{
         if(start.y < end.y){
           //x2, y2-halfsum
-          corrX = end.x + this.model.from.margins.top;
-          corrY = end.y - halfSum;
+          corrX = end.x;
+          corrY = end.y - halfSum - this.distanceSecond/4;
         }
         else{
           //x2, y1-halfsum
-          corrX = end.x + this.model.from.margins.top;
-          corrY = start.y - halfSum + this.model.from.margins.top*2;
+          corrX = end.x;
+          corrY = start.y - halfSum + this.model.from.margins.top*2 + this.distanceSecond;
         }
       }
       corrX += this.model.from.margins.top;
