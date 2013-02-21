@@ -75,7 +75,8 @@ module.exports = View.extend({
       top: 0
     };
     
-    this.gridSize = this.actorHeight;
+    // make the grid size as large as the blue background grid
+    this.gridSize = 10;
     
     // padding for fit-to-screen and for placing the details
     this.padding = this.actorWidth/4;
