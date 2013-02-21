@@ -15,19 +15,8 @@ module.exports = ConnectionView.extend({
     
     _.bindAll(this, 'showDetails', 'select');
 
-    this.model.coinSizeFactor = 1;
-    this.edgeRadius = 10;
-    this.strokeWidth = 6;
-    this.markerRatio = 2.5;
-    this.markerSize = 4;
-    this.longPressDelay = 500;
-    
-    this.selectionBorderSize = 4;
-    this.clickAreaRadius = 40;
+    this.initializeProperties(options);
 
-    this.editor = options.editor;
-
-    this.corruptionRisk = this.model.get('hasCorruptionRisk');
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
 
     if(options.noClick)
@@ -42,9 +31,9 @@ module.exports = ConnectionView.extend({
     }
 
     this.model.on('inScope', this.inScope, this);
-
-    this.isMoney = this.model.get('connectionType') === 'money';
   },
+
+  initializeProperties: ConnectionView.prototype.initializeProperties,
 
   events: function(){
     var _events = {
