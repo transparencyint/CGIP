@@ -41,6 +41,8 @@ module.exports = View.extend({
     // the minimum width of a role background
     this.minRoleWidth = 182;
 
+    this.dragOver = null; 
+
     _.bindAll(
       this, 
       'drag', 
@@ -75,18 +77,25 @@ module.exports = View.extend({
     var inputX = this.normalizedX(event);
     var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - inputX;
 
+    this.dragOver = null;
     this.roleAreaOffsets.draghandleLeft = inputX;
 
     // check if the dimensions are larger then the minimum role width
     if(roleIndex > 0 && roleIndex != -1){
       if(this.defaultRoleDimensions[roleIndex] - this.defaultRoleDimensions[roleIndex-1] - deltaXAbsolute < this.minRoleWidth){  
-        isDraggable = false;
+        //console.log('moving to left');
+
+        this.dragOver = 'left';
+        // move the ones that are before to the left
+
+        isDraggable = true;
       }else if(this.defaultRoleDimensions[roleIndex] - deltaXAbsolute > this.defaultRoleDimensions[roleIndex+1] - this.minRoleWidth){ 
         // check if monitoring is inactive
+        this.dragOver = 'right';
         if(roleIndex == 3 && !this.$('#monitoring').is(':visible')){
           isDraggable = true;
         }else
-          isDraggable = false;
+          isDraggable = true;
       }
     }else if(roleIndex == 0){
       if(this.defaultRoleDimensions[0] - deltaXAbsolute > this.defaultRoleDimensions[1] - this.minRoleWidth){ 
@@ -104,8 +113,26 @@ module.exports = View.extend({
       // we need to use float values here in order to prevent role area shifts
       if(roleSelector == 'last')
         this.defaultRoleDimensions[4] = this.defaultRoleDimensions[4] - deltaXAbsolute;
-      else
+      else {
+
         this.defaultRoleDimensions[roleIndex] = this.defaultRoleDimensions[roleIndex] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);
+        
+        if(roleIndex > 0){
+          if(this.dragOver == 'left'){
+            // move all previous roles to the left
+            for(var i=0; i<roleIndex; i++){
+               this.defaultRoleDimensions[i] = this.defaultRoleDimensions[i] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);   
+            }
+          }
+          else if(this.dragOver == 'right'){
+            // move all next roles to the right
+            for(var i=roleIndex+1; i<this.defaultRoleDimensions.length; i++){
+              this.defaultRoleDimensions[i] = this.defaultRoleDimensions[i] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);   
+            }
+          }
+        }
+      }
+        
       
       // the draghandles define the positions and widths of the role backgrounds
       // save the dimensions when they are dragged
