@@ -25,6 +25,7 @@ module.exports = DraggableDroppableView.extend({
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:organizationType', this.updateType, this);
   },
 
   events: function(){
@@ -78,9 +79,9 @@ module.exports = DraggableDroppableView.extend({
     this.render();
   },
   
-  updateName: function(){
-    this.$('.name').text( this.model.get('name') );
-  },
+  determineName: ActorView.prototype.determineName,
+  updateName: ActorView.prototype.updateName,
+  updateType: ActorView.prototype.updateType,
   
   showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
