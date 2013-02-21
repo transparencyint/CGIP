@@ -496,39 +496,31 @@ module.exports = View.extend({
     
     return false;
   },
-  
-  updateMetada: function(event){
-    // update the position
-    var pos = this.editor.offsetToCoords({ 
-      left: this.normalizedX(event) - this.pos.x, 
-      top: this.normalizedY(event) - this.pos.y
-    },0 ,0);
-  },
 
   updateMetada: function(event){
 
-    /*
-    // update the position
-    var pos = this.editor.offsetToCoords({
-      left: this.normalizedX(event) - this.pos.x,
-      top: this.normalizedY(event) - this.pos.y
-    },0 ,0);
-
+    if(!this.isMoney || this.model.isZeroAmount) return
+    
     this.metadata.css({
-      left: pos.x + 30,
-      top: pos.y + 10
-    });*/
+      left: event.offsetX - 20,
+      top: event.offsetY - 30
+    });
+    
+    // update the amount
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
 
-    console.log("meta");
-    /*
-    this.metadata.css({
-      left: event.offsetX + 20,
-      top: event.offsetY + 10
-    });*/
+    var metadata = this.$('.metadata');
+    metadata.text('$' + this.model.get(moneyMode));
+    metadata.show();
+
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
+
   },
 
   hideMetadata: function(){
-    this.metadata.hide();
+    this.metadata.css({display: "none"});
+    //this.metadata.hide();
   },
   
   definePath1Line: function(start, end){
