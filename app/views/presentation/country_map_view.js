@@ -303,7 +303,7 @@ module.exports = View.extend({
     
     $(window).resize(this.realignOrigin);
 
-    this.slider = this.$('.bar').slider({ 
+    this.slider = this.$('.view.controls .bar').slider({ 
       orientation: "vertical",
       min: this.zoom.min,
       max: this.zoom.max,
