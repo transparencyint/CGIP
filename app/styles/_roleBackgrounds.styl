@@ -27,16 +27,16 @@
     min-width 46px
     height 100%
     position absolute
-    &#funding
-      background hsla(76, 100%, 50%, 0.28)
+    border-right 1px solid rgba(0,0,0,.21)
+    box-shadow 1px 0 rgba(255,255,255,.08)
+    &:first-child
+      border-left 1px solid rgba(0,0,0,.21)
+      box-shadow 1px 0 rgba(255,255,255,.08), 1px 0 rgba(255,255,255,.08) inset
     &#coordination
-      background hsla(97, 100%, 50%, 0.19)
       left 25%
     &#implementation
-      background hsla(155, 100%, 43%, 0.13)
       left 50%
     &#monitoring
-      background hsla(222, 100%, 43%, 0.18)
       left 75%
 .roleLabels 
   position absolute
@@ -50,17 +50,19 @@
     left -100%
     width 300%
     background hsl(220, 53%, 32%)
+    background hsl(218,55%,34%)
     height 29px
     border-bottom 1px solid hsl(220, 55%, 24%)
+    box-shadow 0 1px 3px rgba(0,0,0,.21)
   .rolelabel  
     position absolute
     width 25%
     min-width 46px
-    height 29px
+    height 28px
     padding 0 8px
     text-align center
     font-size 12px
-    line-height 29px
+    line-height 30px
     text-overflow ellipsis
     color hsl(220, 37%, 90%)
     text-shadow 0 -1px hsl(220, 38%, 15%)
@@ -71,3 +73,16 @@
       border-left none
     &.last
       box-shadow 1px 0 hsl(220, 43%, 43%) inset, 1px 0 hsl(220, 43%, 43%)
+      /* fade in the borders */
+    &:after,
+    &:before
+      content ""
+      position absolute
+      left -1px
+      top 0
+      width 2px
+      height 100%
+      background linear-gradient(top, hsla(218,55%,34%,1), hsla(218,55%,34%,0))
+    &:after
+      left auto
+      right -2px
