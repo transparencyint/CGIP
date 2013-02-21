@@ -139,14 +139,25 @@ module.exports = View.extend({
   overlapsWith: function(view){
     var myPos = this.$el.offset();
     var viewPos = view.$el.offset();
-    var myWidth = this.$el.outerWidth();
-    var myHeight = this.$el.outerHeight();
+
+    // calculate all positions and dimensions with the zoom value
+    myPos.left /= this.editor.zoom.sqrt;
+    myPos.top /= this.editor.zoom.sqrt;
+
+    viewPos.left /= this.editor.zoom.sqrt;
+    viewPos.top /= this.editor.zoom.sqrt;
+
+    var myWidth = this.$el.outerWidth() * this.editor.zoom.sqrt;
+    var myHeight = this.$el.outerHeight() * this.editor.zoom.sqrt;
+
+    var newViewWidth = view.$el.outerWidth() * this.editor.zoom.sqrt;
+    var newViewHeight = view.$el.outerHeight() * this.editor.zoom.sqrt;
 
     // check if have an intersection
     var overlaps =   (viewPos.left < myPos.left + myWidth)
-                  && (viewPos.left + view.width > myPos.left)
+                  && (viewPos.left + newViewWidth > myPos.left)
                   && (viewPos.top < myPos.top + myHeight)
-                  && (viewPos.top + view.height > myPos.top);
+                  && (viewPos.top + newViewHeight > myPos.top);
     return overlaps;
   },
 
