@@ -8,11 +8,11 @@ module.exports = DraggableDroppableView.extend({
   dropClasses: [ActorView, ActorGroupActorView, FakeActorView],
   selectable: true,
 
-  className: 'actor-group empty',
+  className: 'actor-group actor-holder empty',
   template : require('./templates/actor_group'),
   
-  width: 120,
-  height: 42,
+  width: 144,
+  height: 74,
 
   initialize: function(options){
     this.editor = options.editor;

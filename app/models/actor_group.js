@@ -15,7 +15,7 @@ module.exports = Actor.extend({
     this.actors.model = Actor;
 
     // needed for calculations
-    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+    this.margins = {top: 27, right: 72, bottom: 28, left: 72};
 
     // remove the actor from the array
     this.actors.on('remove', this.removeFromGroup, this);

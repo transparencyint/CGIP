@@ -48,14 +48,11 @@ module.exports = View.extend({
 
   initializeProperties: function(){
     this.country = this.options.country;
-    this.actorHeight = 40;
-    this.actorWidth = 120;
+    this.actorHeight = 55;
+    this.actorWidth = 144;
 
-    this.fakeActorWidth = 88;
-    this.fakeActorHeight = 30;
-
-    this.radius = 60;
-    this.smallRadius = 44;
+    this.fakeActorWidth = 134;
+    this.fakeActorHeight = 45;
 
     this.zoom = {
       value: 1,
