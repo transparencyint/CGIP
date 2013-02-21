@@ -1,1 +1,2 @@
-<%= @abbreviation or @name %>
+<div class="name"><%= @abbreviation or @name %></div>
+<div class="type"><%= @organizationType %></div>

@@ -32,12 +32,11 @@ module.exports = DraggableDroppableView.extend({
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
-    this.model.on('change:organizationType',this.updateType,this);
+    this.model.on('change:organizationType', this.updateType, this);
     this.initOrganizationType();
   },
 
   initOrganizationType: ActorDetailsView.prototype.initOrganizationType,
-  updateType: ActorDetailsView.prototype.updateType,
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
@@ -57,6 +56,10 @@ module.exports = DraggableDroppableView.extend({
   updateName: function(){
     this.$('.name').text( this.determineName() );
   },
+  
+  updateType: function(){
+    this.$('.type').text( this.model.get('organizationType') );
+  },
 
   updateCorruptionRisk: function(){
     this.$el.toggleClass('hasCorruptionRisk', this.model.get('hasCorruptionRisk'));
@@ -74,7 +77,11 @@ module.exports = DraggableDroppableView.extend({
   },
 
   getRenderData: function() {
-    return { name: this.determineName(), orgaType: this.orgaType};
+    return { 
+      name: this.determineName(), 
+      orgaType: this.orgaType,
+      organizationType: this.model.get('organizationType')
+    };
   },
 
   afterRender: function(){
