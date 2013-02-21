@@ -26,18 +26,22 @@ module.exports = AsyncRouter.extend({
     'edit/' : 'country_selection',
     'edit/countries': 'edit_countries',
     'edit/countries/': 'edit_countries',
-    'edit/:country': 'country_edit_index',
-    'edit/:country/': 'country_edit_index',
+    'edit/:country': 'actor_editor',
+    'edit/:country/': 'actor_editor',
     'edit/:country/actors': 'actor_editor',
     'edit/:country/money/list': 'money_connections_list',
     'import/:country/money': 'import'
   },
 
   index: function(){
+    config.disableRealtime();
+
     this.switchToView(new IndexView({countries: this.app.countries}));
   },
 
   showCountry: function(country){
+    config.disableRealtime();
+
     var router = this;
     var countries = this.app.countries;
     var selectedCountry;
@@ -59,6 +63,8 @@ module.exports = AsyncRouter.extend({
   },
 
   login: function(forward){
+    config.disableRealtime();
+
     // redirect to edit in default case
     if(!forward) forward = '/edit';
     
@@ -69,18 +75,22 @@ module.exports = AsyncRouter.extend({
   },
 
   country_selection: function(){
+    config.disableRealtime();
     this.switchToView(new CountrySelectionView({countries: this.app.countries}));
   },
 
   edit_countries: function(){
+    config.disableRealtime();
     this.switchToView(new EditCountriesView({countries: this.app.countries}));
   },
 
   country_edit_index: function(country){
+    config.disableRealtime();
     this.switchToView(new CountryEditIndexView({ country: country}));
   },
 
   actor_editor: function(country) {
+    config.enableRealtime();
     var router = this;
     var countries = this.app.countries;
     var selectedCountry;
@@ -102,11 +112,13 @@ module.exports = AsyncRouter.extend({
   },
 
   import: function(country) {
+    config.disableRealtime();
     // switch view with animation
     this.switchToView(new ImportView({country: country}));
   },
 
   money_connections_list: function(country){
+    config.disableRealtime();
     var router = this;
 
     var actors = new Actors();

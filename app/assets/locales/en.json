@@ -71,6 +71,9 @@
   "money": "Money",
   "money_mode": "Money Mode",
   "monitoring": "Monitoring",
+  "is_accountable_for": "is accountable for",
+  "is_corruption_risk": "There is a corruption risk.",
+  "not_given": "Not given",
   "monitors": "monitors",
   "multilateral_org": "Multilateral Organization",
   "new_acc_connection": "New Accountability Connection",
@@ -105,5 +108,6 @@
   "Wrong username or password!": "Wrong username or password!",
   "You need to specify a country for the collection.": "You need to specify a country for the collection.",
   "You need to specify a urlPart for the collection": "You need to specify a urlPart for the collection",
-  "Your data seems to be outdated, please reload your browser to prevent errors.": "Your data seems to be outdated, please reload your browser to prevent errors."
+  "Your data seems to be outdated, please reload your browser to prevent errors.": "Your data seems to be outdated, please reload your browser to prevent errors.",
+  "Presentation": "Presentation"
 }

@@ -1,10 +1,10 @@
 <% if @locationType or @locationName: %>
   <% if @currentRoute is 'showCountry': %>
-    <a href="/" class="button"><%= t('Countries') %></a>
+    <a href="/" class="button joined"><%= t('Countries') %></a>
   <% else: %>
-    <a href="/edit" class="button"><%= t('Dashboard') %></a>
+    <a href="/edit" class="button joined"><%= t('Dashboard') %></a>
   <% end %>
-  <a class="location button active">
+  <a class="location button joined active">
     <% if @isoLocation: %>
       <span class="flag" style="background-image: url(/images/flags/<%= @isoLocation %>.svg);"></span>
       <%= @locationName %>

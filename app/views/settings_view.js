@@ -6,14 +6,21 @@ module.exports = View.extend({
   template: require('./templates/settings'),
   className: 'settings',
   
-  events: {
-    'click': 'stopPropagation',
+  events: function() {
+    var _events = {
+      'click': 'stopPropagation',
     
-    // the show/hide button
-    'click .button': 'toggle',
-    
-    'change #showMonitoring': 'toggleMonitoring',
-    'change #language': 'changeLanguage'
+      // the show/hide button
+      'click .cog': 'toggle',
+
+      'change #showMonitoring': 'toggleMonitoring',
+      'change #language': 'changeLanguage'
+    };
+
+    // bind dynamic input event (touch or mouse)
+    _events[ this.inputDownEvent] = 'stopPropagation';
+
+    return _events;
   },
   
   initialize: function(options){    
@@ -77,6 +84,7 @@ module.exports = View.extend({
     ];
     
     return { 
+      presentationLink: '/show/' + this.editor.country.get('abbreviation'),
       languages: languages,
       active: config.get('language'),
       showMonitoring: this.editor.country.get('showMonitoring')

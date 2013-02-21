@@ -1,8 +1,9 @@
-<div class="actor">
+<div class="actor-style">
   <div class="caption">
-    <span class="name">
-      <%= @abbreviation or @name %>
-    </span>
+    <div class="text">
+      <div class="name"><%= @abbreviation or @name %></div>
+      <div class="type"><%= @organizationType %></div>
+    </div>
     <div class="dropdown-control">
      <div class="arrow"> ▼</div>
     </div>

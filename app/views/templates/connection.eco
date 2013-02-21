@@ -1,5 +1,4 @@
-<div class="corruptionRisk">
-</div>
-<div class="metadata">
-	$<%= @disbursed %> 
-</div>
+<% if @connectionType is 'money': %>
+<div class="metadata"><%= @disbursed %></div>
+<% end %>
+<div class="corruptionRisk"></div>

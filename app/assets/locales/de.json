@@ -48,7 +48,7 @@
   "Full_Name": "Vollständiger Name",
   "funding": "Finanzierung",
   "Governance": "Regierung",
-  "gov_agency": "regierungsbehörde",
+  "gov_agency": "Regierungsbehörde",
   "gov_ministry": "Regierungs-Ministerium",
   "green_lines": "Alle grün markierten Linien haben zwei passende Actors und werden der Datenbank hinzugefügt.",
   "implementation": "Umsetzung",
@@ -96,12 +96,14 @@
   "type to add country": "Tipp das Land ein...",
   "Unknown": "Unbekannt",
   "wrong_uname_pw": "Falscher Nutzername oder Passwort!",
-  "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu."
-  }
-  
-
-
-
-
-
-
+  "Your data seems to be outdated, please reload your browser to prevent errors.": "Deine Daten sind nicht mehr auf dem neuesten Stand. Bitte lade die Seite neu.",
+  "Settings": "Einstellungen",
+  "Show Monitoring": "Monitoring anzeigen",
+  "Language": "Sprache",
+  "This will also delete all included actors of this group. Proceed?": "Damit werden auch alle Actor in dieser Grupper gelöscht. Fortfahren?",
+  "not_given": "Keine Angabe",
+  "unknown amount": "Unbekannte Summe",
+  "Presentation": "Präsentation",
+  "Yes": "Ja",
+  "No": "No"
+}

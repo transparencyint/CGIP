@@ -9,23 +9,32 @@ module.exports = View.extend({
   className : 'connection',
   selectable : true,
 
-  events: {
-    'mouseover' : 'showMetadata',
-    'mousemove' : 'stickMetadata',
-    'mouseout' : 'hideMetadata',
-    'mousedown' : 'hideMetadata',
-    'dblclick' : 'showDetails',
-    'click' : 'select'
+  events: function(){
+    var _events = {
+      'click': 'select',
+      'dblclick': 'showDetails'
+    };
+    
+    _events[ this.inputMoveEvent ] = 'updateMetada';
+    _events[ this.inputDownEvent ] = 'inputDown';
+    _events[ this.inputUpEvent ] = 'cancelLongPress';
+
+    _events[ 'mouseout' ] = 'hideMetadata';
+    
+    return _events;
   },
 
   initialize: function(options){
     View.prototype.initialize.call(this, options);
+    
+    _.bindAll(this, 'showDetails','select');
 
     this.model.coinSizeFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
     this.markerSize = 4;
+    this.longPressDelay = 500;
     
     this.selectionBorderSize = 4;
     this.clickAreaRadius = 40;
@@ -38,15 +47,33 @@ module.exports = View.extend({
     if(options.noClick)
       this.$el.unbind('click');
 
-    if(this.model.from)
+    if(this.model.from){
       this.model.from.on('change:pos', this.update, this);
+    }
       
-    if(this.model.to)
+    if(this.model.to){
       this.model.to.on('change:pos', this.update, this);
+    }
 
     this.model.on('destroy', this.destroy, this);
+    this.model.on('inScope', this.inScope, this);
 
     this.isMoney = this.model.get('connectionType') === 'money';
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
+  },
+  
+  getRenderData: function(){
+    
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.checkMetadataMessage(moneyMode);
+        
+    return { 
+      moneyMode: amount, 
+      connectionType: this.model.get('connectionType')
+    };
   },
 
   render: function(){
@@ -62,12 +89,15 @@ module.exports = View.extend({
     if(this.model.to)
       this.model.to.off('change:pos', this.update, this);
     
-    this.model.unregisterLockEvents();
+    this.model.unregisterRealtimeEvents();
     
     View.prototype.destroy.call(this);
   },
   
   afterRender: function(){
+    
+    this.metadata = this.$('.metadata');
+    this.$el.attr('id', this.model.id);
     
     this.path = "";
     this.$el.svg();
@@ -96,11 +126,9 @@ module.exports = View.extend({
 
     this.arrow = this.svg.marker(this.defs, this.model.id +'-arrow', this.markerRatio/2, this.markerRatio/2, this.markerRatio, this.markerRatio, 'auto', { class_: 'arrow' });
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
-    
 
     if(this.isMoney){
       this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:disbursed', this.updateDisbursed, this);
       this.model.on('change:coinSizeFactor', this.update, this);
     }
 
@@ -110,6 +138,8 @@ module.exports = View.extend({
 
     this.$el.addClass( this.model.get("connectionType") );
   },
+
+  inScope: function(){ this.$el.removeClass('outOfScope'); },
 
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');
@@ -427,46 +457,74 @@ module.exports = View.extend({
 
     // render all paths and clones
     // (tried to do this just once and then only update the path but that produced unwanted 'ghost' connections)
-    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id });
-    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.selectSettings);
-    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, this.pathSettings);
-    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id, { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
-  },
-
-  updateDisbursed: function(){ 
-    this.$('.metadata').text('$' + this.model.get('disbursed'));
-  },
-
-  showDetails: function(){
-    if(this.model.isLocked()) return; // don't show when model is locked
-
-    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this });
-    this.editor.$el.append(cfw.render().el);
-  },
-
-  showMetadata: function(e){
-    if(this.model.get('disbursed')){
-      var metadata = this.$('.metadata');
-      metadata.css({left: e.offsetX + 30, top: e.offsetY + 10});
-      metadata.show();
-    }
+    this.pathSymbol = this.svg.path(this.g, this.path, { 'id': this.model.id +'-path' });
+    this.selectPath = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.selectSettings);
+    this.pathElement = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', this.pathSettings);
+    this.clickArea = this.svg.use(this.g, 0, 0, "100%", "100%", '#' + this.model.id +'-path', { class_: 'clickBorder', strokeWidth: this.clickAreaRadius });
   },
   
-  stickMetadata: function(e){
-    var pos = this.editor.offsetToCoords({ 
-      left: e.pageX - this.pos.x, 
-      top: e.pageY - this.pos.y
-    });
+  inputDown: function(event){
+    // select
+    event.stopPropagation();
+    this.select();
     
-    this.$('.metadata').css({
-      left: pos.x + 30, 
-      top: pos.y + 10
-    });
+    // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
+    if(Modernizr.touch)
+      this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay, event);
+  },
+  
+  cancelLongPress: function(){
+    clearTimeout(this.longPressTimeout);
   },
 
-  hideMetadata: function(e){ 
+  showDetails: function(event){    
+    if(this.model.isLocked()) return; // don't show when model is locked
+    
+    var mousePosition = {
+      left: this.normalizedX(event),
+      top: this.normalizedY(event)
+    };
+
+    var cfw = new ConnectionDetailsView({ model: this.model, editor: this.editor, connection: this, mousePosition: mousePosition });
+    this.editor.$el.append(cfw.render().el);
+    
+    return false;
+  },
+
+  updateMetada: function(event){
+
+    if(!this.isMoney) return
+    
+    this.metadata.css({
+      left: event.offsetX - 20,
+      top: event.offsetY - 30
+    });
+    
+    // update the amount
+    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
+    var amount = this.checkMetadataMessage(moneyMode);
+    
     var metadata = this.$('.metadata');
-    metadata.hide();  
+    metadata.text(amount);
+    metadata.show();
+
+    clearTimeout(this.metadataTimeout);
+    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
+
+  },
+
+  checkMetadataMessage: function(moneyMode){
+    var amount = this.model.get(moneyMode);
+    if(amount < 1)
+      amount = t('unknown amount');
+    else
+      amount = '$ ' + amount;
+
+    return amount;
+  },
+
+  hideMetadata: function(){
+    this.metadata.hide();
   },
   
   definePath1Line: function(start, end){

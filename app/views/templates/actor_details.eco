@@ -1,177 +1,176 @@
-<div class="arrow"></div>
-
-<form>
-  <div class="holder">
-    <div>
-      <input type="text" class="big" id="name" name="name" value="<%= @name %>" placeholder="<%= t('Full_Name') %>" />
-      <input type="text" class="small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
-    </div>
+<div class="animationHolder">
+  <div class="arrow"></div>
+  <form>
+    <div class="holder">
+      <div>
+        <input type="text" class="big" id="name" name="name" value="<%= @name %>" placeholder="<%= t('Full_Name') %>" />
+        <input type="text" class="small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
+      </div>
   
-  	<div>
-  		<h4><label for="organizationType"><%= t('Type')%></label></h4>
-  		<div class="organizationType clearfix">
-  		  <select id="organizationType" class="hasAdditionalInfo" name="organizationType">
-  		    <option value=""><%= t('Unknown')%></option>
-    		  <optgroup label="<%= t('funding') %>">
-    		    <option value="Bank" <% if @organizationType == 'Bank': %> selected <% end%>><%= t('Bank') %></option>
-    	  		<option value="Bilateral Organization" <% if @organizationType == 'Bilateral Organization': %> selected <% end%>><%= t('bilateral_org') %></option>
-      			<option value="Multilateral Organization" <% if @organizationType == 'Multilateral Organization': %> selected <% end%>><%= t('multilateral_org') %></option>
-      			<option value="Trust Fund" <% if @organizationType == 'Trust Fund': %> selected <% end%>><%= t('trust_fund') %></option>
-          </optgroup>
-          <optgroup label="<%= t('coordination') %>">
-    		    <option value="Government Ministry" <% if @organizationType == 'Government Ministry': %> selected <% end%>><%= t('gov_ministry') %></option>
-            <option value="Government Agency" <% if @organizationType == 'Government Agency': %> selected <% end%>><%= t('gov_agency') %></option>
-          </optgroup>
-          <optgroup label="<%= t('implementation') %>">
-            <option value="Research Organization" <% if @organizationType == 'Research Organization': %> selected <% end%>><%= t('research_org') %></option>
-    			  <option value="Civil Society Organization" <% if @organizationType == 'Civil Society Organization': %> selected <% end%>><%= t('civil_soc_org') %></option>
-    			  <option value="Private Company" <% if @organizationType == 'Private Company': %> selected <% end%>><%= t('private_company') %></option>
-    			</optgroup>
-    			<option value="other" <% if @organizationType == 'other': %> selected <% end %>><%= t('other') %></option>
-    		</select>
-    		<div class="additionalInfo <% if @organizationType != 'other': %> hidden <% end %>">
-    		  <input type="text" id="typeOther" value="<%= @typeOther %>" class="small" name="typeOther">
+    	<div>
+    		<h4><label for="organizationType"><%= t('Type')%></label></h4>
+    		<div class="organizationType clearfix">
+    		  <select id="organizationType" class="hasAdditionalInfo" name="organizationType">
+    		    <option value=""><%= t('Unknown')%></option>
+      		  <optgroup label="<%= t('funding') %>">
+      		    <option value="Bank" <% if @organizationType == 'Bank': %> selected <% end%>><%= t('Bank') %></option>
+      	  		<option value="Bilateral Organization" <% if @organizationType == 'Bilateral Organization': %> selected <% end%>><%= t('bilateral_org') %></option>
+        			<option value="Multilateral Organization" <% if @organizationType == 'Multilateral Organization': %> selected <% end%>><%= t('multilateral_org') %></option>
+        			<option value="Trust Fund" <% if @organizationType == 'Trust Fund': %> selected <% end%>><%= t('trust_fund') %></option>
+            </optgroup>
+            <optgroup label="<%= t('coordination') %>">
+      		    <option value="Government Ministry" <% if @organizationType == 'Government Ministry': %> selected <% end%>><%= t('gov_ministry') %></option>
+              <option value="Government Agency" <% if @organizationType == 'Government Agency': %> selected <% end%>><%= t('gov_agency') %></option>
+            </optgroup>
+            <optgroup label="<%= t('implementation') %>">
+              <option value="Research Organization" <% if @organizationType == 'Research Organization': %> selected <% end%>><%= t('research_org') %></option>
+      			  <option value="Civil Society Organization" <% if @organizationType == 'Civil Society Organization': %> selected <% end%>><%= t('civil_soc_org') %></option>
+      			  <option value="Private Company" <% if @organizationType == 'Private Company': %> selected <% end%>><%= t('private_company') %></option>
+      			</optgroup>
+      			<option value="other" <% if @organizationType == 'other': %> selected <% end %>><%= t('other') %></option>
+      		</select>
+      		<div class="additionalInfo <% if @organizationType != 'other': %> hidden <% end %>">
+      		  <input type="text" id="typeOther" value="<%= @typeOther %>" class="small" name="typeOther">
+      		</div>
     		</div>
   		</div>
-  	</div>
 
-    <div class="multiCheckboxes role clearfix">
-      <h4><%= t('Role'); %></h4>
-      <table>
-        <tr>
-          <td>
-            <input type="checkbox" name="role" value="funding" id="funding" 
-            <% if @role: %> 
-              <% if 'funding' in @role: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="funding"><%= t('funding') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="role" value="coordination" id="coordination" 
-            <% if @role: %> 
-              <% if 'coordination' in @role: %> 
-                checked
-              <% end %>
-            <% end %>>
-            <label for="coordination"><%= t('coordination') %></label>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="role" value="implementation" id="implementation" 
-            <% if @role: %> 
-              <% if 'implementation' in @role: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="implementation"><%= t('implementation') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="role" value="monitoring" id="monitoring" 
-            <% if @role: %> 
-              <% if 'monitoring' in @role: %> 
-                checked
-              <% end %>
-            <% end%>>
-            <label for="monitoring"><%= t('monitoring') %></label>
-          </td>
-        </tr>
-      </table>
-    </div>
+      <div class="multiCheckboxes role clearfix">
+        <h4><%= t('Role'); %></h4>
+        <table>
+          <tr>
+            <td>
+              <input type="checkbox" name="role" value="funding" id="funding"
+              <% if @role: %>
+                <% if 'funding' in @role: %>
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="funding">Funding</label>
+            </td>
+            <td>
+              <input type="checkbox" name="role" value="coordination" id="coordination"
+              <% if @role: %>
+                <% if 'coordination' in @role: %>
+                  checked
+                <% end %>
+              <% end %>>
+              <label for="coordination">Coordination</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" name="role" value="implementation" id="implementation"
+              <% if @role: %>
+                <% if 'implementation' in @role: %>
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="implementation">Implementation</label>
+            </td>
+            <td>
+              <input type="checkbox" name="role" value="monitoring" id="monitoring"
+              <% if @role: %>
+                <% if 'monitoring' in @role: %>
+                  checked
+                <% end %>
+              <% end%>>
+              <label for="monitoring">Monitoring</label>
+            </td>
+          </tr>
+        </table>
+      </div>
      
-    <div class="multiCheckboxes clearfix">
-
-      <h4><%= t('Purpose')%></h4>
-      <table>
-        <tr>
-          <td>
-            <input type="checkbox" name="purpose" value="adaption" id="adaption"
-            <% if @purpose: %> 
-              <% if 'adaption' in @purpose: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="adaption"><%= t('adaption') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="purpose" value="mitigation" id="mitigation"
-            <% if @purpose: %> 
-              <% if 'mitigation' in @purpose: %> 
-                <% mitigation = true; %>
-                checked
-              <% end %>
-            <%end%>>
-            <label for="mitigation"><%= t('mitigation') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="purpose" value="research" id="research"
-            <% if @purpose: %> 
-              <% if 'research' in @purpose: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="research"><%= t('research') %></label>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="checkbox" name="purpose" value="capacity_building" id="capacity_building"
-            <% if @purpose: %> 
-              <% if 'capacity_building' in @purpose: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="capacity_building"><%= t('cap_building') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="purpose" value="redd" id="redd"
-            <% if @purpose: %> 
-              <% if 'redd' in @purpose: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="redd"><%= t('redd') %></label>
-          </td>
-          <td>
-            <input type="checkbox" name="purpose" value="CDM" id="CDM"
-            <% if @purpose: %> 
-              <% if 'CDM' in @purpose: %> 
-                checked
-              <% end %>
-            <%end%>>
-            <label for="CDM"><%= t('cdm') %></label>
-          </td>
-        </tr> 
-      </table>
-    </div>
+      <div class="multiCheckboxes clearfix">
+        <h4><%= t('Purpose')%></h4>
+        <table>
+          <tr>
+            <td>
+              <input type="checkbox" name="purpose" value="adaption" id="adaption"
+              <% if @purpose: %> 
+                <% if 'adaption' in @purpose: %> 
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="adaption"><%= t('adaption') %></label>
+            </td>
+            <td>
+              <input type="checkbox" name="purpose" value="mitigation" id="mitigation"
+              <% if @purpose: %> 
+                <% if 'mitigation' in @purpose: %> 
+                  <% mitigation = true; %>
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="mitigation"><%= t('mitigation') %></label>
+            </td>
+            <td>
+              <input type="checkbox" name="purpose" value="research" id="research"
+              <% if @purpose: %> 
+                <% if 'research' in @purpose: %> 
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="research"><%= t('research') %></label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="checkbox" name="purpose" value="capacity_building" id="capacity_building"
+              <% if @purpose: %> 
+                <% if 'capacity_building' in @purpose: %> 
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="capacity_building"><%= t('cap_building') %></label>
+            </td>
+            <td>
+              <input type="checkbox" name="purpose" value="redd" id="redd"
+              <% if @purpose: %> 
+                <% if 'redd' in @purpose: %> 
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="redd"><%= t('redd') %></label>
+            </td>
+            <td>
+              <input type="checkbox" name="purpose" value="CDM" id="CDM"
+              <% if @purpose: %> 
+                <% if 'CDM' in @purpose: %> 
+                  checked
+                <% end %>
+              <%end%>>
+              <label for="CDM"><%= t('cdm') %></label>
+            </td>
+          </tr> 
+        </table>
+      </div>
   
-  	<div>
-  	  <h4><%= t('Corruption Risk'); %></h4>
-  	  <input class="hasAdditionalInfo" type="checkbox" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
-  	  <label for="hasCorruptionRisk">Yes</label>
-  	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
-    	  <label for="corruptionRisk"><%= t('description') %></label>
-    	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
-    	  <label for="corruptionRiskSource"><%= t('Source'); %></label>
-    	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" placeholder="http://">
-    	</div>
-  	</div>
+    	<div>
+    	  <h4><%= t('Corruption Risk'); %></h4>
+    	  <input class="hasAdditionalInfo" type="checkbox" name="hasCorruptionRisk" id="hasCorruptionRisk" <% if @hasCorruptionRisk: %> checked <% end %>>
+    	  <label for="hasCorruptionRisk">Yes</label>
+    	  <div class="additionalInfo inlay <% if @hasCorruptionRisk == false: %> hidden <% end %>">
+      	  <label for="corruptionRisk"><%= t('description') %></label>
+      	  <textarea id="corruptionRisk" name="corruptionRisk" data-type="text"><%= @corruptionRisk %></textarea>
+      	  <label for="corruptionRiskSource"><%= t('Source'); %></label>
+      	  <input type="text" id="corruptionRiskSource" name="corruptionRiskSource" value="<%= @corruptionRiskSource %>" placeholder="http://">
+      	</div>
   	
-  	<div>
-  	  <h4><label for="description"><%= t('Note')%>:</label></h4>
-  		<textarea id="description" name="description" data-type="text"><%= @description%></textarea>
-  	</div> 
-	</div><!-- /.holder -->
-	
-	<div class="controls clearfix">
-    <div class="row right">
-      <button type="submit" class="done"><%= t('Save')%></button>
-      <button class="cancel"><%= t('Close')%></button>
+      	<div>
+      	  <h4><label for="description"><%= t('Note')%>:</label></h4>
+      		<textarea id="description" name="description" data-type="text"><%= @description%></textarea>
+      	</div> 
+      </div>
+    </div><!-- /.holder -->
+  	<div class="controls clearfix">
+      <div class="row right">
+        <button type="submit" class="done"><%= t('Save')%></button>
+        <button class="cancel"><%= t('Close')%></button>
+      </div>
+      <div class="row left">
+        <button class="delete"><%= t('Delete')%></button>
+      </div>
     </div>
-    <div class="row left">
-      <button class="delete"><%= t('Delete')%></button>
-    </div>
-  </div>
-</form>
+  </form>
+</div>

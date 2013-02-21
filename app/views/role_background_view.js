@@ -6,8 +6,12 @@ module.exports = View.extend({
 
   template: require('./templates/role_background'),
 
-  events: {
-    'mousedown .draghandle': 'dragRoleHandle'
+  events: function(){
+    var _events = {};
+    
+    _events[ this.inputDownEvent + ' .draghandle' ] = 'dragStart';
+    
+    return _events;
   },
   
   initialize: function(options){
@@ -37,34 +41,32 @@ module.exports = View.extend({
     // the minimum width of a role background
     this.minRoleWidth = 182;
 
+    this.dragOver = null; 
+
     _.bindAll(
       this, 
-      'dragRoleHandleStart', 
-      'dragRoleHandleStop'
+      'drag', 
+      'dragStop'
     );
   },
-  
-  stopPropagation: function(event){
-    event.stopPropagation();
-  },
 
-  dragRoleHandle: function(event){
+  dragStart: function(event){
+    event.preventDefault();
     event.stopPropagation();
 
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
+    this.roleAreaOffsets.draghandleLeft = this.normalizedX(event);
     
-    $(document).on('mousemove.draghandle', {
-      roleSelector: $(event.currentTarget).attr('rel') }, 
-      this.dragRoleHandleStart
+    $(document).on( this.inputMoveEvent, 
+      {
+        roleSelector: $(event.currentTarget).attr('rel') 
+      }, 
+      this.drag
     );
 
-    $(document).one('mouseup', {
-      roleSelector: $(event.currentTarget).attr('rel') }, 
-      this.dragRoleHandleStop
-    );
+    $(document).one(this.inputUpEvent, this.dragStop);
   },
 
-  dragRoleHandleStart: function(event){
+  drag: function(event){
 
     $('#actorEditor').addClass('dragcursor');
 
@@ -72,21 +74,22 @@ module.exports = View.extend({
     var roleSelector = event.data.roleSelector;
     var roleIndex = this.roles.indexOf(roleSelector);
     var isDraggable = true;
-    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - event.pageX;
+    var inputX = this.normalizedX(event);
+    var deltaXAbsolute = this.roleAreaOffsets.draghandleLeft - inputX;
 
-    this.roleAreaOffsets.draghandleLeft = event.pageX;
+    this.dragOver = null;
+    this.roleAreaOffsets.draghandleLeft = inputX;
 
     // check if the dimensions are larger then the minimum role width
     if(roleIndex > 0 && roleIndex != -1){
       if(this.defaultRoleDimensions[roleIndex] - this.defaultRoleDimensions[roleIndex-1] - deltaXAbsolute < this.minRoleWidth){  
-        isDraggable = false;
+
+        this.dragOver = 'left';
       }else if(this.defaultRoleDimensions[roleIndex] - deltaXAbsolute > this.defaultRoleDimensions[roleIndex+1] - this.minRoleWidth){ 
-        // check if monitoring is inactive
-        if(roleIndex == 3 && !this.$('#monitoring').is(':visible')){
-          isDraggable = true;
-        }else
-          isDraggable = false;
+        
+        this.dragOver = 'right';
       }
+      isDraggable = true;
     }else if(roleIndex == 0){
       if(this.defaultRoleDimensions[0] - deltaXAbsolute > this.defaultRoleDimensions[1] - this.minRoleWidth){ 
         isDraggable = false;
@@ -103,8 +106,26 @@ module.exports = View.extend({
       // we need to use float values here in order to prevent role area shifts
       if(roleSelector == 'last')
         this.defaultRoleDimensions[4] = this.defaultRoleDimensions[4] - deltaXAbsolute;
-      else
+      else {
+
         this.defaultRoleDimensions[roleIndex] = this.defaultRoleDimensions[roleIndex] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);
+        
+        if(roleIndex > 0){
+          if(this.dragOver == 'left'){
+            // move all previous roles to the left
+            for(var i=0; i<roleIndex; i++){
+               this.defaultRoleDimensions[i] = this.defaultRoleDimensions[i] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);   
+            }
+          }
+          else if(this.dragOver == 'right'){
+            // move all next roles to the right
+            for(var i=roleIndex+1; i<this.defaultRoleDimensions.length; i++){
+              this.defaultRoleDimensions[i] = this.defaultRoleDimensions[i] - deltaXAbsolute + (deltaXAbsolute - deltaXAbsolute*this.editor.zoom.sqrt);   
+            }
+          }
+        }
+      }
+        
       
       // the draghandles define the positions and widths of the role backgrounds
       // save the dimensions when they are dragged
@@ -116,11 +137,11 @@ module.exports = View.extend({
     }
   },
 
-  dragRoleHandleStop: function(event){
+  dragStop: function(event){
     this.country.set({'roleDimensions' : this.defaultRoleDimensions});
     this.country.save();
 
-    $(document).unbind('mousemove.draghandle');
+    $(document).unbind(this.inputMoveEvent, this.drag);
     $('#actorEditor').removeClass('dragcursor');
   },
 

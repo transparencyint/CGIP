@@ -1,33 +1,170 @@
-.column
-  float left
-  display inline
-  margin-left 10px
-  margin-right 10px
+@font-face
+  font-family HelveticaNeueW01-57Cn
+  src url(/HelveticaNeueW01-57Cn.woff) format(woff)
 
-.index
-  padding 15px
-
-  section
-    margin 10px
-
-  ul.countrys
-    @extends .column
-    width 250px
-    
-    li
-      width auto
-      cursor pointer
-
+#worldMap
+  position absolute
+  left 0
+  right 0
+  top 0
+  bottom 0
+  background -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background    -moz-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background     -ms-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background      -o-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  background         radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
+  overflow auto
+  .inner
+    width 960px
+    color #5d5d5d
+  header 
+    height 80px
+    position relative
+    h1 
+      display block
+      margin 30px 0
+      padding 0 13px 17px
+      color #333
+      font-size 24px
+      font-family "HelveticaNeueW01-57Cn"
+      font-weight normal
+      text-shadow none
+      text-transform uppercase
+      background url(/images/bg-title.png) repeat-x 0 100%
+    #link-area
+      position absolute
+      right 8px
+      top -2px
       a
-        color white
-        display block
-
-        &:hover
-          color white
-
-  .description
-    width 600px
-    @extends .column
-
-    p
-      margin-top 0
+        line-height 27px
+        height 27px
+        color #698147
+        border-color #698147
+  a
+    color hsl(205,68%,52%)
+    text-decoration none 
+  .map 
+    position relative
+    height 422px
+    width 956px
+    margin-left 2px
+    perspective 1000
+  .map:before 
+    content ""
+    position absolute
+    left 0
+    top 0
+    right 0
+    bottom 0
+    background url(/images/greenWorld.png) no-repeat center
+    opacity .5
+  .point 
+    position absolute
+    margin -4px 0 0 -4px
+    width 8px
+    height 8px
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
+    border-radius 100%
+    opacity 0
+    transform translateZ(200px)
+    transform-style preserve-3d
+  .point.appear 
+    opacity 1
+    transform translateZ(0)
+    transition transform 500ms, opacity 500ms
+  .label 
+    position absolute
+    white-space nowrap
+    left -18px
+    top -44px
+    opacity 0
+    transform translateY(-13px)
+  .point.appear .label 
+    opacity 1
+    transform translateY(0)
+    transition transform 500ms 500ms, opacity 500ms 500ms
+  .point:active .label 
+    top -43px
+  .below .label 
+    top 19px
+    transform translateY(13px)
+  .point.below:active .label 
+    top 20px
+  .right .label 
+    left auto
+    right -18px
+  .label a 
+    display block
+    padding 8px 13px 7px
+    color white
+    line-height 1
+    text-decoration none
+    border-radius 3px
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
+  .arrow 
+    position absolute
+    bottom -9px
+    left 14px
+    overflow hidden
+    width 16px
+    height 10px
+  .below .arrow 
+    bottom auto
+    top -8px
+    height 10px
+  .right .arrow 
+    left auto
+    right 14px    
+  .arrow:before 
+    content ""
+    position absolute
+    left 2px
+    top -6px
+    width 10px
+    height 10px
+    transform rotate(45deg)
+    border 1px solid hsl(205,68%,40%)
+    background hsl(205,68%,53%)
+    box-shadow 0 1px 2px hsla(205,100%,13%,.34)
+  .below .arrow:before 
+    top 4px 
+  .mexico 
+    left 183px
+    top 169px
+  .peru 
+    left 252px
+    top 272px
+  .dominicanRepublic 
+    left 264px
+    top 180px
+  .kenya 
+    left 554px
+    top 239px
+  .maledives 
+    left 647px
+    top 219px
+  .vietnam 
+    left 730px
+    top 175px
+  .indonesia 
+    left 742px
+    top 259px
+  .papuaNewGuinea 
+    left 838px
+    top 258px
+  footer 
+    margin-top 21px
+    padding 13px
+    font-size 13px
+    border-top 1px solid rgba(0,0,0,.21)
+    overflow hidden
+    box-shadow 0 1px hsla(104,100%,86%,.55) inset
+    .left 
+      float left
+    .right 
+      float right
+    

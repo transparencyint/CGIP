@@ -8,34 +8,34 @@ module.exports = DraggableDroppableView.extend({
   dropClasses: [ActorView, ActorGroupActorView, FakeActorView],
   selectable: true,
 
-  className: 'actor-group empty',
+  className: 'actor-group actor-holder empty',
   template : require('./templates/actor_group'),
   
-  width: 120,
-  height: 42,
+  width: 144,
+  height: 74,
 
   initialize: function(options){
+    this.editor = options.editor;
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop', 'destroy');
-
-    this.editor = options.editor;
+    _.bindAll(this, 'drop', 'destroy', 'showDetails');
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:organizationType', this.updateType, this);
   },
 
   events: function(){
-    var parentEvents = DraggableDroppableView.prototype.events;
-    // merge the parent events and the current events
-    return _.defaults({
-      'mousedown'               : 'dragStart',
-      'dblclick'                : 'showDetails',
-      'click .dropdown-control' : 'showActors'
-    }, parentEvents);
+    var _parentEvents = DraggableDroppableView.prototype.events();
+    var _events = _.defaults({}, _parentEvents);
+
+    // bind arrow
+    _events[ this.inputDownEvent + ' .dropdown-control' ] = 'arrowClicked';
+    
+    return _events;
   },
 
   getRenderData: function(){
@@ -60,6 +60,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.$el.attr('id', this.model.id);
   },
   
   rePickActors: function(){
@@ -78,14 +79,18 @@ module.exports = DraggableDroppableView.extend({
     this.render();
   },
   
-  updateName: function(){
-    this.$('.name').text( this.model.get('name') );
-  },
+  determineName: ActorView.prototype.determineName,
+  updateName: ActorView.prototype.updateName,
+  updateType: ActorView.prototype.updateType,
   
-  showDetails: function(){
+  showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
-    this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
-    this.options.editor.$el.append(this.modal.render().el);
+    if(!this.isDraggable) return;
+
+    if(!this.wasOrIsDragging){
+      this.modal = new ActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+      this.options.editor.$el.append(this.modal.render().el);
+    }
   },
 
   open: function(){
@@ -169,8 +174,11 @@ module.exports = DraggableDroppableView.extend({
     }
   },
 
-  showActors: function(event){
+  arrowClicked: function(event){
     if(this.hovered || this.isDragging) return;
+
+    event.stopPropagation();
+    
     this.toggle();
   },
 

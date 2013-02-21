@@ -11,19 +11,25 @@ module.exports = View.extend({
     
     var _this = this;
     var _callback = options.callback;
-    this.callback = function(){
+    this.callback = function(event){
+      event.stopPropagation();
       _callback();
       _this.destroy();
     };
     
-    _.bindAll('callback');
+    _.bindAll(this, 'callback', 'stopPropagation');
     
     this.render();
+  },
+  
+  stopPropagation: function(event){
+    event.stopPropagation();
   },
   
   render: function(){
     this.$el.css('z-index', this.zIndex);
     this.$el.appendTo(this.holder);
-    this.$el.on('click', this.callback);
+    this.$el.on(this.inputDownEvent, this.stopPropagation);
+    this.$el.on(Modernizr.touch ? this.inputUpEvent : 'click', this.callback);
   }
 });

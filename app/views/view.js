@@ -17,15 +17,20 @@ module.exports = Backbone.View.extend({
   selectable: false,
   // don't snap to the grid,
   dontSnap: false,
+  // should the model get saved after snapping to the grid?
+  saveAfterSnap: true,
   
   transEndEventName: transEndEventNames[ Modernizr.prefixed('transition') ],
+  inputDownEvent: Modernizr.touch ? 'touchstart' : 'mousedown',
+  inputMoveEvent: Modernizr.touch ? 'touchmove' : 'mousemove',
+  inputUpEvent: Modernizr.touch ? 'touchend' : 'mouseup',
 
   initialize: function() {    
     this.render = _.bind(this.render, this);
     this.toggleLocked = _.bind(this.toggleLocked, this);
 
     if(this.model && this.model.lockable == true)
-      this.model.on('change:locked', this.toggleLocked);
+      this.model.on('change:locked', this.toggleLocked, this);
   },
 
   template: function() {},
@@ -82,6 +87,22 @@ module.exports = Backbone.View.extend({
       this.$el.addClass('locked');
     else
       this.$el.removeClass('locked');
+  },
+  
+  /*
+    touch / mouse normalizers
+    =========================
+    
+    - changedTouches is needed because this gets called from 'touchend'
+    in 'connection_view.js', where both touches and targetTouches might
+    be empty
+     
+  */
+  normalizedX: function(event){
+    return Modernizr.touch ? event.originalEvent.changedTouches[0].pageX : event.pageX;
+  },
+  
+  normalizedY: function(event){
+    return Modernizr.touch ? event.originalEvent.changedTouches[0].pageY : event.pageY;
   }
-
 });

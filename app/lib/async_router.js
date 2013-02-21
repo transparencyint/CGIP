@@ -16,7 +16,11 @@ module.exports = Backbone.Router.extend({
 
   _renderViewToContainer: function(view){    
     view.render();
-    $(this.containerElement).html(view.el)
+    
+    if(this.currentView)
+      this.currentView.el.remove();
+    
+    $(this.containerElement).prepend(view.el);
     this.currentView = view;
 
     if(view.enter)
