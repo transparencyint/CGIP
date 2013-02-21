@@ -1,4 +1,5 @@
 {
+  "A connection has to have two different actors. Or at least one set to 'none'.": "A connection has to have two different actors. Or at least one set to 'none'.",
   "accountability": "Accountability",
   "Action": "Action",
   "adaption": "Adaptation",
@@ -6,6 +7,9 @@
   "add_con": "Add Connection",
   "add_content": "Add Content",
   "add_country": "Add Country",
+  "Add Country": "Add Country",
+  "Are you sure you want to delete this connection?": "Are you sure you want to delete this connection?",
+  "Are you sure you want to remove": "Are you sure you want to remove",
   "Bank": "Bank",
   "bilateral_org": "Bilateral Organization",
   "Cancel": "Cancel",
@@ -34,6 +38,7 @@
   "description": "Description",
   "disbursed": "disbursed",
   "Disbursed": "Disbursed",
+  "dragByDelta is not implemented.": "dragByDelta is not implemented.",
   "drag_drop": "Drag & Drop file here",
   "drag_elements_for_matching": "Drag the 5 elements to the matching headline column. The headlines with the * are obligatory.",
   "drag_here": "Drag here",
@@ -53,6 +58,9 @@
   "import_csv": "Import CSV",
   "Integrity": "Integrity",
   "import_money_con": "Import Money Connections",
+  "In order to create a connection you have to specify a country.": "In order to create a connection you have to specify a country.",
+  "In order to create an actor you have to specify a country." : "In order to create an actor you have to specify a country.",
+  "In order to set an actor for a connection, the actor needs an id!": "In order to set an actor for a connection, the actor needs an id!",
   "is_accountable_for": "is accountable for",
   "is_corruption_risk": "There is a corruption risk.",
   "Language": "Language",
@@ -94,5 +102,8 @@
   "type to add country": "type to add country...",
   "Unknown": "Unknown",
   "wrong_uname_pw": "Wrong username or password!",
+  "Wrong username or password!": "Wrong username or password!",
+  "You need to specify a country for the collection.": "You need to specify a country for the collection.",
+  "You need to specify a urlPart for the collection": "You need to specify a urlPart for the collection",
   "Your data seems to be outdated, please reload your browser to prevent errors.": "Your data seems to be outdated, please reload your browser to prevent errors."
 }

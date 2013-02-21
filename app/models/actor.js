@@ -4,7 +4,7 @@ module.exports = Model.extend({
   lockable: true,
 
   url: function(){
-    if(!this.has('country')) throw('In order to create an actor you have to specify a country.');
+    if(!this.has('country')) throw(t('In order to create an actor you have to specify a country.'));
     var url = '/' + this.get('country') + '/actors';
     if(this.id)
       url += '/' + this.id
