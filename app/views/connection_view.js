@@ -68,7 +68,7 @@ module.exports = View.extend({
   getRenderData: function(){
     
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.checkMetadataMessage();
+    var amount = this.checkMetadataMessage(moneyMode);
         
     return { 
       moneyMode: amount, 
@@ -501,8 +501,7 @@ module.exports = View.extend({
     
     // update the amount
     var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-
-    var amount = this.checkMetadataMessage();
+    var amount = this.checkMetadataMessage(moneyMode);
     
     var metadata = this.$('.metadata');
     metadata.text(amount);
@@ -513,7 +512,7 @@ module.exports = View.extend({
 
   },
 
-  checkMetadataMessage: function(){
+  checkMetadataMessage: function(moneyMode){
     var amount = this.model.get(moneyMode);
     if(amount < 1)
       amount = t('unknown amount');
