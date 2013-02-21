@@ -7,6 +7,14 @@
       </div>
       <div class="dock"></div>
     </div>
+    
+    <div class="connection money control" data-connectionType="money">
+      <div class="eye"></div>
+      <div class="description" title="<%= t('new_money_connection') %>">
+        <span class="name"><%= t('money') %></span>
+        <img src="/images/moneyflow.png">
+      </div>
+    </div>
 
     <div class="connection accountability control" data-connectionType="accountability">
       <div class="eye"></div>
@@ -21,14 +29,6 @@
       <div class="description" title="<%= t('new_monitor_connection') %>">
         <span class="name"><%= t('monitoring') %></span>
         <img src="/images/monitoringflow.png">
-      </div>
-    </div>
-
-    <div class="connection money control" data-connectionType="money">
-      <div class="eye"></div>
-      <div class="description" title="<%= t('new_money_connection') %>">
-        <span class="name"><%= t('money') %></span>
-        <img src="/images/moneyflow.png">
       </div>
     </div>
   </div>
