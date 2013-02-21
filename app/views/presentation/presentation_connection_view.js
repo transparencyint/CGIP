@@ -53,7 +53,7 @@ module.exports = ConnectionView.extend({
     };
     
     _events[ this.inputMoveEvent ] = 'updateMetada';
-    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputDownEvent ] = 'inputDown';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
     return _events;
@@ -61,7 +61,7 @@ module.exports = ConnectionView.extend({
 
   updateMetada: ConnectionView.prototype.updateMetada,
   select: View.prototype.select,
-  longPress: ConnectionView.prototype.longPress,
+  inputDown: ConnectionView.prototype.inputDown,
   inScope: ConnectionView.prototype.inScope,
 
   showDetails: function(){

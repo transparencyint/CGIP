@@ -16,7 +16,7 @@ module.exports = View.extend({
     };
     
     _events[ this.inputMoveEvent ] = 'updateMetada';
-    _events[ this.inputDownEvent ] = 'longPress';
+    _events[ this.inputDownEvent ] = 'inputDown';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
     _events[ 'mouseout' ] = 'hideMetadata';
@@ -470,13 +470,14 @@ module.exports = View.extend({
     this.$('.metadata').text('$' + this.model.get('disbursed'));
   },
   
-  longPress: function(event){
+  inputDown: function(event){
     // select
     event.stopPropagation();
     this.select();
-       
+    
     // set timer to show details (this gets intersected on mouseup or when the mouse is moved)
-    this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay, event);
+    if(Modernizr.touch)
+      this.longPressTimeout = setTimeout(this.showDetails, this.longPressDelay, event);
   },
   
   cancelLongPress: function(){
