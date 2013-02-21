@@ -73,7 +73,7 @@ module.exports = View.extend({
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('destroy', this.destroy, this);
-    this.model.on('change:organizationType',this.updateType,this);
+    this.model.on('change:organizationType', this.updateType, this);
     this.initOrganizationType();
     
     // backup data for cancel
@@ -247,7 +247,7 @@ module.exports = View.extend({
     }
     
     // vertically, we want to place the modal centered
-    pos.top += actorHeight/2  - this.height/2;
+    pos.top += Math.round(actorHeight/2  - this.height/2);
     
     // if the position is too far up
     // or too down low, adjust the position AND the arrow
