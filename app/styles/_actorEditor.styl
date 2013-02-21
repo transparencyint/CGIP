@@ -1,4 +1,5 @@
-#actorEditor
+#actorEditor,
+#actorPresentation
   top 0
   left 0
   right 0
@@ -34,8 +35,8 @@
     left 50%
     width 0
     bottom 0
-    border-right 1px solid rgba(0,0,0,.21)
-    border-left 1px solid rgba(255,255,255,.08)
+    border-left 1px solid rgba(0,0,0,.21)
+    border-right 1px solid rgba(255,255,255,.08)
     position fixed
   .clickCatcher
     top 0
@@ -63,8 +64,10 @@
     
 .workspace
   position absolute
-  left 50%
-  top 78px
+  top 0
+  left 0
+  transform translate3d(50%,78px,0)
+  backface-visibility hidden
   &.hide-money
     .money
       display none
@@ -75,7 +78,7 @@
     .monitoring
       display none
   .connection
-    position absolute 
+    position absolute
 
 .gridline
   position fixed

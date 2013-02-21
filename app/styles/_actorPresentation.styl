@@ -1,75 +1,39 @@
 #actorPresentation
-  top 0
-  left 0
-  right 0
-  bottom 0
-  position absolute
-  background #2C57A7 url(/images/bluegrid.svg) center top
-  background-size 10px
-  overflow hidden
-  cursor url(/images/openhand_8_8.cur) 8 8, default
-  &:active
-    cursor url(/images/closedhand_8_8.bmp) 8 8, move
-  &.zoom200
-    background-size 200px
-  &.zoom175
-    background-size 175px
-  &.zoom150
-    background-size 150px
-  &.zoom125
-    background-size 125px
-  &.zoom75
-    background-size 75px
-  &.zoom50
-    background-size 50px
-  &.zoom25
-    background-size 25px
-  &.connectionMode
-    .actor
-      cursor default
+  background url(../images/denim.png)
+  
+  &:active.dragcursor
+    cursor default
+  
+  /* all controls (editor, navigation, zoom) */
+
+  /* is empty */
   .tool.controls
     height 51px
+    
+  /* every actor */
+  .actor,
+  .actor-style
+    cursor pointer
+  
+  /* the line indicating the center of the map */
   .centerLine
-    top 0
-    left 50%
-    width 0
-    bottom 0
-    border-right 1px solid rgba(0,0,0,.21)
-    border-left 1px solid rgba(255,255,255,.08)
-    position fixed
-  .clickCatcher
-    top 0
-    right 0
-    bottom 0
-    left 0
-    z-index 3
-    position absolute
-    cursor default
+    display none
+  
+  /* the role labels */
   .roleLabels
-    span
-      margin-top 0
-
-.sidebar  
-  position absolute
-  left 34px
-  top 51px
-  bottom 0
-  .inner
-    height 100%
-    box(center, center, vertical)
-
-.workspace
-  position absolute
-  left 50%
-  top 78px
-  &.hide-money
-    .money
-      display none
-  &.hide-accountability
-    .accountability
-      display none
-  &.hide-monitoring
-    .monitoring
-      display none
-  .connection
-    position absolute
+    border-color transparent
+    .bar
+      background hsl(218,55%,34%)
+      box-shadow 0 1px 3px rgba(0,0,0,.21)
+    .rolelabel:after,
+    .rolelabel:before
+      content ""
+      position absolute
+      left -1px
+      top 0
+      width 2px
+      height 100%
+      background linear-gradient(top, hsla(218,55%,34%,1), hsla(218,55%,34%,0))
+    .rolelabel:after
+      left auto
+      right -1px

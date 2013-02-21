@@ -27,11 +27,14 @@ module.exports = View.extend({
   dontDrag: ActorDetails.prototype.dontDrag,
   pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
   placeNextToActor: ActorDetails.prototype.placeNextToActor,
-  
+  place: ActorDetails.prototype.place,
+  getRenderData: ActorDetails.prototype.getRenderData,
+  initOrganizationType: ActorDetails.prototype.initOrganizationType,
+    
   initialize: function(options){
     View.prototype.initialize.call(this);
 
-    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy');
+    _.bindAll(this, 'handleKeys', 'drag', 'close', 'destroy', 'placeNextToActor');
     
     this.actor = options.actor;
     this.editor = options.editor;
@@ -40,6 +43,8 @@ module.exports = View.extend({
     this.arrowHeight = 42;
     this.borderRadius = 5;
     this.distanceToActor = 10;
+
+    this.initOrganizationType();
 
     // backup data for cancel
     this.backup = this.model.toJSON();
@@ -78,14 +83,6 @@ module.exports = View.extend({
   addClickCatcher: function(){
     this.clickCatcher = $('<div class="clickCatcher"></div>').appendTo(this.editor.$el);
     this.clickCatcher.on('click', this.close);
-  },
-
-  getRenderData : function(){
-    var orgaType = this.model.get('organizationType');
-    orgaType = orgaType.replace(/\s/g, ""); 
-    var data = this.model.toJSON();
-    data.orgaType = orgaType;
-    return data;
   },
 
   afterRender: function() {

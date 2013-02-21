@@ -44,7 +44,7 @@ module.exports = DraggableView.extend({
   _dragHover: function(view){
     this.hovered = true;
     this.hoveredView = view;
-    this.hoveredView.$el.css('opacity', .5);
+    this.hoveredView.$el.addClass('hovered');
     this.dragHover();
   },
 
@@ -53,7 +53,7 @@ module.exports = DraggableView.extend({
   _dragOut: function(){
     this.hovered = false;
     if(this.hoveredView){
-      this.hoveredView.$el.css('opacity', 1);
+      this.hoveredView.$el.removeClass('hovered');
       this.hoveredView = null;
     }
     this.dragOut();
@@ -78,7 +78,7 @@ module.exports = DraggableView.extend({
     }
   },
 
-  drop: function(){event, view},
+  drop: function(event, view){},
 
   destroy: function(){
     DraggableView.prototype.destroy.call(this);

@@ -5,7 +5,7 @@ var PresentationActorGroupActorView = require('./presentation_actor_group_actor_
 
 module.exports = View.extend({
 
-  className: 'actor-group',
+  className: 'actor-group actor-holder',
 
 	template : require('views/templates/presentation/presentation_actor_group'),
 

@@ -15,7 +15,7 @@ module.exports = Actor.extend({
     this.actors.model = Actor;
 
     // needed for calculations
-    this.margins = {top: 20, right: 60, bottom: 20, left: 60};
+    this.margins = {top: 27, right: 72, bottom: 28, left: 72};
 
     // remove the actor from the array
     this.actors.on('remove', this.removeFromGroup, this);
@@ -52,8 +52,10 @@ module.exports = Actor.extend({
       // add actor to the models' collectios
       this.actors.add(actor);
 
-      // trigger that the actor was moved to this group
+      // trigger that the actor was moved to 'this' group
+      // and also publish this to the other clients via the socket
       actor.trigger('moveToGroup', this);
+      socket.emit('moveToGroup', this.id);
     }
   },
 
@@ -84,9 +86,10 @@ module.exports = Actor.extend({
 
   destroy: function(){
     var actorsLength = this.get('actors').length;
-    if(actorsLength < 2 || (actorsLength > 1 && confirm(t('This will also delete all included actors of this group. Proceed?')))){
+    if(actorsLength < 2 || (actorsLength > 1 && confirm(t('delete_all_group_actors')))){
       this.actors.each(function(actor){ actor.destroy({silent: true}); });
       Actor.prototype.destroy.call(this);
     }
   }
+
 });

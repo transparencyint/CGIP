@@ -1,35 +1,70 @@
-<section>
-  <h1>Climate Governance Integrity Program</h1>
-</section>
+<div class="inner">
+  <header>
+    <h1>Climate Finance Integrity Program</h1>
+  </header>
 
-<ul class="countrys">
-  <% for country in @countries: %>
-    <li>
-      <a href="/show/<%= country.abbreviation %>">
-        <span class="flag" style="background-image: url(/images/flags/<%= country.abbreviation %>.svg);"></span>
-        <span class="name"><%= country.name %></span>
-      </a>
-    </li>
-  <% end %>
-</ul>
-
-<div class="description">
-  <p>
-  Here we can write some really awesome description about the CGIP project. 
-  It should tell the reader every little detail about it (HTW Berlin & TI in cooperation and such things).
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit.
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
+  <div class="map">
+    <div class="point mexico">
+      <div class="label">
+        <a href="/show/mx">Mexico</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point peru">
+      <div class="label">
+        <a href="/show/pe">Peru</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point dominicanRepublic">
+      <div class="label">
+        <a href="/show/do">Dominican Republic</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point kenya">
+      <div class="label">
+        <a href="/show/ke">Kenya</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point maledives">
+      <div class="label">
+        <a href="/show/mv">Maledives</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point vietnam">
+      <div class="label">
+        <a href="/show/vn">Vietnam</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point indonesia">
+      <div class="label">
+        <a href="/show/id">Indonesia</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+    <div class="point papuaNewGuinea below">
+      <div class="label">
+        <a href="/show/pg">Papua New Guinea</a>
+        <div class="arrow"></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="left">
+      <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+    </div>
+    <div class="right">
+      <% if window.user.isLoggedIn(): %>
+        <a href="/edit/">Edit View</a> –
+        <a href="/logout" external>Logout</a>
+      <% else: %>
+        <a href="/login/">Login</a>
+      <% end %>
+      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
+    </div>
+  </footer>
 </div>
