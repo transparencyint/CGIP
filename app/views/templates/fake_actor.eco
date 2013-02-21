@@ -1,3 +1,4 @@
 <div class="animationHolder">
   <div class="name"></div>
+  <div class="type"></div>
 </div>
