@@ -708,12 +708,14 @@ module.exports = View.extend({
   },
   
   panStop : function(event){
+    // always unbind the inputMoveEvent
+    $(document).unbind(this.inputMoveEvent, this.pan);
+
+    // if the editor hasn't been panned, return and do nothing
     if(!this.panX || !this.panY) return;
 
-    // update (non-silent)
+    // move the canvas
     this.moveTo(this.panX, this.panY);
-    
-    $(document).unbind(this.inputMoveEvent, this.pan);
   },
 
   calculateGridLines: function(event, view){
