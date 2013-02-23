@@ -104,7 +104,7 @@ module.exports = View.extend({
     event.preventDefault();
 
     var pos = this.$el.offset();
-    
+  
     this.startX = this.normalizedX(event) - pos.left;
     this.startY = this.normalizedY(event) - pos.top;
     
@@ -363,9 +363,11 @@ module.exports = View.extend({
   submitForm: function(){
     
     var formData = this.$('form').serializeArray();
-    var sets = [ 'purpose' ];
+
+    var sets = [ 'purpose', 'role' ];
     var cleanedData = {
-      'purpose' : []
+      'purpose' : [],
+      'role' : []
     };
     var checkboxes = [ 'hasCorruptionRisk' ];
     var hasCorruptionRisk = false;

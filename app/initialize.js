@@ -51,6 +51,7 @@ $(function() {
 
   // set up the config model
   window.config = new Config();
+  window.mediator = _.clone(Backbone.Events);
 
   // hook into socket.io in order to turn it on/off depending on the config
   var socketOn = socket.on;
