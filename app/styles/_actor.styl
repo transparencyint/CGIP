@@ -8,7 +8,7 @@
   color hsl(215,21%,21%)
   font-size 16px
   line-height 1.4
-  
+
   backface-visibility hidden
   cursor url(/images/openhand_8_8.cur) 8 8, default
   transition opacity 180ms
@@ -34,9 +34,17 @@
     background-size cover
   svg
     display none
-  &.locked
-    opacity .5
+  &.locked:after
+    content ""
+    position absolute
+    left 50px
+    top 30px
+    width 43px
+    height 11px
+    background url(../images/loading.gif);
+    background-size cover
     cursor not-allowed
+    opacity .5
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
   &.disappear .animationHolder
