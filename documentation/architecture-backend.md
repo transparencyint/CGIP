@@ -146,6 +146,34 @@ A money connection has information about the `disbused` and the `pledged` money 
     	(...)
     }
 
+## Views
+
+As perviously mentioned, CouchDB does not use SQL for querying documents. It uses map/reduce view which generate indexes on which you can perform simple key/value operations. Views are described in so-called design-documents of a database, which also are simple JSON documents ([more information on design documents](http://guide.couchdb.org/draft/design.html)). 
+
+A view consists of a `name` and the `map` and `reduce` functions. 
+
+An example of a design document can look like this:
+
+	{
+		"_id": "_design/myddoc",
+		"_rev": "1-310b73de55bd80c43ff2cc15695e4141",
+		"views": {
+       		"testView": {
+            	"map": "function(doc) { emit(doc.name, doc); }"
+       		}
+        }
+    }
+
+Each view function is executed on each document which is added to the database (or is changed). They can `emit` the needed keys and values for an index. To read more about views, again check out the [CouchDB book](http://guide.couchdb.org/draft/views.html).
+
+In this project we're using three views to structure our data:
+
+- `actorsByCountry`: simply groups actors by country, so we can get all actors of a country very easily
+- `allCountries`: a simple list of all countries
+- `connectionsByTypeAndCountry`: maps connection by their country and their type so we can query them by these two fields (makes use of Array-Indexes)
+
+The design document can be set up by running `node server/scripts/create_design_docs.js`. The view functions can be found in `server/db/design_doc.js`.
+
 ## Databases
 
 There are three databases needed to run this app:
@@ -156,8 +184,7 @@ There are three databases needed to run this app:
 
 The reason for dividing it into three databases is to disallow users to be able to change user account data. They're only allowed to write into the `cgip_data` database.
 
-You can create all needed databases by running the create_databases.js from the `server/scripts/` folder.  -> `$ node server/scripts/create_databases.js`
-
+You can create all needed databases by running the create_databases.js from the `server/scripts/` folder. (`$ node server/scripts/create_databases.js`)
 
 ### Get Production data
 
