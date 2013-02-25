@@ -80,6 +80,10 @@ module.exports = View.extend({
       {
         name: 'Espanol',
         code: 'es'
+      },
+      {
+        name: 'Portuguese',
+        code: 'pt'
       }
     ];
     
