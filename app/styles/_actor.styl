@@ -34,8 +34,6 @@
     background-size cover
   svg
     display none
-  &.locked .animationHolder
-    opacity .5
   &.locked .type
     display none
   &.locked:after
@@ -48,8 +46,8 @@
     width 43px
     height 11px
     background url(../images/loading.gif);
+  &.locked
     cursor not-allowed
-    opacity .5
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
   &.disappear .animationHolder
