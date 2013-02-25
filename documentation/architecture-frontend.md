@@ -74,6 +74,26 @@ To retrieve values from a model simply call `myModel.get('ATTRIBUTE')` on it. To
 	
 One of the most important things of Models is that they are able to trigger events when their values change so that elements are able to react to model changes. 
 
+In order to create a connection of any type, simply require its class in your current class and instantiate it by the wished values into the constructor. They can be handled as normal Backbone Models and therefore in order to save a connection you have to call save on it e.g. `myConnection.save()`. You can pass the save method an object with callbacks to be called in case of an error or success:
+
+  myConnections.save(null, {
+    success: function(){
+      // when created
+    },
+    error: function(){
+      // in case of an error
+    }
+  });
+  
+You can also simply use `myConnection.destroy()` in order to delete it from the server.
+
+### Collections
+
+__TODO__: change connection to model
+
+Each connection also has a dedicated Collection that you can also find in the same folder. These Collections can be used to fetch all the connections of that very type with the `fetch` method. In addition to that, they also have a method called `destroyAll` which deletes all the models inside that collection from the database.
+
+
 ### Views
 
 Views contain all the logic that is needed for the behavior of a certain UI element e.g. a list element with a `delete` button. Each view has one part of the DOM associated to it (you can reference it via `this.el` or `this.$el` for the jQuery element). In normal JavaScript applications the jQuery code looks very messy and is hard to understand, but the Backbone.View does provide some nice ways to structure it.
