@@ -84,6 +84,10 @@ module.exports = View.extend({
       {
         name: 'Portuguese',
         code: 'pt'
+      },
+      {
+        name: 'Russian',
+        code: 'ru'
       }
     ];
     
