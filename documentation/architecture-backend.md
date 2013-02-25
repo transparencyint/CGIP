@@ -1,10 +1,8 @@
 # Database
 
-## Technology
+The CGIP app uses [CouchDB](http://couchdb.apache.org/) which is a document-based NoSQL database. It works completely different than SQL-databases like MySQL because documents don't have a fixed scheme and queries are not written in SQL. In order to structure the data, CouchDB uses map/reduce views which create indexes that are then queried by the backend server. For a very good (and free) beginners resource check out the [CouchDB guide](http://guide.couchdb.org/draft/index.html).
 
-The CGIP app uses CouchDB as its backend and runs as a Singple Page App backed by a node.js backend that restricts db access and serves as a caching layer.
-
-## Documents
+## Document Types / Entities
 
 ### Countries
 
