@@ -11,7 +11,7 @@ In general, CouchDB documents are JSON-documents and so they can only have the t
 In order to manage documents, CouchDB adds two fields to each document:
 
 - `_id`: the document's id
-- `_rev`: the current revision of the document. CouchDB keeps track of old revisions of a document and only allows changes with correct revision numbers. (concurrent control)
+- `_rev`: the current revision of the document. CouchDB keeps track of old revisions of a document and only allows changes with correct revision numbers. (concurrency control)
 
 Besides these two fields, CouchDB only stores the actual data. Just to get an idea of what a JSON document looks like, here is a sample document:
 
@@ -46,18 +46,50 @@ For each country we're only storing some metadata, its English name and its [ISO
 - `abbreviation`: the country's abbreviation
 - `name`: the country's name (English only)
 
-All other documents will be grouped by country by adding a field `country` to them which is also an abbreviation of a country. 
+All other documents will be grouped by country by adding a field `country` to them which is the abbreviation of the country. 
 
-### Actor
+### Actor and Actor Group
 
-    {
-      "name": "World Bank",
-      "pos": {
-        "x": 23,
-        "y": 100
-      },
-      "type": "actor"
-    }
+An actor has the following scheme:
+
+	{
+   		"name": "President",
+	    "abbreviation": "P",
+   		"pos": {
+       		"x": -440,
+       		"y": 40
+   		},
+   		"organizationType": "Research Organization",
+   		"purpose": ["adaption", "mitigation"],
+   		"role": ["funding"],
+   		"description": "This is the president",
+   		"hasCorruptionRisk": true,
+    	"corruptionRisk": "He's paying a lot to this cousin's companies.",
+    	"corruptionRiskSource": "https://www.google.com",
+		"type": "actor",
+ 		"country": "do"
+	}
+
+- `name`: this actor's name
+- `abbreviation`: a short form of the name. This is quite handy when the actor is an organisation with a long name. If an abbreviation is set, it will be shown in the map instead of the name.
+- `pos`: the x- and y-position on the map
+- `organizationType`: the type
+- `purpose`: all of this actor's purposes
+- `role`: all the roles of this actor
+- `description`: a more detailed description of this actor
+- `hasCorruptionRisk`: indicates if there is a corruption risk
+- `corruptionRisk`: a more detailed description of the corruption risk
+- `corruptionRiskSource`: the source which shows the corruption risk (URL or publication reference)
+- `type`: it's an actor
+- `country`: the actor belongs to this country
+
+An Actor Group also contains the same fields as like normal actor and in addition to that also a field called `actors` which is an Array, consisting of Actor ids which are contained in this group:
+
+	{
+		(...)
+		"actors": ["sdf7w6egfw78ef7wef", "e76fw6w6vw6isivdfsdcu"]
+		(...)
+	}
 
 ### Connections
 
