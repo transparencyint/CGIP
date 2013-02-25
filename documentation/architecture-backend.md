@@ -16,15 +16,15 @@ In order to manage documents, CouchDB adds two fields to each document:
 Besides these two fields, CouchDB only stores the actual data. Just to get an idea of what a JSON document looks like, here is a sample document:
 
 	{
-   		"_id": "3af373bc6c7305d2b47a17eea4003da8",
-   		"_rev": "5-bd2f8892951cc62f65117b2328eecccc",
-   		"name": "Hugo",
-   		"age": 25,
-   		"is_student": true,
-   		"type": "person",
+		"_id": "3af373bc6c7305d2b47a17eea4003da8",
+		"_rev": "5-bd2f8892951cc62f65117b2328eecccc",
+		"name": "Hugo",
+		"age": 25,
+		"is_student": true,
+		"type": "person",
 	    "metadata": {
-   			"pets": ["Balto", "Snowflake"]
-   		}
+	    	"pets": ["Balto", "Snowflake"]
+	    }
 	}
 
 For simplicity, the fields `_id` and `_rev` will be left out in the upcoming examples. Typically each document also has a field `type`, which is used to identify documents in the view-functions.
@@ -35,10 +35,10 @@ For each country we're only storing some metadata, its English name and its [ISO
 
 	{
 	    "roleDimensions": [-500, -250, 59, 250, 500],
-   		"showMonitoring": true,
-   		"abbreviation": "bd",
-   		"name": "Bangladesh",
-   		"type": "country"
+	    "showMonitoring": true,
+	    "abbreviation": "bd",
+	    "name": "Bangladesh",
+	    "type": "country"
 	}
 
 - `roleDimensions`: represents the positions for the actor role edges
@@ -53,21 +53,21 @@ All other documents will be grouped by country by adding a field `country` to th
 An actor has the following scheme:
 
 	{
-   		"name": "President",
-	    "abbreviation": "P",
-   		"pos": {
+		"name": "President",
+		"abbreviation": "P",
+		"pos": {
        		"x": -440,
        		"y": 40
-   		},
-   		"organizationType": "Research Organization",
-   		"purpose": ["adaption", "mitigation"],
-   		"role": ["funding"],
-   		"description": "This is the president",
-   		"hasCorruptionRisk": true,
+       	},
+       	"organizationType": "Research Organization",
+       	"purpose": ["adaption", "mitigation"],
+       	"role": ["funding"],
+       	"description": "This is the president",
+       	"hasCorruptionRisk": true,
     	"corruptionRisk": "He's paying a lot to this cousin's companies.",
     	"corruptionRiskSource": "https://www.google.com",
 		"type": "actor",
- 		"country": "do"
+		"country": "do"
 	}
 
 - `name`: this actor's name
@@ -94,32 +94,56 @@ An Actor Group also contains the same fields as like normal actor and in additio
 
 ### Connections
 
-Connections are independent from Actors and there is an own document type and class for each connection. All their models and collections reside in the `models/connections` folder.
+A connection keeps a reference to both connected actors and information of its corruption risk:
 
+	{
+		"from": "8sg6df87sdv76sbdvuszvbdlu",
+		"to": "fs65vckeucs6jefv74skzjfs",
+		"hasCorruptionRisk": false,
+		"corruptionRisk": "",
+		"corruptionRiskSource": "",
+		"type": "connection"
+	}
+
+- `from` and `to`: they're both Strings which represent Actor ids
+- `hasCorruptionRisk`, `corruptionRisk` and `corruptionRiskSource`: see the actor description for more information on these fields
+- `type`: this is a connection
+
+In the map however, there are no simple connections but three different types of documents which derive from the normal connection:
 
 #### Accountability
 
-This is how an accountability connection looks like in the backend:
+A accountability connection has the same fields as the normal connection and in addition to that a `connectionType`, which indicates it's specific type.
 
     {
-      "type": "connection",
-      "connectionType": "accountability",
-      "from": "ACTOR_ID",
-      "to": "ACTOR_ID",
-      "source": ""
+    	(...)
+      	"type": "connection",
+      	"connectionType": "accountability"
+      	(...)
+    }
+
+#### Monitoring
+
+A monitoring connection also has the same fields as the normal connection and the special `connectionType`.
+
+    {
+    	(...)
+      	"type": "connection",
+      	"connectionType": "monitoring"
+      	(...)
     }
 
 #### Money
 
-This is how a money connection looks like in the backend:
+A money connection has information about the `disbused` and the `pledged` money amounts for this connection as well as all the fields which were described above:
 
     {
-      "type": "connection",
-      "connectionType": "money",
-      "from": "ACTOR_ID",
-      "to": "ACTOR_ID",
-      "dispersed": 0,
-      "pledged": 0
+    	(...)
+    	"type": "connection",
+    	"connectionType": "money",
+    	"pledged": 34345,
+    	"disbursed": 34345
+    	(...)
     }
 
 ## Databases
