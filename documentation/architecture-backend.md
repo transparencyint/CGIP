@@ -2,9 +2,33 @@
 
 The CGIP app uses [CouchDB](http://couchdb.apache.org/) which is a document-based NoSQL database. It works completely different than SQL-databases like MySQL because documents don't have a fixed scheme and queries are not written in SQL. In order to structure the data, CouchDB uses map/reduce views which create indexes that are then queried by the backend server. For a very good (and free) beginners resource check out the [CouchDB guide](http://guide.couchdb.org/draft/index.html).
 
+The following chapters will explain the different document types, our views and some general information about database specific topics.
+
 ## Document Types / Entities
 
-### Countries
+In general, CouchDB documents are JSON-documents and so they can only have the types which are also defined in JSON: Strings, Booleans, Numbers, Arrays and Objects. 
+
+In order to manage documents, CouchDB adds two fields to each document:
+
+- `_id`: the document's id
+- `_rev`: the current revision of the document. CouchDB keeps track of old revisions of a document and only allows changes with correct revision numbers. (concurrent control)
+
+Besides these two fields, CouchDB only stores the actual data. Just to get an idea of what a JSON document looks like, here is a sample document:
+
+	{
+   		"_id": "3af373bc6c7305d2b47a17eea4003da8",
+   		"_rev": "5-bd2f8892951cc62f65117b2328eecccc",
+   		"name": "Hugo",
+   		"age": 25,
+   		"is_student": true,
+   		"type": "person",
+	    "metadata": {
+   			"pets": ["Balto", "Snowflake"]
+   		}
+	}
+
+
+### Country
 
 Each document is associated to one specific country so that it only appears in the maps of the representative country. The field `country` is the [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) of the country. The codes we use in the first iteration are the following:
 
