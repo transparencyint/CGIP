@@ -6,5 +6,3 @@
     <option value="<%= language.code %>" <%= 'selected' if language.code is @active %>><%= language.name %></option>
   <% end %>
 </select>
-
-

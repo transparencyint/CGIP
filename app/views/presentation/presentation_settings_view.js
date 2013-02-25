@@ -42,8 +42,8 @@ module.exports = Settings.extend({
     
     return { 
       presentationLink: '/edit/' + this.editor.country.get('abbreviation'),
-      languages: languages,
       active: config.get('language'),
+      languages: languages
     };
   }
 });
