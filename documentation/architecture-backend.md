@@ -27,17 +27,26 @@ Besides these two fields, CouchDB only stores the actual data. Just to get an id
    		}
 	}
 
+For simplicity, the fields `_id` and `_rev` will be left out in the upcoming examples. Typically each document also has a field `type`, which is used to identify documents in the view-functions.
 
 ### Country
 
-Each document is associated to one specific country so that it only appears in the maps of the representative country. The field `country` is the [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) of the country. The codes we use in the first iteration are the following:
+For each country we're only storing some metadata, its English name and its [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) code (abbreviation):
 
-- `bd`: Bangladesh
-- `do`: Dominican Republic
-- `ke`: Kenya
-- `mv`: Maldives
-- `mx`: Mexico
-- `pe`: Peru
+	{
+	    "roleDimensions": [-500, -250, 59, 250, 500],
+   		"showMonitoring": true,
+   		"abbreviation": "bd",
+   		"name": "Bangladesh",
+   		"type": "country"
+	}
+
+- `roleDimensions`: represents the positions for the actor role edges
+- `showMonitoring`: should the monitoring field be shown on this map?
+- `abbreviation`: the country's abbreviation
+- `name`: the country's name (English only)
+
+All other documents will be grouped by country by adding a field `country` to them which is also an abbreviation of a country. 
 
 ### Actor
 
