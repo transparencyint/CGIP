@@ -1,6 +1,5 @@
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
-var RoleBackgroundView = require('./role_background_view');
 
 module.exports = View.extend({
   template: require('./templates/settings'),
