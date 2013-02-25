@@ -1,4 +1,4 @@
-# The CGIP Database architecture
+# Database
 
 ## Technology
 
