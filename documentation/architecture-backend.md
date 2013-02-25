@@ -83,10 +83,11 @@ An actor has the following scheme:
 - `type`: it's an actor
 - `country`: the actor belongs to this country
 
-An Actor Group also contains the same fields as like normal actor and in addition to that also a field called `actors` which is an Array, consisting of Actor ids which are contained in this group:
+An Actor Group also contains the same fields as like normal actor and in addition to that also a field called `actors` which is an Array, consisting of Actor ids which are contained in this group and a field `actorType` which shows that this actor is a group:
 
 	{
 		(...)
+		"actorType": "group",
 		"actors": ["sdf7w6egfw78ef7wef", "e76fw6w6vw6isivdfsdcu"]
 		(...)
 	}
