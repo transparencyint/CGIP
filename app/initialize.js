@@ -49,9 +49,10 @@ $(function() {
     });
   }
 
-  // set up the config model
-  window.config = new Config();
+  // create the mediator
   window.mediator = _.clone(Backbone.Events);
+  // create the config after the app has been initialized properly
+  window.config = new Config();
 
   // hook into socket.io in order to turn it on/off depending on the config
   var socketOn = socket.on;
