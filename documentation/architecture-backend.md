@@ -154,37 +154,14 @@ There are three databases needed to run this app:
 - `cgip_users`: all registered users
 - `cgip_user_sessions`: as a permanent session store
 
-You can create all needed databases by running the create_databases.js from the `server/scripts/` folder. 
+The reason for dividing it into three databases is to disallow users to be able to change user account data. They're only allowed to write into the `cgip_data` database.
 
-`$ node server/scripts/create_databases.js`
+You can create all needed databases by running the create_databases.js from the `server/scripts/` folder.  -> `$ node server/scripts/create_databases.js`
 
-### Delete all docs of a database
 
-There is no handy way to delete all docs from a database in CouchDB, so here a litte jQuery script:
+### Get Production data
 
-    $.ajax({
-      url: '/couchdb/cgip_user_sessions/_all_docs', 
-      success: function(res){
-        console.log(res.rows.length);
-        var total = res.rows.length;
-        var currentlyDeleted = 0;
-        for(var i = 0; i < res.rows.length; i++){
-          $.ajax({ 
-            url: '/couchdb/cgip_user_sessions/' + encodeURI(res.rows[i].id) + '?rev=' + res.rows[i].value.rev,
-            type: 'DELETE',
-            success: function(){
-              currentlyDeleted++;
-              console.log(currentlyDeleted + '/' + total);
-            }
-          });
-        }
-      },
-      dataType: 'json'
-    });
-
-## Get Production data
-
-In order to load the data from the production server on your local server or to create a backup of the production data simply go to your local CouchDB Futon interface (e.g. [http://127.0.0.1:5984/_utils](http://127.0.0.1:5984/_utils)) and select `Replicator` from the right menu.
+In order to load the data from the production server onto your local server or to create a backup of the production data simply go to your local CouchDB Futon interface (e.g. [http://127.0.0.1:5984/_utils](http://127.0.0.1:5984/_utils)) and select `Replicator` from the menu on the right.
 
 There, enter the the URL of the remote CouchDB into the from-field e.g. `http://myuser:mypassword@serverurl.com/databasename`. Then, enter the name of the local DB into the form on the left. If you create a backup, simply call it sth. like `cgip_backup_DATE`.
 
