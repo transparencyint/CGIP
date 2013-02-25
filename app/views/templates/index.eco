@@ -1,54 +1,54 @@
 <div class="inner">
   <header>
-    <h1>Climate Finance Integrity Program</h1>
+    <h1><%= t('Climate Finance Integrity Program') %></h1>
   </header>
 
   <div class="map">
     <div class="point mexico">
       <div class="label">
-        <a href="/show/mx">Mexico</a>
+        <a href="/show/mx"><%= t('Mexico') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point peru">
       <div class="label">
-        <a href="/show/pe">Peru</a>
+        <a href="/show/pe"><%= t('Peru') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point dominicanRepublic">
       <div class="label">
-        <a href="/show/do">Dominican Republic</a>
+        <a href="/show/do"><%= t('Dominican Republic') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point kenya">
       <div class="label">
-        <a href="/show/ke">Kenya</a>
+        <a href="/show/ke"><%= t('Kenya') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point maledives">
       <div class="label">
-        <a href="/show/mv">Maledives</a>
+        <a href="/show/mv"><%= t('Maledives') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point vietnam">
       <div class="label">
-        <a href="/show/vn">Vietnam</a>
+        <a href="/show/vn"><%= t('Vietnam') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point indonesia">
       <div class="label">
-        <a href="/show/id">Indonesia</a>
+        <a href="/show/id"><%= t('Indonesia') %></a>
         <div class="arrow"></div>
       </div>
     </div>
     <div class="point papuaNewGuinea below">
       <div class="label">
-        <a href="/show/pg">Papua New Guinea</a>
+        <a href="/show/pg"><%= t('Papua New Guinea') %></a>
         <div class="arrow"></div>
       </div>
     </div>
@@ -59,12 +59,12 @@
     </div>
     <div class="right">
       <% if window.user.isLoggedIn(): %>
-        <a href="/edit/">Edit View</a> –
-        <a href="/logout" external>Logout</a>
+        <a href="/edit/"><%= t('Edit View') %></a> –
+        <a href="/logout" external><%= t('Logout') %></a>
       <% else: %>
-        <a href="/login/">Login</a>
+        <a href="/login/"><%= t('Login') %></a>
       <% end %>
-      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
+      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms"><%= t('Terms') %></a> – <a href="http://www.transparency.org/impressum"><%= t('Impressum') %></a> 
     </div>
   </footer>
 </div>
