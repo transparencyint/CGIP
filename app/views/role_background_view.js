@@ -46,8 +46,13 @@ module.exports = View.extend({
     _.bindAll(
       this, 
       'drag', 
-      'dragStop'
+      'dragStop',
+      'setActorRole'
     );
+  },
+
+  setActorRole: function(actor){
+    console.log(actor.attributes.pos.x);
   },
 
   dragStart: function(event){
@@ -259,6 +264,42 @@ module.exports = View.extend({
       this.$('.draghandle[rel='+this.roles[i]+']').css({'left': roleLeft});
     }
 
+  },
+
+  /**
+   * Get the actor role(s) after the user dragged an actor and return it as array
+   * There can be maximum two roles after a drag. 
+   * If the user dropped the actor outside a role background roles will be removed
+   */
+  getActorRoles: function(view){
+    var viewPos = view.model.get('pos');
+    var viewWidth = view.$el.outerWidth();
+    var viewLeft = (viewPos.x - viewWidth / 2) * this.editor.zoom.value;
+    var viewRight = (viewPos.x + viewWidth / 2) * this.editor.zoom.value;
+
+    var newRoles = [];
+
+    //go through the role dimensions and check if the view position is in there
+    for(var i=0; i<this.defaultRoleDimensions.length; i++){
+
+      var roleLeft = this.defaultRoleDimensions[i] * this.editor.zoom.value;
+      
+      if(i < this.defaultRoleDimensions.length){
+          
+        var roleWidth = Math.floor(this.defaultRoleDimensions[i+1] * this.editor.zoom.value - roleLeft);
+
+        // role found for left side
+        if(viewLeft > roleLeft && viewLeft < (roleLeft + roleWidth)){
+          newRoles.push(this.roles[i]);
+        }
+
+        // role found for right side e.g. left side + width
+        else if(viewRight > roleLeft && viewRight < (roleLeft + roleWidth)){
+          newRoles.push(this.roles[i]);
+        }
+      }
+    }
+    return newRoles;
   },
 
   destroy: function(){
