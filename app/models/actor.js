@@ -35,7 +35,17 @@ module.exports = Model.extend({
     this.set('pos', thisPos);
   },
 
-  turnIntoGroup: function(firstActor){
+  hasConnections: function(connections){
+    return  (connections.where({'from': this.id}).length > 0 || 
+            (connections.where({'to': this.id})).length > 0);
+  },
+
+  turnIntoGroup: function(firstActor, connections){
+    // prevent the creation of a group if any of the actors has connections and the editor declines it
+    if((this.hasConnections(connections) || firstActor.hasConnections(connections))
+      && !confirm('This will delete all related connections of these Actors. Are you sure you want to proceed?'))
+      return false;
+
     // remove them both from their collections
     firstActor.collection.trigger('remove', firstActor);
     this.collection.remove(this);

@@ -71,8 +71,9 @@ module.exports = DraggableDroppableView.extend({
       return view.reset();
     }else{
       view.isDragging = false;
-      var newGroup = this.model.turnIntoGroup(view.model);
-      this.editor.actorGroups.add(newGroup);
+      var newGroup = this.model.turnIntoGroup(view.model, this.editor.connections);
+      if(newGroup)
+        this.editor.actorGroups.add(newGroup);
     }
   },
 

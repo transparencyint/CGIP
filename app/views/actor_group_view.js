@@ -164,7 +164,12 @@ module.exports = DraggableDroppableView.extend({
         // add it to the group
         var model = this.model;
         model.lock()
-        this.model.addToGroup(view.model);
+        
+        // try to add it to the group
+        var added = this.model.addToGroup(view.model, this.editor.connections);
+        // return if it could not get added (user prevented it)
+        if(!added) return;
+
         this.model.save({
           success: function(){
             model.unlock();

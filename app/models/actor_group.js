@@ -38,9 +38,14 @@ module.exports = Actor.extend({
   },
 
   // adds an actor to this group
-  addToGroup: function(actor){
+  addToGroup: function(actor, connections){
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
+
+    if(this.hasConnections(connections)
+      && !confirm('This will delete all related connections of this Actor. Are you sure you want to proceed?'))
+      return false;
+
     if(!alreadyAdded){
       // remove it from its current collection, if there is one
       if(actor.collection)
@@ -54,9 +59,11 @@ module.exports = Actor.extend({
 
       // trigger that the actor was moved to 'this' group
       // and also publish this to the other clients via the socket
-      actor.trigger('moveToGroup', this);
-      socket.emit('moveToGroup', this.id);
+      actor.trigger('moveToGroup', actor);
+      socket.emit('moveToGroup', actor.id);
     }
+
+    return true;
   },
 
   removeFromGroup: function(){
