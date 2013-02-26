@@ -47,12 +47,8 @@ module.exports = View.extend({
       this, 
       'drag', 
       'dragStop',
-      'setActorRole'
+      'getActorRoles'
     );
-  },
-
-  setActorRole: function(actor){
-    console.log(actor.attributes.pos.x);
   },
 
   dragStart: function(event){
