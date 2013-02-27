@@ -51,8 +51,8 @@ module.exports = Model.extend({
     if(this.hasConnections(connections) || firstActor.hasConnections(connections)){
       new Dialog({ 
         title: t('Add to Group'),
-        text: t('This will remove all related connections of both actors. Are you sure you want to proceed?'),
-        verb: t('Discard Connections'),
+        text: t('This will delete the relations of this actor. Are you sure you want to proceed?'),
+        verb: t('Proceed'),
         success: function(){ _this.formGroup(firstActor, success); }
       });
     } else {
