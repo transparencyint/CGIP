@@ -12,6 +12,7 @@ var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
 var SettingsView = require('./settings_view');
 var clickCatcher = require('./click_catcher_view');
+var dialog = require('./dialog_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
@@ -841,6 +842,13 @@ module.exports = View.extend({
       value: this.zoom.value,
       slide: this.slideZoom,
       change: this.slideZoom
+    });
+    
+    new dialog({ 
+      success: function(){ alert("yeah!") },
+      title: t('Form Group'),
+      text: t('This will erase all related connections of both actors. Are you sure you want to proceed?'),
+      verb: t('Erase Connections')
     });
 
     //check if monitoring role is hidden and hide monitoring elements

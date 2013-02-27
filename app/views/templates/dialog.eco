@@ -1,0 +1,9 @@
+<div class="overlay"></div>
+<div class="dialog">
+  <h3 class="title"><%= @title %></h3>
+  <p class="text"><%= @text %></p>
+  <div class="buttons clearfix">
+    <button class="ok firstChoice"><%= @verb %></button>
+    <button class="cancel"><%= @cancel %></button>
+  </div>
+</div>

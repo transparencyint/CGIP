@@ -1,4 +1,5 @@
 var Actor = require('./actor');
+var dialog = require('../views/dialog_view');
 
 module.exports = Actor.extend({
   defaults: function(){
@@ -38,32 +39,45 @@ module.exports = Actor.extend({
   },
 
   // adds an actor to this group
-  addToGroup: function(actor, connections){
+  tryAddToGroup: function(options){
+    var actor = options.actor;
+    var connections = options.connections;
+    var success = options.success;
+    var _this = this;
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
 
-    if(this.hasConnections(connections)
-      && !confirm('This will delete all related connections of this Actor. Are you sure you want to proceed?'))
-      return false;
-
-    if(!alreadyAdded){
-      // remove it from its current collection, if there is one
-      if(actor.collection)
-        actor.collection.remove(actor);
-
-      // add actor to the model
-      actors.push(actor.id);
-
-      // add actor to the models' collectios
-      this.actors.add(actor);
-
-      // trigger that the actor was moved to 'this' group
-      // and also publish this to the other clients via the socket
-      actor.trigger('moveToGroup', actor);
-      socket.emit('moveToGroup', actor.id);
+    if(actor.hasConnections(connections)){
+      new dialog({ 
+        title: t('Add to Group'),
+        text: t('This will erase all related connections of both actors. Are you sure you want to proceed?'),
+        verb: t('Erase Connections'),
+        success: function(){ _this.AddToGroup(actor, success); }
+      });
+    } else if(!alreadyAdded){
+      this.AddToGroup(actor, success);
     }
+  },
+    
+  AddToGroup: function(actor, success){
+    var actors = this.get('actors') || [];
+    
+    // remove it from its current collection, if there is one
+    if(actor.collection)
+      actor.collection.remove(actor);
+      
+    // add actor to the model
+    actors.push(actor.id);
+    
+    // add actor to the models' collectios
+    this.actors.add(actor);
 
-    return true;
+    // trigger that the actor was moved to 'this' group
+    // and also publish this to the other clients via the socket
+    actor.trigger('moveToGroup', actor);
+    socket.emit('moveToGroup', actor.id);
+
+    success();
   },
 
   removeFromGroup: function(){

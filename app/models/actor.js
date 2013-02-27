@@ -1,4 +1,5 @@
 var Model = require('./model');
+var dialog = require('../views/dialog_view');
 
 module.exports = Model.extend({
   lockable: true,
@@ -40,12 +41,26 @@ module.exports = Model.extend({
             (connections.where({'to': this.id})).length > 0);
   },
 
-  turnIntoGroup: function(firstActor, connections){
+  turnIntoGroup: function(options){
+    var firstActor = options.firstActor;
+    var connections = options.connections;
+    var success = options.success;
+    var _this = this;
+    
     // prevent the creation of a group if any of the actors has connections and the editor declines it
-    if((this.hasConnections(connections) || firstActor.hasConnections(connections))
-      && !confirm('This will delete all related connections of these Actors. Are you sure you want to proceed?'))
-      return false;
-
+    if(this.hasConnections(connections) || firstActor.hasConnections(connections)){
+      new dialog({ 
+        title: t('Add to Group'),
+        text: t('This will erase all related connections of both actors. Are you sure you want to proceed?'),
+        verb: t('Erase Connections'),
+        success: function(){ _this.formGroup(firstActor, success); }
+      });
+    } else {
+      this.formGroup(firstActor, success);
+    }
+  },
+  
+  formGroup: function(firstActor, success){
     // remove them both from their collections
     firstActor.collection.trigger('remove', firstActor);
     this.collection.remove(this);
@@ -67,7 +82,8 @@ module.exports = Model.extend({
       socket.emit('new_model', newGroup.toJSON());
     });
     this.destroy();
-    return newGroup;
+    
+    success(newGroup);
   }
 
 });
