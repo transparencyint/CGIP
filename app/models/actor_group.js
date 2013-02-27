@@ -1,5 +1,5 @@
 var Actor = require('./actor');
-var dialog = require('../views/dialog_view');
+var Dialog = require('../views/dialog_view');
 
 module.exports = Actor.extend({
   defaults: function(){
@@ -48,18 +48,18 @@ module.exports = Actor.extend({
     var alreadyAdded = _.contains(actors, actor.id);
 
     if(actor.hasConnections(connections)){
-      new dialog({ 
+      new Dialog({ 
         title: t('Add to Group'),
         text: t('This will remove all related connections of both actors. Are you sure you want to proceed?'),
         verb: t('Discard Connections'),
-        success: function(){ _this.AddToGroup(actor, success); }
+        success: function(){ _this.addToGroup(actor, success); }
       });
     } else if(!alreadyAdded){
-      this.AddToGroup(actor, success);
+      this.addToGroup(actor, success);
     }
   },
     
-  AddToGroup: function(actor, success){
+  addToGroup: function(actor, success){
     var actors = this.get('actors') || [];
     
     // remove it from its current collection, if there is one

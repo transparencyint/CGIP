@@ -1,5 +1,5 @@
 var Model = require('./model');
-var dialog = require('../views/dialog_view');
+var Dialog = require('../views/dialog_view');
 
 module.exports = Model.extend({
   lockable: true,
@@ -49,7 +49,7 @@ module.exports = Model.extend({
     
     // prevent the creation of a group if any of the actors has connections and the editor declines it
     if(this.hasConnections(connections) || firstActor.hasConnections(connections)){
-      new dialog({ 
+      new Dialog({ 
         title: t('Add to Group'),
         text: t('This will remove all related connections of both actors. Are you sure you want to proceed?'),
         verb: t('Discard Connections'),
