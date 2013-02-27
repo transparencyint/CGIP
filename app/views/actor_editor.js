@@ -843,13 +843,6 @@ module.exports = View.extend({
       slide: this.slideZoom,
       change: this.slideZoom
     });
-    
-    new dialog({ 
-      success: function(){ alert("yeah!") },
-      title: t('Form Group'),
-      text: t('This will erase all related connections of both actors. Are you sure you want to proceed?'),
-      verb: t('Erase Connections')
-    });
 
     //check if monitoring role is hidden and hide monitoring elements
     if(!this.country.get('showMonitoring')){

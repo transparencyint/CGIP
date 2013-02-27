@@ -50,8 +50,8 @@ module.exports = Actor.extend({
     if(actor.hasConnections(connections)){
       new dialog({ 
         title: t('Add to Group'),
-        text: t('This will erase all related connections of both actors. Are you sure you want to proceed?'),
-        verb: t('Erase Connections'),
+        text: t('This will remove all related connections of both actors. Are you sure you want to proceed?'),
+        verb: t('Discard Connections'),
         success: function(){ _this.AddToGroup(actor, success); }
       });
     } else if(!alreadyAdded){
