@@ -30,6 +30,7 @@ module.exports = DraggableDroppableView.extend({
     
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:role', this.updateRole, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
     this.model.on('change:organizationType', this.updateType, this);
@@ -55,6 +56,10 @@ module.exports = DraggableDroppableView.extend({
 
   updateName: function(){
     this.$('.name').text( this.determineName() );
+  },
+  
+  updateRole: function(){
+    this.$el.attr('data-role', this.model.get('role').join(" and ") );
   },
   
   updateType: function(){
@@ -86,6 +91,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.updateRole();
 
     this.$el.attr('id', this.model.id);
     
