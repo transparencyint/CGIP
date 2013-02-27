@@ -20,7 +20,7 @@
     padding 9px 5px
     border-radius 3px
     background linear-gradient(top, #f5f5f5, #fbfbfb)
-    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 -7px #f0f0f0 inset, 0 0 0 5px #fff inset, 0 0 0 3px #f9f9f9 inset
+    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 -3px #f0f0f0 inset, 0 1px #fff inset, 0 0 0 3px #f9f9f9 inset
     &:after, 
     &:before
       content ""
@@ -31,6 +31,11 @@
       top 0
       border-radius 2px
       border 4px solid transparent
+  &[data-role]
+    .animationHolder
+      box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 -7px #f0f0f0 inset, 0 5px #fff inset, 0 0 0 7px #f9f9f9 inset
+    &.selected .animationHolder
+      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.34), 0 -7px #f0f0f0 inset, 0 5px #fff inset, 0 0 0 7px #f9f9f9 inset
   &[data-role~='and']
     .animationHolder,
     .actor-style
@@ -43,7 +48,7 @@
         border-left none !important
         border-radius 0 2px 2px 0
   &.selected .animationHolder
-    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.34), 0 -3px #f0f0f0 inset, 0 1px #fff inset, 0 0 0 3px #f9f9f9 inset
   &.hasCorruptionRisk:after
     content ""
     position absolute
