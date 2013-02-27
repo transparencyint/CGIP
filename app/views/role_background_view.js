@@ -141,6 +141,8 @@ module.exports = View.extend({
   dragStop: function(event){
     this.country.set({'roleDimensions' : this.defaultRoleDimensions});
     this.country.save();
+    
+    this.checkRoles();
 
     $(document).unbind(this.inputMoveEvent, this.drag);
     $('#actorEditor').removeClass('dragcursor');
@@ -260,6 +262,16 @@ module.exports = View.extend({
       this.$('.draghandle[rel='+this.roles[i]+']').css({'left': roleLeft});
     }
 
+  },
+  
+  checkRoles: function(){
+    var _this = this;
+    var updateRoles = function(view){
+      view.model.set('role', _this.getActorRoles(view));
+      view.model.save();
+    };
+    _.each(this.editor.actorViews, updateRoles);
+    _.each(this.editor.actorGroupViews, updateRoles);
   },
 
   /**
