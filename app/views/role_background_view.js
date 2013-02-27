@@ -269,9 +269,8 @@ module.exports = View.extend({
    */
   getActorRoles: function(view){
     var viewPos = view.model.get('pos');
-    var viewWidth = view.$el.outerWidth();
-    var viewLeft = (viewPos.x - viewWidth / 2) * this.editor.zoom.value;
-    var viewRight = (viewPos.x + viewWidth / 2) * this.editor.zoom.value;
+    var viewLeft = (viewPos.x - view.width / 2) * this.editor.zoom.value;
+    var viewRight = (viewPos.x + view.width / 2) * this.editor.zoom.value;
 
     var newRoles = [];
 
