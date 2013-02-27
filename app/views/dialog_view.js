@@ -6,22 +6,24 @@ module.exports = View.extend({
   
   className: 'dialogView hidden',
   
-  options: {
-    'title':  t('Confirm'),
-    'verb':   t('Ok'),
-    'cancel': t('Cancel'),
-    'holder': 'body'
-  },
-  
   events: {
     'click .overlay': 'cancel',
     'click .cancel': 'cancel',
     'click .ok': 'success'
   },
   
-  initialize: function(){  
+  initialize: function(options){  
+    // set up the dialog captions
+    this.options.title = options.title || t('Confirm');
+    this.options.verb = options.verb || t('Ok');
+    this.options.cancel = options.cancel || t('Cancel');
+    
+    // set up the parent element
+    this.options.holder = options.holder || 'body';
+
+    // set up the success callback
     var _this = this;
-    var _success = this.options.success;
+    var _success = this.options.success || function(){};
     this.success = function(event){
       event.stopPropagation();
       _success();

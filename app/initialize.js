@@ -1,7 +1,3 @@
-// make the translate function available in global context for easier calls
-// must be up here so that it's loaded before the views
-window.t = $.jsperanto.translate;
-
 var application = require('application');
 var User = require('models/user');
 var Config = require('models/config');
@@ -56,6 +52,10 @@ $(function() {
   // set up the config model
   window.config = new Config();
   window.mediator = _.clone(Backbone.Events);
+
+
+  // make the translate function available in global context for easier calls
+  window.t = $.jsperanto.translate;
 
   // hook into socket.io in order to turn it on/off depending on the config
   var socketOn = socket.on;
