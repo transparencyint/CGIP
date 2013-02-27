@@ -63,6 +63,17 @@ module.exports = View.extend({
   },
   
   getRenderData: function(){
+    var languages = this.getLanguages();
+    
+    return { 
+      presentationLink: '/show/' + this.editor.country.get('abbreviation'),
+      languages: languages,
+      active: config.get('language'),
+      showMonitoring: this.editor.country.get('showMonitoring')
+    };
+  },
+
+  getLanguages: function(){
     var languages = [
       {
         name: 'English',
@@ -81,12 +92,7 @@ module.exports = View.extend({
         code: 'es'
       }
     ];
-    
-    return { 
-      presentationLink: '/show/' + this.editor.country.get('abbreviation'),
-      languages: languages,
-      active: config.get('language'),
-      showMonitoring: this.editor.country.get('showMonitoring')
-    };
+    return languages;
   }
+
 });

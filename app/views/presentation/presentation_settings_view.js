@@ -21,24 +21,7 @@ module.exports = Settings.extend({
   },
   
   getRenderData: function(){
-    var languages = [
-      {
-        name: 'English',
-        code: 'en'
-      },
-      {
-        name: 'Deutsch',
-        code: 'de'
-      },
-      {
-        name: 'Francais',
-        code: 'fr'
-      },
-      {
-        name: 'Espanol',
-        code: 'es'
-      }
-    ];
+    var languages = this.getLanguages();
     
     return { 
       presentationLink: '/edit/' + this.editor.country.get('abbreviation'),
