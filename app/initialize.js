@@ -1,3 +1,7 @@
+// make the translate function available in global context for easier calls
+// must be up here so that it's loaded before the views
+window.t = $.jsperanto.translate;
+
 var application = require('application');
 var User = require('models/user');
 var Config = require('models/config');
@@ -63,9 +67,6 @@ $(function() {
   socket.emit = function(eventName, arg){
     if(config.isRealtimeEnabled()) socketEmit.apply(socket, arguments);
   };
-
-  // make the translate function available in global context for easier calls
-  window.t = $.jsperanto.translate;
   
   // initialize the app
   application.initialize(function(){
