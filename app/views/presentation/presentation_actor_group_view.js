@@ -20,6 +20,7 @@ module.exports = View.extend({
 
   determineName: ActorView.prototype.determineName,
   getRenderData: ActorGroupView.prototype.getRenderData,
+  updateRole: ActorView.prototype.updateRole,
 
   updatePosition: function(){
     var pos = this.model.get('pos');
@@ -44,7 +45,8 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
-    this.updatePosition();    
+    this.updatePosition(); 
+    this.updateRole();   
     this.actorViews = {};
 
     this.model.actors.each(this.addSubActorView);

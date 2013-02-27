@@ -36,6 +36,7 @@ module.exports = View.extend({
   getRenderData: ActorView.prototype.getRenderData,
 	initOrganizationType: ActorView.prototype.initOrganizationType,
   updateCorruptionRisk: ActorView.prototype.updateCorruptionRisk,
+  updateRole: ActorView.prototype.updateRole,
 
   inputDown: function(event){
     // fire dragstart
@@ -157,6 +158,7 @@ module.exports = View.extend({
 
 	afterRender: function(){
 		this.updatePosition();
+    this.updateRole();
     this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
   },
