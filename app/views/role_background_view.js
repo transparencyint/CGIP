@@ -37,6 +37,7 @@ module.exports = View.extend({
     // listen to zoom and pan events fired by actor editor
     this.editor.on('zoom', this.zoom, this);
     this.editor.on('pan', this.pan, this);
+    this.editor.on('actorCreated', this.setRole, this);
 
     // the minimum width of a role background
     this.minRoleWidth = 182;
@@ -47,6 +48,7 @@ module.exports = View.extend({
       this, 
       'drag', 
       'dragStop',
+      'setRole',
       'getActorRoles'
     );
   },
@@ -264,14 +266,14 @@ module.exports = View.extend({
 
   },
   
+  setRole: function(view){
+    view.model.set('role', this.getActorRoles(view));
+    view.model.save();
+  },
+  
   checkRoles: function(){
-    var _this = this;
-    var updateRoles = function(view){
-      view.model.set('role', _this.getActorRoles(view));
-      view.model.save();
-    };
-    _.each(this.editor.actorViews, updateRoles);
-    _.each(this.editor.actorGroupViews, updateRoles);
+    _.each(this.editor.actorViews, this.setRole);
+    _.each(this.editor.actorGroupViews, this.setRole);
   },
 
   /**
