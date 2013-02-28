@@ -24,7 +24,7 @@ module.exports = DraggableDroppableView.extend({
     this.worldmap = options.worldmap;
     this.isDraggable = false;
 
-    _.bindAll(this, 'destroy', 'drag', 'dragStop');
+    _.bindAll(this, 'destroy', 'drag', 'dragStop', 'deleteCountry');
 
     this.model.on('change:pos', this.updatePosition, this);
   },
@@ -38,8 +38,13 @@ module.exports = DraggableDroppableView.extend({
     currentEl.addClass('transparent');
 
     // add country to delete list
-    this.worldmap.addCountryToDelete(country);
+    this.worldmap.addCountryToDelete(country, this);
   },
+
+  deleteCountry: function(){
+    this.model.destroy();  
+    this.destroy();
+  }, 
 
   getRenderData: function() {
       return this.model.toJSON();
@@ -83,7 +88,7 @@ module.exports = DraggableDroppableView.extend({
     //console.log(currentCountry)
     //var pos = currentCountry.pos;
     this.$el.css({'top': pos.y, 'left': pos.x});
-  },
+  }, 
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
@@ -156,11 +161,6 @@ module.exports = DraggableDroppableView.extend({
     this.$el.one(this.transEndEventName, function(){
       DraggableDroppableView.prototype.destroy.call(self);
     });
-    this.$el.addClass('disappear');
-
-    if(this.modal) this.modal.destroy()
-
-    this.editor.off('disableDraggable', this.disableDraggable, this);
-    this.editor.off('enableDraggable', this.enableDraggable, this);
+    this.$el.removeClass('transparent').addClass('disappear');
   }
 });

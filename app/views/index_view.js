@@ -9,7 +9,8 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'click a.map-edit-btn, a.map-cancel-btn' : 'toggleControlButtons'
+      'click a.map-edit-btn, a.map-cancel-btn' : 'toggleControlButtons',
+      'click a.map-ok-btn' : 'updateMapData'
     };
 
     return _events;
@@ -19,9 +20,9 @@ module.exports = View.extend({
     this.countries = this.options.countries;
     this.countryViews = {};
 
-    this.countriesToDelete = [];
+    this.countryViewsToDelete = {};
 
-    _.bindAll(this, 'fadeInCountries', 'renderCountry', 'toggleControlButtons', 'addCountryToDelete');
+    _.bindAll(this, 'fadeInCountries', 'renderCountry', 'toggleControlButtons', 'addCountryToDelete', 'updateMapData');
   },
 
   toggleControlButtons: function(event){
@@ -39,9 +40,18 @@ module.exports = View.extend({
     });
   },
 
-  addCountryToDelete: function(country){
-    if(this.countriesToDelete.indexOf(country) == -1)
-      this.countriesToDelete.push(country);
+  addCountryToDelete: function(country, view){
+      this.countryViewsToDelete[country] = view;
+  },
+
+  updateMapData: function(){
+    var view = this;
+    
+    if(confirm(t('Are you Sure you want to proceed?'))){
+      _.each(this.countryViewsToDelete, function(country){
+        country.deleteCountry();
+      });
+    }
   },
 
   getRenderData: function() {
