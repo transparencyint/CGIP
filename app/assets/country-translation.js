@@ -182,7 +182,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Finland', 'alpha-2': 'fi', 'country-code': '246' }
 ,
-{ name: 'France', 'alpha-2': 'fr', 'country-code': '250' }
+{ name: 'France', 'alpha-2': 'fr', 'country-code': '250', pos : { x: 460, y: 90 } }
 ,
 { name: 'French Guiana', 'alpha-2': 'gf', 'country-code': '254' }
 ,
@@ -200,7 +200,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Georgia', 'alpha-2': 'ge', 'country-code': '268' }
 ,
-{ name: 'Germany', 'alpha-2': 'de', 'country-code': '276' }
+{ name: 'Germany', 'alpha-2': 'de', 'country-code': '276', pos : { x: 480, y: 80 } }
 ,
 { name: 'Ghana', 'alpha-2': 'gh', 'country-code': '288' }
 ,
@@ -430,7 +430,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Russian Federation',
   'alpha-2': 'ru',
-  'country-code': '643' }
+  'country-code': '643', pos : { x: 538, y: 62 } }
 ,
 { name: 'Rwanda', 'alpha-2': 'rw', 'country-code': '646' }
 ,
@@ -570,7 +570,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'United Kingdom',
   'alpha-2': 'gb',
-  'country-code': '826' }
+  'country-code': '826', pos : { x: 450, y: 80 } }
 ,
 { name: 'United States', 'alpha-2': 'us', 'country-code': '840' }
 ,
@@ -588,7 +588,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
   'alpha-2': 've',
   'country-code': '862' }
 ,
-{ name: 'Viet Nam', 'alpha-2': 'vn', 'country-code': '704' }
+{ name: 'Viet Nam', 'alpha-2': 'vn', 'country-code': '704', pos : { x: 730, y: 175 } }
 ,
 { name: 'Virgin Islands, British',
   'alpha-2': 'vg',
