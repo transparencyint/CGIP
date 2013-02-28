@@ -38,7 +38,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Bahrain', 'alpha-2': 'bh', 'country-code': '048' }
 ,
-{ name: 'Bangladesh', 'alpha-2': 'bd', 'country-code': '050' }
+{ name: 'Bangladesh', 'alpha-2': 'bd', 'country-code': '050', pos : { x: 687, y: 165 } }
 ,
 { name: 'Barbados', 'alpha-2': 'bb', 'country-code': '052' }
 ,
@@ -154,7 +154,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Dominican Republic',
   'alpha-2': 'do',
-  'country-code': '214' }
+  'country-code': '214', pos : { x: 264, y: 180} }
 ,
 { name: 'Ecuador', 'alpha-2': 'ec', 'country-code': '218' }
 ,
@@ -176,7 +176,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
   'alpha-2': 'fk',
   'country-code': '238' }
 ,
-{ name: 'Faroe Islands', 'alpha-2': 'fo', 'country-code': '234' }
+{ name: 'Faroe Islands', 'alpha-2': 'fo', 'country-code': '234', pos : { x: 264, y: 180} }
 ,
 { name: 'Fiji', 'alpha-2': 'fj', 'country-code': '242' }
 ,
@@ -234,7 +234,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Holy See (Vatican City State)',
   'alpha-2': 'va',
-  'country-code': '336' }
+  'country-code': '336', pos : { x: 483, y: 110} }
 ,
 { name: 'Honduras', 'alpha-2': 'hn', 'country-code': '340' }
 ,
@@ -246,7 +246,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'India', 'alpha-2': 'in', 'country-code': '356' }
 ,
-{ name: 'Indonesia', 'alpha-2': 'id', 'country-code': '360' }
+{ name: 'Indonesia', 'alpha-2': 'id', 'country-code': '360', pos : { x: 742, y: 259 } }
 ,
 { name: 'Iran, Islamic Republic of',
   'alpha-2': 'ir',
@@ -256,15 +256,15 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Ireland', 'alpha-2': 'ie', 'country-code': '372' }
 ,
-{ name: 'Isle of Man', 'alpha-2': 'im', 'country-code': '833' }
+{ name: 'Isle of Man', 'alpha-2': 'im', 'country-code': '833', pos : { x: 442, y: 75 } }
 ,
-{ name: 'Israel', 'alpha-2': 'il', 'country-code': '376' }
+{ name: 'Israel', 'alpha-2': 'il', 'country-code': '376', pos : { x: 542, y: 136 } }
 ,
 { name: 'Italy', 'alpha-2': 'it', 'country-code': '380' }
 ,
 { name: 'Jamaica', 'alpha-2': 'jm', 'country-code': '388' }
 ,
-{ name: 'Japan', 'alpha-2': 'jp', 'country-code': '392' }
+{ name: 'Japan', 'alpha-2': 'jp', 'country-code': '392', pos : { x: 805, y: 130 } }
 ,
 { name: 'Jersey', 'alpha-2': 'je', 'country-code': '832' }
 ,
@@ -272,7 +272,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Kazakhstan', 'alpha-2': 'kz', 'country-code': '398' }
 ,
-{ name: 'Kenya', 'alpha-2': 'ke', 'country-code': '404' }
+{ name: 'Kenya', 'alpha-2': 'ke', 'country-code': '404', pos : { x: 554, y: 239 } }
 ,
 { name: 'Kiribati', 'alpha-2': 'ki', 'country-code': '296' }
 ,
@@ -318,9 +318,9 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Malawi', 'alpha-2': 'mw', 'country-code': '454' }
 ,
-{ name: 'Malaysia', 'alpha-2': 'my', 'country-code': '458' }
+{ name: 'Malaysia', 'alpha-2': 'my', 'country-code': '458', pos : { x: 725, y: 228 } }
 ,
-{ name: 'Maldives', 'alpha-2': 'mv', 'country-code': '462' }
+{ name: 'Maldives', 'alpha-2': 'mv', 'country-code': '462', pos : { x: 647, y: 219 } }
 ,
 { name: 'Mali', 'alpha-2': 'ml', 'country-code': '466' }
 ,
@@ -338,7 +338,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Mayotte', 'alpha-2': 'yt', 'country-code': '175' }
 ,
-{ name: 'Mexico', 'alpha-2': 'mx', 'country-code': '484' }
+{ name: 'Mexico', 'alpha-2': 'mx', 'country-code': '484', pos : { x: 183, y: 169 } }
 ,
 { name: 'Micronesia, Federated States of',
   'alpha-2': 'fm',
@@ -406,11 +406,11 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Papua New Guinea',
   'alpha-2': 'pg',
-  'country-code': '598' }
+  'country-code': '598', pos : { x: 838, y: 258 } }
 ,
 { name: 'Paraguay', 'alpha-2': 'py', 'country-code': '600' }
 ,
-{ name: 'Peru', 'alpha-2': 'pe', 'country-code': '604' }
+{ name: 'Peru', 'alpha-2': 'pe', 'country-code': '604', pos : { x: 252, y: 272} }
 ,
 { name: 'Philippines', 'alpha-2': 'ph', 'country-code': '608' }
 ,
