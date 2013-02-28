@@ -154,7 +154,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
 ,
 { name: 'Dominican Republic',
   'alpha-2': 'do',
-  'country-code': '214', pos : { x: 264, y: 180} }
+  'country-code': '214', pos : { x: 264, y: 180 } }
 ,
 { name: 'Ecuador', 'alpha-2': 'ec', 'country-code': '218' }
 ,
@@ -176,7 +176,7 @@ window.country_list = [{ name: 'Afghanistan', 'alpha-2': 'af', 'country-code': '
   'alpha-2': 'fk',
   'country-code': '238' }
 ,
-{ name: 'Faroe Islands', 'alpha-2': 'fo', 'country-code': '234', pos : { x: 264, y: 180} }
+{ name: 'Faroe Islands', 'alpha-2': 'fo', 'country-code': '234', pos : { x: 442, y: 60 } }
 ,
 { name: 'Fiji', 'alpha-2': 'fj', 'country-code': '242' }
 ,

@@ -10,7 +10,9 @@ module.exports = DraggableDroppableView.extend({
     var _parentEvents = DraggableDroppableView.prototype.events();
     // clone parent events
     var _events = _.defaults({}, _parentEvents);
-  
+    
+    _events['click a'] = 'performClick';
+
     return _events;
   },
   
@@ -19,7 +21,7 @@ module.exports = DraggableDroppableView.extend({
 
     this.model = options.model;
 
-    _.bindAll(this, 'destroy');
+    _.bindAll(this, 'destroy', 'drag', 'dragStop');
 
     this.model.on('change:pos', this.updatePosition, this);
   },
@@ -42,40 +44,90 @@ module.exports = DraggableDroppableView.extend({
 
   showDetails: function(){},
 
+  performClick: function(event){
+    if($(event.target).hasClass('noclick'))
+      event.preventDefault();
+  },
+
   updatePosition: function(){
     var view = this;
     var currentCountry;
 
-    //if(!this.model.get('pos')){
+    if(!this.model.get('pos')){
 
       currentCountry = _.find(country_list, function(country){
         if(country['alpha-2'] === view.model.get('abbreviation'))
           return country;
       });
 
-      //view.model.set({ pos: currentCountry.pos });
+      view.model.set({ pos: currentCountry.pos });
       //console.log(view.model);
-      //view.model.save();
-    //}
-    //var pos = this.model.get('pos');
-    console.log(currentCountry)
-    var pos = currentCountry.pos;
+      view.model.save();
+    }
+    var pos = this.model.get('pos');
+    //console.log(currentCountry)
+    //var pos = currentCountry.pos;
     this.$el.css({'top': pos.y, 'left': pos.x});
   },
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
   },
-  
-  drop: function(event, view){
-    // stop the actor dragging
-    if(view instanceof FakeActorView){
-      return view.reset();
-    }else{
-      view.isDragging = false;
-      var newGroup = this.model.turnIntoGroup(view.model);
-      this.editor.actorGroups.add(newGroup);
+
+  drag: function(event){ 
+
+    // dont enable dragging if user isn't logged in
+    if(!window.user.isLoggedIn()){
+      return;
     }
+
+    this.$el.find('a').addClass('noclick');
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    var pos = this.model.get('pos');
+    
+    var dx = (this.normalizedX(event) - pos.x - this.startX);
+    var dy = (this.normalizedY(event) - pos.y - this.startY);
+    
+    if(!this.wasOrIsDragging){
+      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
+
+      if(this.dragDistance > this.dragThreshold){
+        this.trigger('dragging');
+        this.wasOrIsDragging = true;
+        this.isDragging = true;
+      }
+    }
+
+    this.dragByDelta(dx, dy);
+
+    // emit a global drag event
+    $(document).trigger('viewdrag', this);
+  },
+
+  dragStop: function(){
+    if(this.model && this.model.lockable)
+      this.model.unlock();
+
+    if(this.wasOrIsDragging){
+      // emit a global dragstop event
+      $(document).trigger('viewdragstop', this);
+
+      this.wasOrIsDragging = false;
+    }
+      
+    $(document).off(this.inputMoveEvent, this.drag);
+
+    // save new positions
+    this.model.save();
+
+    // set the new country positions
+    var view = this;
+    _.defer(function(){
+      view.$el.find('a').removeClass('noclick');
+    });
   },
 
   afterRender: function(){

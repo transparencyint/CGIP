@@ -91,7 +91,7 @@ module.exports = View.extend({
     }
   },
 
-  drag: function(event){ 
+  drag: function(event, ui){ 
     var pos = this.model.get('pos');
     
     var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
