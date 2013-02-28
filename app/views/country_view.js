@@ -11,6 +11,7 @@ module.exports = DraggableDroppableView.extend({
     // clone parent events
     var _events = _.defaults({}, _parentEvents);
     
+    _events['click a.delete-btn'] = 'addCountryToDelete';
     _events['click a'] = 'performClick';
 
     return _events;
@@ -20,10 +21,23 @@ module.exports = DraggableDroppableView.extend({
     //DraggableDroppableView.prototype.initialize.call(this, options);
 
     this.model = options.model;
+    this.worldmap = options.worldmap;
 
     _.bindAll(this, 'destroy', 'drag', 'dragStop');
 
     this.model.on('change:pos', this.updatePosition, this);
+  },
+
+  addCountryToDelete: function(event){
+    event.preventDefault();
+
+    var currentEl = $(event.target).parents('.point');
+    var country = currentEl.attr('id');
+
+    currentEl.addClass('transparent');
+
+    // add country to delete list
+    this.worldmap.addCountryToDelete(country);
   },
 
   getRenderData: function() {

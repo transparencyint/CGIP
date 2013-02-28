@@ -49,6 +49,19 @@
     width 956px
     margin-left 2px
     perspective 1000
+    .delete-btn
+      width 20px
+      padding 5px
+      display none
+      color #fff
+      background #ff0000
+      position absolute
+      top 0px
+      right -20px
+      cursor pointer
+   .edit-mode
+    .delete-btn
+      display block 
   .map:before 
     content ""
     position absolute
@@ -70,12 +83,14 @@
     opacity 0
     transform translateZ(200px)
     transform-style preserve-3d
+  .point:hover
+    z-index 1
   .point.appear 
     opacity 1
     transform translateZ(0)
     transition transform 500ms, opacity 500ms
-  .point:hover
-    z-index 1
+  .point.transparent
+    opacity 0.35
   .label 
     position absolute
     white-space nowrap

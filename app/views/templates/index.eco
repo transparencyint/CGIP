@@ -4,7 +4,7 @@
     <% if window.user.isLoggedIn(): %>
       <div class="map-controls">
           <a class="map-edit-btn" href="#"><%= t('Edit')%></a>
-          <a class="map-add-btn" href="#">+</a>
+          <a class="map-add-btn" href="/edit/countries">+</a>
 
           <a class="hidden map-cancel-btn" href="#"><%= t('Cancel') %></a>
           <a class="hidden map-ok-btn" href="#"><%= t('Ok') %></a>
