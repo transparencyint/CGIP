@@ -30,6 +30,13 @@ module.exports = View.extend({
     this.map.toggleClass('edit-mode');
     this.map.find('.point').removeClass('transparent');
     this.mapControls.find('a').toggleClass('hidden');
+
+    _.each(this.countryViews, function(countryView){
+      if(countryView.isDraggable)
+        countryView.isDraggable = false;
+      else
+        countryView.isDraggable = true;
+    });
   },
 
   addCountryToDelete: function(country){

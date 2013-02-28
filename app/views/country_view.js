@@ -22,6 +22,7 @@ module.exports = DraggableDroppableView.extend({
 
     this.model = options.model;
     this.worldmap = options.worldmap;
+    this.isDraggable = false;
 
     _.bindAll(this, 'destroy', 'drag', 'dragStop');
 
