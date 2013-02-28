@@ -7,11 +7,26 @@ module.exports = View.extend({
 
   template: require('./templates/index'),
 
+  events: function(){
+    var _events = {
+      'click a.map-edit-btn, a.map-cancel-btn' : 'showEditButtons'
+    };
+
+    return _events;
+  },
+
   initialize: function(options){
     this.countries = this.options.countries;
     this.countryViews = {};
     
     _.bindAll(this, 'fadeInCountries', 'renderCountry');
+  },
+
+  showEditButtons: function(event){
+    event.preventDefault();
+
+    this.mapControls.find('a').toggleClass('hidden');
+
   },
 
   getRenderData: function() {
@@ -31,6 +46,7 @@ module.exports = View.extend({
   render: function(){
     this.$el.html( this.template( this.getRenderData() ) );
     this.map = this.$('.map');
+    this.mapControls = this.$('.map-controls');
 
     this.countries.each(this.renderCountry);
 
