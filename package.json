@@ -2,7 +2,7 @@
     "author": "Your Name",
     "name": "cgip",
     "description": "Package description",
-    "version": "0.0.1-5",
+    "version": "0.0.1-7",
     "engines": {
         "node": "0.8.x"
     },
