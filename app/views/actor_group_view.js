@@ -25,6 +25,7 @@ module.exports = DraggableDroppableView.extend({
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:role', this.updateRole, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
     this.model.on('change:organizationType', this.updateType, this);
   },
@@ -61,6 +62,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.updateRole();
     this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
   },
@@ -84,6 +86,7 @@ module.exports = DraggableDroppableView.extend({
   determineName: ActorView.prototype.determineName,
   updateName: ActorView.prototype.updateName,
   updateType: ActorView.prototype.updateType,
+  updateRole: ActorView.prototype.updateRole,
   updateCorruptionRisk: ActorView.prototype.updateCorruptionRisk,
   
   showDetails: function(event){
