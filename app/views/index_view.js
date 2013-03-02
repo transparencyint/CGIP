@@ -134,7 +134,7 @@ module.exports = View.extend({
       var countries = this.options.countries;
       countries.add(countryModel);
 
-      this.renderCountry(countryModel, true);
+      this.renderCountry(countryModel);
     }
   },
 
@@ -181,12 +181,9 @@ module.exports = View.extend({
     };
   },
 
-  renderCountry: function(country, draggable){
+  renderCountry: function(country){
     var countryView = new CountryView({ model : country, worldmap : this });
     countryView.render();
-
-    if(draggable === true)
-      countryView.isDraggable = draggable;
     
     // make the view ppear on the map
     countryView.$el.addClass('appear');
