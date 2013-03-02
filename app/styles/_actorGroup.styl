@@ -21,8 +21,20 @@
   &.selected
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
   &.locked
-    opacity .5
     cursor not-allowed
+    opacity 0.33
+    .type
+      display none
+    &:after
+      content ""
+      position absolute
+      margin-left -22px
+      margin-top 4px
+      left 50%
+      top 50%
+      width 43px
+      height 11px
+      background url(../images/loading.gif);
   .actor-style
     position relative
     z-index 2
