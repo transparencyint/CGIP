@@ -49,17 +49,16 @@
         border-radius 0 2px 2px 0
   &.selected .animationHolder
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
-  &.hasCorruptionRisk 
-    .animationHolder:after,
-    .actor-style:after
-      content ""
-      position absolute
-      right -10px
-      top -8px
-      width 25px
-      height 25px
-      background url(../images/risk.png)
-      background-size cover
+  &.hasCorruptionRisk:before
+    content ""
+    position absolute
+    z-index 4
+    right -10px
+    top -8px
+    width 25px
+    height 25px
+    background url(../images/risk.png)
+    background-size cover
   svg
     display none
   &.locked
@@ -79,7 +78,8 @@
       background url(../images/loading.gif);
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
-  &.disappear .animationHolder
+  &.disappear .animationHolder,
+  &.disappear .actor-style
     opacity 0
     transform scale(0.5) translateY(10px)
     transition 250ms
