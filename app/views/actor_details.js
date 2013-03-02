@@ -104,7 +104,7 @@ module.exports = View.extend({
     event.preventDefault();
 
     var pos = this.$el.offset();
-    
+  
     this.startX = this.normalizedX(event) - pos.left;
     this.startY = this.normalizedY(event) - pos.top;
     
@@ -226,11 +226,12 @@ module.exports = View.extend({
   
   placeNextToActor: function(){
     // absolute position inside the window
-    var pos = this.actor.$el.offset();
+    var actorPos = this.actor.$el.offset();
+    var pos = _.clone(actorPos);
     var padding = this.editor.padding;
-    var arrow = this.$('.arrow');
     this.height = this.$el.height();
-    var arrowPos = this.height / 2;
+    var arrowPos = Math.round(this.height/2);
+    var editorHeight = this.editor.$el.height();
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
     var actorHeight = this.actor.height * this.editor.zoom.value;
@@ -255,22 +256,22 @@ module.exports = View.extend({
       arrowPos -= Math.abs(padding - pos.top);
       pos.top = padding;
     }
-    else if(pos.top + this.height + padding > this.editor.$el.height()){      
-      arrowPos += Math.abs(pos.top + this.height - this.editor.$el.height() + padding);
-      pos.top = this.editor.$el.height() - padding - this.height;
+    else if(pos.top + this.height + padding > editorHeight){      
+      pos.top = Math.max(padding, editorHeight - padding - this.height);
+      arrowPos = actorPos.top + actorHeight/2 - pos.top;
     }
-    
-    // keep the arrow positonend inside the boundaries
-    var max = this.height-this.controlsHeight-this.arrowHeight/2;
-    var min = this.borderRadius+this.arrowHeight/2;
-    
-    arrowPos = Math.min(max, Math.max(min, arrowPos));
-    arrow.css('top', arrowPos - this.arrowHeight/2);
     
     // limit the maximum height to show scrollbars
     // if the details would get too high
-    var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
-    this.$('.holder').css('maxHeight', maxHeight);
+    var maxHeight = editorHeight - pos.top - padding - this.controlsHeight;
+    this.holder.css('maxHeight', maxHeight);
+    
+    // keep the arrow positonend inside the boundaries
+    var max = maxHeight-this.arrowHeight/2;
+    var min = this.borderRadius+this.arrowHeight/2;
+    
+    arrowPos = Math.min(max, Math.max(min, arrowPos));
+    this.$('.arrow').css('top', arrowPos - this.arrowHeight/2);
 
     this.place(pos.left, pos.top);
   },
@@ -363,9 +364,11 @@ module.exports = View.extend({
   submitForm: function(){
     
     var formData = this.$('form').serializeArray();
-    var sets = [ 'purpose' ];
+
+    var sets = [ 'purpose', 'role' ];
     var cleanedData = {
-      'purpose' : []
+      'purpose' : [],
+      'role' : []
     };
     var checkboxes = [ 'hasCorruptionRisk' ];
     var hasCorruptionRisk = false;

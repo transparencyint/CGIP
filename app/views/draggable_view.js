@@ -195,18 +195,24 @@ module.exports = View.extend({
         complete: function(){
 
           //fix the last animation step to generate integer values
-          view.model.save({
+          view.model.set({
             pos : {
               x: x,
               y: y
             }
           });
+
+          // set the actor role depending on where the actor was released
+          view.model.set('role', view.editor.rbw.getActorRoles(view));
+          view.model.save();
         }
       });
     } else {
       if(!this.saveAfterSnap) return;
       view.model.save();
     }
+
+    
   },
 
   destroy: function(){

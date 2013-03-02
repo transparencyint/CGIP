@@ -9,25 +9,21 @@ html
     script(src="/country-translation.js")
     script(src="/javascripts/vendor.js")
     script(src="/javascripts/app.js")
-    if realtimePort
-      script(src="http://speculos.taurus.uberspace.de:" + realtimePort + "/socket.io/socket.io.js")
-    else
-      script(src="/socket.io/socket.io.js")
+    script(src="/socket.io/socket.io.js")
     title CGIP
   body
     #outofsync
 
     .browserSupport
       h2 Please update your Browser! 
-      p It doesn't support all necessary features. </br> Get a recent version of Chrome or Firefox!
-      div
-        a.button(href='http://www.google.com/chrome') Get Chrome
-        a.button(href='www.mozilla.org/de/firefox/') Get Firefox
+      p It doesn't support all necessary features.
+      p Get a recent version of Chrome or Firefox!
+
+      a.button(href='http://www.google.com/chrome') Get Chrome
+      a.button(href='http://www.mozilla.org/de/firefox/') Get Firefox
 
     script(id="lm")
       window.lockedModels = !{JSON.stringify(lockedModels)};
-    script(id="rp")
-      window.realtimePort = !{realtimePort};
 
     if user
         script(id="user_hash")

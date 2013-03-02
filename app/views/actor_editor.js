@@ -51,8 +51,8 @@ module.exports = View.extend({
     this.actorHeight = 55;
     this.actorWidth = 144;
 
-    this.fakeActorWidth = 134;
-    this.fakeActorHeight = 45;
+    this.fakeActorWidth = 110;
+    this.fakeActorHeight = 42;
 
     this.zoom = {
       value: 1,
@@ -447,6 +447,7 @@ module.exports = View.extend({
     if(startEdit === true){
       actorView.select();
       actorView.showDetails();
+      this.trigger('actorCreated', actorView);
     }
   },
 

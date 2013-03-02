@@ -43,7 +43,7 @@
   	<div class="controls clearfix">
       <div class="row right">
         <button type="submit" class="done"><%= t('Save')%></button>
-        <button class="cancel"><%= t('Close')%></button>
+        <button class="cancel"><%= t('Cancel')%></button>
       </div>
       <div class="row left">
         <button class="delete"><%= t('Delete')%></button>

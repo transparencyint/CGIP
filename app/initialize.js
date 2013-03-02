@@ -21,11 +21,7 @@ $(function() {
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
     // decide on location of the socket server
-    var socketServer = '';
-    if(window.realtimePort)
-      socketServer = 'http://' + location.host + ':' + window.realtimePort;
-    else
-      socketServer = location.host;
+    var socketServer = location.host;
 
     console.log('connect socket to: ', socketServer)
 
@@ -51,6 +47,7 @@ $(function() {
 
   // set up the config model
   window.config = new Config();
+  window.mediator = _.clone(Backbone.Events);
 
   // hook into socket.io in order to turn it on/off depending on the config
   var socketOn = socket.on;
