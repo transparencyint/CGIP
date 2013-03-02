@@ -2,11 +2,11 @@
   <div class="caption">
     <div class="text">
       <div class="name"><%= @abbreviation or @name %></div>
-      <% if @organizationType: %> 
         <div class="type">
-          <%= t( @organizationType ) %>
+          <% if @organizationType: %> 
+            <%= t( @organizationType ) %>
+          <% end %>
         </div>
-      <% end %>
     </div>
     <div class="dropdown-control">
      <div class="arrow"> ▼</div>

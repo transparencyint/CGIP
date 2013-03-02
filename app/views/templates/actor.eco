@@ -1,8 +1,8 @@
 <div class="animationHolder">
   <div class="name"><%= @name %></div>
-  <% if @organizationType: %> 
-    <div class="type">
+  <div class="type">
+    <% if @organizationType: %> 
       <%= t( @organizationType ) %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
