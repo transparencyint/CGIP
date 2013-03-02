@@ -8,7 +8,7 @@
   color hsl(215,21%,21%)
   font-size 16px
   line-height 1.4
-  
+
   backface-visibility hidden
   cursor url(/images/openhand_8_8.cur) 8 8, default
   transition opacity 180ms
@@ -48,21 +48,35 @@
         border-left none !important
         border-radius 0 2px 2px 0
   &.selected .animationHolder
-    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.34), 0 -3px #f0f0f0 inset, 0 1px #fff inset, 0 0 0 3px #f9f9f9 inset
-  &.hasCorruptionRisk:after
-    content ""
-    position absolute
-    right -10px
-    top -8px
-    width 25px
-    height 25px
-    background url(../images/risk.png)
-    background-size cover
+    box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  &.hasCorruptionRisk 
+    .animationHolder:after,
+    .actor-style:after
+      content ""
+      position absolute
+      right -10px
+      top -8px
+      width 25px
+      height 25px
+      background url(../images/risk.png)
+      background-size cover
   svg
     display none
   &.locked
-    opacity .5
     cursor not-allowed
+    opacity 0.33
+    .type
+      display none
+    &:after
+      content ""
+      position absolute
+      margin-left -22px
+      margin-top 4px
+      left 50%
+      top 50%
+      width 43px
+      height 11px
+      background url(../images/loading.gif);
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
   &.disappear .animationHolder

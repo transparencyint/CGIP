@@ -230,7 +230,7 @@ module.exports = View.extend({
     var padding = this.editor.padding;
     var arrow = this.$('.arrow');
     this.height = this.$el.height();
-    var arrowPos = this.height / 2;
+    var arrowPos = Math.round(this.height/2);
     
     var actorWidth = this.actor.width * this.editor.zoom.value;
     var actorHeight = this.actor.height * this.editor.zoom.value;
@@ -260,17 +260,17 @@ module.exports = View.extend({
       pos.top = this.editor.$el.height() - padding - this.height;
     }
     
-    // keep the arrow positonend inside the boundaries
-    var max = this.height-this.controlsHeight-this.arrowHeight/2;
-    var min = this.borderRadius+this.arrowHeight/2;
-    
-    arrowPos = Math.min(max, Math.max(min, arrowPos));
-    arrow.css('top', arrowPos - this.arrowHeight/2);
-    
     // limit the maximum height to show scrollbars
     // if the details would get too high
     var maxHeight = this.editor.$el.height() - pos.top - padding - this.controlsHeight;
     this.$('.holder').css('maxHeight', maxHeight);
+    
+    // keep the arrow positonend inside the boundaries
+    var max = maxHeight-this.arrowHeight/2;
+    var min = this.borderRadius+this.arrowHeight/2;
+    
+    arrowPos = Math.min(max, Math.max(min, arrowPos));
+    arrow.css('top', arrowPos - this.arrowHeight/2);
 
     this.place(pos.left, pos.top);
   },

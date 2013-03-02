@@ -6,7 +6,7 @@ var NavigationView = require('views/navigation_view');
 Application = {
   initialize: function(done) {
     var app = this;
-    
+
     // initiate the router
     this.router = new Router();
     this.router.app = this;
