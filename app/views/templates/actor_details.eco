@@ -4,7 +4,7 @@
     <div class="holder">
       <div>
         <input type="text" class="big" id="name" name="name" value="<%= @name %>" placeholder="<%= t('Full Name') %>" />
-        <input type="text" class="small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
+        <input type="text" class="small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="<%= t('Short Name') %>" />
       </div>
   
     	<div>
