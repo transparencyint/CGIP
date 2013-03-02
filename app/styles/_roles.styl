@@ -27,3 +27,47 @@ svg
     background gray
     fill gray
     stroke gray
+    
+fundingColor = #ffc345
+coordinationColor = #a5bfdd
+implementationColor = #c9dfaf
+monitoringColor = #d3cabd
+
+.actor, .actor-group
+  &[data-role='funding'] 
+    .animationHolder:after, 
+    .actor-style:after
+      border-color fundingColor
+  &[data-role='funding and coordination']
+    .animationHolder,
+    .actor-style
+      &:before
+        border-color fundingColor
+      &:after
+        border-color coordinationColor
+  &[data-role='coordination'] 
+    .animationHolder:after, 
+    .actor-style:after
+      border-color coordinationColor
+  &[data-role='coordination and implementation']
+    .animationHolder,
+    .actor-style
+      &:before
+        border-color coordinationColor
+      &:after
+        border-color implementationColor
+  &[data-role='implementation'] 
+    .animationHolder:after, 
+    .actor-style:after
+      border-color implementationColor
+  &[data-role='implementation and monitoring']
+    .animationHolder,
+    .actor-style
+      &:before
+        border-color implementationColor
+      &:after
+        border-color monitoringColor
+  &[data-role='monitoring'] 
+    .animationHolder:after, 
+    .actor-style:after
+      border-color monitoringColor
