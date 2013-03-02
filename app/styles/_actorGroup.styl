@@ -20,6 +20,11 @@
     margin 2px 0 0 2px
   &.selected
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
+  &.locked
+    &:after
+      margin-left -36px
+      margin-top 8px
+      z-index 3
   .actor-style
     position relative
     z-index 2
