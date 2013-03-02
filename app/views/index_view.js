@@ -124,6 +124,7 @@ module.exports = View.extend({
 
   addCountry: function(country){
     this.clearSearch();
+    console.log('adding country');
     if(!this.options.countries.containsCountry(country['alpha-2'])){
       var countryModel = new this.options.countries.model({
         abbreviation: country['alpha-2'],
@@ -131,9 +132,7 @@ module.exports = View.extend({
         type: 'country'
       });
       var countries = this.options.countries;
-      countryModel.save().done(function(){
-        countries.add(countryModel);
-      });
+      countries.add(countryModel);
 
       this.renderCountry(countryModel);
     }

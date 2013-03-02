@@ -25,8 +25,6 @@ module.exports = DraggableDroppableView.extend({
 
     _.bindAll(this, 'destroy', 'drag', 'dragStop', 'deleteCountry');
 
-    console.log(this.model);
-
     this.model.on('change:pos', this.updatePosition, this);
   },
 
