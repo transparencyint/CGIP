@@ -1,6 +1,6 @@
 {
   "A connection has to have two different actors. Or at least one set to 'none'.": "La conexión tiene que tener dos actores diferentes. O por lo menos un valor 'none'.",
-  "accountability": "Responsabilidad",
+  "accountability": "responsabilidad",
   "Accountability": "Responsabilidad",
   "Action": "Acción",
   "Adaptation": "Adaptación",
@@ -91,6 +91,7 @@
   "Please confirm the import by pressing the button.": "Por favor confirmar la importación pulsando el botón.",
   "pledged": "comprometido",
   "Pledged": "Comprometido",
+  "Privacy": "Privacidad",
   "Private Company": "Sociedad Privada",
   "Program": "Program",
   "Presentation": "Presentación",

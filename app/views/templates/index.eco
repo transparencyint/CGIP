@@ -64,7 +64,7 @@
       <% else: %>
         <a href="/login/"><%= t('Login') %></a>
       <% end %>
-      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms"><%= t('Terms') %></a> – <a href="http://www.transparency.org/impressum"><%= t('Impressum') %></a> 
+      – <a href="http://www.transparency.org/privacy"><%= t('Privacy') %></a> – <a href="http://www.transparency.org/terms"><%= t('Terms') %></a> – <a href="http://www.transparency.org/impressum"><%= t('Impressum') %></a> 
     </div>
   </footer>
 </div>
