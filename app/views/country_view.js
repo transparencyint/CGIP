@@ -22,6 +22,7 @@ module.exports = DraggableDroppableView.extend({
     this.model = options.model;
     this.worldmap = options.worldmap;
     this.isDraggable = false;
+    this.isBeingDeleted = false;
 
     _.bindAll(this, 'destroy', 'drag', 'dragStop', 'deleteCountry');
 
@@ -34,10 +35,21 @@ module.exports = DraggableDroppableView.extend({
     var currentEl = $(event.target).parents('.point');
     var country = currentEl.attr('id');
 
-    currentEl.addClass('transparent');
+    // check if country is beeing deleted already and remove deleted if clicked again
+    if(this.isBeingDeleted){
+      this.isBeingDeleted = false;
+      currentEl.removeClass('transparent');
 
-    // add country to delete list
-    this.worldmap.addCountryToDelete(country, this);
+      // remove country from delete list
+      this.worldmap.removeCountryToDelete(country, this);
+    }
+    else{
+      this.isBeingDeleted = true;
+      currentEl.addClass('transparent');
+
+      // add country to delete list
+      this.worldmap.addCountryToDelete(country, this);
+    }
   },
 
   deleteCountry: function(){

@@ -161,6 +161,10 @@ module.exports = View.extend({
     this.countryViewsToDelete[country] = view;
   },
 
+  removeCountryToDelete: function(country, view){
+    delete this.countryViewsToDelete[country];
+  },
+
   updateMapData: function(){
     var view = this;
     
