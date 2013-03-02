@@ -1,16 +1,6 @@
 <div class="animationHolder">
   <div class="name"><%= @name %></div>
   <div class="type">
-	<%= if @organizationType == 'Unknown': %><%= t('Unknown') %><% end%>
-    <%= if @organizationType == 'Bank': %><%= t('Bank') %><% end%>
-    <%= if @organizationType == 'Bilateral Organization': %><%= t('Bilateral Organization') %><% end%>
-    <%= if @organizationType == 'Multilateral Organization': %><%= t('Multilateral Organization') %><% end%>
-    <%= if @organizationType == 'Trust Fund': %><%= t('Trust Fund') %><% end%>
-    <%= if @organizationType == 'Government Ministry': %><%= t('Government Ministry') %><% end%>
-    <%= if @organizationType == 'Government Agency': %><%= t('Government Agency') %><% end%>
-    <%= if @organizationType == 'Research Organization': %><%= t('Research Organization') %><% end%>
-    <%= if @organizationType == 'Civil Society Organization': %><%= t('Civil Society Organization') %><% end%>
-    <%= if @organizationType == 'Private Company': %><%= t('Private Company') %><% end%>
-    <%= if @organizationType == 'other': %><%= t('Other') %><% end%>
+        <%- t( @organizationType ) %>
   </div>
 </div>
