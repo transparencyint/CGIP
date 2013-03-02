@@ -18,13 +18,14 @@ module.exports = DraggableDroppableView.extend({
   },
   
   initialize: function(options){
-    //DraggableDroppableView.prototype.initialize.call(this, options);
 
     this.model = options.model;
     this.worldmap = options.worldmap;
     this.isDraggable = false;
 
     _.bindAll(this, 'destroy', 'drag', 'dragStop', 'deleteCountry');
+
+    console.log(this.model);
 
     this.model.on('change:pos', this.updatePosition, this);
   },
@@ -42,6 +43,7 @@ module.exports = DraggableDroppableView.extend({
   },
 
   deleteCountry: function(){
+    this.$el.remove();
     this.model.destroy();  
     this.destroy();
   }, 
@@ -157,10 +159,6 @@ module.exports = DraggableDroppableView.extend({
   },
 
   destroy: function(){
-    var self = this;
-    this.$el.one(this.transEndEventName, function(){
-      DraggableDroppableView.prototype.destroy.call(self);
-    });
     this.$el.removeClass('transparent').addClass('disappear');
   }
 });
