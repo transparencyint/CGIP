@@ -1,5 +1,5 @@
 <div class="label">
   <a href="/show/<%= @abbreviation %>"><%= @name %> </a>
-  <a class="delete-btn"> d </a>
   <div class="arrow"></div>
+  <span class="delete-btn"></span>
 </div>
