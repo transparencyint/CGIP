@@ -22,9 +22,11 @@
         <% if @organizationType == 'other': %>
           <%= @typeOther %>
         <% else if @organizationType: %>
-          <%= @organizationType %>
+          <% if @organizationType: %> 
+            <%= t( @organizationType ) %>
+          <% end %>
         <% else: %>
-          <%= t('not_given')%>
+          <%= t('Not given')%>
         <% end %>
       </div>
 
@@ -33,9 +35,31 @@
           <%= t('Role')%>:   
           <% for role,idx in @role: %> 
             <% if idx == 0: %>
-              <%= role %>
+              <% if role == "funding": %>
+                <%= t('Funding') %>
+              <% end %>
+              <% if role == "coordination": %>
+                <%= t('Coordination') %>
+              <% end %>
+              <% if role == "implementation": %>
+                <%= t('Implementation') %>
+              <% end %>
+              <% if role == "monitoring": %>
+                <%= t('Monitoring') %>
+              <% end %>
             <% else: %>
-              / <%= role %> 
+              / <% if role == "funding": %>
+                <%= t('Funding') %>
+              <% end %>
+              <% if role == "coordination": %>
+                <%= t('Coordination') %>
+              <% end %>
+              <% if role == "implementation": %>
+                <%= t('Implementation') %>
+              <% end %>
+              <% if role == "monitoring": %>
+                <%= t('Monitoring') %>
+              <% end %>
             <% end %>  
           <% end %>  
         </div>
@@ -46,9 +70,43 @@
           <%= t('Purpose')%>:
           <% for purpose,idx in @purpose: %> 
             <% if idx == 0: %>
-              <%= purpose %>
+              <% if purpose == "adaption": %>
+                <%= t('Adaptation') %>
+              <% end %>
+              <% if purpose == "mitigation": %>
+                <%= t('Mitigation') %>
+              <% end %>
+              <% if purpose == "research": %>
+                <%= t('Research') %>
+              <% end %>
+              <% if purpose == "capacity_building": %>
+                <%= t('Capacity Building') %>
+              <% end %>
+              <% if purpose == "redd": %>
+                <%= t('REDD') %>
+              <% end %>
+              <% if purpose == "CDM": %>
+                <%= t('CDM') %>
+              <% end %>
             <% else: %>
-              / <%= purpose %>
+              / <% if purpose == "adaption": %>
+                <%= t('Adaptation') %>
+              <% end %>
+              <% if purpose == "mitigation": %>
+                <%= t('Mitigation') %>
+              <% end %>
+              <% if purpose == "research": %>
+                <%= t('Research') %>
+              <% end %>
+              <% if purpose == "capacity_building": %>
+                <%= t('Capacity Building') %>
+              <% end %>
+              <% if purpose == "redd": %>
+                <%= t('REDD') %>
+              <% end %>
+              <% if purpose == "CDM": %>
+                <%= t('CDM') %>
+              <% end %>
             <% end %>  
           <% end %>
         </div>
@@ -56,11 +114,11 @@
 
       <% if @hasCorruptionRisk: %>  
       	<div class="clearfix">
-          <p><%= t('is_corruption_risk'); %></p>
+          <p><%= t('There is a corruption risk') ; %></p>
           <div class="additionalInfo inlay">
             <div class="corruptionText"><%= @corruptionRisk %></div>
             <% if @corruptionRiskSource: %>
-              <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+              <%= t('Source') ; %>: http://<%= @corruptionRiskSource %>
           </div>
           <% end %>
       	</div>
