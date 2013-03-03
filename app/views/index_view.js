@@ -131,9 +131,7 @@ module.exports = View.extend({
         type: 'country'
       });
       var countries = this.options.countries;
-      countryModel.save().done(function(){
-        countries.add(countryModel);
-      });
+      countries.add(countryModel);
 
       this.renderCountry(countryModel);
     }
@@ -162,6 +160,10 @@ module.exports = View.extend({
     this.countryViewsToDelete[country] = view;
   },
 
+  removeCountryToDelete: function(country, view){
+    delete this.countryViewsToDelete[country];
+  },
+
   updateMapData: function(){
     var view = this;
     
@@ -181,7 +183,7 @@ module.exports = View.extend({
   renderCountry: function(country){
     var countryView = new CountryView({ model : country, worldmap : this });
     countryView.render();
-
+    
     // make the view ppear on the map
     countryView.$el.addClass('appear');
 
