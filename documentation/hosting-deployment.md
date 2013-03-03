@@ -33,4 +33,30 @@ The following steps need to be performed once before you can get started develop
 7. Create the design docs with: `node server/scripts/create_design_docs.js`
 8. Create a user with: `node server/scripts/create_user.js` (will prompt for details)
 9. Run `brunch build`
-10. Run `node server.js` and open [http://127.0.0.1:3000](http://127.0.0.1:3000:3000) in your browser
+10. Run `node server.js` and open [http://127.0.0.1:3000](http://127.0.0.1:3000) in your browser
+
+## Hosting
+
+### Option 1: Uberspace
+
+For the most of time we were using [Uberspace](http://uberspace.de/) as hoster in combination with git-deployment.
+
+Registering for an account is straight forward and the space is immediately accessible after registration. You get full SSH access to your space and your provided with solid service-system which makes setting up the app really easy.
+
+For the rest of the tutorial we need an open SSH connection to our server. This can be done easily with: `ssh MYUSERNAME@ourserverurl`.
+First we simply clone the repository into some directory as described above.
+
+#### Setting up CouchDB
+
+CouchDB is not installed by default so we need to set it up on our own. If not done already we set up the service directory: `uberspace-setup-svscan`.
+
+Then we install CouchDB with the built in helper: `uberspace-setup-couchdb`. It will print out several infos we need to note down like the port which CouchDB got assigned and the admin credentials for Futon. All this information can be added to the `config.js` file with `nano` (`nano cgip/server/config.js`).
+
+#### Setting up a service for the app
+
+The way Uberspace works is that it puts an Apache in front of NodeJS if it should be served from port 80. So we need to create a rewrite rule for our app to Apache's `.htaccess` inside the `html/` directory which is accessible from the root directory:
+
+	RewriteEngine On
+	RewriteRule (.*) http://127.0.0.1:PORTNUMBER/$1 [P]
+
+This will map all requests to be served by our NodeJS app which is running on `PORTNUMBER`.
