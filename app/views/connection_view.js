@@ -49,7 +49,7 @@ module.exports = View.extend({
   },
 
   initializeProperties: function(options){
-    this.model.coinSizeFactor = 1;
+    this.model.ticknessFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
@@ -129,8 +129,8 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
-      this.model.calculateCoinSize();
-      this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
+      this.model.calculateLineTickness();
+      this.strokeWidth = this.strokeWidth * this.model.ticknessFactor;
     }
 
     this.pathSettings = {
@@ -144,8 +144,8 @@ module.exports = View.extend({
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
 
     if(this.isMoney){
-      this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:coinSizeFactor', this.update, this);
+      this.model.on('change:isEmptyAmount', this.toggleZeroConnection, this)
+      this.model.on('change:ticknessFactor', this.update, this);
     }
 
     this.g = this.svg.group();    
@@ -167,7 +167,7 @@ module.exports = View.extend({
 
   toggleZeroConnection: function(){
     this.$el.removeClass('amountUnknown');
-    if(this.model.isZeroAmount) {
+    if(this.model.isEmptyAmount) {
       this.$el.addClass('amountUnknown');
     }
   },
@@ -184,7 +184,7 @@ module.exports = View.extend({
     //when it is a money connection just
     //recalculating the line thickness and the arrow size
     if(this.isMoney){
-      this.strokeWidth = 6 * this.model.coinSizeFactor;
+      this.strokeWidth = 6 * this.model.ticknessFactor;
     }
 
     //if it is a monitoring connection
@@ -198,7 +198,7 @@ module.exports = View.extend({
           (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
           this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
-          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
+          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].ticknessFactor) * (-1);
           this.distanceSecond = -10;
         }
       };
