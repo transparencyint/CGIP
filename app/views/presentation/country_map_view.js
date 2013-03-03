@@ -1,3 +1,7 @@
+// This view is the equivalents of the actor editor view. The public has access to that and 
+// therefore doesn't allow the editing of any data. The country map borrows many of the actor editor functions.
+// Mainly the editing possiblities aren't here and the presentation views are style differently.
+
 var View = require('../view');
 var ActorEditor = require('../actor_editor');
 var PresentationConnectionView = require('./presentation_connection_view');
@@ -11,6 +15,7 @@ module.exports = View.extend({
 
   template: require('views/templates/presentation/country_map'),
 
+  // Reacts to following user event: zooming, changing money mode and panning the map
   events: function(){
     var _events = {
 
@@ -47,8 +52,9 @@ module.exports = View.extend({
     $(document).on('viewdrag', this.unScopeElements);
     // actor selection
     $(document).on('viewSelected', this.selected);
-
   },
+
+  // The country map borrows most of the functionality from the actor editor following hereafter.
 
   initializeProperties: ActorEditor.prototype.initializeProperties,
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
@@ -83,7 +89,6 @@ module.exports = View.extend({
   // Scope the editor's container
   scopeElements: function(view){
 
-    console.log('scoping');
     // set the state
     this.isScoped = true;
 
@@ -197,6 +202,7 @@ module.exports = View.extend({
     }
   },
 
+  // This function determine any element on the map as selected. The selected element can be an actor or a connection. 
   selected: function(event, view){
     var type = view.model.get('type');
     
@@ -224,16 +230,6 @@ module.exports = View.extend({
   },
 
   unselect: function(){
-    if(this.mode)
-      this.deactivateMode();
-    
-    this.$('.selected').removeClass('selected');
-    this.selectedActorView = null;
-    this.selectedView = null;
-    this.selectedActorView = null;
-  },
-
-  unselect: function(){
     this.unScopeElements();
     this.selectedActorView = null;
     this.selectedConnectionView = null;
@@ -245,12 +241,14 @@ module.exports = View.extend({
     event.stopPropagation();
   },
 
+  // Can be called initially on opening the map or if an actor has been added
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
 		presentationActorView.render();
 		this.workspace.append(presentationActorView.el);
   },
 
+  // Same here for the group and connections
   appendActorGroup: function(actorGroup){
     var presentationActorGroupView = new PresentationActorGroupView({ model : actorGroup, editor: this});
     presentationActorGroupView.render();
@@ -272,6 +270,8 @@ module.exports = View.extend({
     this.moveTo(0, 0);
   },
   
+  // Renders all the elements on the map. Since all the editing features aren't integrated in the presentation views
+  // it can't just be borrowed by the actor editor 
   render: function(){
 		var editor = this;
 

@@ -1,3 +1,6 @@
+// This contains Global configuration, which can be accessed across the application.
+// The configuration include languages, realtime and the money connection mode (disbursed/pledged).
+
 var Model = require('./model');
 
 module.exports = Model.extend({

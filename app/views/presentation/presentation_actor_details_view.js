@@ -1,3 +1,5 @@
+// This view is the equivalents of the actor details view. 
+
 var View = require('../view');
 var ActorDetails = require('../actor_details');
 
@@ -6,9 +8,8 @@ module.exports = View.extend({
   template: require('../templates/presentation/presentation_actor_details'),
   className: 'modal hidden actorDetails',
 
+  // The details modal window reacts to following user event: closing and dragging the details window
   events: {
-    // the buttons at the bottom
-    'click .close': 'close',
 
     // make the whole thing draggable..
     'mousedown': 'dragStart',
@@ -112,10 +113,9 @@ module.exports = View.extend({
     });
   },
 
-  /**
-   * source: 
-   * http://stackoverflow.com/questions/1701898/how-to-detect-whether-a-string-is-in-url-format-using-javascript
-   */
+  // Detect if the passed String is actually a URL
+  // source: 
+  // http://stackoverflow.com/questions/1701898/how-to-detect-whether-a-string-is-in-url-format-using-javascript
   isURL: function(url) {
     var strRegex = "^((https|http|ftp|rtsp|mms)?://)"
         + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"

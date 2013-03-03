@@ -1,3 +1,5 @@
+// This view is the equivalents of the actor view. It leaks all the editing features of the actor
+
 var View = require('../view');
 var ActorView = require('../actor_view');
 var PresentationActorDetailsView = require('views/presentation/presentation_actor_details_view');

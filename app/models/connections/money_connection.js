@@ -10,7 +10,8 @@ module.exports = Connection.extend({
     return data;
   },
 
-
+  // We the 3 different tickness variables the range for the tickness will be determined.
+  // This constances can be changed, which will effect the tickness of all money lines.
   initialize: function(opts){
     Connection.prototype.initialize.call(this, opts);
     this.isEmptyAmount = true;

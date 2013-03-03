@@ -404,16 +404,6 @@ module.exports = View.extend({
   },
 
   unselect: function(){
-    if(this.mode)
-      this.deactivateMode();
-    
-    this.$('.selected').removeClass('selected');
-    this.selectedActorView = null;
-    this.selectedView = null;
-    this.selectedActorView = null;
-  },
-
-  unselect: function(){
     this.unScopeElements();
     this.selectedActorView = null;
     this.selectedConnectionView = null;
