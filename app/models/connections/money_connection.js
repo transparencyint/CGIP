@@ -3,7 +3,7 @@ var Connection = require('./connection');
 module.exports = Connection.extend({
   defaults: function(){
     // add the money connectiontype to the defaults
-    var data = Connectyyion.prototype.defaults.call(this);
+    var data = Connection.prototype.defaults.call(this);
     data.connectionType = 'money';
     data.pledged = 0;
     data.disbursed = 0;
