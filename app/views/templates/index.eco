@@ -2,17 +2,16 @@
   <header>
 
     <% if window.user.isLoggedIn(): %>
-      <div class="controls">
-          <a class="edit button" href="#"><%= t('Edit') %></a>
-          <a class="add button" href="#">+ <%= t('Add Country') %></a>
+      <div class="map-controls">
+        <a class="edit button" href="#"><%= t('Edit') %></a>        
+        <form id="add-country">
+          <input type="text" placeholder="<%= t('type to add country...') %>" />
+          <div class="button"><%= t('Add Country') %></div>
+          <ul></ul>
+        </form>
 
-          <a class="hidden cancel button" href="#"><%= t('Cancel') %></a>
-          <a class="hidden ok button" href="#"><%= t('Ok') %></a>
-
-          <div id="add-country" class="hidden">
-            <input type="text" placeholder="<%= t('type to add country...') %>" /><button><%= t('Add Country') %></button>
-            <ul></ul>
-          </div>
+        <a class="cancel button" href="#"><%= t('Cancel') %></a>
+        <a class="ok button" href="#"><%= t('Ok') %></a>
       </div>
     <% end %> 
 
