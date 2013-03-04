@@ -6,7 +6,7 @@
         <a class="edit button" href="#"><%= t('Edit') %></a>        
         <form id="add-country">
           <input type="text" placeholder="<%= t('type to add country...') %>" />
-          <div class="button"><%= t('Add Country') %></div>
+          <div class="button">+ <%= t('Add Country') %></div>
           <ul></ul>
         </form>
 
