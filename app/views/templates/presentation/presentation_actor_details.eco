@@ -34,33 +34,10 @@
         <div class="clearfix">
           <%= t('Role')%>:   
           <% for role,idx in @role: %> 
-            <% if idx == 0: %>
-              <% if role == "funding": %>
-                <%= t('Funding') %>
-              <% end %>
-              <% if role == "coordination": %>
-                <%= t('Coordination') %>
-              <% end %>
-              <% if role == "implementation": %>
-                <%= t('Implementation') %>
-              <% end %>
-              <% if role == "monitoring": %>
-                <%= t('Monitoring') %>
-              <% end %>
-            <% else: %>
-              / <% if role == "funding": %>
-                <%= t('Funding') %>
-              <% end %>
-              <% if role == "coordination": %>
-                <%= t('Coordination') %>
-              <% end %>
-              <% if role == "implementation": %>
-                <%= t('Implementation') %>
-              <% end %>
-              <% if role == "monitoring": %>
-                <%= t('Monitoring') %>
-              <% end %>
-            <% end %>  
+            <% if idx != 0: %>
+              / 
+            <% end %>
+              <%= t( role.substr(0,1).toUpperCase()+role.substr(1) ) %>
           <% end %>  
         </div>
       <% end %>
@@ -69,45 +46,18 @@
         <div>
           <%= t('Purpose')%>:
           <% for purpose,idx in @purpose: %> 
-            <% if idx == 0: %>
-              <% if purpose == "adaption": %>
-                <%= t('Adaptation') %>
-              <% end %>
-              <% if purpose == "mitigation": %>
-                <%= t('Mitigation') %>
-              <% end %>
-              <% if purpose == "research": %>
-                <%= t('Research') %>
-              <% end %>
+            <% if idx != 0: %>
+              / 
+            <% end %>
               <% if purpose == "capacity_building": %>
                 <%= t('Capacity Building') %>
-              <% end %>
-              <% if purpose == "redd": %>
+              <% else if purpose == "redd": %>
                 <%= t('REDD') %>
-              <% end %>
-              <% if purpose == "CDM": %>
+              <% else if purpose == "CDM": %>
                 <%= t('CDM') %>
+              <% else: %>
+                <%= t( purpose.substr(0,1).toUpperCase()+purpose.substr(1) ) %>
               <% end %>
-            <% else: %>
-              / <% if purpose == "adaption": %>
-                <%= t('Adaptation') %>
-              <% end %>
-              <% if purpose == "mitigation": %>
-                <%= t('Mitigation') %>
-              <% end %>
-              <% if purpose == "research": %>
-                <%= t('Research') %>
-              <% end %>
-              <% if purpose == "capacity_building": %>
-                <%= t('Capacity Building') %>
-              <% end %>
-              <% if purpose == "redd": %>
-                <%= t('REDD') %>
-              <% end %>
-              <% if purpose == "CDM": %>
-                <%= t('CDM') %>
-              <% end %>
-            <% end %>  
           <% end %>
         </div>
       <% end %>
