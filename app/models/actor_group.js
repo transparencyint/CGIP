@@ -1,4 +1,5 @@
 var Actor = require('./actor');
+var Dialog = require('../views/dialog_view');
 
 module.exports = Actor.extend({
   defaults: function(){
@@ -38,25 +39,45 @@ module.exports = Actor.extend({
   },
 
   // adds an actor to this group
-  addToGroup: function(actor){
+  tryAddToGroup: function(options){
+    var actor = options.actor;
+    var connections = options.connections;
+    var success = options.success;
+    var _this = this;
     var actors = this.get('actors') || [];
     var alreadyAdded = _.contains(actors, actor.id);
-    if(!alreadyAdded){
-      // remove it from its current collection, if there is one
-      if(actor.collection)
-        actor.collection.remove(actor);
 
-      // add actor to the model
-      actors.push(actor.id);
-
-      // add actor to the models' collectios
-      this.actors.add(actor);
-
-      // trigger that the actor was moved to 'this' group
-      // and also publish this to the other clients via the socket
-      actor.trigger('moveToGroup', this);
-      socket.emit('moveToGroup', this.id);
+    if(actor.hasConnections(connections)){
+      new Dialog({ 
+        title: t('Add to Group'),
+        text: t('This will delete all connections. Are you sure you want to proceed?'),
+        verb: t('Proceed'),
+        success: function(){ _this.addToGroup(actor, success); }
+      });
+    } else if(!alreadyAdded){
+      this.addToGroup(actor, success);
     }
+  },
+    
+  addToGroup: function(actor, success){
+    var actors = this.get('actors') || [];
+    
+    // remove it from its current collection, if there is one
+    if(actor.collection)
+      actor.collection.remove(actor);
+      
+    // add actor to the model
+    actors.push(actor.id);
+    
+    // add actor to the models' collectios
+    this.actors.add(actor);
+
+    // trigger that the actor was moved to 'this' group
+    // and also publish this to the other clients via the socket
+    actor.trigger('moveToGroup', actor);
+    socket.emit('moveToGroup', actor.id);
+
+    success();
   },
 
   removeFromGroup: function(){
