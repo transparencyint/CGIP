@@ -82,20 +82,19 @@ Each model also has a dedicated Collection that you can also find in the same fo
 
 ### Views
 
-Views contain all the logic that is needed for the behavior of a certain UI element e.g. a list element with a `delete` button. Each view has one part of the DOM associated to it (you can reference it via `this.el` or `this.$el` for the jQuery element). In normal JavaScript applications the jQuery code looks very messy and is hard to understand, but the Backbone.View does provide some nice ways to structure it.
+Views contain all the logic that is needed for the behaviour of a certain UI element e.g. a list element with a `delete` button. Each view has one part of the DOM associated to it (you can reference it via `this.el` or `this.$el` for the jQuery element). In normal JavaScript applications the jQuery code looks very messy and is hard to understand, but the Backbone.View does provide some nice ways to structure it.
 
 	var View = require('./view');
 	
 	module.exports = View.extend({
+	  template: require('./path/to/template'),
+      
+      className : 'myElementsCSSClass',
   
-  	  template: require('./path/to/template'),
-  
-  	  className : 'myElementsCSSClass',
-  
-  	  events : {
+      events : {
     	'click .delete' : 'deleteClicked',
     	'click' : 'loadField'
-  	  },
+      },
   
 	  initialize: function(){
     	/* this method is like a constructor */
@@ -116,9 +115,9 @@ Views contain all the logic that is needed for the behavior of a certain UI elem
   	  
 	});		
 
-`template` references this views template, which will be covered in more detail in the Templating section. `events` is a hash that provides easy and unobtrusive event-binding for the view. In this example a click on the sub DOM-element of this view with the class `.delete` will trigger the function `deleteClicked` to be called. There's no need to bind events manually.
+`template` references the views template, which will be covered in more detail in the Template section. `events` is a hash that provides easy and unobtrusive event-binding for the view. In this example a click on the sub DOM-element of this view with the class `.delete` will trigger the function `deleteClicked` to be called. There's no need to bind events manually.
 
-The method `render` takes care of rendering te template to the DOM and therefore uses the model and the template. Since this step is repeated very often, our base View class already implements this method and additionaly provides two methods to enhance the process: `afterRender` and `getTemplateData` ->
+The method `render` takes care of rendering the template to the DOM and therefore uses the model and the template. Since this step is repeated very often, our base View class already implements this method (so please don't overwrite it) and additionally it provides two methods to enhance the process: `afterRender` and `getTemplateData` ->
 
 	(…)
 	afterRender: function(){
@@ -126,7 +125,7 @@ The method `render` takes care of rendering te template to the DOM and therefore
 	},
 	
 	getRenderData: function(){
-		/* this method is used to prepare the data for the templat
+		/* this method is used to prepare the data for the template
 		We can do any sort of pre-calculation in here */
 		var data = this.model.toJSON();
 		data.currentDate = new Date().getTime();
@@ -134,7 +133,7 @@ The method `render` takes care of rendering te template to the DOM and therefore
 	}
 	(…)
 
-A very important part of Views is to react on model changes. This can be done very easy in Backbone by subscribing to change-events.
+A very important part of Views is to react to model changes. This can be done very easy in Backbone by subscribing to change-events.
 
 	(…)
 	initialize: function(){
@@ -161,5 +160,5 @@ Our templating engine is called eco. It's very powerful and easy to learn becaus
 
 ## Stylesheets
 
-When dealing with large web applications, stylesheets are growing very big and they get harder to maintain because a lot of stuff is repeated over and over again. Because of that we use [Stylus](http://learnboost.github.com/stylus/) a CSS pre-compiler that supprts things like variables, mixins and calculations. It's not hard to write Stylus when you know CSS. You just have to leave out stuff like `{}:;` ;)
+When dealing with large web applications, stylesheets are growing very big and they get harder to maintain because a lot of stuff is repeated over and over again. Because of that we use [Stylus](http://learnboost.github.com/stylus/) a CSS pre-compiler that supports things like variables, mixins and calculations. It's not hard to write Stylus when you know CSS. You just have to leave out stuff like `{}:;` ;)
 They have a good documentation on their website.
