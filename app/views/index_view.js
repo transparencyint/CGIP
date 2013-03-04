@@ -34,9 +34,12 @@ module.exports = View.extend({
 
     this.map.toggleClass('edit-mode');
     this.mapControls.toggleClass('edit-mode');
-    this.map.find('.point').removeClass('transparent');
 
     _.each(this.countryViews, function(countryView){
+      if(countryView.isBeingDeleted){
+        countryView.appear();
+        countryView.isBeingDeleted = false;
+      }
       if(countryView.isDraggable)
         countryView.isDraggable = false;
       else
@@ -143,7 +146,7 @@ module.exports = View.extend({
     if(this.mapControls.hasClass('mode-add-country')){
       this.clearSearch();
       this.mapControls.removeClass('mode-add-country');
-      button.text(t('Add Country'));
+      button.text('+ '+ t('Add Country'));
     } else {
       this.mapControls.addClass('mode-add-country');
       input.focus();
@@ -159,9 +162,7 @@ module.exports = View.extend({
     delete this.countryViewsToDelete[country];
   },
 
-  updateMapData: function(event){
-    var view = this;
-    
+  updateMapData: function(event){    
     if(!_.isEmpty(this.countryViewsToDelete)){
       if(confirm(t('Are you Sure you want to proceed?'))){
         _.each(this.countryViewsToDelete, function(country){
