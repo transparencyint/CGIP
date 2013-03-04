@@ -1,7 +1,8 @@
-// Each actor is visualized as a box, which holds the Name/Abbreviation and the actor Type.
-// Double clicking the actor opens the actor details window. An actor can be positioned via drag and drop
-// and can be selected, which is visualized as such. Additionally, a possible corruption risk will be displayed
-// with an exclamation mark.
+// Each actor is visualized as a box, which holds the Name/Abbreviation, the actor Type and the role.
+// The surrounding border indivates the assigned role. An actor can be positioned via drag and drop
+// and can be selected, which is visualized as such with a coloured border. 
+// Additionally, a possible corruption risk will be displayed with an exclamation mark. 
+// Double clicking the actor opens the actor details window. 
 
 
 var DraggableDroppableView = require('./draggable_droppable_view');

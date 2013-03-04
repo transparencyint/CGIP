@@ -1,3 +1,8 @@
+// The starting point for the audience. The static map shows all the chapter countries.
+// From here you can enter the map of a specific country. Also the usual like Privacy and Impress are linked.
+// In case a authentificated user (editor) is logged in, that will be seen there as well and the user can switch
+// to the edit view. 
+
 var View = require('./view');
 
 module.exports = View.extend({

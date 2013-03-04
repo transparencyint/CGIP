@@ -180,6 +180,8 @@ module.exports = View.extend({
     return (this.model.from && this.model.to);
   },
 
+  // In this function the core calculation for drawing the connections (lines) are done.
+  // Everytime an actor is moved around or an connection will be edit the lines are redrawn accordingly.
   update: function(){
 
     // return if not a valid connection
@@ -581,6 +583,7 @@ module.exports = View.extend({
     return false;
   },
 
+  // The metadata contains the money amount of an money connection and will be displayed on hover over the line.
   updateMetada: function(event){
 
     if(!this.isMoney) return
@@ -603,6 +606,7 @@ module.exports = View.extend({
 
   },
 
+  // The amount could be empty so that the metadata message must be modified here
   checkMetadataMessage: function(moneyMode){
     var amount = this.model.get(moneyMode);
     if(amount < 1)
