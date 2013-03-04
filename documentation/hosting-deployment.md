@@ -144,3 +144,9 @@ Hosting and deploying can be done with their command line tool which needs to be
 Afterwards we need to login with the credentials that we also entered on the website: `jitsu login`.
 
 Deploying apps to Nodejitsu is essentially different to deploying them to Uberspace. For example we can't access the server via SSH so there is no way for us to use git for the deployment. Nodejitsu simply takes the complete folder that you use for your app and uploads it to their servers (it is possible to ignore files which are defined in the `.npmignore`).
+
+This means that it will also upload our local `server/config.js` and we need to add the production-environment information on our local machine. But there's one thing missing in order to do this: An instance of CouchDB which we can use in combination with Nodejitsu. We decided to go for [IrisCouch](htttp://www.iriscouch.com) for the CouchDB hosting. Setting up an account is also really easy from their website. Make sure to set up an admin account in the Futon interface after creating an account. Then simply add the host info and the credentials to the production config.
+
+Afterwards try to deploy the app with `jitsu deploy`, which will prompt you with some things and then upload the app to their servers.
+
+Again we need to add an environment variable which can be done really handy with Nodejitsu's WebOps interface which you can see when you log in to your account there. Simply select the app you just deployed and go to the `Environment Variables section` and add `NODE_ENV` with the value `production`. After that, restart the app and you're successfully running the app on Nodejitsu's infrastructure.
