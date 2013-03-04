@@ -1,20 +1,18 @@
 # Architecture
 
-## Overall
+## File Conventions
 
-## Conventions
-
-To make the code as modular and as organized as possible, each "class" is kept in an own file and wrapped as an own module. This also prevents unneeded code to be shared in the shared-namespace of the application. Classnames are to be written in camelCase and file names with underscores as separators e.g. the class `HomeView` would reside in a file called `home_view.js`.
+To make the code as modular and as organised as possible, each "class" is kept in an own file and wrapped as an own module. This also prevents unneeded code to be shared in the shared-namespace of the application. Classnames have to be written in camelCase and file names with underscores as separators e.g. the class `HomeView` would reside in a file called `home_view.js`.
 
 To use a certain class inside another class we simply require them as shown in the example above.
 
 	var BaseClass = require('path/to/base_class');
 
 	module.exports = BaseClass.extend({
-  		// add your class definition in here
+		// add your class definition in here
 	});
 	
-The part in `module.exports` is then shareable with other files. THis is also where all our class-logic will go into. `BaseClass.extend` means that we're extending another class, which means sth. like deriving from that class.
+The part in `module.exports` is then shareable with other files. This is also where all our class-logic will go into. `BaseClass.extend` means that we're extending another class, which means sth. like deriving from that class.
 
 ## Backbone 101
 
@@ -22,7 +20,7 @@ In this short introduction we will add a simple route and a new View to our appl
 
 ### Routers
 
-Routers are objects that map a certain route (a part of the URL in the browser, after the `#`) to a function of that object. For example a very basic route looks like this:
+Routers are objects that map a certain route (a part of the URL in the browser, after the `#` in older browsers) to a function of that object. For example a very basic route looks like this:
     
     (...)
     routes: {
@@ -34,7 +32,7 @@ Routers are objects that map a certain route (a part of the URL in the browser, 
 
 This router maps the "empty" route to the method "home", which is then executed. 
 
-But let's look at a more complex router:
+But let's look at a more complex route:
 
     (...)
     routes: {
@@ -44,18 +42,18 @@ But let's look at a more complex router:
     user: function(id) { alert("My user id is: " + id); }
     (...)
 
-The URL `mydomain.com/#user/23` would match the route above and the user method is executed. Notice the `:id` in the matcher string, Backbone parses that string and automatically creates the id variable and passes it to the user function.
+The URL `mydomain.com/user/23` would match the route above and the user method is executed. Notice the `:id` in the matcher string, Backbone parses that string and automatically creates the id variable and passes it to the user function.
 
 In the router functions we would then trigger an AJAX-call to fetch certain data, e.g. the user model that has been requested. When the data arrives at the client we create a view from it to show it to the user.
 
 ### Models
 
-Triggering AJAX requests is sth. we don't need to do manually because it's something that Backbone.js encapsulates in Models. Models take care of everything data- and logic-related in the appliaction to ensure a clean separation of presentation and logic.
+Triggering AJAX requests is sth. we don't need to do manually because it's something that Backbone.js encapsulates in Models. Models take care of everything data- and logic-related in the application to ensure a clean separation of presentation and logic.
 
-A model knows how to load it's data from the server from a url property we can specify, either a String or a function (to allow dynamic URLs). Depending on the action to be called on the Model (e.g. save or destroy) Backbone automatically calls the correct REST action on the server ([more info here](http://documentcloud.github.com/backbone/#Sync)).
+A model knows how to load its data from the server from its url property which we can specify, it has to be either a String or a function (to allow dynamic URLs). Depending on the action to be called on the Model (e.g. save or destroy) Backbone automatically calls the correct REST action on the server ([more info here](http://documentcloud.github.com/backbone/#Sync)).
 
 	module.exports = Backbone.Model.extend({
-  		url: function(){
+		url: function(){
     		var id = this.get('id');
     		if(id)
       			return "/users/" + this.get('id');
@@ -73,26 +71,14 @@ To retrieve values from a model simply call `myModel.get('ATTRIBUTE')` on it. To
 	}});
 	
 One of the most important things of Models is that they are able to trigger events when their values change so that elements are able to react to model changes. 
-
-In order to create a connection of any type, simply require its class in your current class and instantiate it by the wished values into the constructor. They can be handled as normal Backbone Models and therefore in order to save a connection you have to call save on it e.g. `myConnection.save()`. You can pass the save method an object with callbacks to be called in case of an error or success:
-
-  myConnections.save(null, {
-    success: function(){
-      // when created
-    },
-    error: function(){
-      // in case of an error
-    }
-  });
   
-You can also simply use `myConnection.destroy()` in order to delete it from the server.
+You can also simply use `myModel.destroy()` in order to delete it from the server.
+
+Instead of passing callbacks, Backbone models also support Promises for asynchronous methods since they simply return a jqXHR Object, which implements the Promise interface.
 
 ### Collections
 
-__TODO__: change connection to model
-
-Each connection also has a dedicated Collection that you can also find in the same folder. These Collections can be used to fetch all the connections of that very type with the `fetch` method. In addition to that, they also have a method called `destroyAll` which deletes all the models inside that collection from the database.
-
+Each model also has a dedicated Collection that you can also find in the same folder. These Collections can be used to fetch all the models of that very type with the `fetch` method. In addition to that, they also have a method called `destroyAll` which deletes all the models inside that collection from the database.
 
 ### Views
 
