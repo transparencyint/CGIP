@@ -21,11 +21,7 @@ $(function() {
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
     // decide on location of the socket server
-    var socketServer = '';
-    if(window.realtimePort)
-      socketServer = 'http://' + location.host + ':' + window.realtimePort;
-    else
-      socketServer = location.host;
+    var socketServer = location.host;
 
     console.log('connect socket to: ', socketServer)
 

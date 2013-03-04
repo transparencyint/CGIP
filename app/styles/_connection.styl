@@ -11,6 +11,11 @@
     pointer-events visiblePainted
   marker
     fill none
+  &.locked
+    use
+      cursor not-allowed
+      pointer-events visiblePainted
+    opacity 0.33
   &.money
     .arrow
       fill rgb(250,223,54)

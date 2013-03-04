@@ -8,7 +8,7 @@
   color hsl(215,21%,21%)
   font-size 16px
   line-height 1.4
-  
+
   backface-visibility hidden
   cursor url(/images/openhand_8_8.cur) 8 8, default
   transition opacity 180ms
@@ -20,12 +20,39 @@
     padding 9px 5px
     border-radius 3px
     background linear-gradient(top, #f5f5f5, #fbfbfb)
-    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 1px #fff inset, 0 -3px #f0f0f0 inset, 0 0 0 3px #f9f9f9 inset
+    box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 -3px #f0f0f0 inset, 0 1px #fff inset, 0 0 0 3px #f9f9f9 inset
+    &:after, 
+    &:before
+      content ""
+      position absolute
+      left 0
+      right 0
+      bottom 0
+      top 0
+      border-radius 2px
+      border 4px solid transparent
+  &[data-role]:not([data-role=""])
+    .animationHolder
+      box-shadow 0 1px 5px 1px rgba(0,0,0,.34), 0 -7px #f0f0f0 inset, 0 5px #fff inset, 0 0 0 7px #f9f9f9 inset
+    &.selected .animationHolder
+      box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.34), 0 -7px #f0f0f0 inset, 0 5px #fff inset, 0 0 0 7px #f9f9f9 inset
+  &[data-role~='and']
+    .animationHolder,
+    .actor-style
+      &:before
+        right 50%
+        border-right none !important
+        border-radius 2px 0 0 2px
+      &:after
+        left 50%
+        border-left none !important
+        border-radius 0 2px 2px 0
   &.selected .animationHolder
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
-  &.hasCorruptionRisk:after
+  &.hasCorruptionRisk:before
     content ""
     position absolute
+    z-index 4
     right -10px
     top -8px
     width 25px
@@ -35,11 +62,24 @@
   svg
     display none
   &.locked
-    opacity .5
     cursor not-allowed
+    opacity 0.33
+    .type
+      display none
+    &:after
+      content ""
+      position absolute
+      margin-left -22px
+      margin-top 4px
+      left 50%
+      top 50%
+      width 43px
+      height 11px
+      background url(../images/loading.gif);
   &:active
     cursor url(/images/closedhand_8_8.bmp) 8 8, move
-  &.disappear .animationHolder
+  &.disappear .animationHolder,
+  &.disappear .actor-style
     opacity 0
     transform scale(0.5) translateY(10px)
     transition 250ms

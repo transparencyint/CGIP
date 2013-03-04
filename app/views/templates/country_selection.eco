@@ -16,5 +16,5 @@
       </li>
     <% end %>
   </ul>
-  <a href="/edit/countries" class="edit-countries"><%= t('edit_countries') %></a>
+  <a href="/edit/countries" class="edit"><%= t('edit_countries') %></a>
 </div>

@@ -448,6 +448,7 @@ module.exports = View.extend({
     if(startEdit === true){
       actorView.select();
       actorView.showDetails();
+      this.trigger('actorCreated', actorView);
     }
   },
 
