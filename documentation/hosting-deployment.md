@@ -54,7 +54,14 @@ Then we install CouchDB with the built in helper: `uberspace-setup-couchdb`. It 
 
 #### Setting up the app
 
-When CouchDB and the config have been set up, the next step is to create a service for the app. With `uberspace-setup-service CGIP node ~/CGIP/server.js` we create a new service in the `~/service/` directory which will be called `CGIP` and which will execute `node ~/CGIP/server.js` when started. 
+When CouchDB and the config have been set up, the next step is to create a service for the app. With `uberspace-setup-service CGIP node ~/CGIP/server.js` we create a new service in the `~/service/` directory which will be called `CGIP` and which will execute `node ~/CGIP/server.js` when started.
+
+During development we were using NodeJS versions from the `0.8.x` branch. To set up this node version on our Uberspace we simply need to execute:
+
+	echo 'export PATH=/package/host/localhost/nodejs-0.8.8/bin:$PATH' >> ~/.bash_profile
+	source ~/.bash_profile
+
+This will set the node binary to the correct version. More information about NodeJS on Uberspace can be found here: <http://uberspace.de/dokuwiki/development:nodejs>.
 
 The app needs some environment variables so we need to alter the service a bit: `nano ~/service/CGIP/run`. Simply replace the node start script with this in the service file:
 	
