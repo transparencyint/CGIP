@@ -1,0 +1,46 @@
+.dialogView
+  position absolute
+  top 0
+  right 0
+  bottom 0
+  left 0
+  box(center, center, vertical)
+  &.hidden
+    /* overwrite display: none */
+    box(center, center, vertical)
+    .overlay 
+      opacity 0
+    .dialog
+      transform scale(0.8)
+      opacity 0
+  .overlay
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    z-index 9
+    background rgba(0,0,0,.55)
+    background -webkit-radial-gradient(rgba(0,0,0,.34), rgba(0,0,0,.67))
+    background    -moz-radial-gradient(rgba(0,0,0,.34), rgba(0,0,0,.67))
+    background     -ms-radial-gradient(rgba(0,0,0,.34), rgba(0,0,0,.67))
+    background      -o-radial-gradient(rgba(0,0,0,.34), rgba(0,0,0,.67))
+    background         radial-gradient(rgba(0,0,0,.34), rgba(0,0,0,.67))
+    transition opacity 250ms
+  .dialog
+    max-width 455px
+    padding 21px
+    position relative
+    z-index 11
+    
+    background #eee
+    color #222
+    
+    box-shadow 0 1px white inset, 0 1px 13px rgba(0,0,0,.34)
+    transition transform 250ms, opacity 250ms
+    p
+      margin 13px 0
+    button
+      float right
+      margin-left 8px
+    

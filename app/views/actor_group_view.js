@@ -18,7 +18,7 @@ module.exports = DraggableDroppableView.extend({
     this.editor = options.editor;
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop', 'destroy', 'showDetails');
+    _.bindAll(this, 'actorAdded', 'drop', 'destroy', 'showDetails');
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
@@ -170,14 +170,23 @@ module.exports = DraggableDroppableView.extend({
         // add it to the group
         var model = this.model;
         model.lock()
-        this.model.addToGroup(view.model);
-        this.model.save({
-          success: function(){
-            model.unlock();
-          }
+        
+        // try to add it to the group
+        this.model.tryAddToGroup({
+          actor: view.model,
+          connections: this.editor.connections,
+          success: this.actorAdded
         });
       }
     }
+  },
+  
+  actorAdded: function(){
+    this.model.save({
+      success: function(){
+        model.unlock();
+      }
+    });
   },
 
   arrowClicked: function(event){

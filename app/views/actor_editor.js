@@ -12,6 +12,7 @@ var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
 var SettingsView = require('./settings_view');
 var clickCatcher = require('./click_catcher_view');
+var dialog = require('./dialog_view');
 
 module.exports = View.extend({
   id: 'actorEditor',
