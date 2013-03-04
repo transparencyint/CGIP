@@ -123,7 +123,7 @@ Now go to the `hooks` folder and create file called `post-receive` and fill it w
 	
 It should be pretty self-explanatory with the given comments, you just need to change the paths and usernames according to your setup. After you have created the file, make sure that it is executable.
 
-This script will be executed everytime there is something new pushed to this repository.
+This script will be executed every time there is something new pushed to this repository.
 
 Now let's do the magic push-deploy. Navigate to your local repository and create a new remote that points to the bare repo we just created: `git remote add deploy ssh://username@server.url/home/username/cgip.git`. Now there's a remote called `deploy`. When we now push the master to this repository git should execute the `post-receive` script on the Uberspace.
 
@@ -132,3 +132,15 @@ Let's try it: `git push deploy master`
 If it doesn't show error messages it should have worked. If it is not working, check the log files which are in the service repository.
 
 Push rights to the bare repo are handled via SSH and therefore all the people that should be allowed to deploy have to add their public keys to the server.
+
+### Option 2: Nodejitsu
+
+After having troubles with ports in the TI network we decided to switch to another hoster which allows to use port 80 for the Websocket communication. It seemed like the TI network simply blocked all outgoing and ingoing traffic from any other port we tried, so there was no other option.
+
+We decided to try out [Nodejitsu](https://www.nodejitsu.com/) which is a hoster dedicated to NodeJS hosting. Getting an account is really easy and can be done via their website.
+
+Hosting and deploying can be done with their command line tool which needs to be installed via NPM (so you need NodeJS available on your computer). Installing the tool is as easy as: `npm install -g jitsu`.
+
+Afterwards we need to login with the credentials that we also entered on the website: `jitsu login`.
+
+Deploying apps to Nodejitsu is essentially different to deploying them to Uberspace. For example we can't access the server via SSH so there is no way for us to use git for the deployment. Nodejitsu simply takes the complete folder that you use for your app and uploads it to their servers (it is possible to ignore files which are defined in the `.npmignore`).
