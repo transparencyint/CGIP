@@ -130,7 +130,7 @@
     &.edit-mode
       .delete
         display block
-      .point 
+      .country 
         .label
           animation jiggle 0.2s infinite
           transform rotate(-1deg)
@@ -140,28 +140,24 @@
           animation-delay 0.21s
         &:nth-child(4n) .label
           animation-delay 0.34s
-  .point 
+  .country 
     position absolute
-    margin -4px 0 0 -4px
-    width 8px
-    height 8px
-    border 1px solid hsl(205,68%,40%)
-    background hsl(205,68%,53%)
-    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
-    border-radius 100%
     opacity 0
-    transform translateZ(200px)
-    transform-style preserve-3d
+    transform scale(0.5) translateY(10px)
+    transition transform 250ms, opacity 250ms
+    .point
+      position absolute
+      width 8px
+      height 8px
+      border 1px solid hsl(205,68%,40%)
+      background hsl(205,68%,53%)
+      box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
+      border-radius 100%
     &:hover
       z-index 1
     &.appear 
       opacity 1
-      transform translateZ(0)
-      transition transform 500ms, opacity 500ms
-    &.disappear 
-      opacity 0
-      transform translateZ(0)
-      transition transform 500ms, opacity 500ms
+      transform none
     &.transparent
       opacity 0.35
     .delete
@@ -194,17 +190,10 @@
       white-space nowrap
       left -18px
       top -44px
-      opacity 0
-      transform translateY(-13px)
-    &.appear .label 
-      opacity 1
-      transform translateY(0)
-      transition transform 500ms 500ms, opacity 500ms 500ms
     &:active .label 
       top -43px
     &.below .label 
       top 19px
-      transform translateY(13px)
     &.below:active .label 
       top 20px
     &.right .label 
