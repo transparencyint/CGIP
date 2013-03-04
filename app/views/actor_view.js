@@ -1,3 +1,9 @@
+// Each actor is visualized as a box, which holds the Name/Abbreviation and the actor Type.
+// Double clicking the actor opens the actor details window. An actor can be positioned via drag and drop
+// and can be selected, which is visualized as such. Additionally, a possible corruption risk will be displayed
+// with an exclamation mark.
+
+
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
 var FakeActorView = require('./fake_actor_view');
@@ -28,6 +34,7 @@ module.exports = DraggableDroppableView.extend({
     
     this.on('dragging', this.cancelLongPress, this);
     
+    //Listens to changes in the model
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:role', this.updateRole, this);

@@ -1,3 +1,7 @@
+// Sometimes it can be useful to group actors. That can be done by dragging on actor into another.
+// Dragging an actor out of an group works the same way. 
+// Caution: If the actor got dragged all the connections to it will be lost. 
+
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');

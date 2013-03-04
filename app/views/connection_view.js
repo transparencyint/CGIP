@@ -1,3 +1,7 @@
+// Similar to the actor details the connection details allow the user to give more specific information 
+// about the connection. Following informations can be given: Name, Role, Purpose and possible corruption risk details.
+// The connection details window appear on double clicking the connection.
+
 var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
 
