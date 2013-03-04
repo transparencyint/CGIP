@@ -1,13 +1,13 @@
-var DraggableDroppableView = require('./draggable_droppable_view');
+var DraggableView = require('./draggable_view');
 
-module.exports = DraggableDroppableView.extend({
+module.exports = DraggableView.extend({
 
   template : require('./templates/country'),
   
-  className : 'point',
+  className : 'country',
 
   events: function(){
-    var _parentEvents = DraggableDroppableView.prototype.events();
+    var _parentEvents = DraggableView.prototype.events();
     // clone parent events
     var _events = _.defaults({}, _parentEvents);
     
@@ -24,39 +24,27 @@ module.exports = DraggableDroppableView.extend({
     this.isDraggable = false;
     this.isBeingDeleted = false;
 
-    _.bindAll(this, 'destroy', 'drag', 'dragStop', 'deleteCountry');
+    _.bindAll(this, 'destroy', 'drag', 'dragStop', 'appear');
 
     this.model.on('change:pos', this.updatePosition, this);
+  },
+  
+  appear: function(){
+    this.$el.addClass('appear');
   },
 
   addCountryToDelete: function(event){
     event.preventDefault();
 
-    var currentEl = $(event.target).parents('.point');
+    var currentEl = $(event.target).parents('.country');
     var country = currentEl.attr('id');
+    
+    this.isBeingDeleted = true;
+    currentEl.removeClass('appear');
 
-    // check if country is beeing deleted already and remove deleted if clicked again
-    if(this.isBeingDeleted){
-      this.isBeingDeleted = false;
-      currentEl.removeClass('transparent');
-
-      // remove country from delete list
-      this.worldmap.removeCountryToDelete(country, this);
-    }
-    else{
-      this.isBeingDeleted = true;
-      currentEl.addClass('transparent');
-
-      // add country to delete list
-      this.worldmap.addCountryToDelete(country, this);
-    }
+    // add country to delete list
+    this.worldmap.addCountryToDelete(country, this);
   },
-
-  deleteCountry: function(){
-    this.$el.remove();
-    this.model.destroy();  
-    this.destroy();
-  }, 
 
   getRenderData: function() {
       return this.model.toJSON();
@@ -166,9 +154,5 @@ module.exports = DraggableDroppableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.get('abbreviation'));
-  },
-
-  destroy: function(){
-    this.$el.removeClass('transparent').addClass('disappear');
   }
 });
