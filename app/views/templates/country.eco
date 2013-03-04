@@ -1,3 +1,4 @@
+<div class="point"></div>
 <div class="label">
   <a href="/show/<%= @abbreviation %>"><%= @name %> </a>
   <div class="arrow"></div>
