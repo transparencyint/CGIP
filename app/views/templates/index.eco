@@ -1,38 +1,38 @@
+<header>
+
+  <% if window.user.isLoggedIn(): %>
+    <div class="map-controls">
+      <a class="edit button" href="#"><%= t('Edit') %></a>        
+      <form id="add-country">
+        <input type="text" placeholder="<%= t('type to add country...') %>" />
+        <div class="button">+ <%= t('Add Country') %></div>
+        <ul></ul>
+      </form>
+
+      <a class="cancel button" href="#"><%= t('Cancel') %></a>
+      <a class="ok button" href="#"><%= t('Ok') %></a>
+    </div>
+  <% end %> 
+
+  <h1>Climate Finance Integrity Program</h1>
+
+</header>
 <div class="inner">
-  <header>
-
-    <% if window.user.isLoggedIn(): %>
-      <div class="map-controls">
-        <a class="edit button" href="#"><%= t('Edit') %></a>        
-        <form id="add-country">
-          <input type="text" placeholder="<%= t('type to add country...') %>" />
-          <div class="button">+ <%= t('Add Country') %></div>
-          <ul></ul>
-        </form>
-
-        <a class="cancel button" href="#"><%= t('Cancel') %></a>
-        <a class="ok button" href="#"><%= t('Ok') %></a>
-      </div>
-    <% end %> 
-
-    <h1>Climate Finance Integrity Program</h1>
-
-  </header>
-
-  <div class="map"></div>
-
-  <footer>
-    <div class="left">
-      <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
-    </div>
-    <div class="right">
-      <% if window.user.isLoggedIn(): %>
-        <a href="/edit/">Edit View</a> –
-        <a href="/logout" external>Logout</a>
-      <% else: %>
-        <a href="/login/">Login</a>
-      <% end %>
-      – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
-    </div>
-  </footer>
+  <div class="box"><!-- Firefox Helper -->
+    <div class="map"></div>
+  </div>
 </div>
+<footer>
+  <div class="left">
+    <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+  </div>
+  <div class="right">
+    <% if window.user.isLoggedIn(): %>
+      <a href="/edit/">Edit View</a> –
+      <a href="/logout" external>Logout</a>
+    <% else: %>
+      <a href="/login/">Login</a>
+    <% end %>
+    – <a href="http://www.transparency.org/privacy">Privacy</a> – <a href="http://www.transparency.org/terms">Terms</a> – <a href="http://www.transparency.org/impressum">Impressum</a> 
+  </div>
+</footer>
