@@ -9,9 +9,9 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'click a.map-edit-btn, a.map-cancel-btn' : 'toggleControlButtons',
-      'click a.map-ok-btn' : 'updateMapData',
-      'click a.map-add-btn' : 'addCountryToMap',
+      'click .controls .edit, .controls .cancel' : 'toggleControlButtons',
+      'click .controls .ok' : 'updateMapData',
+      'click .controls .add' : 'addCountryToMap',
 
       'keyup #add-country input': 'handleKeys',
       'click #add-country button': 'toggleAddForm'

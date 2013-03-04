@@ -11,7 +11,7 @@ module.exports = DraggableDroppableView.extend({
     // clone parent events
     var _events = _.defaults({}, _parentEvents);
     
-    _events['click a.delete-btn'] = 'addCountryToDelete';
+    _events['click .delete'] = 'addCountryToDelete';
     _events['click a'] = 'performClick';
 
     return _events;
