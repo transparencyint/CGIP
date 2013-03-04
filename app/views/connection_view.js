@@ -148,7 +148,7 @@ module.exports = View.extend({
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
 
     if(this.isMoney){
-      this.model.on('change:isEmptyAmount', this.toggleZeroConnection, this)
+      this.model.on('change:isEmptyAmount', this.toggleEmptyAmountConnection, this)
       this.model.on('change:ticknessFactor', this.update, this);
     }
 
@@ -169,7 +169,7 @@ module.exports = View.extend({
       this.$('.corruptionRisk').hide();
   },
 
-  toggleZeroConnection: function(){
+  toggleEmptyAmountConnection: function(){
     this.$el.removeClass('amountUnknown');
     if(this.model.isEmptyAmount) {
       this.$el.addClass('amountUnknown');
@@ -247,7 +247,7 @@ module.exports = View.extend({
 
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
-    this.toggleZeroConnection();
+    this.toggleEmptyAmountConnection();
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
