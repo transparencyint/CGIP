@@ -35,7 +35,7 @@ The following steps need to be performed once before you can get started develop
 9. Run `brunch build`
 10. Run `node server.js` and open [http://127.0.0.1:3000](http://127.0.0.1:3000) in your browser
 
-## Hosting
+## Hosting / Deployment
 
 ### Option 1: Uberspace
 
@@ -52,7 +52,21 @@ CouchDB is not installed by default so we need to set it up on our own. If not d
 
 Then we install CouchDB with the built in helper: `uberspace-setup-couchdb`. It will print out several infos we need to note down like the port which CouchDB got assigned and the admin credentials for Futon. All this information can be added to the `config.js` file with `nano` (`nano cgip/server/config.js`).
 
-#### Setting up a service for the app
+#### Setting up the app
+
+When CouchDB and the config have been set up, the next step is to create a service for the app. With `uberspace-setup-service CGIP node ~/CGIP/server.js` we create a new service in the `~/service/` directory which will be called `CGIP` and which will execute `node ~/CGIP/server.js` when started. 
+
+The app needs some environment variables so we need to alter the service a bit: `nano ~/service/CGIP/run`. Simply replace the node start script with this in the service file:
+	
+	# the environment vars
+	export NODE_ENV=production
+	export APP_PORT=PORTNUMBER
+
+	# starting the app
+	cd ~/CGIP
+	exec node server.js 2>&1
+
+`PORTNUMBER` is the only thing which needs to be changed here now. You can set it to any free port and the app will serve from it.
 
 The way Uberspace works is that it puts an Apache in front of NodeJS if it should be served from port 80. So we need to create a rewrite rule for our app to Apache's `.htaccess` inside the `html/` directory which is accessible from the root directory:
 
