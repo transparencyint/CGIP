@@ -8,14 +8,13 @@
   background     -ms-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
   background      -o-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
   background         radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  overflow auto
-  .inner
-    width 960px
-    color #5d5d5d
+  color #5d5d5d
   header 
-    padding 0 13px 19px
-    margin-bottom 34px
-    position relative
+    padding 13px 13px 19px
+    position absolute
+    top 0
+    left 0
+    right 0
     background url(/images/bg-title.png) repeat-x 0 100%
     .map-controls
       float right
@@ -23,6 +22,7 @@
       position relative
       .button
         margin 0 0 0 8px
+        padding 0 13px
         text-shadow none
         color hsl(205,68%,52%)
         line-height 34px
@@ -111,12 +111,26 @@
         border-color #698147
   a
     color hsl(205,68%,52%)
-    text-decoration none 
+    text-decoration none
+  .inner
+    position absolute
+    top 60px
+    right 0
+    bottom 44px
+    left 0
+    overflow auto
+    .box
+      width 100%
+      height 100%
+      position relative
+      box(center,center,horizontal)
+      vertical-align top
   .map 
     position relative
     height 422px
     width 956px
-    margin-left 2px
+    margin-left -113px
+    margin-top 13px
     perspective 1000px
     &:before 
       content ""
@@ -132,14 +146,18 @@
         display block
       .country 
         .label
-          animation jiggle 0.2s infinite
+          animation jiggle 250ms infinite
           transform rotate(-1deg)
+          transform-origin 18px bottom
         &:nth-child(2n) .label
-          animation-delay 0.13s
+          animation-delay 30ms
+          animation-duration 240ms
         &:nth-child(3n) .label
-          animation-delay 0.21s
+          animation-delay 200ms
+          animation-duration 260ms
         &:nth-child(4n) .label
-          animation-delay 0.34s
+          animation-delay 130ms
+          animation-duration 255ms
   .country 
     position absolute
     opacity 0
@@ -236,7 +254,11 @@
       right 14px
     &.below .arrow:before 
       top 4px 
-  footer 
+  footer
+    position absolute
+    left 0
+    right 0
+    bottom 0
     margin-top 21px
     padding 13px
     font-size 13px
@@ -249,6 +271,6 @@
       float right
     
 @keyframes jiggle {
-  0% { transform: rotate(-1deg); }
-  50% { transform: rotate(1deg); }
+  0% { transform: rotate(-1deg) translate3d(1px,1px,1px); }
+  50% { transform: rotate(1deg) translate3d(-1px,-1px,-1px); }
 }
