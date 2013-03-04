@@ -9,12 +9,12 @@ module.exports = View.extend({
 
   events: function(){
     var _events = {
-      'click .controls .edit, .controls .cancel' : 'toggleControlButtons',
-      'click .controls .ok' : 'updateMapData',
-      'click .controls .add' : 'addCountryToMap',
+      'click .map-controls .edit, .map-controls .cancel' : 'toggleControlButtons',
+      'click .map-controls .ok' : 'updateMapData',
 
       'keyup #add-country input': 'handleKeys',
-      'click #add-country button': 'toggleAddForm'
+      'click #add-country .button': 'toggleAddForm',
+      'submit form': 'handleSubmit'
     };
 
     return _events;
@@ -26,15 +26,15 @@ module.exports = View.extend({
 
     this.countryViewsToDelete = {};
 
-    _.bindAll(this, 'fadeInCountries', 'renderCountry', 'toggleControlButtons', 'addCountryToDelete', 'updateMapData');
+    _.bindAll(this, 'fadeInCountries', 'renderCountry', 'addCountryToDelete');
   },
 
   toggleControlButtons: function(event){
     event.preventDefault();
 
     this.map.toggleClass('edit-mode');
+    this.mapControls.toggleClass('edit-mode');
     this.map.find('.point').removeClass('transparent');
-    this.mapControls.find('a').toggleClass('hidden');
 
     _.each(this.countryViews, function(countryView){
       if(countryView.isDraggable)
@@ -43,12 +43,15 @@ module.exports = View.extend({
         countryView.isDraggable = true;
     });
   },
-
-  addCountryToMap: function(event){
+  
+  handleSubmit: function(event){
     event.preventDefault();
-
-    // display an input field next to the add button
-    this.$el.find('#add-country').toggleClass('hidden');
+    
+    var currentSelectedCountry = this.$('#add-country ul li.active');
+    if(currentSelectedCountry.length > 0){
+      var country = currentSelectedCountry.data('country');
+      this.addCountry(country);
+    }
   },
 
   handleKeys: function(event){
@@ -57,9 +60,9 @@ module.exports = View.extend({
 
     if(key == 38 || key == 40){ // UP, DOWN
       var countryList = this.$('#add-country ul');
-      var countryElements = this.$('#add-country ul li');
+      var countryElements = countryList.find('li');
       var activeElement = countryList.find('.active');
-      var input = this.$('#add-country input');
+      var input = countryList.find('input');
 
       if(activeElement.length == 0){ // select the first element
         countryElements.first().addClass('active');
@@ -77,13 +80,8 @@ module.exports = View.extend({
     }else if(key == 27){ // ESC
       // clear all the proposals
       this.clearSearch();
-    }else if(key == 13){ // ENTER
-      var currentSelectedCountry = this.$('#add-country ul li.active');
-      if(currentSelectedCountry.length > 0){
-        var country = currentSelectedCountry.data('country');
-        this.addCountry(country);
-      }
-    }else if(key == 37 || key == 39){ // LEFT, RIGHT
+    }
+    else if(key == 37 || key == 39 || key == 13){ // LEFT, RIGHT, ENTER
       // DO NOTHING ;)
     }else{
       this.$('#add-country ul li').remove();
@@ -113,13 +111,9 @@ module.exports = View.extend({
 
   position: function(){
     this.positioned = true;
-    var results = this.$('#add-country ul')
-    var input = this.$('#add-country input')
-    var inputPos = input.offset();
-    results.css({
-      top: inputPos.top + input.height(),
-      left: inputPos.left
-    });
+    var input = this.$('#add-country input');
+    var maxHeight = this.$el.height() - input.offset().top - input.outerHeight() - 21;
+    this.$('#add-country ul').css('max-height', maxHeight);
   },
 
   addCountry: function(country){
@@ -144,13 +138,14 @@ module.exports = View.extend({
 
   toggleAddForm: function(){
     var input = this.$('#add-country input');
-    var button = this.$('#add-country button');
-    if(input.css('visibility') == 'visible'){
+    var button = this.$('#add-country .button');
+    
+    if(this.mapControls.hasClass('mode-add-country')){
       this.clearSearch();
-      input.css('visibility', 'hidden');
+      this.mapControls.removeClass('mode-add-country');
       button.text(t('Add Country'));
-    }else{
-      input.css('visibility', 'visible');
+    } else {
+      this.mapControls.addClass('mode-add-country');
       input.focus();
       button.text(t('Close'));
     }
@@ -164,14 +159,18 @@ module.exports = View.extend({
     delete this.countryViewsToDelete[country];
   },
 
-  updateMapData: function(){
+  updateMapData: function(event){
     var view = this;
     
-    if(confirm(t('Are you Sure you want to proceed?'))){
-      _.each(this.countryViewsToDelete, function(country){
-        country.deleteCountry();
-      });
+    if(!_.isEmpty(this.countryViewsToDelete)){
+      if(confirm(t('Are you Sure you want to proceed?'))){
+        _.each(this.countryViewsToDelete, function(country){
+          country.deleteCountry();
+        });
+      }
     }
+    
+    this.toggleControlButtons(event);
   },
 
   getRenderData: function() {
@@ -183,11 +182,13 @@ module.exports = View.extend({
   renderCountry: function(country){
     var countryView = new CountryView({ model : country, worldmap : this });
     countryView.render();
+    this.map.append(countryView.el);
     
-    // make the view ppear on the map
+    document.redraw();
+    
+    // make the view appear on the map
     countryView.$el.addClass('appear');
 
-    this.map.append(countryView.el);
     this.countryViews[country.id] = countryView;
   },
   
