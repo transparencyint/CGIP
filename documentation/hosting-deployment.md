@@ -81,3 +81,54 @@ The way Uberspace works is that it puts an Apache in front of NodeJS if it shoul
 	RewriteRule (.*) http://127.0.0.1:PORTNUMBER/$1 [P]
 
 This will map all requests to be served by our NodeJS app which is running on `PORTNUMBER`.
+
+The app should be accessible via `http://USERNAME.SERVERNAME.uberspace.de` now.
+
+#### Git deployment
+
+If we wanted to update the app to the latest version now we'd have to connect to the server via SSH and get the latest code with git. But there is also an automated way:
+
+Connect via SSH to you server, create a folder and name it `cgip.git`. Navigate to that folder and create a new bare git repository with `git init --bare`. Bare repositories don't contain the working tree of a repository and are therefore very lightweight. We will use this repo only for git hooks (<http://git-scm.com/book/en/Customizing-Git-Git-Hooks>).
+
+Now go to the `hooks` folder and create file called `post-receive` and fill it with the following script: (`nano post-receive`)
+
+	#!/bin/sh
+
+	# set the needed env variables
+	unset $(git rev-parse --local-env-vars)
+	export USER=username
+	export HOME=/home/username
+	. $HOME/.bash_profile
+
+	# go to the remote repo of the server
+	# and pull the latest changes
+	cd ~/CGIP
+	git checkout master
+	git pull
+
+	# build the server
+	./node_modules/brunch/bin/brunch build
+	
+	# minify the js-files
+	./node_modules/uglify-js/bin/uglifyjs --overwrite public/javascripts/app.js
+	./node_modules/uglify-js/bin/uglifyjs --overwrite public/javascripts/vendor.js
+
+	export NODE_ENV=production
+	
+	# restart the service
+	svc -du ~/service/cgip
+
+	# echo something nice ;)
+	echo Successfully deployed the newest master!
+	
+It should be pretty self-explanatory with the given comments, you just need to change the paths and usernames according to your setup. After you have created the file, make sure that it is executable.
+
+This script will be executed everytime there is something new pushed to this repository.
+
+Now let's do the magic push-deploy. Navigate to your local repository and create a new remote that points to the bare repo we just created: `git remote add deploy ssh://username@server.url/home/username/cgip.git`. Now there's a remote called `deploy`. When we now push the master to this repository git should execute the `post-receive` script on the Uberspace.
+
+Let's try it: `git push deploy master`
+
+If it doesn't show error messages it should have worked. If it is not working, check the log files which are in the service repository.
+
+Push rights to the bare repo are handled via SSH and therefore all the people that should be allowed to deploy have to add their public keys to the server.
