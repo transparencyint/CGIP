@@ -19,7 +19,7 @@ module.exports = DraggableDroppableView.extend({
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy', 'showDetails','select');
+    _.bindAll(this, 'newGroupReady', 'destroy', 'showDetails','select');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
@@ -30,6 +30,7 @@ module.exports = DraggableDroppableView.extend({
     
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:role', this.updateRole, this);
     this.model.on('destroy', this.destroy, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
     this.model.on('change:organizationType', this.updateType, this);
@@ -57,6 +58,10 @@ module.exports = DraggableDroppableView.extend({
     this.$('.name').text( this.determineName() );
   },
   
+  updateRole: function(){
+    this.$el.attr('data-role', this.model.get('role').join(" and ") );
+  },
+  
   updateType: function(){
     this.$('.type').text( this.model.get('organizationType') );
   },
@@ -71,9 +76,16 @@ module.exports = DraggableDroppableView.extend({
       return view.reset();
     }else{
       view.isDragging = false;
-      var newGroup = this.model.turnIntoGroup(view.model);
-      this.editor.actorGroups.add(newGroup);
+      this.model.turnIntoGroup({
+        firstActor: view.model, 
+        connections: this.editor.connections,
+        success: this.newGroupReady
+      });
     }
+  },
+  
+  newGroupReady: function(newGroup){
+    this.editor.actorGroups.add(newGroup);
   },
 
   getRenderData: function() {
@@ -86,6 +98,7 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.updateRole();
 
     this.$el.attr('id', this.model.id);
     

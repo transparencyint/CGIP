@@ -66,16 +66,12 @@ app.configure(function(){
   app.use(app.router);
 });
 
-/** TODO: find out why res.redirect('/') is not working on uberhost */
-var baseURL = (process.env['NODE_ENV'] === 'production') ? 'http://speculos.taurus.uberspace.de' : '';
-var realtimePort = (process.env['NODE_ENV'] === 'production') ? 51584 : false;
-
 /** Performs general routing actions */
 var routeHandler = {
 
   /** Simply renders the index */
   renderIndex: function(req, res){
-    res.render('index', { user: (req.user || null), lockedModels: lockedModels, realtimePort: realtimePort });
+    res.render('index', { user: (req.user || null), lockedModels: lockedModels});
   },
 
   /** Redirects to the login when the user is not logged in */
@@ -84,18 +80,18 @@ var routeHandler = {
       var user = {};
       user._id = req.user.id;
       user._rev = req.user._rev;
-      res.render('index', { user: user, lockedModels: lockedModels, realtimePort: realtimePort });
+      res.render('index', { user: user, lockedModels: lockedModels});
     }else{
-      res.redirect(baseURL + '/login?forward_to=' + req.url.split('/').join('__'));
+      res.redirect('/login?forward_to=' + req.url.split('/').join('__'));
     }
   },
 
   /** Redirects the user when already logged in */
   redirectWhenLoggedIn: function(req, res){
     if(req.user){
-      res.redirect(baseURL + '/edit');
+      res.redirect('/edit');
     }else{
-      res.render('index', { user: null, lockedModels: lockedModels, realtimePort: realtimePort });
+      res.render('index', { user: null, lockedModels: lockedModels});
     }
   },
 
@@ -138,7 +134,7 @@ app.del('/session', function(req, res){
 app.get('/logout', function(req, res){
   req.logout();
   req.session.destroy(function(){
-    res.redirect(baseURL + '/edit');
+    res.redirect('/edit');
   });
 });
 
@@ -260,7 +256,7 @@ console.log('Server is up and running on port: ' + port);
 var lockedModels = [];
 
 // Realtime stuff
-var io = (process.env.NODE_ENV == 'production') ? io.listen(51584) : io.listen(server);
+var io = io.listen(server);
 
 // a less noisy log level
 io.set('log level', 1)

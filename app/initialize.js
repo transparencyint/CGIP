@@ -21,11 +21,7 @@ $(function() {
   // start socket.io only when the user is logged in
   if(user.isLoggedIn()){
     // decide on location of the socket server
-    var socketServer = '';
-    if(window.realtimePort)
-      socketServer = 'http://' + location.host + ':' + window.realtimePort;
-    else
-      socketServer = location.host;
+    var socketServer = location.host;
 
     console.log('connect socket to: ', socketServer)
 
@@ -53,6 +49,10 @@ $(function() {
   window.config = new Config();
   window.mediator = _.clone(Backbone.Events);
 
+
+  // make the translate function available in global context for easier calls
+  window.t = $.jsperanto.translate;
+
   // hook into socket.io in order to turn it on/off depending on the config
   var socketOn = socket.on;
   var socketEmit = socket.emit;
@@ -63,9 +63,6 @@ $(function() {
   socket.emit = function(eventName, arg){
     if(config.isRealtimeEnabled()) socketEmit.apply(socket, arguments);
   };
-
-  // make the translate function available in global context for easier calls
-  window.t = $.jsperanto.translate;
   
   // initialize the app
   application.initialize(function(){

@@ -37,6 +37,7 @@ module.exports = View.extend({
     // listen to zoom and pan events fired by actor editor
     this.editor.on('zoom', this.zoom, this);
     this.editor.on('pan', this.pan, this);
+    this.editor.on('actorCreated', this.setRole, this);
 
     // the minimum width of a role background
     this.minRoleWidth = 182;
@@ -46,7 +47,9 @@ module.exports = View.extend({
     _.bindAll(
       this, 
       'drag', 
-      'dragStop'
+      'dragStop',
+      'setRole',
+      'getActorRoles'
     );
   },
 
@@ -140,6 +143,8 @@ module.exports = View.extend({
   dragStop: function(event){
     this.country.set({'roleDimensions' : this.defaultRoleDimensions});
     this.country.save();
+    
+    this.checkRoles();
 
     $(document).unbind(this.inputMoveEvent, this.drag);
     $('#actorEditor').removeClass('dragcursor');
@@ -259,6 +264,51 @@ module.exports = View.extend({
       this.$('.draghandle[rel='+this.roles[i]+']').css({'left': roleLeft});
     }
 
+  },
+  
+  setRole: function(view){
+    view.model.set('role', this.getActorRoles(view));
+    view.model.save();
+  },
+  
+  checkRoles: function(){
+    _.each(this.editor.actorViews, this.setRole);
+    _.each(this.editor.actorGroupViews, this.setRole);
+  },
+
+  /**
+   * Get the actor role(s) after the user dragged an actor and return it as array
+   * There can be maximum two roles after a drag. 
+   * If the user dropped the actor outside a role background roles will be removed
+   */
+  getActorRoles: function(view){
+    var viewPos = view.model.get('pos');
+    var viewLeft = (viewPos.x - view.width / 2) * this.editor.zoom.value;
+    var viewRight = (viewPos.x + view.width / 2) * this.editor.zoom.value;
+
+    var newRoles = [];
+
+    //go through the role dimensions and check if the view position is in there
+    for(var i=0; i<this.defaultRoleDimensions.length; i++){
+
+      var roleLeft = this.defaultRoleDimensions[i] * this.editor.zoom.value;
+      
+      if(i < this.defaultRoleDimensions.length){
+          
+        var roleWidth = Math.floor(this.defaultRoleDimensions[i+1] * this.editor.zoom.value - roleLeft);
+
+        // role found for left side
+        if(viewLeft > roleLeft && viewLeft < (roleLeft + roleWidth)){
+          newRoles.push(this.roles[i]);
+        }
+
+        // role found for right side e.g. left side + width
+        else if(viewRight > roleLeft && viewRight < (roleLeft + roleWidth)){
+          newRoles.push(this.roles[i]);
+        }
+      }
+    }
+    return newRoles;
   },
 
   destroy: function(){

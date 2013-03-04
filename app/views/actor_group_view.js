@@ -18,13 +18,15 @@ module.exports = DraggableDroppableView.extend({
     this.editor = options.editor;
     DraggableDroppableView.prototype.initialize.call(this, options);
 
-    _.bindAll(this, 'drop', 'destroy', 'showDetails');
+    _.bindAll(this, 'actorAdded', 'drop', 'destroy', 'showDetails');
 
     this.model.on('change:actors', this.rePickActors, this);
     this.model.on('destroy', this.destroy, this);
     this.model.actors.on('add', this.addSubActorView, this);
     this.model.actors.on('remove', this.removeSubActorView, this);
     this.model.on('change:name', this.updateName, this);
+    this.model.on('change:role', this.updateRole, this);
+    this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
     this.model.on('change:organizationType', this.updateType, this);
   },
 
@@ -60,6 +62,8 @@ module.exports = DraggableDroppableView.extend({
 
   afterRender: function(){
     this.updatePosition();
+    this.updateRole();
+    this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
   },
   
@@ -82,6 +86,8 @@ module.exports = DraggableDroppableView.extend({
   determineName: ActorView.prototype.determineName,
   updateName: ActorView.prototype.updateName,
   updateType: ActorView.prototype.updateType,
+  updateRole: ActorView.prototype.updateRole,
+  updateCorruptionRisk: ActorView.prototype.updateCorruptionRisk,
   
   showDetails: function(event){
     if(this.model.isLocked()) return; // don't show it if it's locked
@@ -164,14 +170,23 @@ module.exports = DraggableDroppableView.extend({
         // add it to the group
         var model = this.model;
         model.lock()
-        this.model.addToGroup(view.model);
-        this.model.save({
-          success: function(){
-            model.unlock();
-          }
+        
+        // try to add it to the group
+        this.model.tryAddToGroup({
+          actor: view.model,
+          connections: this.editor.connections,
+          success: this.actorAdded
         });
       }
     }
+  },
+  
+  actorAdded: function(){
+    this.model.save({
+      success: function(){
+        model.unlock();
+      }
+    });
   },
 
   arrowClicked: function(event){
