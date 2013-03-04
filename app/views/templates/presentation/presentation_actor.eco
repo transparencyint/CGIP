@@ -4,8 +4,12 @@
 	<% end %>
   <div class="name"><%= @name %></div>
   <div class="type">
-  	<% if @organizationType: %> 
-      <%= t( @organizationType ) %>
+  	<% if @organizationType: %>
+    	<% if @organizationType == 'other': %>
+    		<%= @typeOther %>
+      	<% else: %>
+      		<%= t( @organizationType ) %>
+      	<% end %>
     <% end %>
   </div>
 </div>
