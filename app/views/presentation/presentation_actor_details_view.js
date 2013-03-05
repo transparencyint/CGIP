@@ -1,4 +1,4 @@
-// This view is the equivalents of the actor details view. 
+// This view is the equivalent of the actor details view. 
 
 var View = require('../view');
 var ActorDetails = require('../actor_details');

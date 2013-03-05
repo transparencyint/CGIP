@@ -1,5 +1,5 @@
-// This contains Global configuration, which can be accessed across the application.
-// The configuration include languages, realtime and the money connection mode (disbursed/pledged).
+// The config contains global configurations, which can be accessed across the application.
+// The configurations include languages, realtime and the money connection mode (disbursed/pledged).
 
 var Model = require('./model');
 

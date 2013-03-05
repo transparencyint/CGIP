@@ -1,7 +1,6 @@
-// The starting point for the audience. The static map shows all the chapter countries.
-// From here you can enter the map of a specific country. Also the usual like Privacy and Impress are linked.
-// In case a authentificated user (editor) is logged in, that will be seen there as well and the user can switch
-// to the edit view. 
+// This is the starting point for the audience. On the static map all involved chapter countries will be shown.
+// From here you can enter the presentation map of a specific country. Also the usual partd of a website like Privacy 
+// and Impress are linked. In case a authentificated user (editor) is logged in, he/she can switch to the edit view or logout. 
 
 var View = require('./view');
 

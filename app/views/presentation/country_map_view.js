@@ -1,6 +1,6 @@
-// This view is the equivalents of the actor editor view. The public has access to that and 
+// This view is the equivalent of the actor editor view. The public has access to that and 
 // therefore doesn't allow the editing of any data. The country map borrows many of the actor editor functions.
-// Mainly the editing possiblities aren't here and the presentation views are style differently.
+// Mainly the editing possiblities aren't here and the presentation views are styled differently.
 
 var View = require('../view');
 var ActorEditor = require('../actor_editor');

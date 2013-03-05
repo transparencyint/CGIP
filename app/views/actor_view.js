@@ -1,6 +1,6 @@
 // Each actor is visualized as a box, which holds the Name/Abbreviation, the actor Type and the role.
-// The surrounding border indivates the assigned role. An actor can be positioned via drag and drop
-// and can be selected, which is visualized as such with a coloured border. 
+// The surrounding border indicates the assigned role. An actor can be positioned via drag and drop
+// and can be selected, which is visualized as such with a coloured border around. 
 // Additionally, a possible corruption risk will be displayed with an exclamation mark. 
 // Double clicking the actor opens the actor details window. 
 
@@ -35,7 +35,6 @@ module.exports = DraggableDroppableView.extend({
     
     this.on('dragging', this.cancelLongPress, this);
     
-    //Listens to changes in the model
     this.model.on('change:abbreviation', this.updateName, this);
     this.model.on('change:name', this.updateName, this);
     this.model.on('change:role', this.updateRole, this);

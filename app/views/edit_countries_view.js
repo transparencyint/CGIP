@@ -1,4 +1,4 @@
-// The countries will be listed here. It is possible to delete countries or add new once to the list. 
+// The countries of the chapters will be listed here. From here it is possible to delete or add new countries to the list. 
 
 var View = require('./view');
 

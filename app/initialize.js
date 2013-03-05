@@ -5,6 +5,9 @@ var Config = require('models/config');
 $(function() {
   Backbone.Model.prototype.idAttribute = "_id";
     
+  // To make sure the user has all needed browser features the Modernizr lib is used.
+  // read more about Modernizr here: http://modernizr.com/
+  // If the browser doesn't support the features a notification to update/change the browser will be displayed.
   if(!Modernizr.csstransitions || !Modernizr.flexboxlegacy || !Modernizr.svg || !Modernizr.inlinesvg || !Modernizr.history) {
     $('.browserSupport').show();
     return;  

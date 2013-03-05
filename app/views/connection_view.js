@@ -1,6 +1,6 @@
-// Similar to the actor details the connection details allow the user to give more specific information 
-// about the connection. Following informations can be given: Name, Role, Purpose and possible corruption risk details.
-// The connection details window appear on double clicking the connection.
+// Each connection is visualized as a coloured line with an arrow indicating the direction of the relation.
+// Additionally, a possible corruption risk will be displayed with an exclamation mark. 
+// The window with the connection details appear on double clicking the connection.
 
 var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
@@ -53,7 +53,7 @@ module.exports = View.extend({
   },
 
   initializeProperties: function(options){
-    this.model.ticknessFactor = 1;
+    this.model.thicknessFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
@@ -133,8 +133,8 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
-      this.model.calculateLineTickness();
-      this.strokeWidth = this.strokeWidth * this.model.ticknessFactor;
+      this.model.calculateLineThickness();
+      this.strokeWidth = this.strokeWidth * this.model.thicknessFactor;
     }
 
     this.pathSettings = {
@@ -149,7 +149,7 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.model.on('change:isEmptyAmount', this.toggleEmptyAmountConnection, this)
-      this.model.on('change:ticknessFactor', this.update, this);
+      this.model.on('change:thicknessFactor', this.update, this);
     }
 
     this.g = this.svg.group();    
@@ -190,7 +190,7 @@ module.exports = View.extend({
     //when it is a money connection just
     //recalculating the line thickness and the arrow size
     if(this.isMoney){
-      this.strokeWidth = 6 * this.model.ticknessFactor;
+      this.strokeWidth = 6 * this.model.thicknessFactor;
     }
 
     //if it is a monitoring connection
@@ -204,7 +204,7 @@ module.exports = View.extend({
           (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
           this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
-          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].ticknessFactor) * (-1);
+          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].thicknessFactor) * (-1);
           this.distanceSecond = -10;
         }
       };

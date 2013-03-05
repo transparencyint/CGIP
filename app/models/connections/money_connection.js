@@ -10,34 +10,34 @@ module.exports = Connection.extend({
     return data;
   },
 
-  // We the 3 different tickness variables the range for the tickness will be determined.
-  // This constances can be changed, which will effect the tickness of all money lines.
+  // With the 3 different factor variables the range for the thickness will be determined.
+  // This constances can be changed, which will effect the thickness of all money lines.
   initialize: function(opts){
     Connection.prototype.initialize.call(this, opts);
     this.isEmptyAmount = true;
-    this.emptyAmountTicknessFactor = 0.6;
-    this.minTicknessFactor = 0.8;
-    this.maxTicknessFactor = 2;
-    this.ticknessFactor = this.minTicknessFactor;
-    this.on('change:disbursed', this.calculateLineTickness, this);
-    this.on('change:pledged', this.calculateLineTickness, this);
-    config.on('change:moneyConnectionMode', this.calculateLineTickness, this);
+    this.emptyAmountThicknessFactor = 0.6;
+    this.minThicknessFactor = 0.8;
+    this.maxThicknessFactor = 2;
+    this.thicknessFactor = this.minThicknessFactor;
+    this.on('change:disbursed', this.calculateLineThickness, this);
+    this.on('change:pledged', this.calculateLineThickness, this);
+    config.on('change:moneyConnectionMode', this.calculateLineThickness, this);
   },
 
-  // The thickness of the money lines will be determined by comparing the money amount of each money connection
-  calculateLineTickness: function(){
+  // The thickness of the money lines will be determined by comparing the money amount of each money connection.
+  calculateLineThickness: function(){
 
     // Don't execute when the model hasn't been added to a collection yet
     if(!this.collection) return
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
 
-    // If the current money connection has no amount give it the empty tickness factor.
+    // If the current money connection has no amount give it the empty thickness factor.
     var oldIsEmptyAmount = this.isEmptyAmount;
     this.isEmptyAmount = this.get(amountType) === 0;
     if(this.isEmptyAmount) {
-      this.ticknessFactor = this.emptyAmountTicknessFactor;
-      this.trigger('change:ticknessFactor'); 
+      this.thicknessFactor = this.emptyAmountThicknessFactor;
+      this.trigger('change:thicknessFactor'); 
     }
 
     if(oldIsEmptyAmount !== this.isEmptyAmount) {
@@ -46,7 +46,7 @@ module.exports = Connection.extend({
 
     var size = this.collection.length;
     
-    // In case there is 1 or more other money connection on the map you need to calculate the line tickness 
+    // In case there is 1 or more other money connection on the map you need to calculate the line thickness 
     if(size > 1){
 
       var allEmptyAmount = true;
@@ -69,36 +69,36 @@ module.exports = Connection.extend({
       }
 
       var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
-      var minFactor = this.minTicknessFactor;
+      var minFactor = this.minThicknessFactor;
 
-      // In case connections have at least 1 different money value we compare them
+      // In case connections have at least 1 different money value we compare them.
       if(!isMinMaxEqual){
-        var factorRange = this.maxTicknessFactor - minFactor; 
+        var factorRange = this.maxThicknessFactor - minFactor; 
         var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
-        // The actual calculation for the tickness happens here.
-        // All money connections get an tickness factor assigned according the money amount.
+        // The actual calculation for the thickness happens here.
+        // All money connections get an thickness factor assigned according to the money amount.
         // The factor is calculated logarithically.
         this.collection.each(function(connection){
           var amount = connection.get(amountType);
           if(amount !== 0) {
             var amountDif = Math.log(amount - minMoneyAmount + 1);
-            var newTickness = amountDif / moneyRange * factorRange + minFactor;
+            var newThickness = amountDif / moneyRange * factorRange + minFactor;
             
-            if(connection.ticknessFactor !== newTickness) {
-              connection.ticknessFactor = newTickness;
-              connection.trigger('change:ticknessFactor');     
+            if(connection.thicknessFactor !== newThickness) {
+              connection.thicknessFactor = newThickness;
+              connection.trigger('change:thicknessFactor');     
             }
           }
           
         });
       }
-      // Otherwise all money lines get the minimum tickness Factor
+      // Otherwise all money lines get the minimum thickness Factor
       else {
         this.collection.each(function(connection){
-          if(connection.ticknessFactor !== minFactor && connection.get(amountType) !== 0) {
-            connection.ticknessFactor = minFactor;
-            connection.trigger('change:ticknessFactor');        
+          if(connection.thicknessFactor !== minFactor && connection.get(amountType) !== 0) {
+            connection.thicknessFactor = minFactor;
+            connection.trigger('change:thicknessFactor');        
           }
         });
       }

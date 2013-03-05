@@ -1,4 +1,4 @@
-// This view is the equivalents of the connection view. It leaks all the editing features of the connection
+// This view is the equivalent of the connection view. It's for the actual audience and doesn't have the editing features.
 
 var View = require('../view');
 var ConnectionDetailsView = require('views/presentation/presentation_connection_details');
