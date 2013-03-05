@@ -157,9 +157,10 @@
   .country 
     position absolute
     margin -4px 0 0 -60px /* -56px x-offset because the map was cut */
-    opacity 0
-    transform scale(0.5) translateY(10px)
-    transition transform 250ms, opacity 250ms
+    .animationHolder
+      opacity 0
+      transform scale(0.5) translateY(10px)
+      transition transform 250ms, opacity 250ms
     .point
       position absolute
       width 8px
@@ -170,11 +171,9 @@
       border-radius 100%
     &:hover
       z-index 1
-    &.appear 
+    &.appear .animationHolder 
       opacity 1
       transform none
-    &.transparent
-      opacity 0.35
     .delete
       width 46px
       height 46px
