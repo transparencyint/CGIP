@@ -89,7 +89,7 @@ module.exports = DraggableView.extend({
     }
 
     var pos = this.model.get('pos');
-    this.$el.css({'top': pos.y - this.pixelFix, 'left': pos.x - this.pixelFix});
+    this.$el.css({'top': pos.y, 'left': pos.x});
   },
 
   setDefaultPosition: function(){
