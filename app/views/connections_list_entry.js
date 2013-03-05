@@ -25,7 +25,7 @@ module.exports = View.extend({
   },
 
   askDestroy: function(){
-    if(confirm('Are you sure you want to delete this connection?'))
+    if(confirm(t('Are you sure you want to delete this connection?')))
       this.model.destroy();
   },
 

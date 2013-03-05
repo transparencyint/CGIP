@@ -27,7 +27,7 @@
 
       <% if @hasCorruptionRisk: %> 
         <div>
-          <p><%= t('is_corruption_risk'); %></p>
+          <p><%= t('There is a corruption risk'); %></p>
       	  <div class="additionalInfo inlay">
         	  <div class="corruptionText"><%= @corruptionRisk %></div>
             <% if @corruptionRiskSource: %>

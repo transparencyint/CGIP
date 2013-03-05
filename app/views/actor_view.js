@@ -92,7 +92,8 @@ module.exports = DraggableDroppableView.extend({
     return { 
       name: this.determineName(), 
       orgaType: this.orgaType,
-      organizationType: this.model.get('organizationType')
+      organizationType: this.model.get('organizationType'),
+      typeOther: this.model.get('typeOther')
     };
   },
 

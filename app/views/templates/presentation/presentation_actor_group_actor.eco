@@ -1,2 +1,6 @@
 <div class="name"><%= @abbreviation or @name %></div>
-<div class="type"><%= @organizationType %></div>
+<div class="type">
+	<% if @organizationType: %> 
+      <%= t( @organizationType ) %>
+    <% end %>
+</div>
