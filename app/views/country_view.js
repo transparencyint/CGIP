@@ -76,6 +76,7 @@ module.exports = DraggableView.extend({
     var view = this;
     var currentCountry;
 
+    // if model doesn't have position data read it from the country list
     if(!this.model.get('pos')){
 
       currentCountry = _.find(country_list, function(country){
@@ -169,11 +170,7 @@ module.exports = DraggableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.get('abbreviation'));
-
-    this.defaultPos = {
-      x: this.model.get('pos').x,
-      y: this.model.get('pos').y
-    }
+    this.defaultPos = this.model.get('pos');
   },
 
   deleteCountry: function(){
