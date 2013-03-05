@@ -1,5 +1,6 @@
 var View = require('./view');
 var CountryView = require('./country_view');
+var Dialog = require('./dialog_view');
 
 module.exports = View.extend({
 	id: 'worldMap',
@@ -170,15 +171,21 @@ module.exports = View.extend({
   },
 
   updateMapData: function(event){    
+    var _this = this;
+
     if(!_.isEmpty(this.countryViewsToDelete)){
-      if(confirm(t('Are you Sure you want to proceed?'))){
-        _.each(this.countryViewsToDelete, function(country){
-          country.deleteCountry();
-        });
-      }
+
+      new Dialog({ 
+        title: t('Country Deletion'),
+        text: t('Are you Sure you want to proceed?'),
+        verb: t('Proceed'),
+        success: function(){ 
+          _.each(_this.countryViewsToDelete, function(country){
+            country.deleteCountry();
+          });
+        }
+      });
     }
-    
-    this.toggleControlButtons(event);
   },
 
   getRenderData: function() {

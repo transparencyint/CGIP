@@ -84,13 +84,7 @@ module.exports = DraggableView.extend({
           return country;
       });
 
-      view.model.set({ 
-        pos: {
-          x: currentCountry.pos.x - view.pixelFix,
-          y: currentCountry.pos.y - view.pixelFix 
-        }
-      });
-
+      view.model.set({ pos: currentCountry.pos });
       view.model.save();
     }
 
