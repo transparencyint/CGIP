@@ -11,7 +11,7 @@ module.exports = View.extend({
   currentLocation: '',
   locationTable: {
     'money_connections_list': 'Money List',
-    'edit_countries': 'country_selection'
+    'edit_countries': 'Country Selection'
   },
 
   initialize: function(options){

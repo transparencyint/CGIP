@@ -145,7 +145,6 @@ module.exports = View.extend({
   },
 
 	showDetails: function(){
-    console.log('showing details');
     this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
   },
@@ -164,6 +163,6 @@ module.exports = View.extend({
     this.updateRole();
     this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
-  },
+  }
 
 });

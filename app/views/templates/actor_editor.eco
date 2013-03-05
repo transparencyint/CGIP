@@ -2,7 +2,7 @@
   <div class="tool controls top">
     <div class="newActor">
       <div class="description">
-        <span class="name"><i class="plus">+</i> <%= t('add_actor') %></span>
+        <span class="name"><i class="plus">+</i> <%= t('Add Actor') %></span>
         <div class="dockBorder"></div>
       </div>
       <div class="dock"></div>
@@ -10,24 +10,24 @@
     
     <div class="connection money control" data-connectionType="money">
       <div class="eye"></div>
-      <div class="description" title="<%= t('new_money_connection') %>">
-        <span class="name"><%= t('money') %></span>
+      <div class="description" title="<%= t('New Money Connection') %>">
+        <span class="name"><%= t('Money') %></span>
         <img src="/images/moneyflow.png">
       </div>
     </div>
 
     <div class="connection accountability control" data-connectionType="accountability">
       <div class="eye"></div>
-      <div class="description" title="<%= t('new_acc_connection') %>">
-        <span class="name"><%= t('accountability') %></span>
+      <div class="description" title="<%= t('New Accountability Connection') %>">
+        <span class="name"><%= t('Accountability') %></span>
         <img src="/images/accountabilityflow.png">
       </div>
     </div>
 
     <div class="connection monitoring control" data-connectionType="monitoring">
       <div class="eye"></div>
-      <div class="description" title="<%= t('new_monitor_connection') %>">
-        <span class="name"><%= t('monitoring') %></span>
+      <div class="description" title="<%= t('New Monitoring Connection') %>">
+        <span class="name"><%= t('Monitoring') %></span>
         <img src="/images/monitoringflow.png">
       </div>
     </div>
@@ -49,7 +49,7 @@
       <div class="out icon control"></div>
     </div>
     <div class="view controls moneyMode hasModal">
-      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('money') %>">
+      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('Money') %>">
         <div class="coin"></div>
         <div class="corner"></div>
       </div>

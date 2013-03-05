@@ -26,7 +26,7 @@ module.exports = DraggableDroppableView.extend({
   
   initialize: function(options){
     DraggableDroppableView.prototype.initialize.call(this, options);
-    _.bindAll(this, 'destroy', 'showDetails','select');
+    _.bindAll(this, 'newGroupReady', 'destroy', 'showDetails','select');
 
     this.width = options.editor.actorWidth;
     this.height = options.editor.actorHeight;
@@ -83,16 +83,24 @@ module.exports = DraggableDroppableView.extend({
       return view.reset();
     }else{
       view.isDragging = false;
-      var newGroup = this.model.turnIntoGroup(view.model);
-      this.editor.actorGroups.add(newGroup);
+      this.model.turnIntoGroup({
+        firstActor: view.model, 
+        connections: this.editor.connections,
+        success: this.newGroupReady
+      });
     }
+  },
+  
+  newGroupReady: function(newGroup){
+    this.editor.actorGroups.add(newGroup);
   },
 
   getRenderData: function() {
     return { 
       name: this.determineName(), 
       orgaType: this.orgaType,
-      organizationType: this.model.get('organizationType')
+      organizationType: this.model.get('organizationType'),
+      typeOther: this.model.get('typeOther')
     };
   },
 

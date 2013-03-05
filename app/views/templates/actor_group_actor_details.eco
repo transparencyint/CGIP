@@ -3,14 +3,14 @@
 <form>
   <div class="holder">
     <div>
-      <input type="text" class="name big" id="name" name="name" value="<%= @name %>" placeholder="Name" />
-      <input type="text" class="abbrevation small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="Short Name" />
+      <input type="text" class="name big" id="name" name="name" value="<%= @name %>" placeholder="<%= t('Name') %>" />
+      <input type="text" class="abbrevation small" id="abbreviation" name="abbreviation" value="<%= @abbreviation %>" placeholder="<%= t('Short Name') %>" />
     </div>
 	</div><!-- /.holder -->
 	
 	<div class="controls clearfix">
     <div class="row right">
-      <button type="submit" class="done">Save</button>
+      <button type="submit" class="done"><%= t('Save') %></button>
       <button class="cancel"><%= t('Cancel') %></button>
     </div>
     <div class="row left">

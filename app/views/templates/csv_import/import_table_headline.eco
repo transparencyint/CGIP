@@ -1,5 +1,5 @@
 <% for value in @: %>
 	<% if @.length: %>
-    	<th><%= t('drag_here') %></th> 
+    	<th><%= t('Drag here') %></th> 
     <% end %>
 <% end %>

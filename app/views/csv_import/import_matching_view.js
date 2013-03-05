@@ -34,7 +34,7 @@ module.exports = View.extend({
     var tableMatchingView = this.tableMatchingView;
     oldMoneyConnections.fetch({
       success: function(){
-        if(confirm("<%= t('confirmation_delete_money_connections') %>"))
+        if(confirm("<%= t('This will delete all previous money connections, Are you sure?') %>"))
         {
           oldMoneyConnections.destroyAll({
             success: function(){

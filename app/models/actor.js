@@ -1,10 +1,11 @@
 var Model = require('./model');
+var Dialog = require('../views/dialog_view');
 
 module.exports = Model.extend({
   lockable: true,
 
   url: function(){
-    if(!this.has('country')) throw('In order to create an actor you have to specify a country.');
+    if(!this.has('country')) throw(t('In order to create an actor you have to specify a country.'));
     var url = '/' + this.get('country') + '/actors';
     if(this.id)
       url += '/' + this.id
@@ -35,7 +36,31 @@ module.exports = Model.extend({
     this.set('pos', thisPos);
   },
 
-  turnIntoGroup: function(firstActor){
+  hasConnections: function(connections){
+    return  (connections.where({'from': this.id}).length > 0 || 
+            (connections.where({'to': this.id})).length > 0);
+  },
+
+  turnIntoGroup: function(options){
+    var firstActor = options.firstActor;
+    var connections = options.connections;
+    var success = options.success;
+    var _this = this;
+    
+    // prevent the creation of a group if any of the actors has connections and the editor declines it
+    if(this.hasConnections(connections) || firstActor.hasConnections(connections)){
+      new Dialog({ 
+        title: t('Add to Group'),
+        text: t('This will delete all connections. Are you sure you want to proceed?'),
+        verb: t('Proceed'),
+        success: function(){ _this.formGroup(firstActor, success); }
+      });
+    } else {
+      this.formGroup(firstActor, success);
+    }
+  },
+  
+  formGroup: function(firstActor, success){
     // remove them both from their collections
     firstActor.collection.trigger('remove', firstActor);
     this.collection.remove(this);
@@ -57,7 +82,8 @@ module.exports = Model.extend({
       socket.emit('new_model', newGroup.toJSON());
     });
     this.destroy();
-    return newGroup;
+    
+    success(newGroup);
   }
 
 });

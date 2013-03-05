@@ -4,7 +4,7 @@ module.exports = Model.extend({
   lockable: true,
   
   url: function(){
-    if(!this.has('country')) throw('In order to create a connection you have to specify a country.');
+    if(!this.has('country')) throw(t('In order to create a connection you have to specify a country.'));
     var url = '/' + this.get('country') + '/connections';
     if(this.id)
       url += '/' + this.id
@@ -23,7 +23,7 @@ module.exports = Model.extend({
 
   validate: function(attributes){
     if(attributes.from == attributes.to)
-      return 'A connection has to have two different actors. Or at least one set to "none".';
+      return t('A connection has to have two different actors. Or at least one set to "none".');
   },
 
   pickOutActors: function(actors, actorGroups){
@@ -43,7 +43,7 @@ module.exports = Model.extend({
   },
 
   _setActor: function(field, actor){
-    if(!actor.id) throw('In order to set an actor for a connection, the actor needs an id!', actor);
+    if(!actor.id) throw(t('In order to set an actor for a connection, the actor needs an id!'), actor);
 
     if(this[field] != null)
       this[field].off(null, null, this);

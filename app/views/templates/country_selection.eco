@@ -1,6 +1,6 @@
 <div class="inner">
-  <h1><%= t('cgip_countries_headline') %></h1>
-  <p><%= t('logged_in_as') %>: <%= @user._id %> <a href="/logout" external><button class="small"><%= t('logout') %></button></a></p>
+  <h1><%= t('CFIP Countries') %></h1>
+  <p><%= t('Logged in as') %>: <%= @user._id %> <a href="/logout" external><button class="small"><%= t('Logout') %></button></a></p>
   <ul class="countrys clearfix">
     <% for country in @countries: %>
       <li>
@@ -9,12 +9,12 @@
           <span class="name"><%= country.name %></span>
         </a>
         <div class="actions">
-          <a href="/edit/<%= country.abbreviation %>/actors" class="map"><%= t('edit_map') %></a>
-          <a href="/edit/<%= country.abbreviation %>/money/list" class="moneyConnections"><%= t('edit_money_connections') %></a>
-          <a href="/import/<%= country.abbreviation %>/money" class="importCSV"><%= t('import_csv') %></a>
+          <a href="/edit/<%= country.abbreviation %>/actors" class="map"><%= t('Edit Map') %></a>
+          <a href="/edit/<%= country.abbreviation %>/money/list" class="moneyConnections"><%= t('Edit Money Connections') %></a>
+          <a href="/import/<%= country.abbreviation %>/money" class="importCSV"><%= t('Import CSV') %></a>
         </div>
       </li>
     <% end %>
   </ul>
-  <a href="/edit/countries" class="edit"><%= t('edit_countries') %></a>
+  <a href="/edit/countries" class="edit"><%= t('Edit Countries') %></a>
 </div>
