@@ -15,7 +15,8 @@ module.exports = View.extend({
       'change [type=checkbox]': 'submitForm',
       'change select': 'submitForm',
       'change textarea': 'submitForm',
-      'keydown [data-type=text]': 'allowEnter',
+      'keyup [data-type=text]': 'interceptKeys',
+      'keyup [type=text]': 'interceptKeys',
     
       // show/hide the 'other' input field on 'Type'
       // and the Corruption Risk details
@@ -95,8 +96,14 @@ module.exports = View.extend({
     event.stopPropagation();
   },
   
-  allowEnter: function(event){
+  interceptKeys: function(event){
     event.stopPropagation();
+
+    // stop the delete key from going to the actor editor which would delete this view
+    if(event.keyCode === 46){
+      event.preventDefault()
+      return false;
+    }
   },
   
   dragStart: function(event){
@@ -194,8 +201,6 @@ module.exports = View.extend({
 
     this.$el.one(this.transEndEventName, this.destroy);
     
-    $(document).unbind('keydown', this.handleKeys);
-    
     this.$el.addClass('hidden');
   },
 
@@ -203,6 +208,8 @@ module.exports = View.extend({
     if(!this.unlockedModel) this.model.unlock();
     
     this.clickCatcher.unbind(this.inputDownEvent, this.submitAndClose);
+
+    $(document).unbind('keydown', this.handleKeys);
 
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
@@ -217,9 +224,6 @@ module.exports = View.extend({
         break;
       case 13: // Enter
         this.submitAndClose();
-        break;
-      case 46: // Delete
-        this.deleteConnection();
         break;
     }
   },
