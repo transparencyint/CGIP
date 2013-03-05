@@ -29,7 +29,6 @@ module.exports = View.extend({
   updateRole: ActorView.prototype.updateRole,
 
   showDetails: function(event){
-    console.log(this.model);
     this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
     this.options.editor.$el.append(this.modal.render().el);
   },
