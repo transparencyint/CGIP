@@ -424,7 +424,10 @@ module.exports = View.extend({
 
   createActorAt: function(x, y){
     var editor = this;
-  
+    
+    // don't allow to create actors on the panel
+    if(y < this.actorHeight / 2) y = parseInt(this.actorHeight / 2) + 5;
+
     var actor = new Actor();
     actor.save({
       country: editor.country.get('abbreviation'),
