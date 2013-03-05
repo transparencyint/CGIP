@@ -4,7 +4,6 @@ var CountryMapView = require('views/presentation/country_map_view');
 var LoginView = require('views/login_view');
 var CountrySelectionView = require('views/country_selection_view');
 var EditCountriesView = require('views/edit_countries_view');
-var CountryEditIndexView = require('views/country_edit_index_view');
 var Actors = require('models/actors');
 var ActorEditor = require('views/actor_editor');
 var ActorConnection = require('views/connection_view');
@@ -82,11 +81,6 @@ module.exports = AsyncRouter.extend({
   edit_countries: function(){
     config.disableRealtime();
     this.switchToView(new EditCountriesView({countries: this.app.countries}));
-  },
-
-  country_edit_index: function(country){
-    config.disableRealtime();
-    this.switchToView(new CountryEditIndexView({ country: country}));
   },
 
   actor_editor: function(country) {
