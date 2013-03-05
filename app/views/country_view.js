@@ -68,7 +68,7 @@ module.exports = DraggableView.extend({
   showDetails: function(){},
 
   performClick: function(event){
-    if($(event.target).hasClass('noclick'))
+    if(this.isDraggable)
       event.preventDefault();
   },
 
@@ -111,8 +111,6 @@ module.exports = DraggableView.extend({
       return;
     }
 
-    this.$el.find('a').addClass('noclick');
-
     event.preventDefault();
     event.stopPropagation();
 
@@ -152,12 +150,6 @@ module.exports = DraggableView.extend({
 
     // save new positions
     this.model.save();
-
-    // set the new country positions
-    var view = this;
-    _.defer(function(){
-      view.$el.find('a').removeClass('noclick');
-    });
   },
 
   afterRender: function(){
