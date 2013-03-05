@@ -44,6 +44,13 @@ module.exports = View.extend({
         countryView.isDraggable = false;
       else
         countryView.isDraggable = true;
+
+      // move country back to its original position
+      if($(event.target).hasClass('cancel'))
+        countryView.setDefaultPosition();
+      else{
+        countryView.updateDefaultPosition();
+      }
     });
   },
   
