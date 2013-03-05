@@ -7,5 +7,5 @@
   	</form>
   </div>
   <div class="or">or</div>
-  <div id="csv-upload-target" class="box"><%= t('drag_drop') %></div>
+  <div id="csv-upload-target" class="box"><%= t('Drag & Drop file here') %></div>
 </div>

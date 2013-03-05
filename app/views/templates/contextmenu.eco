@@ -1,2 +1,2 @@
 <li class="delete"><span><%= t('Delete') %></span>
-<li class="add"><span><%= t('add_content') %></span>
+<li class="add"><span><%= t('Add Content') %></span>

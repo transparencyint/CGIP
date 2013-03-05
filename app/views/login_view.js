@@ -37,7 +37,7 @@ module.exports = View.extend({
     window.user.login(username, password, {
       success: this.redirectToGoal,
       error: function(){
-        alert('Wrong username or password!');
+        alert(t('Wrong username or password!'));
         usernameElement.focus();
       }
     });

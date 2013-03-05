@@ -114,7 +114,7 @@ module.exports = View.extend({
   },
   
   dragByDelta: function(dx, dy){
-    throw('dragByDelta is not implemented.')
+    throw(t('dragByDelta is not implemented.'))
   },
 
   updatePosition: function(){

@@ -205,7 +205,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is_accountable_for',
+      'accountability': 'is accountable for',
       'monitoring': 'monitors',
       'money': 'pays',
     };

@@ -1,8 +1,8 @@
 <div class="inner">
-  <h1><%= t('edit_countries') %></h1>
+  <h1><%= t('Edit Countries') %></h1>
 
   <div id="add-country">
-    <input type="text" placeholder="<%= t('type to add country...') %>" /><button><%= t('add_country') %></button>
+    <input type="text" placeholder="<%= t('type to add country') %>..." /><button><%= t('Add Country') %></button>
     <ul></ul>
   </div>
 
