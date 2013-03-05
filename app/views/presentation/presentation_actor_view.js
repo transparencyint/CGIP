@@ -160,6 +160,6 @@ module.exports = View.extend({
     this.updateRole();
     this.updateCorruptionRisk();
     this.$el.attr('id', this.model.id);
-  },
+  }
 
 });
