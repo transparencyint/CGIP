@@ -24,9 +24,10 @@ module.exports = Settings.extend({
     var languages = this.getLanguages();
     
     return { 
-      presentationLink: '/edit/' + this.editor.country.get('abbreviation'),
+      editLink: '/edit/' + this.editor.country.get('abbreviation'),
       active: config.get('language'),
-      languages: languages
+      languages: languages,
+      isLoggedIn: user.isLoggedIn()
     };
   }
 });
