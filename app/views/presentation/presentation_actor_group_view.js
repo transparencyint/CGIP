@@ -1,6 +1,7 @@
 var View = require('../view');
 var ActorView = require('../actor_view');
 var ActorGroupView = require('../actor_group_view');
+var PresentationActorDetailsView = require('./presentation_actor_details_view');
 var PresentationActorGroupActorView = require('./presentation_actor_group_actor_view');
 
 module.exports = View.extend({
@@ -10,17 +11,28 @@ module.exports = View.extend({
 	template : require('views/templates/presentation/presentation_actor_group'),
 
 	events: {
-		'click .dropdown-control' : 'toggle'
+		'click .dropdown-control' : 'toggle',
+    'dblclick' : 'showDetails'
 	},
 
-  initialize: function(){
+  initialize: function(options){
     View.prototype.initialize.call(this);
+
+    this.width = options.editor.actorWidth;
+    this.height = options.editor.actorHeight;
+
     _.bindAll(this, 'addSubActorView');
   },
 
   determineName: ActorView.prototype.determineName,
   getRenderData: ActorGroupView.prototype.getRenderData,
   updateRole: ActorView.prototype.updateRole,
+
+  showDetails: function(event){
+    console.log(this.model);
+    this.modal = new PresentationActorDetailsView({ model: this.model, actor: this, editor: this.options.editor });
+    this.options.editor.$el.append(this.modal.render().el);
+  },
 
   updatePosition: function(){
     var pos = this.model.get('pos');
