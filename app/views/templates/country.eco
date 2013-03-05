@@ -1,6 +1,6 @@
 <div class="point"></div>
 <div class="label">
-  <a href="/show/<%= @abbreviation %>"><%= @name %> </a>
+  <a href="/show/<%= @abbreviation %>"><img class="flag" src="images/flags/<%= @abbreviation %>.svg"><%= @name %></a>
   <div class="arrow"></div>
   <span class="delete"></span>
 </div>
