@@ -1,5 +1,5 @@
 <header>
-  <h1>Following the World's <span>Climate Change</span> Money</h1>
+  <h1>Follow the World's <span>Climate Change</span> Money</h1>
   <% if window.user.isLoggedIn(): %>
     <div class="map-controls">
       <div class="edit button" href="#"><%= t('Edit') %></div>
@@ -16,9 +16,7 @@
 </header>
 <div class="inner">
   <div class="box"><!-- Firefox Helper -->
-    <div class="offset">
-      <div class="map"></div>
-    </div>
+    <div class="map"></div>
   </div>
 </div>
 <footer>
