@@ -23,8 +23,11 @@ module.exports = DraggableView.extend({
     this.worldmap = options.worldmap;
     this.isDraggable = false;
     this.isBeingDeleted = false;
+    
+    // fix the position of the ountry label by 4 pixel top/left
+    this.pixelFix = 4;
 
-    _.bindAll(this, 'destroy', 'drag', 'dragStop', 'appear');
+    _.bindAll(this, 'destroy', 'drag', 'dragStop', 'appear', 'setDefaultPosition', 'updateDefaultPosition');
 
     this.model.on('change:pos', this.updatePosition, this);
   },
@@ -73,6 +76,7 @@ module.exports = DraggableView.extend({
     var view = this;
     var currentCountry;
 
+    // if model doesn't have position data read it from the country list
     if(!this.model.get('pos')){
 
       currentCountry = _.find(country_list, function(country){
@@ -81,14 +85,20 @@ module.exports = DraggableView.extend({
       });
 
       view.model.set({ pos: currentCountry.pos });
-      //console.log(view.model);
       view.model.save();
     }
+
     var pos = this.model.get('pos');
-    //console.log(currentCountry)
-    //var pos = currentCountry.pos;
     this.$el.css({'top': pos.y, 'left': pos.x});
-  }, 
+  },
+
+  setDefaultPosition: function(){
+    this.model.save({ pos: this.defaultPos });
+  },  
+
+  updateDefaultPosition: function(){
+    this.defaultPos = this.model.get('pos');
+  },  
 
   dragByDelta: function(dx, dy){
     this.model.moveByDelta(dx, dy);
@@ -146,5 +156,11 @@ module.exports = DraggableView.extend({
     this.updatePosition();
 
     this.$el.attr('id', this.model.get('abbreviation'));
+    this.defaultPos = this.model.get('pos');
+  },
+
+  deleteCountry: function(){
+    this.model.destroy();
+    this.destroy();
   }
 });
