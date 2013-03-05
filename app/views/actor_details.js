@@ -12,6 +12,7 @@ module.exports = View.extend({
       // input gets triggered everytime 
       // the input's content changes
       'input [type=text]': 'submitForm',
+      'input textarea': 'submitForm',
       'change [type=checkbox]': 'submitForm',
       'change select': 'submitForm',
       'change textarea': 'submitForm',
@@ -410,7 +411,6 @@ module.exports = View.extend({
     }
     
     cleanedData.hasCorruptionRisk = hasCorruptionRisk;
-    
     this.model.set(cleanedData);
     this.saveFormData();
   },
