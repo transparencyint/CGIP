@@ -60,9 +60,13 @@
           <div class="additionalInfo inlay">
             <div class="corruptionText"><%= @corruptionRisk %></div>
             <% if @corruptionRiskSource: %>
-              <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+              <% if @corruptionRiskSourceIsALink: %>
+                <%= t('Source'); %>: <a class="dark" href="<%= @corruptionRiskSource %>"><%= @corruptionRiskSource %></a>
+              <% else: %>
+                <%= t('Source'); %>: <%= @corruptionRiskSource %>
+              <% end %>
+            <% end %>
           </div>
-          <% end %>
       	</div>
       <% end %>
     	
