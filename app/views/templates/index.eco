@@ -1,5 +1,5 @@
 <header>
-  <h1>Follow the World's <span>Climate Change</span> Money</h1>
+  <h1><%- @headline %></h1>
   <% if window.user.isLoggedIn(): %>
     <div class="map-controls">
       <div class="edit button" href="#"><%= t('Edit') %></div>
@@ -21,15 +21,20 @@
 </div>
 <footer>
   <div class="left">
-    <a href="http://www.transparency.org/copyright">©</a> <span>Transparency International, 2013</span> <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+    <a href="http://www.transparency.org/copyright">©</a> <span>Transparency International, 2013</span> <a href="http://www.transparency.org/copyright"><%= t('All Rights Reserved') %></a>
   </div>
   <div class="right">
     <% if window.user.isLoggedIn(): %>
-      <a href="/edit/">Edit View</a>
-      <a href="/logout" external>Logout</a>
+      <a href="/edit/"><%= t('Edit View') %></a>
+      <a href="/logout" external><%= t('Logout') %></a>
     <% else: %>
-      <a href="/login/">Login</a>
+      <a href="/login/"><%= t('Login') %></a>
     <% end %>
-      <a href="http://www.transparency.org/privacy">Privacy</a><a href="http://www.transparency.org/terms">Terms</a><a href="http://www.transparency.org/impressum">Imprint</a>
+      <a href="http://www.transparency.org/privacy"><%= t('Privacy') %></a><a href="http://www.transparency.org/terms"><%= t('Terms') %></a><a href="http://www.transparency.org/impressum"><%= t('Imprint') %></a>
+      <select id="language">
+        <% for language in @languages: %>
+          <option value="<%= language.code %>" <%= 'selected' if language.code is @activeLanguage %>><%= language.name %></option>
+        <% end %>
+      </select>
   </div>
 </footer>
