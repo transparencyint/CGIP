@@ -507,8 +507,8 @@ window.country_list = [{
 	'alpha-2': 'cu',
 	'country-code': '192',
 	pos: {
-		x: 169,
-		y: 238
+		x: 238,
+		y: 169
 	}
 },
 {
