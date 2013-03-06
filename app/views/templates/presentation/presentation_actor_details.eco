@@ -30,35 +30,15 @@
         <% end %>
       </div>
 
-      <% if @role.length: %> 
+      <% if @rolesString: %>
         <div class="clearfix">
-          <%= t('Role')%>:   
-          <% for role,idx in @role: %> 
-            <% if idx != 0: %>
-              / 
-            <% end %>
-              <%= t( role.substr(0,1).toUpperCase()+role.substr(1) ) %>
-          <% end %>  
+          <%= t('Role')%>: <%= @rolesString %>
         </div>
       <% end %>
 
-      <% if @purpose.length: %>  
+      <% if @purposesString: %>
         <div>
-          <%= t('Purpose')%>:
-          <% for purpose,idx in @purpose: %> 
-            <% if idx != 0: %>
-              / 
-            <% end %>
-              <% if purpose == "capacity_building": %>
-                <%= t('Capacity Building') %>
-              <% else if purpose == "redd": %>
-                <%= t('REDD') %>
-              <% else if purpose == "CDM": %>
-                <%= t('CDM') %>
-              <% else: %>
-                <%= t( purpose.substr(0,1).toUpperCase()+purpose.substr(1) ) %>
-              <% end %>
-          <% end %>
+          <%= t('Purpose')%>: <%= @purposesString %>
         </div>
       <% end %>
 

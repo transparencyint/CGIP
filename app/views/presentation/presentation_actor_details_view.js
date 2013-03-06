@@ -51,6 +51,8 @@ module.exports = View.extend({
 
   getRenderData: function(){
     var data = ActorDetails.prototype.getRenderData.call(this);
+
+    // linkify the corruptionRiskSource
     if(this.model.has('corruptionRiskSource')){
 
       // replace unwanted white spaces to prevent browser crash!
@@ -62,6 +64,43 @@ module.exports = View.extend({
           corruptionRiskSource = 'http://' + corruptionRiskSource;
       data.corruptionRiskSource = corruptionRiskSource;
     }
+
+    // stringify roles
+    if(data.role){
+      var roles = _.clone(data.role);
+      if(_.isString(roles)){
+        data.rolesString = t( roles.substr(0,1).toUpperCase() + roles.substr(1) );
+      }else{
+        roles = _.map(roles, function(role){
+          if(role) return t( role.substr(0,1).toUpperCase() + role.substr(1) );
+        });
+        data.rolesString = roles.join(' / ');
+      }
+    }
+
+    // sanitizes and translates purposes
+    var sanitizePurposeTranslation = function(purpose){
+      if(purpose == 'capacity_building')
+        return t('Capacity Building');
+      else if(purpose == 'redd')
+        return t('REDD');
+      else
+        return t( purpose.substr(0,1).toUpperCase()+purpose.substr(1) );
+    }
+
+    // stringify purposes
+    if(data.purpose){
+      var purposes = _.clone(data.purpose);
+      if(_.isString(purposes)){
+        data.purposesString = sanitizePurposeTranslation(purposes);
+      }else{
+        purposes = _.map(purposes, function(purpose){
+          if(purpose) return sanitizePurposeTranslation(purpose);
+        });
+        data.purposesString = purposes.join(' / ');
+      }
+    }
+
     return data;
   },
   
