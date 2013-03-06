@@ -93,7 +93,7 @@ module.exports = View.extend({
   },
 
   render: function(){
-    // only render if it's a valid view
+    // Only render it if it is a valid view
     if(this.hasBothConnections())
       View.prototype.render.call(this)
   },
@@ -178,31 +178,31 @@ module.exports = View.extend({
 
   update: function(){
 
-    // return if not a valid connection
+    //Return if it isn't a valid connection.
     if(!this.hasBothConnections()) return
 
-    //when it is a money connection just
-    //recalculating the line thickness and the arrow size
+    //When it is a money connection
+    //the lines thickness and the arrow size have to be recalculated.
     if(this.isMoney){
       this.strokeWidth = 6 * this.model.coinSizeFactor;
     }
 
-    //if it is a monitoring connection
-    //check if there are any money connection with the same start and end point
-    //if yes: move the line so that they are parallel
+    //If it is a monitoring connection
+    //we are going through the list of all money connections
+    //and check if there are any money connections with the same start and end point.
+    //If we found such a connection we move the line so that they are parallel.
     if(this.model.get('connectionType') === 'monitoring'){
-      //go through the list of monney connections
       for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
         if((this.model.from.id == this.editor.moneyConnections.models[i].attributes.from &&
           this.model.to.id == this.editor.moneyConnections.models[i].attributes.to) ||
           (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
           this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
-          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].coinSizeFactor) * (-1);
           this.distanceSecond = -10;
         }
       };
-      //if there is no equal money connection, check for equal accountability connections
+      //If there is no equal money connection we check for equal accountability connections
+      //and move them if they have the same start and end point.
       if(!this.isSecondConnection){
         for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
           if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
@@ -215,11 +215,10 @@ module.exports = View.extend({
       }
     }
 
-    //do this only for the initalizing
-    //if it is an accountability connection
-    //check if there are any money or monitoring connection with the same start and end point
-    //use editor.connections, editor.moneyConnections & editor.monitoringConnections
-    //if yes: move the line so that they are parallel
+    //This function is only called for the initalizing.
+    //When it is an accountability connection
+    //we check if there are any money or monitoring connections with the same start and end point.
+    //If we found such a connection we move the line so that they are parallel.
     if(!this.isSecondConnection){
       if(this.model.get('connectionType') === 'accountability'){
         for (var i = 0; i < this.editor.connections.models.length; i++) {
@@ -250,11 +249,11 @@ module.exports = View.extend({
     this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
     this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
 
-    // recalculate select-border size (depending on strokeWidth)
+    //The select-border size which depends on the strokeWidth is recalculated.
     var pathWidth = this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
 
-    //getting the positions of both actors
+    //Here we are getting the positions of both actors.
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
 
@@ -269,7 +268,8 @@ module.exports = View.extend({
       y : Math.min(from.y, to.y)
     }
     
-    // round because our positions are float, not integer
+    //We round the position values because our positions are float values not integer.
+    //We need the rounded values for the comparison of the actor positions later.
     var start = {
       x : Math.round(from.x - this.pos.x),
       y : Math.round(from.y - this.pos.y)
@@ -299,12 +299,17 @@ module.exports = View.extend({
       'height': height
     });
 
-    //defining waypoints for the connection path
+    //The waypoints for the connection path are defined.
     var halfX;
     var halfY;
-    var start2, end2;
+    var start2;
+    var end2;
 
-    //checking in which relation the start and end actor are
+    //The following lines check the relation between the start and the end actor.
+    //Depending on the position of each actor we decide which type of connection they have.
+    //There can be straigt lines which only contain one line segment when they have either the same x or y position,
+    //two lines with one rounded corner between them
+    //or three line segments with two rounded corners if either the horizontal or vertical distance is very small.
     //case 1
     if(start.x < end.x && start.y <= end.y){
       //case 1f
