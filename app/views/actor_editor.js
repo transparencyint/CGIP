@@ -266,8 +266,6 @@ module.exports = View.extend({
 
   // Scope the editor's container
   scopeElements: function(view){
-
-    console.log('scoping');
     // set the state
     this.isScoped = true;
 
@@ -500,7 +498,6 @@ module.exports = View.extend({
   },
 
   deactivateMode: function(){
-    console.log("disable mode");
     this.$('.connection.active').removeClass('active');
     
     // re-enable draggables
@@ -710,8 +707,6 @@ module.exports = View.extend({
   panStop : function(event){
     // always unbind the inputMoveEvent
     $(document).unbind(this.inputMoveEvent, this.pan);
-
-    console.log(this.panX, this.panY)
 
     // if the editor hasn't been panned, return and do nothing
     if(!this.panX || !this.panY)

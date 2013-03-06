@@ -96,7 +96,7 @@ module.exports = View.extend({
   },
 
   render: function(){
-    // only render if it's a valid view
+    // Only render it if it is a valid view
     if(this.hasBothConnections())
       View.prototype.render.call(this)
   },
@@ -130,6 +130,8 @@ module.exports = View.extend({
       class_: 'selectPath'
     };
 
+    // The thickness of the money connection is calculated
+    // depending on the thickest money connection in the map 
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
       this.model.calculateLineThickness();
@@ -160,6 +162,8 @@ module.exports = View.extend({
 
   inScope: function(){ this.$el.removeClass('outOfScope'); },
 
+  // This function is called when the user changes the values
+  // of the checkbox for the corruption risk of a connection
   updateCorruptionRisk: function(){
     this.corruptionRisk = this.model.get('hasCorruptionRisk');
     if(this.corruptionRisk)
@@ -179,35 +183,35 @@ module.exports = View.extend({
     return (this.model.from && this.model.to);
   },
 
-  // In this function the core calculation for drawing the connections (lines) are done.
-  // Everytime an actor is moved around or an connection will be edit the lines are redrawn accordingly.
+  // In this function the core calculation for drawing the connections (lines) is done.
+  // Everytime an actor is moved around or a connection is edited the lines are redrawn accordingly.
   update: function(){
 
-    // return if not a valid connection
+    // Return if it isn't a valid connection.
     if(!this.hasBothConnections()) return
 
-    //when it is a money connection just
-    //recalculating the line thickness and the arrow size
+    // When it is a money connection
+    // the line thickness and the arrow size have to be recalculated.
     if(this.isMoney){
       this.strokeWidth = 6 * this.model.thicknessFactor;
     }
 
-    //if it is a monitoring connection
-    //check if there are any money connection with the same start and end point
-    //if yes: move the line so that they are parallel
+    // If it is a monitoring connection
+    // we are going through the list of all money connections
+    // and check if there are any money connections with the same start and end point.
+    // If we found such a connection we move the line so that they are parallel.
     if(this.model.get('connectionType') === 'monitoring'){
-      //go through the list of monney connections
       for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
         if((this.model.from.id == this.editor.moneyConnections.models[i].attributes.from &&
           this.model.to.id == this.editor.moneyConnections.models[i].attributes.to) ||
           (this.model.from.id == this.editor.moneyConnections.models[i].attributes.to &&
           this.model.from.id == this.editor.moneyConnections.models[i].attributes.to)){
           this.isSecondConnection = true;
-          //this.distanceSecond = (8 * this.editor.moneyConnections.models[i].thicknessFactor) * (-1);
           this.distanceSecond = -10;
         }
       };
-      //if there is no equal money connection, check for equal accountability connections
+      //If there is no equal money connection we check for equal accountability connections
+      //and move them if they have the same start and end point.
       if(!this.isSecondConnection){
         for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
           if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
@@ -220,11 +224,10 @@ module.exports = View.extend({
       }
     }
 
-    //do this only for the initalizing
-    //if it is an accountability connection
-    //check if there are any money or monitoring connection with the same start and end point
-    //use editor.connections, editor.moneyConnections & editor.monitoringConnections
-    //if yes: move the line so that they are parallel
+    //This function is only called for the initalizing.
+    //When it is an accountability connection
+    //we check if there are any money or monitoring connections with the same start and end point.
+    //If we found such a connection we move the line so that they are parallel.
     if(!this.isSecondConnection){
       if(this.model.get('connectionType') === 'accountability'){
         for (var i = 0; i < this.editor.connections.models.length; i++) {
@@ -255,11 +258,11 @@ module.exports = View.extend({
     this.pathSettings['marker-end'] = 'url(#'+ this.model.id + '-arrow)';
     this.selectSettings['marker-end'] = 'url(#'+ this.model.id + '-selected-arrow)';
 
-    // recalculate select-border size (depending on strokeWidth)
+    //The select-border size which depends on the strokeWidth is recalculated.
     var pathWidth = this.strokeWidth;
     this.selectSettings['stroke-width'] = pathWidth + 2 * this.selectionBorderSize;
 
-    //getting the positions of both actors
+    //Here we are getting the positions of both actors.
     var from = this.model.from.get('pos');    
     var to = this.model.to.get('pos');
 
@@ -274,7 +277,8 @@ module.exports = View.extend({
       y : Math.min(from.y, to.y)
     }
     
-    // round because our positions are float, not integer
+    // We round the position values because our positions are float values not integer.
+    // We need the rounded values for the comparison of the actor positions later.
     var start = {
       x : Math.round(from.x - this.pos.x),
       y : Math.round(from.y - this.pos.y)
@@ -304,15 +308,22 @@ module.exports = View.extend({
       'height': height
     });
 
-    //defining waypoints for the connection path
+    // The waypoints for the connection path are defined.
     var halfX;
     var halfY;
-    var start2, end2;
+    var start2;
+    var end2;
 
-    //checking in which relation the start and end actor are
-    //case 1
+    // The following lines check the relation between the start and the end actor.
+    // Depending on the position of each actor we decide which type of connection they have.
+    // There can be straigt lines which only contain one line segment when they have either the same x or y position,
+    // two lines with one rounded corner between them
+    // or three line segments with two rounded corners if either the horizontal or vertical distance is very small.
+    
+    // Case 1:
+    // The start actor is left to and above the end actor.
     if(start.x < end.x && start.y <= end.y){
-      //case 1f
+      // Case 1a: straight line
       //
       // ────➝
       //
@@ -323,7 +334,7 @@ module.exports = View.extend({
         end.y -= this.distanceSecond;
         this.definePath1Line(start, end);
       }
-      //case 1c
+      // Case 1b: three line segments
       //
       // ──┐
       //   └──➝
@@ -333,7 +344,7 @@ module.exports = View.extend({
         end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0, -1);
       }
-      //case 1d
+      // Case 1c: three line segments
       //  
       //  │
       //  └┐
@@ -344,7 +355,7 @@ module.exports = View.extend({
         end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1, 1);
       }
-      //case 1a+b
+      // Case 1d: two line segments
       //  
       //  ──┐
       //    ↓
@@ -365,9 +376,9 @@ module.exports = View.extend({
         this.definePath2Lines(start, end, start2, end2, 1, this.edgeRadius);
       }
     }
-    //case 2
+    // Case 2: The start actor is left to and underneath the end actor.
     else if(start.x <= end.x && start.y > end.y){
-      //case 2f
+      // Case 2a: straight line
       //  
       //  ↑
       //  │
@@ -379,7 +390,7 @@ module.exports = View.extend({
         end.x += this.distanceSecond;
         this.definePath1Line(start, end);
       }
-      //case 2c
+      // Case 2b: three line segments
       //
       //   ┌──➝
       // ──┘
@@ -389,7 +400,7 @@ module.exports = View.extend({
         end.x -= toMargins.left + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1, 1);
       }
-      //case 2d
+      // Case 2c: three line segments
       //  
       //   ↑
       //  ┌┘
@@ -400,7 +411,7 @@ module.exports = View.extend({
         end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0, -1);
       }
-      //case 2a+b
+      // Case 2d: two line segments
       //  
       //    ↑
       //  ──┘
@@ -421,9 +432,9 @@ module.exports = View.extend({
         this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
       }
     }
-    //case 3
+    // Case 3: The start actor is right to and above the end actor.
     else if(start.x > end.x && start.y <= end.y){
-      //case 3f
+      // Case 3a: straight lines
       //  
       //  ←──
       //
@@ -434,7 +445,7 @@ module.exports = View.extend({
         end.y -= this.distanceSecond;
         this.definePath1Line(start, end);
       }
-      //case 3c
+      // Case 3b: three line segments
       //
       //    ┌──
       //  ←─┘
@@ -444,7 +455,7 @@ module.exports = View.extend({
         end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 0, 1, 1);
       }
-      //case 3d
+      // Case 3c: three lines segments
       //
       //    │
       //  ┌─┘
@@ -455,7 +466,7 @@ module.exports = View.extend({
         end.y -= toMargins.top + this.markerSize;
         this.definePath3LinesY(start, end, 1, 0, -1);
       }
-      //case 3a+b
+      // Case 3d: two line segments
       //
       //  ┌──
       //  │
@@ -477,9 +488,9 @@ module.exports = View.extend({
         this.definePath2Lines(start, end, start2, end2, 0, this.edgeRadius);
       }
     }
-    //case 4
+    // Case 4: The start actor is right to and underneath the end actor.
     else {
-      //case 4f
+      // Case 4a: straight line
       //
       //  │
       //  ↓
@@ -491,7 +502,7 @@ module.exports = View.extend({
         end.x += this.distanceSecond;
         this.definePath1Line(start, end);
       }
-      //case 4c
+      // Case 4b: three line segments
       //
       //  ←─┐
       //    └──
@@ -501,7 +512,7 @@ module.exports = View.extend({
         end.x += toMargins.right + this.markerSize;
         this.definePath3LinesX(start, end, 1, 0, -1);
       }
-      //case 4d
+      // Case 4c: three line segments
       //
       //    ↑
       //    └┐
@@ -512,7 +523,7 @@ module.exports = View.extend({
         end.y += toMargins.bottom + this.markerSize;
         this.definePath3LinesY(start, end, 0, 1, 1);
       }
-      //case 4a+b
+      // Case 4d: two line segments
       //
       //    │
       //  ←─┘
@@ -569,7 +580,8 @@ module.exports = View.extend({
   },
 
   showDetails: function(event){    
-    if(this.model.isLocked()) return; // don't show when model is locked
+    // don't show when model is locked
+    if(this.model.isLocked()) return; 
     
     var mousePosition = {
       left: this.normalizedX(event),
@@ -606,12 +618,24 @@ module.exports = View.extend({
   },
 
   // The amount could be empty so that the metadata message must be modified here
+  // Source for inerting seperator: http://stackoverflow.com/questions/9743038/how-do-i-add-a-thousand-seperator-to-a-number-in-javascript
   checkMetadataMessage: function(moneyMode){
     var amount = this.model.get(moneyMode);
     if(amount < 1)
       amount = t('unknown amount');
-    else
+    else{
+      var sep = ' ';
+      amount += '';
+      x = amount.split('.');
+      x1 = x[0];
+      x2 = x.length > 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + sep + '$2');
+      }
+      amount = x1 + x2;
       amount = '$ ' + amount;
+    }
 
     return amount;
   },
@@ -620,8 +644,8 @@ module.exports = View.extend({
     this.metadata.hide();
   },
   
+  // Draws a straight line.
   definePath1Line: function(start, end){
-    // start path
     this.path = 'M ' + start.x + ' ' + start.y;
     this.path += ' L ' + end.x + ' ' + end.y;
     if(this.corruptionRisk){
@@ -639,6 +663,7 @@ module.exports = View.extend({
     }
   },
   
+  // Draws two line segments whcih are connected by a rounded corner.
   definePath2Lines: function(start, end, start2, end2, sweepFlag, edgeRadius){
 
     this.path = 'M ' + start.x + ' ' + start.y;
@@ -657,34 +682,37 @@ module.exports = View.extend({
       this.path += ' L ' + end.x + ' ' + end.y; 
     }
 
+    // The position of the corruption risk symbol is calculated when the corruption risk is checked
     if(this.corruptionRisk){
       var corrX;
       var corrY;
-      //get the midpoint of the connection
+      // Get the midpoint of the connection
       if(distanceX > distanceY){
         if(start.x < end.x){
-          //x1 + halfsum, y1
+          // x1 + halfsum, y1
           corrX = start.x + halfSum;
           corrY = start.y;
         }
         else{
-          //x1 - halfsum, y1
+          // x1 - halfsum, y1
           corrX = start.x - halfSum + this.model.from.margins.top;
           corrY = start.y;
         }
       }
       else{
         if(start.y < end.y){
-          //x2, y2-halfsum
+          // x2, y2-halfsum
           corrX = end.x;
           corrY = end.y - halfSum - this.distanceSecond/4;
         }
         else{
-          //x2, y1-halfsum
+          // x2, y1-halfsum
           corrX = end.x;
           corrY = start.y - halfSum + this.model.from.margins.top*2 + this.distanceSecond;
         }
       }
+
+      // The position of the corruption risk symbol is calculated when the corruption risk is checked
       corrX += this.model.from.margins.top;
       corrY += this.model.from.margins.top;
       this.drawCorruptionFlag(corrX, corrY);
@@ -692,6 +720,8 @@ module.exports = View.extend({
 
   },
 
+  // Draws three lines which are connected by two rounded corners.
+  // The y-Distance from the start and end actor is smaller as the x-Distance.
   definePath3LinesX: function(start, end, sweepFlag1, sweepFlag2, prefixSecondDistance){
     start.y += this.distanceSecond;
     end.y += this.distanceSecond;
@@ -705,7 +735,7 @@ module.exports = View.extend({
     if(dy/2 < edgeRadius)
       edgeRadius = dy/2;
     
-    //define the waypoints of the connection
+    // Define the waypoints of the connection.
     if(end.y - start.y > 0){
       firstY = start.y + edgeRadius;
       secondY = end.y - edgeRadius;
@@ -722,7 +752,7 @@ module.exports = View.extend({
       secondX = halfX - edgeRadius;
     }
       
-    //add all connection parts
+    // Add all connection parts.
     this.path = 'M ' + start.x + ' ' + start.y;
     this.path += ' L ' + firstX + ' ' + start.y;
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + halfX + ' ' + firstY;
@@ -730,6 +760,7 @@ module.exports = View.extend({
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + secondX + ' ' + end.y;
     this.path += ' L ' + end.x + ' ' + end.y; 
     
+    // The position of the corruption risk symbol is calculated when the corruption risk is checked.
     if(this.corruptionRisk){
       var corrX = (start.x + end.x)/2 + this.model.from.margins.top + this.distanceSecond * prefixSecondDistance;
       var corrY = (start.y + end.y)/2 + this.model.from.margins.top;
@@ -737,6 +768,8 @@ module.exports = View.extend({
     }
   },
 
+  // Draws three lines which are connected by two rounded corners.
+  // The x-Distance from the start and end actor is smaller as the y-Distance.
   definePath3LinesY: function(start, end, sweepFlag1, sweepFlag2, prefixSecondDistance){
     start.x -= this.distanceSecond;
     end.x -= this.distanceSecond;
@@ -750,7 +783,7 @@ module.exports = View.extend({
     if(dx/2 < edgeRadius)
       edgeRadius = dx/2;
 
-    //define the waypoints of the connection
+    // Define the waypoints of the connection.
     if(end.x - start.x > 0){
       firstX = start.x + edgeRadius;
       secondX = end.x - edgeRadius;
@@ -769,7 +802,7 @@ module.exports = View.extend({
       secondY = halfY - edgeRadius;
     }
 
-    //add all connection parts
+    // Add all connection parts.
     this.path = 'M ' + start.x + ' ' + start.y;
     this.path += ' L ' + start.x + ' ' + firstY;
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag1 + ' ' + firstX + ' ' + halfY;
@@ -777,6 +810,7 @@ module.exports = View.extend({
     this.path += ' A ' + edgeRadius + ' ' + edgeRadius + ' ' + 0  + ' ' + 0 + ' ' + sweepFlag2 + ' ' + end.x + ' ' + secondY;
     this.path += ' L ' + end.x + ' ' + end.y;
 
+    // The position of the corruption risk symbol is calculated when the corruption risk is checked.
     if(this.corruptionRisk){
       var corrX = (start.x + end.x)/2 + this.model.from.margins.top;
       var corrY = (start.y + end.y)/2 + this.model.from.margins.top + this.distanceSecond * prefixSecondDistance;
