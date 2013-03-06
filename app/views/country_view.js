@@ -110,7 +110,7 @@ module.exports = DraggableView.extend({
     DraggableView.prototype.drag.call(this, event);
   },
 
-  dragStop: function(){
+  dragStop: function(event){
     DraggableView.prototype.dragStop.call(this, event);
 
     // save new positions
