@@ -1,5 +1,5 @@
 <header>
-  <h1>Follow the World's <span>Climate Change</span> Money</h1>
+  <h1><%- @headline %></h1>
   <% if window.user.isLoggedIn(): %>
     <div class="map-controls">
       <div class="edit button" href="#"><%= t('Edit') %></div>

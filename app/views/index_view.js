@@ -200,7 +200,14 @@ module.exports = View.extend({
   },
 
   getRenderData: function() {
+    var headline = t('Follow the climate change money');
+    var climateChangeFinder = RegExp(t('climate change'), 'i'); // case insensitive
+    
+    // inject a <span> for the highlight if we find the phrase 'climate change'
+    headline = headline.replace(climateChangeFinder, '<span>'+ t('climate change') +'</span>');
+    
     return {
+      headline: headline,
       countries: this.options.countries.toJSON(),
       activeLanguage: config.get('language'),
       languages: config.get('languages')
