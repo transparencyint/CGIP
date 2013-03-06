@@ -1,3 +1,4 @@
+// This view is the equivalent of the actor details view. 
 var View = require('../view');
 var ActorDetails = require('../actor_details');
 
@@ -7,8 +8,6 @@ module.exports = View.extend({
   className: 'modal hidden actorDetails',
 
   events: {
-    // the buttons at the bottom
-    'click .close': 'close',
 
     // make the whole thing draggable..
     'mousedown': 'dragStart',
@@ -28,7 +27,6 @@ module.exports = View.extend({
   pressOnScrollbar: ActorDetails.prototype.pressOnScrollbar,
   placeNextToActor: ActorDetails.prototype.placeNextToActor,
   place: ActorDetails.prototype.place,
-  getRenderData: ActorDetails.prototype.getRenderData,
   initOrganizationType: ActorDetails.prototype.initOrganizationType,
     
   initialize: function(options){
@@ -49,6 +47,19 @@ module.exports = View.extend({
     // backup data for cancel
     this.backup = this.model.toJSON();
     delete this.backup._rev;
+  },
+
+  getRenderData: function(){
+    var data = ActorDetails.prototype.getRenderData.call(this);
+    if(this.model.has('corruptionRiskSource')){
+      var corruptionRiskSource = this.model.get('corruptionRiskSource');
+      data.corruptionRiskSourceIsALink = this.isURL(corruptionRiskSource);
+      if(data.corruptionRiskSourceIsALink)
+        if(corruptionRiskSource.indexOf('http://') != 0 && corruptionRiskSource.indexOf('https://') != 0)
+          corruptionRiskSource = 'http://' + corruptionRiskSource;
+      data.corruptionRiskSource = corruptionRiskSource;
+    }
+    return data;
   },
   
   close: function(){
@@ -91,16 +102,6 @@ module.exports = View.extend({
     $(document).keydown(this.handleKeys);
     this.holder = this.$('.holder');
 
-    var corruptionRiskSource;
-    if(this.model.has('corruptionRiskSource')){
-      corruptionRiskSource = this.model.get('corruptionRiskSource');
-
-      if(this.isURL(corruptionRiskSource))
-        corruptionRiskSource = '<a href="'+corruptionRiskSource+'" target="_blank">'+corruptionRiskSource+'</a>'
-    }
-
-    this.$('.corruption-risk-source').html(corruptionRiskSource);
-
     // focus first input field
     var self = this;
     _.defer(function(){ 
@@ -112,10 +113,9 @@ module.exports = View.extend({
     });
   },
 
-  /**
-   * source: 
-   * http://stackoverflow.com/questions/1701898/how-to-detect-whether-a-string-is-in-url-format-using-javascript
-   */
+  // Detect if the passed String is actually a URL
+  //
+  // (source: <http://stackoverflow.com/questions/1701898/how-to-detect-whether-a-string-is-in-url-format-using-javascript>)
   isURL: function(url) {
     var strRegex = "^((https|http|ftp|rtsp|mms)?://)"
         + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"

@@ -1,37 +1,22 @@
 # CGIP
 
-a project by students from the HTW Berlin
+a collaborative project by students from [HTW Berlin](http://www.htw-berlin.de/) and a project team from [Transparency International](http://www.transparency.org/).
 
-## Getting started
+## Documentation
 
-The documentation can be found in the `documentation` folder.
+- [Setting up and hosting the app](https://github.com/transparencyint/CGIP/blob/master/documentation/hosting-deployment.md)
+- [Frontend Architecture](https://github.com/transparencyint/CGIP/blob/master/documentation/architecture-frontend.md)
+- [Backend Architecture](https://github.com/transparencyint/CGIP/blob/master/documentation/architecture-backend.md)
 
-1. Install CouchDB from [http://couchdb.apache.org/](http://couchdb.apache.org/)
-2. Install node.js from [http://nodejs.org](http://nodejs.org)
-3. Install brunch from command line via `npm install -g brunch@1.1.2`
-4. Navigate to the `CGIP/` folder in the command line
-5. Run `npm install` from the command line
-6. Go to `server` and copy `config.js.sample` to `config.js` and fill in your credentials
-7. Create the databases with: `node server/scripts/create_databases.js`
-8. Create the design docs with: `node server/scripts/create_design_docs.js`
-9. Create a user with: `node server/scripts/create_user.js` (will prompt for details)
-10. Run `brunch watch`
-11. Run `node server.js` and open [http://localhost:3000](http://localhost:3000) in your browser
+## Technologies we used
 
-## Working on the project
-
-1. Navigate to the `CGIP/` folder in the command line
-2. Run `brunch watch` from the command line
-3. Edit files in the `app/` folder and all your changes will automatically be recompiled
-
-## Deployment
-
-Git-deployment on [Uberspace](http://www.uberspace.de)!
-For a detailed documentation see [documentation/deployment.md](https://github.com/transparencyint/CGIP/blob/master/documentation/deployment.md).
-
-## Technologies
-
+### Frontend
 - [Backbone.js](http://documentcloud.github.com/backbone/) for the frontend code
 - [Eco](https://github.com/sstephenson/eco) for the templates
 - [Stylus](http://learnboost.github.com/stylus/) as a CSS pre-processor
-- [CouchDB](http://couchdb.apache.org) as a backend
+- [Brunch](https://github.com/brunch/brunch) as the compiler
+
+### Backend
+- [NodeJS](http://nodejs.org/) as the server
+- [ExpressJS](http://expressjs.com/) as a minimal framework
+- [CouchDB](http://couchdb.apache.org) as database

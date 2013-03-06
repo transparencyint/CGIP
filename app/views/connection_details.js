@@ -1,3 +1,7 @@
+// The connection details allow the user to give more specific information about the connection. 
+// Following information can be given: Disbursed and pledged money amounts as well as possibly corruption risk details
+// The connection details window appear on double clicking the connection.
+
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
 
@@ -205,7 +209,7 @@ module.exports = View.extend({
     }
     
     var sentences = {
-      'accountability': 'is_accountable_for',
+      'accountability': 'is accountable for',
       'monitoring': 'monitors',
       'money': 'pays',
     };

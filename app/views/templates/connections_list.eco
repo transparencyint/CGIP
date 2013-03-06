@@ -15,5 +15,5 @@
     </tbody>
   </table>
   <div id="new-connection-container"></div>
-  <button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label"><%= t('add_con') %></span></button>
+  <button id="new-connection" class="callToAction"><span class="plus">+</span> <span class="label"><%= t('Add Connection') %></span></button>
 </div>

@@ -1,3 +1,6 @@
+// The actor details allow the user to give more specific information about an actor or an actor group.
+// Following information can be given: Name, Role, Purpose and possibly corruption risk details
+
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
 
@@ -12,10 +15,12 @@ module.exports = View.extend({
       // input gets triggered everytime 
       // the input's content changes
       'input [type=text]': 'submitForm',
+      'input textarea': 'submitForm',
       'change [type=checkbox]': 'submitForm',
       'change select': 'submitForm',
       'change textarea': 'submitForm',
-      'keydown [data-type=text]': 'allowEnter',
+      'keyup [data-type=text]': 'interceptKeys',
+      'keyup [type=text]': 'interceptKeys',
     
       // show/hide the 'other' input field on 'Type'
       // and the Corruption Risk details
@@ -95,8 +100,14 @@ module.exports = View.extend({
     event.stopPropagation();
   },
   
-  allowEnter: function(event){
+  interceptKeys: function(event){
     event.stopPropagation();
+
+    // stop the delete key from going to the actor editor which would delete this view
+    if(event.keyCode === 46){
+      event.preventDefault()
+      return false;
+    }
   },
   
   dragStart: function(event){
@@ -168,7 +179,7 @@ module.exports = View.extend({
   },
   
   cancel: function(){
-    this.model.save(this.backup);
+    this.saveFormData(this.backup);
     this.close();
     
     // prevent form forwarding
@@ -176,7 +187,6 @@ module.exports = View.extend({
   },
 
   submitAndClose: function(){
-    
     this.saveFormData();
     this.close();
     
@@ -194,8 +204,6 @@ module.exports = View.extend({
 
     this.$el.one(this.transEndEventName, this.destroy);
     
-    $(document).unbind('keydown', this.handleKeys);
-    
     this.$el.addClass('hidden');
   },
 
@@ -203,6 +211,8 @@ module.exports = View.extend({
     if(!this.unlockedModel) this.model.unlock();
     
     this.clickCatcher.unbind(this.inputDownEvent, this.submitAndClose);
+
+    $(document).unbind('keydown', this.handleKeys);
 
     // remove autosize helper
     $('.actorDetailsAutosizeHelper').remove();
@@ -217,9 +227,6 @@ module.exports = View.extend({
         break;
       case 13: // Enter
         this.submitAndClose();
-        break;
-      case 46: // Delete
-        this.deleteConnection();
         break;
     }
   },
@@ -406,12 +413,12 @@ module.exports = View.extend({
     }
     
     cleanedData.hasCorruptionRisk = hasCorruptionRisk;
-    
     this.model.set(cleanedData);
     this.saveFormData();
   },
   
-  saveFormData: function(){
-    this.model.save();
+  saveFormData: function(data){
+    if(!data) data = {};
+    this.model.save(data);
   }
 });

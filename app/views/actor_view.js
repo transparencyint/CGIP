@@ -1,3 +1,10 @@
+// Each actor is visualized as a box, which holds the Name/Abbreviation, the actor Type and the role.
+// The surrounding border indicates the assigned role. An actor can be positioned via drag and drop
+// and can be selected, which is visualized as such with a coloured border around. 
+// Additionally, a possible corruption risk will be displayed with an exclamation mark. 
+// Double clicking the actor opens the actor details window. 
+
+
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorDetailsView = require('./actor_details');
 var FakeActorView = require('./fake_actor_view');
@@ -92,7 +99,8 @@ module.exports = DraggableDroppableView.extend({
     return { 
       name: this.determineName(), 
       orgaType: this.orgaType,
-      organizationType: this.model.get('organizationType')
+      organizationType: this.model.get('organizationType'),
+      typeOther: this.model.get('typeOther')
     };
   },
 

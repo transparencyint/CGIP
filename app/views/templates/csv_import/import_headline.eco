@@ -1,7 +1,7 @@
 <h1>Import CSV</h1>
 
-<div id="matchInfo"><p><%= t('drag_elements_for_matching') %></p></div>
-<input type="button" id="matchButton" value="<%= t('match_actors') %>">
+<div id="matchInfo"><p><%= t('Drag the 5 elements to the matching headline column. The headlines with the * are obligatory.') %></p></div>
+<input type="button" id="matchButton" value="<%= t('Match Actors') %>">
 <ul id="headlines">
 	<li id="provider"><%= t('Provider') %>*</li>
 	<li id="recipient"><%= t('Recipient') %>*</li>

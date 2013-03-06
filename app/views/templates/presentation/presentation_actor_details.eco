@@ -22,9 +22,11 @@
         <% if @organizationType == 'other': %>
           <%= @typeOther %>
         <% else if @organizationType: %>
-          <%= @organizationType %>
+          <% if @organizationType: %> 
+            <%= t( @organizationType ) %>
+          <% end %>
         <% else: %>
-          <%= t('not_given')%>
+          <%= t('Not given')%>
         <% end %>
       </div>
 
@@ -32,11 +34,10 @@
         <div class="clearfix">
           <%= t('Role')%>:   
           <% for role,idx in @role: %> 
-            <% if idx == 0: %>
-              <%= role %>
-            <% else: %>
-              / <%= role %> 
-            <% end %>  
+            <% if idx != 0: %>
+              / 
+            <% end %>
+              <%= t( role.substr(0,1).toUpperCase()+role.substr(1) ) %>
           <% end %>  
         </div>
       <% end %>
@@ -45,24 +46,35 @@
         <div>
           <%= t('Purpose')%>:
           <% for purpose,idx in @purpose: %> 
-            <% if idx == 0: %>
-              <%= purpose %>
-            <% else: %>
-              / <%= purpose %>
-            <% end %>  
+            <% if idx != 0: %>
+              / 
+            <% end %>
+              <% if purpose == "capacity_building": %>
+                <%= t('Capacity Building') %>
+              <% else if purpose == "redd": %>
+                <%= t('REDD') %>
+              <% else if purpose == "CDM": %>
+                <%= t('CDM') %>
+              <% else: %>
+                <%= t( purpose.substr(0,1).toUpperCase()+purpose.substr(1) ) %>
+              <% end %>
           <% end %>
         </div>
       <% end %>
 
       <% if @hasCorruptionRisk: %>  
       	<div class="clearfix">
-          <p><%= t('is_corruption_risk'); %></p>
+          <p><%= t('There is a corruption risk') %></p>
           <div class="additionalInfo inlay">
             <div class="corruptionText"><%= @corruptionRisk %></div>
             <% if @corruptionRiskSource: %>
-              <%= t('Source'); %>: http://<%= @corruptionRiskSource %>
+              <% if @corruptionRiskSourceIsALink: %>
+                <%= t('Source') %>: <a class="dark" href="<%= @corruptionRiskSource %>"><%= @corruptionRiskSource %></a>
+              <% else: %>
+                <%= t('Source') %>: <%= @corruptionRiskSource %>
+              <% end %>
+            <% end %>
           </div>
-          <% end %>
       	</div>
       <% end %>
     	
