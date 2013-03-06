@@ -1,70 +1,35 @@
-<div class="inner">
-  <header>
-    <h1><%= t('Climate Finance Integrity Program') %></h1>
-  </header>
+<header>
+  <h1>Follow the World's <span>Climate Change</span> Money</h1>
+  <% if window.user.isLoggedIn(): %>
+    <div class="map-controls">
+      <div class="edit button" href="#"><%= t('Edit') %></div>
+      <form id="add-country">
+        <input type="text" placeholder="<%= t('type to add country...') %>" />
+        <div class="button">+ <%= t('Add Country') %></div>
+        <ul></ul>
+      </form>
 
-  <div class="map">
-    <div class="point mexico">
-      <div class="label">
-        <a href="/show/mx"><%= t('Mexico') %></a>
-        <div class="arrow"></div>
-      </div>
+      <div class="cancel button" href="#"><%= t('Cancel') %></div>
+      <div class="ok button" href="#"><%= t('Ok') %></div>
     </div>
-    <div class="point peru">
-      <div class="label">
-        <a href="/show/pe"><%= t('Peru') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point dominicanRepublic">
-      <div class="label">
-        <a href="/show/do"><%= t('Dominican Republic') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point kenya">
-      <div class="label">
-        <a href="/show/ke"><%= t('Kenya') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point maledives">
-      <div class="label">
-        <a href="/show/mv"><%= t('Maledives') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point vietnam">
-      <div class="label">
-        <a href="/show/vn"><%= t('Vietnam') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point indonesia">
-      <div class="label">
-        <a href="/show/id"><%= t('Indonesia') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
-    <div class="point papuaNewGuinea below">
-      <div class="label">
-        <a href="/show/pg"><%= t('Papua New Guinea') %></a>
-        <div class="arrow"></div>
-      </div>
-    </div>
+  <% end %>
+</header>
+<div class="inner">
+  <div class="box"><!-- Firefox Helper -->
+    <div class="map"></div>
   </div>
-  <footer>
-    <div class="left">
-      <a href="http://www.transparency.org/copyright">©</a> Transparency International, 2012 – <a href="http://www.transparency.org/copyright"><%= t('All Rights Reserved') %></a>
-    </div>
-    <div class="right">
-      <% if window.user.isLoggedIn(): %>
-        <a href="/edit/"><%= t('Edit View') %></a> –
-        <a href="/logout" external><%= t('Logout') %></a>
-      <% else: %>
-        <a href="/login/"><%= t('Login') %></a>
-      <% end %>
-      – <a href="http://www.transparency.org/privacy"><%= t('Privacy') %></a> – <a href="http://www.transparency.org/terms"><%= t('Terms') %></a> – <a href="http://www.transparency.org/impressum"><%= t('Impressum') %></a> 
-    </div>
-  </footer>
 </div>
+<footer>
+  <div class="left">
+    <a href="http://www.transparency.org/copyright">©</a> <span>Transparency International, 2013</span> <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+  </div>
+  <div class="right">
+    <% if window.user.isLoggedIn(): %>
+      <a href="/edit/">Edit View</a>
+      <a href="/logout" external>Logout</a>
+    <% else: %>
+      <a href="/login/">Login</a>
+    <% end %>
+      <a href="http://www.transparency.org/privacy">Privacy</a><a href="http://www.transparency.org/terms">Terms</a><a href="http://www.transparency.org/impressum">Impressum</a>
+  </div>
+</footer>
