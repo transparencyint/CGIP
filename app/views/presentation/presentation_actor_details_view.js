@@ -52,7 +52,10 @@ module.exports = View.extend({
   getRenderData: function(){
     var data = ActorDetails.prototype.getRenderData.call(this);
     if(this.model.has('corruptionRiskSource')){
-      var corruptionRiskSource = this.model.get('corruptionRiskSource');
+
+      // replace unwanted white spaces to prevent browser crash!
+      var corruptionRiskSource = this.model.get('corruptionRiskSource').replace(/\s+/g, '');
+
       data.corruptionRiskSourceIsALink = this.isURL(corruptionRiskSource);
       if(data.corruptionRiskSourceIsALink)
         if(corruptionRiskSource.indexOf('http://') != 0 && corruptionRiskSource.indexOf('https://') != 0)
@@ -114,20 +117,9 @@ module.exports = View.extend({
   },
 
   // Detect if the passed String is actually a URL
-  //
-  // (source: <http://stackoverflow.com/questions/1701898/how-to-detect-whether-a-string-is-in-url-format-using-javascript>)
   isURL: function(url) {
-    var strRegex = "^((https|http|ftp|rtsp|mms)?://)"
-        + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"
-        + "(([0-9]{1,3}\.){3}[0-9]{1,3}"
-        + "|"
-        + "([0-9a-z_!~*'()-]+\.)*"
-        + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\."
-        + "[a-z]{2,6})"
-        + "(:[0-9]{1,4})?"
-        + "((/?)|"
-        + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
-     var re = new RegExp(strRegex);
-     return re.test(url);
+    var strRegex = "^((https|http)?://|www.)";
+    var re = new RegExp(strRegex);
+    return re.test(url);
   }
 });
