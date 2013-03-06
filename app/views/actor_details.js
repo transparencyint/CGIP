@@ -1,6 +1,5 @@
-// The actor details allow the user to give more specific information about the actor. 
+// The actor details allow the user to give more specific information about an actor or an actor group.
 // Following information can be given: Name, Role, Purpose and possibly corruption risk details
-// The actor details window appear on double clicking the actor.
 
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');

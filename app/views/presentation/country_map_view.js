@@ -1,6 +1,4 @@
-// This view is the equivalent of the actor editor view. The public has access to that and 
-// therefore doesn't allow the editing of any data. The country map borrows many of the actor editor functions.
-// Mainly the editing possiblities aren't here and the presentation views are styled differently.
+// This view is the equivalent to the actor editor view just without the edit-functions.
 
 var View = require('../view');
 var ActorEditor = require('../actor_editor');
@@ -15,7 +13,6 @@ module.exports = View.extend({
 
   template: require('views/templates/presentation/country_map'),
 
-  // Reacts to following user event: zooming, changing money mode and panning the map
   events: function(){
     var _events = {
 
@@ -54,8 +51,7 @@ module.exports = View.extend({
     $(document).on('viewSelected', this.selected);
   },
 
-  // The country map borrows most of the functionality from the actor editor following hereafter.
-
+  // The country map borrows some of the functionality of the actor editor.
   initializeProperties: ActorEditor.prototype.initializeProperties,
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
   moveTo: ActorEditor.prototype.moveTo,
@@ -202,7 +198,6 @@ module.exports = View.extend({
     }
   },
 
-  // This function determine any element on the map as selected. The selected element can be an actor or a connection. 
   selected: function(event, view){
     var type = view.model.get('type');
     
@@ -241,14 +236,14 @@ module.exports = View.extend({
     event.stopPropagation();
   },
 
-  // Can be called initially on opening the map or if an actor has been added
+  // Adds and renders an actor
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
 		presentationActorView.render();
 		this.workspace.append(presentationActorView.el);
   },
 
-  // Same here for the group and connections
+  // Adds and renders an actor group
   appendActorGroup: function(actorGroup){
     var presentationActorGroupView = new PresentationActorGroupView({ model : actorGroup, editor: this});
     presentationActorGroupView.render();
@@ -269,9 +264,7 @@ module.exports = View.extend({
     this.origin.left = this.$el.width()/2;
     this.moveTo(0, 0);
   },
-  
-  // Renders all the elements on the map. Since all the editing features aren't integrated in the presentation views
-  // it can't just be borrowed by the actor editor 
+
   render: function(){
 		var editor = this;
 

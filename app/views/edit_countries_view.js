@@ -1,4 +1,4 @@
-// The countries of the chapters will be listed here. From here it is possible to delete or add new countries to the list. 
+// This view shows all countries which are currently in the database and lets users add and delete countries.
 
 var View = require('./view');
 

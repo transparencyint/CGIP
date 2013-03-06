@@ -1,10 +1,5 @@
-// This can be seen as the core/heart of the web application. 
-// Within the actor editor all actors and the relationship (connection) between them are visualized.
-// The editor maps one of the chapter countries. It has several editing possiblities like adding actors 
-// and connections. Further, it has features like zooming, changing the money mode, setting the preferred
-// language and switching to the presentation view (for the actual audience). Actors are categorized in different
-// roles, which are visualized as columns on the map. Besides the zooming, the panning through the map are enabled.
-// You can pan by dragging on an empty spot on the map to navigate smoothly through bigger map structures.
+// This can be seen as the core/heart of the application. 
+// Within the editor all actors and their relationships (connections) are displayed and the user is able to edit them.
 
 var View = require('./view');
 var Actor = require('models/actor');

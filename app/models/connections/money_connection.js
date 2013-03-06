@@ -10,8 +10,8 @@ module.exports = Connection.extend({
     return data;
   },
 
-  // With the 3 different factor variables the range for the thickness will be determined.
-  // This constances can be changed, which will effect the thickness of all money lines.
+  // The thickness is calculated with thress constants (minThickness, maxThickness, emptyAmount).
+  // These constants can be changed, which will effect the thickness of all money lines.
   initialize: function(opts){
     Connection.prototype.initialize.call(this, opts);
     this.isEmptyAmount = true;
@@ -24,7 +24,7 @@ module.exports = Connection.extend({
     config.on('change:moneyConnectionMode', this.calculateLineThickness, this);
   },
 
-  // The thickness of the money lines will be determined by comparing the money amount of each money connection.
+  // The thickness of the money lines will be determined by comparing the money amount of all money connections.
   calculateLineThickness: function(){
 
     // Don't execute when the model hasn't been added to a collection yet
@@ -46,7 +46,7 @@ module.exports = Connection.extend({
 
     var size = this.collection.length;
     
-    // In case there is 1 or more other money connection on the map you need to calculate the line thickness 
+    // In case there is 1 or more other money connections on the map you need to calculate the line thickness 
     if(size > 1){
 
       var allEmptyAmount = true;
@@ -77,7 +77,7 @@ module.exports = Connection.extend({
         var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
         // The actual calculation for the thickness happens here.
-        // All money connections get an thickness factor assigned according to the money amount.
+        // All money connections get a thickness factor assigned according to their money amount.
         // The factor is calculated logarithically.
         this.collection.each(function(connection){
           var amount = connection.get(amountType);
@@ -93,7 +93,7 @@ module.exports = Connection.extend({
           
         });
       }
-      // Otherwise all money lines get the minimum thickness Factor
+      // Otherwise all money lines get the minimum thickness factor
       else {
         this.collection.each(function(connection){
           if(connection.thicknessFactor !== minFactor && connection.get(amountType) !== 0) {

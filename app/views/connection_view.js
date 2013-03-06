@@ -1,6 +1,5 @@
 // Each connection is visualized as a coloured line with an arrow indicating the direction of the relation.
 // Additionally, a possible corruption risk will be displayed with an exclamation mark. 
-// The window with the connection details appear on double clicking the connection.
 
 var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
@@ -583,7 +582,7 @@ module.exports = View.extend({
     return false;
   },
 
-  // The metadata contains the money amount of an money connection and will be displayed on hover over the line.
+  // The metadata contains the money amount of a money connection and will be displayed when hovering the connection.
   updateMetada: function(event){
 
     if(!this.isMoney) return
