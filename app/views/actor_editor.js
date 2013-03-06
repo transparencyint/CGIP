@@ -424,7 +424,10 @@ module.exports = View.extend({
 
   createActorAt: function(x, y){
     var editor = this;
-  
+    
+    // don't allow to create actors on the panel
+    if(y < this.actorHeight / 2) y = parseInt(this.actorHeight / 2) + 5;
+
     var actor = new Actor();
     actor.save({
       country: editor.country.get('abbreviation'),
@@ -664,9 +667,10 @@ module.exports = View.extend({
   panStart: function(event){
     event.preventDefault();
     event.stopPropagation();
-    
-    // unselect when clicking into empty space
-    this.unselect();
+
+    // reset the pan variables
+    this.panX = 0;
+    this.panY = 0;
     
     this.startX = this.normalizedX(event) - this.offset.left;
     this.startY = this.normalizedY(event) - this.offset.top;
@@ -714,8 +718,11 @@ module.exports = View.extend({
     // always unbind the inputMoveEvent
     $(document).unbind(this.inputMoveEvent, this.pan);
 
+    console.log(this.panX, this.panY)
+
     // if the editor hasn't been panned, return and do nothing
-    if(!this.panX || !this.panY) return;
+    if(!this.panX || !this.panY)
+      return this.unselect();
 
     // move the canvas
     this.moveTo(this.panX, this.panY);
