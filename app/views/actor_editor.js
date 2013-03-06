@@ -1,3 +1,6 @@
+// This can be seen as the core/heart of the application. 
+// Within the editor all actors and their relationships (connections) are displayed and the user is able to edit them.
+
 var View = require('./view');
 var Actor = require('models/actor');
 var ActorGroup = require('models/actor_group');
@@ -402,16 +405,6 @@ module.exports = View.extend({
 
   connectionSelected: function(event, view){
     this.selectedConnectionView = view;
-  },
-
-  unselect: function(){
-    if(this.mode)
-      this.deactivateMode();
-    
-    this.$('.selected').removeClass('selected');
-    this.selectedActorView = null;
-    this.selectedView = null;
-    this.selectedActorView = null;
   },
 
   unselect: function(){

@@ -1,3 +1,6 @@
+// Actor groups are an easy way to group many actors which belong together.
+// Actors can be added to a group via drag'n drop. 
+
 var DraggableDroppableView = require('./draggable_droppable_view');
 var ActorGroupActorView = require('./actor_group_actor_view');
 var FakeActorView = require('./fake_actor_view');
