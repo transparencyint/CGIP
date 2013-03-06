@@ -20,14 +20,20 @@ Application = {
     // render navigation view
     this.nav = new NavigationView({ router: this.router, countries: this.countries });
 
+    // read out the language on load
+    var lang = false;
+    if(localStorage) lang = localStorage.getItem('language');
+
     var i18nOptions = {
-      lang: config.get('language') || false,
+      lang: lang || false,
       fallbackLang: 'en',
       dicoPath: '/locales'
     };
 
     // fetch the countries, load the dictionary and start the app
     $.when(this.countries.fetch(), $.jsperanto.init(i18nOptions)).done(function(){
+      // setting the language in a dirty way (don't try this at home and only if you know what you're doing)
+      config.attributes.language = $.jsperanto.lang();
       // render the navigation
       app.nav.render();
       $('#container').append(app.nav.el);

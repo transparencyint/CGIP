@@ -3,28 +3,99 @@
   src url(/HelveticaNeueW01-57Cn.woff)
 
 #worldMap
-  background -webkit-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  background    -moz-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  background     -ms-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  background      -o-radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  background         radial-gradient(hsl(65,75%,72%), hsl(104,54%,65%))
-  .inner
-    width 960px
-    color #5d5d5d
+  background #2b56a4 url(../images/denim.png) center top
   header 
-    height 80px
-    position relative
+    padding 8px 13px
+    position absolute
+    top 0
+    left 0
+    right 0
+    height 51px
+    background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,50%))
+    border-bottom 1px solid hsl(213,55%,24%)
+    box-shadow 0 0 1px rgba(0,0,0,.21), 0 0 5px rgba(0,0,0,.13)
+    .map-controls
+      float right
+      position relative
+      .visible
+        display inline
+      .ok, .cancel
+        display none
+      &.edit-mode
+        .ok, .cancel
+          display inline
+        #add-country, .edit
+          display none
+      &.mode-add-country
+        #add-country 
+          input
+            display inline
+          .button
+            border-radius 0 3px 3px 0
+        .edit
+          display none
+      #add-country
+        position relative
+        z-index 1
+        float left
+        margin-left 8px
+        input
+          height 32px
+          padding 0 8px
+          margin-top 1px
+          width 200px
+          font-size 12px
+          border-radius 2px 0 0 2px
+          box-shadow 0 1px hsla(0,0%,0%,.13) inset, 0 0 0 1px hsla(0,0%,0%,.21), 0 2px rgba(255,255,255,.13)
+          outline none
+          float left
+          display none
+        .button
+          margin 0
+          border-radius 3px
+          cursor pointer
+        ul
+          list-style none
+          padding 0
+          position absolute
+          width 199px
+          left 0
+          top 19px
+          overflow auto
+          color #333
+          border-radius 0 0 2px 2px
+          box-shadow 0 1px 3px rgba(0,0,0,.34)
+          li
+            padding 5px 5px 5px 35px
+            cursor pointer
+            background-color white
+            background-size 20px
+            background-position 5px 8px
+            background-repeat no-repeat
+            white-space nowrap
+            text-overflow ellipsis
+            overflow hidden
+            &:last-child, &:only-child
+              border-radius 0 0 2px 2px
+            &:hover, &.active
+              background-color hsl(215,68%,52%)
+              color white
     h1 
-      display block
-      margin 30px 0
-      padding 0 13px 17px
-      color #333
+      position absolute
+      left 13px
+      right 13px
+      margin 0
       font-size 24px
+      line-height 36px
       font-family "HelveticaNeueW01-57Cn", "Helvetica Neue", Helvetica, Arial, sans-serif
       font-weight normal
-      text-shadow none
+      text-align center
+      color hsl(216,68%,25%)
+      text-shadow 0 1px rgba(255,255,255,.08)
       text-transform uppercase
-      background url(/images/bg-title.png) repeat-x 0 100%
+      span
+        color white
+        text-shadow 0 -1px rgba(0,0,0,.21)
     #link-area
       position absolute
       right 8px
@@ -35,130 +106,187 @@
         color #698147
         border-color #698147
   a
-    color hsl(205,68%,52%)
-    text-decoration none 
+    color hsl(219,68%,21%)
+    text-shadow 0 1px rgba(255,255,255,.08)
+  .inner
+    position absolute
+    top 51px
+    right 0
+    bottom 44px
+    left 0
+    overflow auto
+    .box
+      width 100%
+      height 100%
+      margin 0 auto
+      position relative
+      box(center,center,horizontal)
+      vertical-align top
   .map 
     position relative
     height 422px
-    width 956px
-    margin-left 2px
-    perspective 1000
-  .map:before 
-    content ""
+    width 900px
+    margin-top 13px
+    perspective 1000px
+    &:before 
+      content ""
+      position absolute
+      left 0
+      top 0
+      right 0
+      bottom 0
+      background url(/images/world.png) no-repeat center
+      opacity .34
+    &.edit-mode
+      .delete
+        display block
+      .country 
+        .label
+          animation jiggle 250ms infinite
+          transform rotate(-1deg)
+          transform-origin 25px bottom
+        &:nth-child(2n) .label
+          animation-delay 30ms
+          animation-duration 240ms
+        &:nth-child(3n) .label
+          animation-delay 200ms
+          animation-duration 260ms
+        &:nth-child(4n) .label
+          animation-delay 130ms
+          animation-duration 255ms
+  .country 
+    position absolute
+    margin -4px 0 0 -60px /* -56px x-offset because the map was cut */
+    .animationHolder
+      opacity 0
+      transform scale(0.5) translateY(10px)
+      transition transform 250ms, opacity 250ms
+    .point
+      position absolute
+      width 8px
+      height 8px
+      border 1px solid hsl(216,68%,30%)
+      background hsl(215,68%,53%)
+      box-shadow 0 1px rgba(255,255,255,.21) inset, 0 1px 2px rgba(0,0,0,.13)
+      border-radius 100%
+    &:hover
+      z-index 1
+    &.appear .animationHolder 
+      opacity 1
+      transform none
+    .delete
+      width 46px
+      height 46px
+      position absolute
+      top -23px
+      left -23px
+      display none
+      cursor pointer
+      &:after
+        content "×"
+        position absolute
+        top 11px
+        left 11px
+        width 24px
+        height 24px
+        
+        color white
+        font-size 21px
+        line-height 21px
+        text-align center
+        
+        background black
+        border-radius 100%
+        border 2px solid white
+        box-shadow 0 1px 5px black
+    .label 
+      position absolute
+      white-space nowrap
+      left -28px
+      top -78px
+      .flag
+        width 50px
+        height 38px
+        background-color #224483
+        margin-bottom 6px
+      a 
+        width 64px
+        display block
+        padding 6px
+        color white
+        font-size 11px
+        line-height 1
+        color hsl(216,55%,93%)
+        text-shadow 0 -1px rgba(0,0,0,.21)
+        border-radius 3px
+        border 1px solid hsl(216,55%,34%)
+        border-bottom-color hsl(216,55%,30%)
+        background hsl(216,55%,50%)
+        box-shadow 0 1px rgba(255,255,255,.21) inset, 0 1px 3px rgba(0,0,0,.08)
+        span
+          display block
+          text-align center
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+      &:hover
+        a, .arrow:before
+          background hsl(215,55%,55%)
+    &:active .label 
+      top -77px
+    &.below .label 
+      top 19px
+    &.below:active .label 
+      top 20px
+    &.right .label 
+      left auto
+      right -18px
+    .arrow 
+      position absolute
+      bottom -9px
+      left 25px
+      overflow hidden
+      width 16px
+      height 10px
+      &:before 
+        content ""
+        position absolute
+        left 2px
+        top -6px
+        width 10px
+        height 10px
+        transform rotate(45deg)
+        border 1px solid hsl(216,55%,26%)
+        background hsl(216,55%,50%)
+        box-shadow 0 1px 3px rgba(0,0,0,.08)
+    &.below .arrow 
+      bottom auto
+      top -8px
+      height 10px
+    &.right .arrow 
+      left auto
+      right 14px
+    &.below .arrow:before 
+      top 4px 
+  footer
     position absolute
     left 0
-    top 0
     right 0
     bottom 0
-    background url(/images/greenWorld.png) no-repeat center
-    opacity .5
-  .point 
-    position absolute
-    margin -4px 0 0 -4px
-    width 8px
-    height 8px
-    border 1px solid hsl(205,68%,40%)
-    background hsl(205,68%,53%)
-    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
-    border-radius 100%
-    opacity 0
-    transform translateZ(200px)
-    transform-style preserve-3d
-  .point.appear 
-    opacity 1
-    transform translateZ(0)
-    transition transform 500ms, opacity 500ms
-  .label 
-    position absolute
-    white-space nowrap
-    left -18px
-    top -44px
-    opacity 0
-    transform translateY(-13px)
-  .point.appear .label 
-    opacity 1
-    transform translateY(0)
-    transition transform 500ms 500ms, opacity 500ms 500ms
-  .point:active .label 
-    top -43px
-  .below .label 
-    top 19px
-    transform translateY(13px)
-  .point.below:active .label 
-    top 20px
-  .right .label 
-    left auto
-    right -18px
-  .label a 
-    display block
-    padding 8px 13px 7px
-    color white
-    line-height 1
-    text-decoration none
-    border-radius 3px
-    border 1px solid hsl(205,68%,40%)
-    background hsl(205,68%,53%)
-    box-shadow 0 1px hsl(205,68%,70%) inset, 0 1px 2px hsla(205,100%,13%,.34)
-  .arrow 
-    position absolute
-    bottom -9px
-    left 14px
-    overflow hidden
-    width 16px
-    height 10px
-  .below .arrow 
-    bottom auto
-    top -8px
-    height 10px
-  .right .arrow 
-    left auto
-    right 14px    
-  .arrow:before 
-    content ""
-    position absolute
-    left 2px
-    top -6px
-    width 10px
-    height 10px
-    transform rotate(45deg)
-    border 1px solid hsl(205,68%,40%)
-    background hsl(205,68%,53%)
-    box-shadow 0 1px 2px hsla(205,100%,13%,.34)
-  .below .arrow:before 
-    top 4px 
-  .mexico 
-    left 183px
-    top 169px
-  .peru 
-    left 252px
-    top 272px
-  .dominicanRepublic 
-    left 264px
-    top 180px
-  .kenya 
-    left 554px
-    top 239px
-  .maledives 
-    left 647px
-    top 219px
-  .vietnam 
-    left 730px
-    top 175px
-  .indonesia 
-    left 742px
-    top 259px
-  .papuaNewGuinea 
-    left 838px
-    top 258px
-  footer 
-    margin-top 21px
     padding 13px
     font-size 13px
-    border-top 1px solid rgba(0,0,0,.21)
+    color hsl(219,50%,75%)
+    border-top 1px solid rgba(0,0,0,.24)
+    box-shadow 0 1px rgba(255,255,255,.08) inset
     overflow hidden
-    box-shadow 0 1px hsla(104,100%,86%,.55) inset
+    span, a
+      margin 0 3px
     .left 
       float left
     .right 
       float right
     
+@keyframes jiggle {
+  0% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}

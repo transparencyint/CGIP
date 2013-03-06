@@ -30,3 +30,59 @@
     .modal
       z-index 11
       display block
+      
+/* language dropdown */
+.select2-search
+  display none !important
+  
+#s2id_language
+  margin-left 8px
+  .select2-choice
+    /* button style */
+    display inline-block
+    float left
+    height 34px
+    width 40px
+    padding 0
+    margin 0
+    background #4d86cb
+    background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,51%))
+    border-radius 3px
+    border 1px solid rgba(0,0,0,.34)
+    border-top-color rgba(0,0,0,.21)
+    border-bottom-color rgba(0,0,0,.55)
+    box-shadow 0 1px rgba(255,255,255,.21) inset, 0 1px rgba(0,0,0,.08)
+    div
+      display none 
+    .flag
+      width 24px
+      margin-top 4px
+    span
+      margin 0
+      text-align center
+  &.select2-dropdown-open
+    .select2-choice
+      border-radius 3px 3px 0 0
+#select2-drop
+  background linear-gradient(top, hsl(218,55%,51%), hsl(219,55%,42%))
+  border 1px solid rgba(0,0,0,.34)
+  border-top-color transparent
+  border-bottom-color rgba(0,0,0,.55)
+  border-radius 0 0 3px 3px
+  box-shadow 0 1px rgba(255,255,255,.08) inset, 0 1px rgba(0,0,0,.08)
+  .select2-results
+    padding 0
+    margin 0
+    max-height none
+    .select2-result:last-child
+      border-radius 0 0 3px 3px
+    .select2-highlighted
+      background hsl(215,55%,55%)
+    .select2-result-label
+      padding 5px 8px
+      height 32px
+      .flag
+        width 24px
+        margin-right 8px
+        margin-top 1px
+        vertical-align top

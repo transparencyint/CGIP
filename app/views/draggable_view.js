@@ -93,9 +93,13 @@ module.exports = View.extend({
 
   drag: function(event){ 
     var pos = this.model.get('pos');
-    
-    var dx = (this.normalizedX(event) - pos.x - this.startX) / this.editor.zoom.value;
-    var dy = (this.normalizedY(event) - pos.y - this.startY) / this.editor.zoom.value;
+    var zoomValue = 1;
+
+    if(!_.isUndefined(this.editor))
+      zoomValue = this.editor.zoom.value;      
+
+    var dx = (this.normalizedX(event) - pos.x - this.startX) / zoomValue;
+    var dy = (this.normalizedY(event) - pos.y - this.startY) / zoomValue;
     
     if(!this.wasOrIsDragging){
       this.dragDistance += Math.sqrt(dx*dx + dy*dy);

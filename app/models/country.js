@@ -12,5 +12,12 @@ module.exports = Model.extend({
   defaults : {
 	 roleDimensions: [ -700, -300, 300, 600, 900 ],
    showMonitoring: true
+  },
+
+  moveByDelta: function(dx, dy){
+    var thisPos = _.clone(this.get('pos'));
+    thisPos.x += dx;
+    thisPos.y += dy;
+    this.set('pos', thisPos);
   }
 });
