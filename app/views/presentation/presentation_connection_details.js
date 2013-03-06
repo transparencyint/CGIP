@@ -82,18 +82,19 @@ module.exports = View.extend({
       var _disbursed = this.model.get('disbursed');
       var _pledged = this.model.get('pledged');
 
-      this.$('#disbursed').val(_disbursed);
-      this.$('#pledged').val(_pledged);   
+      _disbursed = this.seperateValue(_disbursed);
+      _pledged = this.seperateValue(_pledged);
+      console.log(_disbursed);
 
-      this.$('#disbursed').numeric();
-      this.$('#pledged').numeric();
+      this.$('.amounts .disbursed').text(_disbursed);
+      this.$('.amounts .pledged').text(_pledged);   
 
       this.currentMoneyMode();
       config.on('change:moneyConnectionMode', this.currentMoneyMode, this);
     }
     
     var sentences = {
-      'accountability': 'is_accountable_for',
+      'accountability': 'is accountable for',
       'monitoring': 'monitors',
       'money': 'pays',
     };
@@ -118,6 +119,22 @@ module.exports = View.extend({
       
       self.$('input').first().focus();
     });
+  },
+
+  //Adds a seperator to the given number for better reading
+  //Source: http://stackoverflow.com/questions/9743038/how-do-i-add-a-thousand-seperator-to-a-number-in-javascript
+  seperateValue: function(amount) {
+    var sep = ' ';
+    amount += '';
+    x = amount.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+      x1 = x1.replace(rgx, '$1' + sep + '$2');
+    }
+    amount = x1 + x2;
+    return amount;
   },
 
   close: function(){

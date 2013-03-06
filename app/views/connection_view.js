@@ -618,6 +618,7 @@ module.exports = View.extend({
   },
 
   // The amount could be empty so that the metadata message must be modified here
+  // Source for inerting seperator: http://stackoverflow.com/questions/9743038/how-do-i-add-a-thousand-seperator-to-a-number-in-javascript
   checkMetadataMessage: function(moneyMode){
     var amount = this.model.get(moneyMode);
     if(amount < 1)
