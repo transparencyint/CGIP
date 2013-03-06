@@ -6,7 +6,6 @@
 
 var View = require('./view');
 var CountryView = require('./country_view');
-var Dialog = require('./dialog_view');
 
 module.exports = View.extend({
 	id: 'worldMap',
@@ -77,34 +76,13 @@ module.exports = View.extend({
   updateMapData: function(event){    
     var _this = this;
 
-    if(!_.isEmpty(this.countryViewsToDelete)){
-
-      new Dialog({ 
-        title: t('Country Deletion'),
-        text: t('Are you Sure you want to proceed?'),
-        verb: t('Proceed'),
-        success: function(){ 
-          _.each(_this.countryViewsToDelete, function(country){
-            country.deleteCountry();
-            _this.countryViewsToDelete = {};
-            _this.toggleControlButtons(event);
-          });
-        }
-      });
-    }
-    else if(this.wasDragged){
-      new Dialog({ 
-        title: t('Country Position Changed'),
-        text: t('Are you Sure you want to proceed?'),
-        verb: t('Proceed'),
-        success: function(){ 
-          _this.toggleControlButtons(event);
-          _this.wasDragged = false;
-        }
-      });
-    }
-    else
+    _.each(_this.countryViewsToDelete, function(country){
+      country.deleteCountry();
+      _this.countryViewsToDelete = {};
       _this.toggleControlButtons(event);
+    });
+    
+    _this.toggleControlButtons(event);
   },
   
   handleSubmit: function(event){
