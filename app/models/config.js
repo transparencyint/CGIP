@@ -10,16 +10,7 @@ module.exports = Model.extend({
   },
 
   initialize: function(){
-    this.loadLanguage();
     this.on('change:language', this.languageChanged, this);
-  },
-
-  loadLanguage: function(){
-    var lang = $.jsperanto.lang();
-    if(localStorage){
-      lang = localStorage.getItem('language') || lang;
-    }
-    this.attributes.language = lang;
   },
 
   languageChanged: function(){

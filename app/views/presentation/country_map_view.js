@@ -6,6 +6,7 @@ var PresentationConnectionView = require('./presentation_connection_view');
 var PresentationActorView = require('./presentation_actor_view');
 var PresentationActorGroupView = require('./presentation_actor_group_view');
 var PresentationRoleBackgroundView = require('./presentation_role_background_view');
+var SettingsView = require('./presentation_settings_view');
 
 module.exports = View.extend({
   
@@ -266,8 +267,6 @@ module.exports = View.extend({
   },
 
   render: function(){
-		var editor = this;
-
     this.$el.html( this.template() );
 
 		this.workspace = this.$('.workspace');
@@ -282,8 +281,11 @@ module.exports = View.extend({
     this.monitoringConnections.each(this.appendConnection);
 
     //display the role backgrounds
-    this.presentationRoleBackgroundView = new PresentationRoleBackgroundView({ editor: editor });
+    this.presentationRoleBackgroundView = new PresentationRoleBackgroundView({ editor: this });
     this.workspace.before(this.presentationRoleBackgroundView.render()); 
+
+    this.settings = new SettingsView({ editor: this });
+    this.$('.topBar').append(this.settings.render().el);
 
     this.afterRender();
 
