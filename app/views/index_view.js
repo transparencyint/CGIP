@@ -26,6 +26,9 @@ module.exports = View.extend({
     this.countryViews = {};
 
     this.countryViewsToDelete = {};
+    this.isEditMode = false;
+
+    this.wasDragged = false;
 
     _.bindAll(this, 'fadeInCountries', 'renderCountry', 'addCountryToDelete');
   },
@@ -33,18 +36,25 @@ module.exports = View.extend({
   toggleControlButtons: function(event){
     event.preventDefault();
 
+    var _this = this;
+
     this.map.toggleClass('edit-mode');
     this.mapControls.toggleClass('edit-mode');
+
+    if(this.isEditMode)
+      this.isEditMode = false;
+    else
+      this.isEditMode = true;
 
     _.each(this.countryViews, function(countryView){
       if(countryView.isBeingDeleted){
         countryView.appear();
         countryView.isBeingDeleted = false;
       }
-      if(countryView.isDraggable)
-        countryView.isDraggable = false;
-      else
+      if(_this.isEditMode)
         countryView.isDraggable = true;
+      else
+        countryView.isDraggable = false;
 
       // move country back to its original position
       if($(event.target).hasClass('cancel'))
@@ -53,6 +63,39 @@ module.exports = View.extend({
         countryView.updateDefaultPosition();
       }
     });
+  },
+
+  updateMapData: function(event){    
+    var _this = this;
+
+    if(!_.isEmpty(this.countryViewsToDelete)){
+
+      new Dialog({ 
+        title: t('Country Deletion'),
+        text: t('Are you Sure you want to proceed?'),
+        verb: t('Proceed'),
+        success: function(){ 
+          _.each(_this.countryViewsToDelete, function(country){
+            country.deleteCountry();
+            _this.countryViewsToDelete = {};
+            _this.toggleControlButtons(event);
+          });
+        }
+      });
+    }
+    else if(this.wasDragged){
+      new Dialog({ 
+        title: t('Country Position Changeed'),
+        text: t('Are you Sure you want to proceed?'),
+        verb: t('Proceed'),
+        success: function(){ 
+          _this.toggleControlButtons(event);
+          _this.wasDragged = false;
+        }
+      });
+    }
+    else
+      _this.toggleControlButtons(event);
   },
   
   handleSubmit: function(event){
@@ -135,9 +178,7 @@ module.exports = View.extend({
         name: country.name,
         type: 'country'
       });
-      var countries = this.options.countries;
-      countries.add(countryModel);
-
+      this.countries.add(countryModel);
       this.renderCountry(countryModel);
     }
   },
@@ -168,24 +209,6 @@ module.exports = View.extend({
 
   removeCountryToDelete: function(country, view){
     delete this.countryViewsToDelete[country];
-  },
-
-  updateMapData: function(event){    
-    var _this = this;
-
-    if(!_.isEmpty(this.countryViewsToDelete)){
-
-      new Dialog({ 
-        title: t('Country Deletion'),
-        text: t('Are you Sure you want to proceed?'),
-        verb: t('Proceed'),
-        success: function(){ 
-          _.each(_this.countryViewsToDelete, function(country){
-            country.deleteCountry();
-          });
-        }
-      });
-    }
   },
 
   getRenderData: function() {

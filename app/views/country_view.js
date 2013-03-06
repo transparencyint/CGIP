@@ -68,8 +68,8 @@ module.exports = DraggableView.extend({
   showDetails: function(){},
 
   performClick: function(event){
-    if(this.isDraggable)
-      event.preventDefault();
+    if(this.worldmap.isEditMode)
+      event.preventDefault();   
   },
 
   updatePosition: function(){
@@ -118,17 +118,7 @@ module.exports = DraggableView.extend({
     
     var dx = (this.normalizedX(event) - pos.x - this.startX);
     var dy = (this.normalizedY(event) - pos.y - this.startY);
-    
-    if(!this.wasOrIsDragging){
-      this.dragDistance += Math.sqrt(dx*dx + dy*dy);
-
-      if(this.dragDistance > this.dragThreshold){
-        this.trigger('dragging');
-        this.wasOrIsDragging = true;
-        this.isDragging = true;
-      }
-    }
-
+  
     this.dragByDelta(dx, dy);
 
     // emit a global drag event
@@ -138,18 +128,13 @@ module.exports = DraggableView.extend({
   dragStop: function(){
     if(this.model && this.model.lockable)
       this.model.unlock();
-
-    if(this.wasOrIsDragging){
-      // emit a global dragstop event
-      $(document).trigger('viewdragstop', this);
-
-      this.wasOrIsDragging = false;
-    }
       
     $(document).off(this.inputMoveEvent, this.drag);
 
     // save new positions
     this.model.save();
+
+    this.worldmap.wasDragged = true;
   },
 
   afterRender: function(){
