@@ -73,16 +73,14 @@ module.exports = View.extend({
     });
   },
 
-  updateMapData: function(event){    
+  updateMapData: function(event){  
     var _this = this;
 
     _.each(_this.countryViewsToDelete, function(country){
       country.deleteCountry();
       _this.countryViewsToDelete = {};
-      _this.toggleControlButtons(event);
     });
-    
-    _this.toggleControlButtons(event);
+    this.toggleControlButtons(event);
   },
   
   handleSubmit: function(event){
@@ -167,6 +165,7 @@ module.exports = View.extend({
       });
       this.countries.add(countryModel);
       this.renderCountry(countryModel);
+      this.toggleAddForm();
     }
   },
 
