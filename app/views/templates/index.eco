@@ -30,6 +30,6 @@
     <% else: %>
       <a href="/login/">Login</a>
     <% end %>
-      <a href="http://www.transparency.org/privacy">Privacy</a><a href="http://www.transparency.org/terms">Terms</a><a href="http://www.transparency.org/impressum">Impressum</a>
+      <a href="http://www.transparency.org/privacy">Privacy</a><a href="http://www.transparency.org/terms">Terms</a><a href="http://www.transparency.org/impressum">Imprint</a>
   </div>
 </footer>
