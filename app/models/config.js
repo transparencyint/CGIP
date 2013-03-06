@@ -1,3 +1,5 @@
+// The config contains global configurations, which can be accessed across the application.
+
 var Model = require('./model');
 
 module.exports = Model.extend({

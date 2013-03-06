@@ -1,3 +1,6 @@
+// This view is the equivalent of the actor view. 
+// It's for the actual audience and doesn't have the editing features.
+
 var View = require('../view');
 var ActorView = require('../actor_view');
 var PresentationActorDetailsView = require('views/presentation/presentation_actor_details_view');

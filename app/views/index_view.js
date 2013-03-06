@@ -1,3 +1,9 @@
+// This is the starting point for the audience. On the map all available countries will be shown.
+//
+// From here you can go to the presentation map of a specific country.
+//
+// In case an editor goes to this view, he/she can switch to the edit view or logout.
+
 var View = require('./view');
 
 module.exports = View.extend({

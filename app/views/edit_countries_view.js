@@ -1,3 +1,5 @@
+// This view shows all countries which are currently in the database and lets users add and delete countries.
+
 var View = require('./view');
 
 module.exports = View.extend({

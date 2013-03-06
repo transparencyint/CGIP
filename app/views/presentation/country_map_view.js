@@ -1,3 +1,5 @@
+// This view is the equivalent to the actor editor view just without the edit-functions.
+
 var View = require('../view');
 var ActorEditor = require('../actor_editor');
 var PresentationConnectionView = require('./presentation_connection_view');
@@ -47,9 +49,9 @@ module.exports = View.extend({
     $(document).on('viewdrag', this.unScopeElements);
     // actor selection
     $(document).on('viewSelected', this.selected);
-
   },
 
+  // The country map borrows some of the functionality of the actor editor.
   initializeProperties: ActorEditor.prototype.initializeProperties,
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
   moveTo: ActorEditor.prototype.moveTo,
@@ -83,7 +85,6 @@ module.exports = View.extend({
   // Scope the editor's container
   scopeElements: function(view){
 
-    console.log('scoping');
     // set the state
     this.isScoped = true;
 
@@ -224,16 +225,6 @@ module.exports = View.extend({
   },
 
   unselect: function(){
-    if(this.mode)
-      this.deactivateMode();
-    
-    this.$('.selected').removeClass('selected');
-    this.selectedActorView = null;
-    this.selectedView = null;
-    this.selectedActorView = null;
-  },
-
-  unselect: function(){
     this.unScopeElements();
     this.selectedActorView = null;
     this.selectedConnectionView = null;
@@ -245,12 +236,14 @@ module.exports = View.extend({
     event.stopPropagation();
   },
 
+  // Adds and renders an actor
   appendActor: function(actor){
 		var presentationActorView = new PresentationActorView({ model : actor, editor: this});
 		presentationActorView.render();
 		this.workspace.append(presentationActorView.el);
   },
 
+  // Adds and renders an actor group
   appendActorGroup: function(actorGroup){
     var presentationActorGroupView = new PresentationActorGroupView({ model : actorGroup, editor: this});
     presentationActorGroupView.render();
@@ -271,7 +264,7 @@ module.exports = View.extend({
     this.origin.left = this.$el.width()/2;
     this.moveTo(0, 0);
   },
-  
+
   render: function(){
 		var editor = this;
 

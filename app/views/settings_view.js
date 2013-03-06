@@ -1,3 +1,5 @@
+// The settings allow the user to change the language or to enable/disable the monitoring role column.
+
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
 var RoleBackgroundView = require('./role_background_view');

@@ -1,3 +1,5 @@
+// This view is the equivalent of the actor group actor view. 
+
 var View = require('../view');
 var ActorView = require('../actor_view');
 
