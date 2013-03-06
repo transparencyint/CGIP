@@ -84,7 +84,6 @@ module.exports = View.extend({
 
       _disbursed = this.seperateValue(_disbursed);
       _pledged = this.seperateValue(_pledged);
-      console.log(_disbursed);
 
       this.$('.amounts .disbursed').text(_disbursed);
       this.$('.amounts .pledged').text(_pledged);   
