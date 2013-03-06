@@ -46,7 +46,7 @@ module.exports = Backbone.View.extend({
     this.afterRender();
 
     // check if the model is locked, if so, toggle the view's lock
-    if(this.model && this.model.lockable && this.model.isLocked()){
+    if(this.model && this.model.lockable && this.model.isLocked() && config.isRealtimeEnabled()){
       this.toggleLocked();
     }
 
