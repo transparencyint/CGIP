@@ -1,6 +1,6 @@
 # CGIP
 
-a collaborative project by students from [HTW Berlin](http://www.htw-berlin.de/) and [Transparency International](http://www.transparency.org/).
+a collaborative project by students from [HTW Berlin](http://www.htw-berlin.de/) and a project team from [Transparency International](http://www.transparency.org/).
 
 ## Documentation
 
