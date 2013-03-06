@@ -20,7 +20,9 @@ module.exports = View.extend({
 
       'keyup #add-country input': 'handleKeys',
       'click #add-country .button': 'toggleAddForm',
-      'submit form': 'handleSubmit'
+      'submit form': 'handleSubmit',
+      
+      'change #language': 'changeLanguage'
     };
 
     return _events;
@@ -199,7 +201,9 @@ module.exports = View.extend({
 
   getRenderData: function() {
     return {
-      countries: this.options.countries.toJSON()
+      countries: this.options.countries.toJSON(),
+      activeLanguage: config.get('language'),
+      languages: config.get('languages')
     };
   },
 
@@ -227,7 +231,26 @@ module.exports = View.extend({
   },
 
   afterRender: function(){
+    this.$('#language').select2({
+      formatResult: this.renderFlag,
+      formatSelection: this.renderFlag
+    });
+    
     _.defer(this.fadeInCountries);
+  },
+  
+  renderFlag: function(data, container){
+    var flagUri = data.id;
+    
+    if(flagUri === 'en')
+      flagUri = navigator.language.match(/gb/i) ? 'gb' : 'us';
+      
+    var flag = '<img class="flag" src="../images/flags/'+ flagUri +'.svg" alt="'+ data.text +'" title="'+ data.text +'">';
+    container.html(flag);
+  },
+  
+  changeLanguage: function(event){
+    config.set({language: this.$('#language').val()});
   },
   
   fadeInCountries: function(){

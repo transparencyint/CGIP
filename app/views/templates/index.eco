@@ -31,5 +31,10 @@
       <a href="/login/">Login</a>
     <% end %>
       <a href="http://www.transparency.org/privacy">Privacy</a><a href="http://www.transparency.org/terms">Terms</a><a href="http://www.transparency.org/impressum">Imprint</a>
+      <select id="language">
+        <% for language in @languages: %>
+          <option value="<%= language.code %>" <%= 'selected' if language.code is @activeLanguage %>><%= language.name %></option>
+        <% end %>
+      </select>
   </div>
 </footer>
