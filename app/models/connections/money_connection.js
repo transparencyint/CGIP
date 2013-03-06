@@ -10,45 +10,50 @@ module.exports = Connection.extend({
     return data;
   },
 
+  // The thickness is calculated with thress constants (minThickness, maxThickness, emptyAmount).
+  // These constants can be changed, which will effect the thickness of all money lines.
   initialize: function(opts){
     Connection.prototype.initialize.call(this, opts);
-    this.isZeroAmount = true;
-    this.zeroCoinSize = 0.6;
-    this.minCoinSizeFactor = 0.8;
-    this.maxCoinSizeFactor = 2;
-    this.coinSizeFactor = this.minCoinSizeFactor;
-    this.on('change:disbursed', this.calculateCoinSize, this);
-    this.on('change:pledged', this.calculateCoinSize, this);
-    config.on('change:moneyConnectionMode', this.calculateCoinSize, this);
+    this.isEmptyAmount = true;
+    this.emptyAmountThicknessFactor = 0.6;
+    this.minThicknessFactor = 0.8;
+    this.maxThicknessFactor = 2;
+    this.thicknessFactor = this.minThicknessFactor;
+    this.on('change:disbursed', this.calculateLineThickness, this);
+    this.on('change:pledged', this.calculateLineThickness, this);
+    config.on('change:moneyConnectionMode', this.calculateLineThickness, this);
   },
 
-  calculateCoinSize: function(){
+  // The thickness of the money lines will be determined by comparing the money amount of all money connections.
+  calculateLineThickness: function(){
 
     // Don't execute when the model hasn't been added to a collection yet
     if(!this.collection) return
     
     var amountType = config.get('moneyConnectionMode').replace('Mode','');
 
-    var oldZeroAmount = this.isZeroAmount;
-    this.isZeroAmount = this.get(amountType) === 0;
-    if(this.isZeroAmount) {
-      this.coinSizeFactor = this.zeroCoinSize;
-      this.trigger('change:coinSizeFactor'); 
+    // If the current money connection has no amount give it the empty thickness factor.
+    var oldIsEmptyAmount = this.isEmptyAmount;
+    this.isEmptyAmount = this.get(amountType) === 0;
+    if(this.isEmptyAmount) {
+      this.thicknessFactor = this.emptyAmountThicknessFactor;
+      this.trigger('change:thicknessFactor'); 
     }
 
-    if(oldZeroAmount !== this.isZeroAmount) {
-      this.trigger('change:isZeroAmount'); 
+    if(oldIsEmptyAmount !== this.isEmptyAmount) {
+      this.trigger('change:isEmptyAmount'); 
     }
 
     var size = this.collection.length;
     
-    //there is at least 1 other money connection on the map already
+    // In case there is 1 or more other money connections on the map you need to calculate the line thickness 
     if(size > 1){
-      var allZero = true;
+
+      var allEmptyAmount = true;
       var amountTypeSelect = function(connection){ 
         var amount = connection.get(amountType);
         if(amount > 0) {
-          allZero = false;
+          allEmptyAmount = false;
           return amount; 
         }
       };
@@ -58,38 +63,42 @@ module.exports = Connection.extend({
       
       var maxMoneyAmount = 0;
       var minMoneyAmount = 0;
-      if(!allZero) {
+      if(!allEmptyAmount) {
         maxMoneyAmount = max.get(amountType);
         minMoneyAmount = min.get(amountType);
       }
 
       var isMinMaxEqual = minMoneyAmount === maxMoneyAmount;
-      var minCoinFactor = this.minCoinSizeFactor;
+      var minFactor = this.minThicknessFactor;
 
-      //connections have at least 1 different money value
-      //moneyRange can't be 0, because in a later calculation divide by 0 is not possible
+      // In case connections have at least 1 different money value we compare them.
       if(!isMinMaxEqual){
-        var factorRange = this.maxCoinSizeFactor - minCoinFactor; 
+        var factorRange = this.maxThicknessFactor - minFactor; 
         var moneyRange = Math.log(maxMoneyAmount - minMoneyAmount + 1);
 
+        // The actual calculation for the thickness happens here.
+        // All money connections get a thickness factor assigned according to their money amount.
+        // The factor is calculated logarithically.
         this.collection.each(function(connection){
           var amount = connection.get(amountType);
           if(amount !== 0) {
             var amountDif = Math.log(amount - minMoneyAmount + 1);
-            var newCoinSize = amountDif / moneyRange * factorRange + minCoinFactor;
+            var newThickness = amountDif / moneyRange * factorRange + minFactor;
             
-            if(connection.coinSizeFactor !== newCoinSize) {
-              connection.coinSizeFactor = newCoinSize;
-              connection.trigger('change:coinSizeFactor');     
+            if(connection.thicknessFactor !== newThickness) {
+              connection.thicknessFactor = newThickness;
+              connection.trigger('change:thicknessFactor');     
             }
           }
           
         });
-      }else {
+      }
+      // Otherwise all money lines get the minimum thickness factor
+      else {
         this.collection.each(function(connection){
-          if(connection.coinSizeFactor !== minCoinFactor && connection.get(amountType) !== 0) {
-            connection.coinSizeFactor = minCoinFactor;
-            connection.trigger('change:coinSizeFactor');        
+          if(connection.thicknessFactor !== minFactor && connection.get(amountType) !== 0) {
+            connection.thicknessFactor = minFactor;
+            connection.trigger('change:thicknessFactor');        
           }
         });
       }

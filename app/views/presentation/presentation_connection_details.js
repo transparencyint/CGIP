@@ -1,3 +1,5 @@
+// This view is the equivalent of the connection details view. 
+
 var View = require('../view');
 var ConnectionDetails = require('../connection_details');
 

@@ -1,3 +1,5 @@
+// The settings allow the user to change the language or to enable/disable the monitoring role column.
+
 var View = require('./view');
 var clickCatcher = require('./click_catcher_view');
 var RoleBackgroundView = require('./role_background_view');
@@ -43,7 +45,7 @@ module.exports = View.extend({
     this.$el.addClass('active');
     this.$('.cog').addClass('active');
     
-    new clickCatcher({ callback: this.close.bind(this), holder: this.editor.$el, zIndex: 5 });
+    new clickCatcher({ callback: this.close.bind(this), holder: this.editor.$el, zIndex: 3 });
     
     this.isOpen = true;
   },

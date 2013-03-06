@@ -1,3 +1,6 @@
+// Each connection is visualized as a coloured line with an arrow indicating the direction of the relation.
+// Additionally, a possible corruption risk will be displayed with an exclamation mark. 
+
 var View = require('./view');
 var ConnectionDetailsView = require('views/connection_details');
 
@@ -49,7 +52,7 @@ module.exports = View.extend({
   },
 
   initializeProperties: function(options){
-    this.model.coinSizeFactor = 1;
+    this.model.thicknessFactor = 1;
     this.edgeRadius = 10;
     this.strokeWidth = 6;
     this.markerRatio = 2.5;
@@ -129,8 +132,8 @@ module.exports = View.extend({
 
     if(this.isMoney){
       this.$el.addClass(config.get('moneyConnectionMode'));
-      this.model.calculateCoinSize();
-      this.strokeWidth = this.strokeWidth * this.model.coinSizeFactor;
+      this.model.calculateLineThickness();
+      this.strokeWidth = this.strokeWidth * this.model.thicknessFactor;
     }
 
     this.pathSettings = {
@@ -144,8 +147,8 @@ module.exports = View.extend({
     this.selectedArrow = this.svg.marker(this.defs, this.model.id +'-selected-arrow', this.selectedArrowSize/2.5, this.selectedArrowSize/2, this.selectedArrowSize, this.selectedArrowSize, 'auto', { class_: 'selected-arrow' });
 
     if(this.isMoney){
-      this.model.on('change:isZeroAmount', this.toggleZeroConnection, this)
-      this.model.on('change:coinSizeFactor', this.update, this);
+      this.model.on('change:isEmptyAmount', this.toggleEmptyAmountConnection, this)
+      this.model.on('change:thicknessFactor', this.update, this);
     }
 
     this.g = this.svg.group();    
@@ -165,9 +168,9 @@ module.exports = View.extend({
       this.$('.corruptionRisk').hide();
   },
 
-  toggleZeroConnection: function(){
+  toggleEmptyAmountConnection: function(){
     this.$el.removeClass('amountUnknown');
-    if(this.model.isZeroAmount) {
+    if(this.model.isEmptyAmount) {
       this.$el.addClass('amountUnknown');
     }
   },
@@ -176,21 +179,23 @@ module.exports = View.extend({
     return (this.model.from && this.model.to);
   },
 
+  // In this function the core calculation for drawing the connections (lines) are done.
+  // Everytime an actor is moved around or an connection will be edit the lines are redrawn accordingly.
   update: function(){
 
-    //Return if it isn't a valid connection.
+    // Return if it isn't a valid connection.
     if(!this.hasBothConnections()) return
 
-    //When it is a money connection
-    //the lines thickness and the arrow size have to be recalculated.
+    // When it is a money connection
+    // the lines thickness and the arrow size have to be recalculated.
     if(this.isMoney){
-      this.strokeWidth = 6 * this.model.coinSizeFactor;
+      this.strokeWidth = 6 * this.model.thicknessFactor;
     }
 
-    //If it is a monitoring connection
-    //we are going through the list of all money connections
-    //and check if there are any money connections with the same start and end point.
-    //If we found such a connection we move the line so that they are parallel.
+    // If it is a monitoring connection
+    // we are going through the list of all money connections
+    // and check if there are any money connections with the same start and end point.
+    // If we found such a connection we move the line so that they are parallel.
     if(this.model.get('connectionType') === 'monitoring'){
       for (var i = 0; i < this.editor.moneyConnections.models.length; i++) {
         if((this.model.from.id == this.editor.moneyConnections.models[i].attributes.from &&
@@ -242,7 +247,7 @@ module.exports = View.extend({
 
     this.svg.path(this.arrow, 'M 0 0 L '+ this.markerRatio +' '+ this.markerRatio/2 +' L 0 '+ this.markerRatio +' z');
 
-    this.toggleZeroConnection();
+    this.toggleEmptyAmountConnection();
       
     this.svg.path(this.selectedArrow, 'M 0 0 L '+ this.selectedArrowSize +' '+ this.selectedArrowSize/2 +' L 0 '+ this.selectedArrowSize +' z');
 
@@ -582,6 +587,7 @@ module.exports = View.extend({
     return false;
   },
 
+  // The metadata contains the money amount of a money connection and will be displayed when hovering the connection.
   updateMetada: function(event){
 
     if(!this.isMoney) return
@@ -604,6 +610,7 @@ module.exports = View.extend({
 
   },
 
+  // The amount could be empty so that the metadata message must be modified here
   checkMetadataMessage: function(moneyMode){
     var amount = this.model.get(moneyMode);
     if(amount < 1)
