@@ -4,6 +4,6 @@
   <p class="text"><%= @text %></p>
   <div class="buttons clearfix">
     <button class="ok firstChoice"><%= @verb %></button>
-    <button class="cancel"><%= @cancel %></button>
+    <button class="cancel"><%= @cancelVerb %></button>
   </div>
 </div>

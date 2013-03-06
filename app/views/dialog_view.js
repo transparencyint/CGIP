@@ -1,5 +1,4 @@
 var View = require('./view');
-var clickCatcher = require('./click_catcher_view');
 
 module.exports = View.extend({  
   template: require('./templates/dialog'),
@@ -16,35 +15,36 @@ module.exports = View.extend({
     // set up the dialog captions
     this.options.title = options.title || t('Confirm');
     this.options.verb = options.verb || t('Ok');
-    this.options.cancel = options.cancel || t('Cancel');
+    this.options.cancelVerb = options.cancelVerb || t('Cancel');
+    
+    // set up the callbacks
+    this.options.success = options.success || function(){};
+    this.options.cancel = options.cancel || function(){};
     
     // set up the parent element
     this.options.holder = options.holder || 'body';
-
-    // set up the success callback
-    var _this = this;
-    var _success = this.options.success || function(){};
-    this.success = function(event){
-      event.stopPropagation();
-      _success();
-      _this.cancel();
-    };
       
-    _.bindAll(this, 'handleKeys', 'success', 'cancel', 'stopPropagation', 'destroy');
+    _.bindAll(this, 'handleKeys', 'success', 'destroy');
     
     this.render();
   },
   
-  stopPropagation: function(event){
-    event.stopPropagation();
+  success: function(event){
+    if(event) event.stopPropagation();
+    this.options.success();
+    this.close();
+  },
+  
+  cancel: function(event){
+    if(event) event.stopPropagation();
+    this.options.cancel();
+    this.close();
   },
   
   render: function(){
     this.$el.html(this.template(this.options));
     this.$el.appendTo(this.options.holder);
-    this.$el.on(this.inputDownEvent, this.stopPropagation);
     
-    this.clickCatcher = new clickCatcher({ callback: this.cancel, holder: $(this.options.holder) });
     $(document).bind('keydown', this.handleKeys);
     
     var _this = this;
@@ -59,12 +59,12 @@ module.exports = View.extend({
         this.cancel();
         break;
       case 13: // Enter
-        this.success(event);
+        this.success();
         break;
     }
   },
   
-  cancel: function(){
+  close: function(){
     this.$el.one(this.transEndEventName, this.destroy).addClass('hidden');
     
     if(this.clickCatcher)
