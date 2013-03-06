@@ -1,8 +1,7 @@
-<% if @isLoggedIn: %>
+<% if user.isLoggedIn(): %>
   <a href="<%= @editLink %>" class="button presentation rightAligned"><%= t('Editor') %></a>
 <% end %>
 
-<label for="language"><%= t('Language') %>:</label>
 <select id="language">
   <% for language in @languages: %>
     <option value="<%= language.code %>" <%= 'selected' if language.code is @active %>><%= language.name %></option>
