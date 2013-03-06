@@ -179,7 +179,7 @@ module.exports = View.extend({
   },
   
   cancel: function(){
-    this.model.save(this.backup);
+    this.saveFormData(this.backup);
     this.close();
     
     // prevent form forwarding
@@ -187,7 +187,6 @@ module.exports = View.extend({
   },
 
   submitAndClose: function(){
-    
     this.saveFormData();
     this.close();
     
@@ -418,7 +417,8 @@ module.exports = View.extend({
     this.saveFormData();
   },
   
-  saveFormData: function(){
-    this.model.save();
+  saveFormData: function(data){
+    if(!data) data = {};
+    this.model.save(data);
   }
 });
