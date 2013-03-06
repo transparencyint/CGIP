@@ -1,11 +1,11 @@
 <div class="overlay">
 	<% if @organizationType: %>
-  	<p><b><%= t('org_type') %>:</b> <i><%= @organizationType %></i></p>
+  	<p><b><%= t('Organization Type') %>:</b> <i><%= @organizationType %></i></p>
   <% end %>
 	<% if @corruptionRisk: %>
-  	<p><b><%= t('corr_risk') %>:</b> <i><%= @corruptionRisk %></i></p>
+  	<p><b><%= t('Corruption Risk') %>:</b> <i><%= @corruptionRisk %></i></p>
   <% end %>
 	<% if @description: %>
-	 <p><b><%= t('description') %>:</b> <i><%= @description %></i></p>
+	 <p><b><%= t('Description') %>:</b> <i><%= @description %></i></p>
 	<% end %>
 </div>
