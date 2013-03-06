@@ -47,9 +47,10 @@ $(function() {
     });
   }
 
-  // set up the config model
-  window.config = new Config();
+  // create the mediator
   window.mediator = _.clone(Backbone.Events);
+  // create the config after the app has been initialized properly
+  window.config = new Config();
 
 
   // make the translate function available in global context for easier calls

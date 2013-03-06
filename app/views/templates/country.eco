@@ -1,0 +1,11 @@
+<div class="animationHolder">
+  <div class="point"></div>
+  <div class="label">
+    <a href="/show/<%= @abbreviation %>">
+      <img class="flag" src="images/flags/<%= @abbreviation %>.svg">
+      <span><%= @name %></span>
+    </a>
+    <div class="arrow"></div>
+    <span class="delete"></span>
+  </div>
+</div>
