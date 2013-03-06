@@ -623,7 +623,7 @@ module.exports = View.extend({
     if(amount < 1)
       amount = t('unknown amount');
     else{
-      var sep = ',';
+      var sep = ' ';
       amount += '';
       x = amount.split('.');
       x1 = x[0];
