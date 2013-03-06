@@ -6,7 +6,33 @@ module.exports = Model.extend({
 
   defaults : {
     moneyConnectionMode: 'disbursedMode',
-    realtime_enabled: true
+    realtime_enabled: true,
+    languages: [
+      {
+        name: 'English',
+        code: 'en'
+      },
+      {
+        name: 'Deutsch',
+        code: 'de'
+      },
+      {
+        name: 'Francais',
+        code: 'fr'
+      },
+      {
+        name: 'Espanol',
+        code: 'es'
+      },
+      {
+        name: 'Portuguese',
+        code: 'pt'
+      },
+      {
+        name: 'Russian',
+        code: 'ru'
+      }
+    ]
   },
 
   initialize: function(){

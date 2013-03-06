@@ -64,45 +64,12 @@ module.exports = View.extend({
     config.set({language: this.$('#language').val()});
   },
   
-  getRenderData: function(){
-    var languages = this.getLanguages();
-    
+  getRenderData: function(){    
     return { 
       presentationLink: '/show/' + this.editor.country.get('abbreviation'),
-      languages: languages,
+      languages: config.get('languages'),
       active: config.get('language'),
       showMonitoring: this.editor.country.get('showMonitoring')
     };
-  },
-
-  getLanguages: function(){
-    var languages = [
-      {
-        name: 'English',
-        code: 'en'
-      },
-      {
-        name: 'Deutsch',
-        code: 'de'
-      },
-      {
-        name: 'Francais',
-        code: 'fr'
-      },
-      {
-        name: 'Espanol',
-        code: 'es'
-      },
-      {
-        name: 'Portuguese',
-        code: 'pt'
-      },
-      {
-        name: 'Russian',
-        code: 'ru'
-      }
-    ];
-    return languages;
   }
-
 });

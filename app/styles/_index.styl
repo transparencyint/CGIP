@@ -85,7 +85,7 @@
       left 13px
       right 13px
       margin 0
-      font-size 24px
+      font-size 27px
       line-height 36px
       font-family "HelveticaNeueW01-57Cn", "Helvetica Neue", Helvetica, Arial, sans-serif
       font-weight normal
@@ -273,7 +273,7 @@
     left 0
     right 0
     bottom 0
-    padding 13px
+    padding 13px 13px 8px
     font-size 13px
     color hsl(219,50%,75%)
     border-top 1px solid rgba(0,0,0,.24)
@@ -290,3 +290,63 @@
   0% { transform: rotate(-1deg); }
   50% { transform: rotate(1deg); }
 }
+
+/* language dropdown */
+.select2-search
+  display none !important
+  
+#s2id_language
+  margin-top -7px
+  .select2-choice
+    /* button style */
+    display inline-block
+    float left
+    height 30px
+    width 36px
+    padding 0
+    margin 0
+    background none
+    border-radius 3px
+    border 1px solid transparent
+    box-shadow none
+    div
+      display none 
+    .flag
+      width 19px
+    span
+      margin 0
+      text-align center
+  &:hover,
+  &.select2-dropdown-open
+    .select2-choice
+      background linear-gradient(top, hsl(213,55%,55%), hsl(218,55%,51%))
+      border-color rgba(0,0,0,.34)
+      border-top-color rgba(0,0,0,.21)
+      border-bottom-color rgba(0,0,0,.55)
+      box-shadow 0 1px rgba(255,255,255,.21) inset, 0 1px rgba(0,0,0,.08)
+  &.select2-dropdown-open
+    .select2-choice
+      border-radius 0 0 3px 3px
+      box-shadow 0 1px rgba(255,255,255,.13) inset, 0 1px rgba(0,0,0,.08)
+#select2-drop
+  background linear-gradient(top, hsl(212,55%,57%), hsl(213,55%,55%))
+  border 1px solid rgba(0,0,0,.34)
+  border-top-color rgba(0,0,0,.21)
+  border-bottom none
+  border-radius 3px 3px 0 0
+  box-shadow 0 1px rgba(255,255,255,.08) inset, 0 -1px rgba(0,0,0,.13) inset
+  .select2-results
+    padding 0
+    margin 0
+    max-height none
+    .select2-result:first-child
+      border-radius 3px 3px 0 0
+    .select2-highlighted
+      background hsl(215,55%,75%)
+    .select2-result-label
+      padding 0
+      height 32px
+      line-height 30px
+      text-align center
+      .flag
+        width 19px
