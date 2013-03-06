@@ -21,7 +21,7 @@
 </div>
 <footer>
   <div class="left">
-    <a href="http://www.transparency.org/copyright">©</a> <span>Transparency International, 2012</span> <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
+    <a href="http://www.transparency.org/copyright">©</a> <span>Transparency International, 2013</span> <a href="http://www.transparency.org/copyright">All Rights Reserved</a>
   </div>
   <div class="right">
     <% if window.user.isLoggedIn(): %>

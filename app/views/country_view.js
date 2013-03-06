@@ -1,7 +1,7 @@
 var DraggableView = require('./draggable_view');
 
 module.exports = DraggableView.extend({
-
+  
   template : require('./templates/country'),
   
   className : 'country',
@@ -23,6 +23,9 @@ module.exports = DraggableView.extend({
     this.worldmap = options.worldmap;
     this.isDraggable = false;
     this.isBeingDeleted = false;
+
+    // prevent from snapping to grid
+    this.dontSnap = true;
     
     // fix the position of the ountry label by 4 pixel top/left
     this.pixelFix = 4;
@@ -47,10 +50,6 @@ module.exports = DraggableView.extend({
 
     // add country to delete list
     this.worldmap.addCountryToDelete(country, this);
-  },
-
-  getRenderData: function() {
-      return this.model.toJSON();
   },
 
   render: function() {
@@ -105,31 +104,14 @@ module.exports = DraggableView.extend({
   },
 
   drag: function(event){ 
-
     // dont enable dragging if user isn't logged in
-    if(!window.user.isLoggedIn()){
-      return;
-    }
+    if(!window.user.isLoggedIn()) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-
-    var pos = this.model.get('pos');
-    
-    var dx = (this.normalizedX(event) - pos.x - this.startX);
-    var dy = (this.normalizedY(event) - pos.y - this.startY);
-  
-    this.dragByDelta(dx, dy);
-
-    // emit a global drag event
-    $(document).trigger('viewdrag', this);
+    DraggableView.prototype.drag.call(this, event);
   },
 
   dragStop: function(){
-    if(this.model && this.model.lockable)
-      this.model.unlock();
-      
-    $(document).off(this.inputMoveEvent, this.drag);
+    DraggableView.prototype.dragStop.call(this, event);
 
     // save new positions
     this.model.save();

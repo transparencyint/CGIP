@@ -57,8 +57,11 @@ module.exports = View.extend({
         countryView.isDraggable = false;
 
       // move country back to its original position
-      if($(event.target).hasClass('cancel'))
+      if($(event.target).hasClass('cancel')){
         countryView.setDefaultPosition();
+        _this.countryViewsToDelete = {};
+        _this.wasDragged = false;
+      }
       else{
         countryView.updateDefaultPosition();
       }
@@ -85,7 +88,7 @@ module.exports = View.extend({
     }
     else if(this.wasDragged){
       new Dialog({ 
-        title: t('Country Position Changeed'),
+        title: t('Country Position Changed'),
         text: t('Are you Sure you want to proceed?'),
         verb: t('Proceed'),
         success: function(){ 
