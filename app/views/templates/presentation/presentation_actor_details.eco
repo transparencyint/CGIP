@@ -64,13 +64,17 @@
 
       <% if @hasCorruptionRisk: %>  
       	<div class="clearfix">
-          <p><%= t('There is a corruption risk') ; %></p>
+          <p><%= t('There is a corruption risk') %></p>
           <div class="additionalInfo inlay">
             <div class="corruptionText"><%= @corruptionRisk %></div>
             <% if @corruptionRiskSource: %>
-              <%= t('Source') ; %>: http://<%= @corruptionRiskSource %>
+              <% if @corruptionRiskSourceIsALink: %>
+                <%= t('Source') %>: <a class="dark" href="<%= @corruptionRiskSource %>"><%= @corruptionRiskSource %></a>
+              <% else: %>
+                <%= t('Source') %>: <%= @corruptionRiskSource %>
+              <% end %>
+            <% end %>
           </div>
-          <% end %>
       	</div>
       <% end %>
     	
