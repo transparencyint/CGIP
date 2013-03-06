@@ -64,9 +64,7 @@ module.exports = View.extend({
     config.set({language: this.$('#language').val()});
   },
   
-  getRenderData: function(){
-    var languages = this.getLanguages();
-    
+  getRenderData: function(){    
     return { 
       presentationLink: '/show/' + this.editor.country.get('abbreviation'),
       languages: config.get('languages'),
