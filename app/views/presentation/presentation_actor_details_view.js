@@ -54,9 +54,7 @@ module.exports = View.extend({
 
     // linkify the corruptionRiskSource
     if(this.model.has('corruptionRiskSource')){
-
-      // replace unwanted white spaces to prevent browser crash!
-      var corruptionRiskSource = this.model.get('corruptionRiskSource').replace(/\s+/g, '');
+      var corruptionRiskSource = this.model.get('corruptionRiskSource');
 
       data.corruptionRiskSourceIsALink = this.isURL(corruptionRiskSource);
       if(data.corruptionRiskSourceIsALink)
@@ -157,8 +155,6 @@ module.exports = View.extend({
 
   // Detect if the passed String is actually a URL
   isURL: function(url) {
-    var strRegex = "^((https|http)?://|www.)";
-    var re = new RegExp(strRegex);
-    return re.test(url);
+    return /^((https|http)?:\/\/|www\.|(\w+\.{1}\w{1,}))\S+$/.test(url);
   }
 });
