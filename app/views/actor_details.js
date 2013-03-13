@@ -419,6 +419,11 @@ module.exports = View.extend({
   
   saveFormData: function(data){
     if(!data) data = {};
-    this.model.save(data);
+    var view = this;
+    // If there is an ongorin request, pospone the next request until this one is done
+    if(this.lastRequest)
+      this.lastRequest.done(function(){ view.lastRequest = view.model.save(data); });
+    else
+      this.lastRequest = this.model.save(data);
   }
 });

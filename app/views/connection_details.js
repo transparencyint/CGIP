@@ -3,6 +3,7 @@
 // The connection details window appear on double clicking the connection.
 
 var View = require('./view');
+var ActorDetails = require('./actor_details');
 var clickCatcher = require('./click_catcher_view');
 
 module.exports = View.extend({
@@ -83,7 +84,7 @@ module.exports = View.extend({
     
     // debounce form realtime updates 
     // http://underscorejs.org/#debounce
-    this.saveFormData = _.debounce(this.saveFormData, 50);
+    this.saveFormData = _.debounce(this.saveFormData, 500);
   },
   
   dragStart: function(event){
@@ -334,10 +335,8 @@ module.exports = View.extend({
     return false;
   },
   
-  // don't sync in realtime but just every 500ms
-  saveFormData: function(){
-    this.model.save();
-  },
+  // borrow the actor detail's method
+  saveFormData: ActorDetails.prototype.saveFormData,
   
   close: function(){
     // unlock the model
