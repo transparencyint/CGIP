@@ -51,7 +51,7 @@ Application = {
       var href = $el.attr('href');
       
       // return if invalid
-      if(href == '' || href == undefined || href.charAt(0) == '#') return
+      if(href == '' || href == undefined || href.charAt(0) == '#' || href == 'javascript:void(0)') return
 
       // check for external link
       var external = (el.hostname != '' && el.hostname != location.hostname) || ($el.attr('external') != undefined);
