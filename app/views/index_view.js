@@ -252,7 +252,7 @@ module.exports = View.extend({
     if(flagUri === 'en')
       flagUri = navigator.language.match(/gb/i) ? 'gb' : 'us';
       
-    var flag = '<img class="flag" src="../images/flags/'+ flagUri +'.svg" alt="'+ data.text +'" title="'+ data.text +'">';
+    var flag = '<img class="flag" src="/images/flags/'+ flagUri +'.svg" alt="'+ data.text +'" title="'+ data.text +'">';
     container.html(flag);
   },
   
