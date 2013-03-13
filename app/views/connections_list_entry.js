@@ -22,6 +22,9 @@ module.exports = View.extend({
 
     this.model.on('destroy', this.destroy, this);
     this.model.on('error', this.alertError, this);
+
+    // debounce changes
+    this.model.save = _.debounce(this.model.save, 500);
   },
 
   askDestroy: function(){
@@ -41,9 +44,14 @@ module.exports = View.extend({
     var value = input.val();
     var modelAttribute = input.data('model-attribute');
     var modelValue = this.model.get(modelAttribute);
-    
+
     if(String(value) != String(modelValue)){
+      // parse the input to Strings
+      if(modelAttribute == 'disbursed' || modelAttribute == 'pledged')
+        value = parseInt(value, 10) || 0;
+
       this.model.set(modelAttribute, value);
+
       this.model.save()
       input.siblings('span').text(value);
     }
