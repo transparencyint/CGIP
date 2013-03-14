@@ -185,10 +185,9 @@ module.exports = DraggableDroppableView.extend({
   },
   
   actorAdded: function(){
-    this.model.save({
-      success: function(){
-        model.unlock();
-      }
+    var model = this.model;
+    model.save().done(function(){
+      model.unlock();
     });
   },
 
