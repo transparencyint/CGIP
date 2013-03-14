@@ -170,11 +170,9 @@ module.exports = DraggableDroppableView.extend({
         event.stopPropagation();
         return;
       }else{
-        // add it to the group
-        var model = this.model;
-        model.lock()
-        
         // try to add it to the group
+        this.model.lock()
+        
         this.model.tryAddToGroup({
           actor: view.model,
           connections: this.editor.connections,
