@@ -66,7 +66,13 @@ module.exports = DraggableDroppableView.extend({
   },
   
   updateRole: function(){
-    this.$el.attr('data-role', this.model.get('role').join(" and ") );
+    var role = this.model.get('role');
+    if(_.isArray(role) && role.length > 1)
+      role = role.join(" and ");
+    else if(_.isArray(role) && role.length == 1)
+      role = role[0]
+
+    this.$el.attr('data-role', role);
   },
   
   updateType: function(){

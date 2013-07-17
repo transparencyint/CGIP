@@ -213,6 +213,8 @@ module.exports = View.extend({
       //If there is no equal money connection we check for equal accountability connections
       //and move them if they have the same start and end point.
       if(!this.isSecondConnection){
+        //-accountablity
+        /*
         for (var i = 0; i < this.editor.accountabilityConnections.models.length; i++) {
           if((this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.from &&
             this.model.to.id == this.editor.accountabilityConnections.models[i].attributes.to) ||
@@ -220,7 +222,7 @@ module.exports = View.extend({
             this.model.from.id == this.editor.accountabilityConnections.models[i].attributes.to)){
             this.distanceSecond = -10;
           }
-        }
+        }*/
       }
     }
 
@@ -229,6 +231,8 @@ module.exports = View.extend({
     //we check if there are any money or monitoring connections with the same start and end point.
     //If we found such a connection we move the line so that they are parallel.
     if(!this.isSecondConnection){
+      //-accountablity
+      /*
       if(this.model.get('connectionType') === 'accountability'){
         for (var i = 0; i < this.editor.connections.models.length; i++) {
           if(((this.model.from.id === this.editor.connections.models[i].attributes.from &&
@@ -239,7 +243,7 @@ module.exports = View.extend({
             this.distanceSecond = 10;
           }
         };
-      }
+      }*/
     }  
 
     this.pathSettings = {

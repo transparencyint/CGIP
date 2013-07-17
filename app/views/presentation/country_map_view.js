@@ -276,7 +276,7 @@ module.exports = View.extend({
 		this.actorGroups.each(this.appendActorGroup);
 
     //render the connections
-    this.accountabilityConnections.each(this.appendConnection);
+    //-accountablity this.accountabilityConnections.each(this.appendConnection);
     this.moneyConnections.each(this.appendConnection);
     this.monitoringConnections.each(this.appendConnection);
 

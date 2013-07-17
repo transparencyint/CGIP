@@ -16,13 +16,13 @@
       </div>
     </div>
 
-    <div class="connection accountability control" data-connectionType="accountability">
+    <!-- //-accountablity div class="connection accountability control" data-connectionType="accountability">
       <div class="eye"></div>
       <div class="description" title="<%= t('New Accountability Connection') %>">
         <span class="name"><%= t('Accountability') %></span>
         <img src="/images/accountabilityflow.png">
       </div>
-    </div>
+    </div -->
 
     <div class="connection monitoring control" data-connectionType="monitoring">
       <div class="eye"></div>

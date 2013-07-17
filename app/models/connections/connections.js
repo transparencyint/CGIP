@@ -16,7 +16,7 @@ module.exports = Collection.extend({
   // returns an object with different collections for each connection type
   filterConnections: function(){
     var connections = {
-      accountability: new AccountabilityConnections(),
+      //-accountability accountability: new AccountabilityConnections(),
       monitoring: new MonitoringConnections(),
       money: new MoneyConnections()
     };
@@ -24,7 +24,7 @@ module.exports = Collection.extend({
     for(var connectionType in connections){
       // filter the current connections by its type
       var filtered = this.filter(function(connection){
-        return connection.get('connectionType') == connectionType;
+        return connection.get('connectionType') == connectionType && connectionType != 'accountability'; //-accountability
       });
 
       // add plain objects

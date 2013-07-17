@@ -97,7 +97,7 @@ module.exports = View.extend({
     this.connections = this.options.connections;
     var filteredConnections = this.connections.filterConnections();
     this.moneyConnections = filteredConnections.money;
-    this.accountabilityConnections = filteredConnections.accountability;
+    //-accountability this.accountabilityConnections = filteredConnections.accountability;
     this.monitoringConnections = filteredConnections.monitoring;
 
   },
@@ -115,7 +115,7 @@ module.exports = View.extend({
     // remove actorGroups when they're deleted
     this.actorGroups.on('remove', this.removeActorGroup, this);
 
-    this.accountabilityConnections.on('add', this.appendConnection, this);
+    //-accountability this.accountabilityConnections.on('add', this.appendConnection, this);
     this.monitoringConnections.on('add', this.appendConnection, this);
     this.moneyConnections.on('add', this.appendConnection, this);
 
@@ -137,7 +137,7 @@ module.exports = View.extend({
     socket.on(country + ':actor', this.addActorWithoutPopup);
     socket.on(country + ':actor:group', this.addActorGroupFromRemote);
     socket.on(country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
-    socket.on(country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
+    //-accountability socket.on(country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
     socket.on(country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
   },
 
@@ -798,7 +798,7 @@ module.exports = View.extend({
     this.actorGroups.each(this.appendActorGroup);
 
     // append all connections
-    this.accountabilityConnections.each(this.appendConnection);
+    //-accountability this.accountabilityConnections.each(this.appendConnection);
     this.moneyConnections.each(this.appendConnection);
     this.monitoringConnections.each(this.appendConnection);
 
@@ -874,7 +874,7 @@ module.exports = View.extend({
     socket.removeAllListeners(country + ':actor');
     socket.removeAllListeners(country + ':actor_group');
     socket.removeAllListeners(country + ':connection_money');
-    socket.removeAllListeners(country + ':connection_accountability');
+    //-accountability socket.removeAllListeners(country + ':connection_accountability');
     socket.removeAllListeners(country + ':connection_monitoring');
   }
 });
