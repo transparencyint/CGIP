@@ -122,6 +122,10 @@ module.exports = View.extend({
 
   updatePosition: function(){
     var pos = this.model.get('pos');
+    this._updateTransform(pos);
+  },
+
+  _updateTransform: function(pos){
     this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(pos.x) +'px,'+ Math.round(pos.y) +'px,0)');
   },
   
