@@ -1,7 +1,7 @@
 // This view is the equivalent of the actor group actor view. 
 
 var View = require('../view');
-var ActorView = require('../actor_view');
+var PresentationActorView = require('./presentation_actor_view');
 
 module.exports = View.extend({
 
@@ -13,6 +13,10 @@ module.exports = View.extend({
   width: 134,
   height: 45,
 
-  events: {},
+  events: {
+    'click': 'showDetails'
+  },
+
+  showDetails: PresentationActorView.prototype.showDetails
 
 });

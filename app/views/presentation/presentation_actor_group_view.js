@@ -45,7 +45,7 @@ module.exports = View.extend({
   },
 
   addSubActorView: function(actor){
-    var newView = new PresentationActorGroupActorView({model: actor, editor: this.editor});
+    var newView = new PresentationActorGroupActorView({model: actor, editor: this.options.editor});
     this.$('.actors').append(newView.render().el);
     this.actorViews[actor.id] = newView;
     
