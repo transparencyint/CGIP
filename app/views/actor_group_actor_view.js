@@ -1,4 +1,5 @@
 var DraggableView = require('./draggable_view');
+var ActorView = require('./actor_view');
 
 module.exports = DraggableView.extend({
   saveAfterSnap: false,
@@ -10,6 +11,19 @@ module.exports = DraggableView.extend({
   width: 134,
   height: 45,
 
+  initialize: function(options){
+    DraggableView.prototype.initialize.call(this, options);
+
+    this.model.on('change', this.render);
+  },
+
+  events: function(){
+    var _events = DraggableView.prototype.events.call(this);
+
+    _events['contextmenu'] = 'showDetails';
+
+    return _events;
+  },
 
   clone: function(){
     this.cloned = true;
@@ -24,14 +38,16 @@ module.exports = DraggableView.extend({
     var coords = this.editor.offsetToCoords(offset, this.width, this.height);
     this.model.set('pos', coords);
 
-    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(coords.x) +'px,'+ Math.round(coords.y) +'px,0)');
+    this._updateTransform(coords);
     
     this.$el.appendTo($('.workspace'));
     this.originalElement.addClass('hidden');
   },
 
-  showDetails: function(){
-    // don't remove
+  showDetails: function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    ActorView.prototype.showDetails.call(this, event);
   },
 
   dragStart: function(event){

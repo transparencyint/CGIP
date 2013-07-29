@@ -35,6 +35,10 @@ module.exports = View.extend({
   },
 
   inputDown: function(event){
+    // don't trigger when rightclicking
+    if(event.which === 3)
+      return;
+
     // fire dragstart
     this.dragStart(event);
     
