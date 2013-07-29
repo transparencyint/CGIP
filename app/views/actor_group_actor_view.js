@@ -23,6 +23,8 @@ module.exports = DraggableView.extend({
     var offset = this.originalElement.offset();
     var coords = this.editor.offsetToCoords(offset, this.width, this.height);
     this.model.set('pos', coords);
+
+    this.$el.css(Modernizr.prefixed('transform'), 'translate3d('+ Math.round(coords.x) +'px,'+ Math.round(coords.y) +'px,0)');
     
     this.$el.appendTo($('.workspace'));
     this.originalElement.addClass('hidden');

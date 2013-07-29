@@ -69,7 +69,6 @@ module.exports = View.extend({
 
     if(this.model && this.model.lockable)
       this.model.lock();
-    
     this.select();
     
     event.stopPropagation();
@@ -91,7 +90,7 @@ module.exports = View.extend({
     }
   },
 
-  drag: function(event){ 
+  drag: function(event){
     var pos = this.model.get('pos');
     var zoomValue = 1;
 
