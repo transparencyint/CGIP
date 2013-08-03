@@ -304,6 +304,11 @@ module.exports = View.extend({
 
     var selectScopeElements = function(connections, direction){
       _.each(connections, function(connection){
+        //-accountability
+        // ignore accountability connections for now
+        if(connection.get('connectionType') === 'accountability')
+          return
+
         var next = connection.get(direction);
         next = this.actors.get(next) || this.actorGroups.get(next);
         
