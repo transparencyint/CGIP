@@ -39,12 +39,13 @@ module.exports = View.extend({
   },
 
   initialize: function(){
+    _.bindAll(this, '_setShiftState', 'scopeElements', 'selected', 'unScopeElements', 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'panStop', 'pan');
 
 		this.initializeProperties();
     this.initializeDimensions();
     this.initializeConfig();
+    this.initializeShiftKeyListener();
 
-		_.bindAll(this, 'scopeElements', 'selected', 'unScopeElements', 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'panStop', 'pan');
 
     // disable scope mode
     $(document).on('viewdrag', this.unScopeElements);
@@ -54,6 +55,7 @@ module.exports = View.extend({
 
   // The country map borrows some of the functionality of the actor editor.
   initializeProperties: ActorEditor.prototype.initializeProperties,
+  initializeShiftKeyListener: ActorEditor.prototype.initializeShiftKeyListener,
   offsetToCoords: ActorEditor.prototype.offsetToCoords,
   moveTo: ActorEditor.prototype.moveTo,
   initializeDimensions: ActorEditor.prototype.initializeDimensions,
@@ -90,21 +92,10 @@ module.exports = View.extend({
   _scopeFromMoneyConnection: ActorEditor.prototype._scopeFromMoneyConnection,
   unScopeElements: ActorEditor.prototype.unScopeElements,
 
-  selected: function(event, view){
-    var type = view.model.get('type');
-    
-    if(this.mode && this.mode.isActive){
-      this.mode.viewSelected(view);
-    }else{
-      this.scopeElements(view)
-    }
-
-    if(type == 'actor'){
-      this.actorSelected(event, view);
-    }else if(type == 'connection'){
-      this.connectionSelected(event, view);
-    }
-  },
+  selected: ActorEditor.prototype.selected,
+  collectScopingView: ActorEditor.prototype.collectScopingView,
+  shiftReleased: ActorEditor.prototype.shiftReleased,
+  _setShiftState: ActorEditor.prototype._setShiftState,
 
   actorSelected: function(event, view){
     this.selectedActorView = view;
@@ -199,6 +190,18 @@ module.exports = View.extend({
       change: this.slideZoom
     });
 
+  },
+
+  destroy: function(){
+    View.prototype.destroy.call(this);
+
+    $(document).off('viewdrag', this.calculateGridLines);
+    $(document).off('viewSelected', this.viewSelected);
+
+    $(document).off('keyup', this._setShiftState);
+    $(document).off('keydown', this._setShiftState);
+
+    $(window).unbind('resize', this.realignOrigin);
   }
 
 });

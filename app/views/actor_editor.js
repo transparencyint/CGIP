@@ -50,6 +50,13 @@ module.exports = View.extend({
     return _events;
   },
 
+  initializeShiftKeyListener: function(){
+    this.shiftDown = false;
+    this.scopingViews = [];
+    $(document).on('keydown', this._setShiftState);
+    $(document).on('keyup', this._setShiftState);
+  },
+
   initializeProperties: function(){
     this.country = this.options.country;
     this.actorHeight = 55;
@@ -123,7 +130,7 @@ module.exports = View.extend({
 
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
-    _.bindAll(this, 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, '_setShiftState', 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -132,6 +139,8 @@ module.exports = View.extend({
     // actor selection
     $(document).on('viewSelected', this.selected);
 
+    this.initializeShiftKeyListener();
+
     // react to socket events
     var country = this.country.get('abbreviation');
     socket.on(country + ':actor', this.addActorWithoutPopup);
@@ -139,6 +148,13 @@ module.exports = View.extend({
     socket.on(country + ':connection:money', this.moneyConnections.add.bind(this.moneyConnections));
     //-accountability socket.on(country + ':connection:accountability', this.accountabilityConnections.add.bind(this.accountabilityConnections));
     socket.on(country + ':connection:monitoring', this.monitoringConnections.add.bind(this.monitoringConnections));
+  },
+
+  _setShiftState: function(event){
+    var oldState = this.shiftDown;
+    this.shiftDown = event.shiftKey;
+    if(oldState == true && this.shiftDown == false)
+      this.shiftReleased();
   },
 
   addActorGroupFromRemote: function(actorGroup){
@@ -265,37 +281,49 @@ module.exports = View.extend({
   },
 
   // Scope the editor's container
-  scopeElements: function(view){
+  scopeElements: function(views){
+
     // set the state
     this.isScoped = true;
 
-    var type = view.model.get('type');
-    var scopedElements = [];
+    var allScopedElements = [];
 
-    // decide on the scope method based on the views type and get the elements in the current scope
-    if(type == 'actor'){
-      scopedElements = this.scopeFromActor(view.model);
-    }else if(type == 'connection'){
-      if(view.model.get('connectionType') == 'money')
-        scopedElements = this.scopeFromMoneyConnection(view.model);
-      else
-        scopedElements = this.scopeFromConnection(view.model);
-    }
+    _.each(views, function(view){
+      var type = view.model.get('type');
+      var scopedElements = [];
 
-    if(scopedElements.length == 1) return this.unScopeElements(); // don't scope when only one element in scope
+      // decide on the scope method based on the views type and get the elements in the current scope
+      if(type == 'actor'){
+        scopedElements = this.scopeFromActor(view.model);
+      }else if(type == 'connection'){
+        if(view.model.get('connectionType') == 'money')
+          scopedElements = this.scopeFromMoneyConnection(view.model);
+        else
+          scopedElements = this.scopeFromConnection(view.model);
+      }
+
+      // concat the scoped elements
+      allScopedElements = allScopedElements.concat(scopedElements);
+
+    }.bind(this));
+
+    allScopedElements = _.uniq(allScopedElements);
+
+    if(allScopedElements.length < 1) return this.unScopeElements(); // don't scope when only one element in scope
 
     // set all elements to outOfScope
-    if(type == 'actor' || type == 'connection')
-      this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
+    this.workspace.find('.actor,.connection,.actor-group').addClass('outOfScope');
 
     // set the found elements to 'inScope'
     var elements = $();
     
-    _.each(scopedElements, function(model){
+    _.each(allScopedElements, function(model){
       elements = elements.add('#' + model.id);
     });
     
     elements.removeClass('outOfScope');
+
+    $('.outOfScope.selected').removeClass('selected');
   },
 
   // Scope by showing all directly connected elements
@@ -390,7 +418,12 @@ module.exports = View.extend({
     if(this.mode && this.mode.isActive){
       this.mode.viewSelected(view);
     }else{
-      this.scopeElements(view)
+      if(!this.shiftDown)
+        // start scoping right away
+        this.scopeElements([view]);
+      else
+        // select more and more actors for scoping
+        this.collectScopingView(view);
     }
 
     if(type == 'actor'){
@@ -398,6 +431,15 @@ module.exports = View.extend({
     }else if(type == 'connection'){
       this.connectionSelected(event, view);
     }
+  },
+
+  collectScopingView: function(view){
+    this.scopingViews.push(view);
+  },
+
+  shiftReleased: function(){
+    this.scopeElements(this.scopingViews);
+    this.scopingViews = []
   },
 
   actorSelected: function(event, view){
@@ -872,6 +914,9 @@ module.exports = View.extend({
     $(document).off('viewdrag', this.calculateGridLines);
     $(document).off('viewSelected', this.viewSelected);
     $(document).off('viewdragstop', this.checkDrop);
+    $(document).off('keydown', this.checkDrop);
+    $(document).off('keyup', this._setShiftState);
+    $(document).off('keydown', this._setShiftState);
 
     $(window).unbind('resize', this.realignOrigin);
 
