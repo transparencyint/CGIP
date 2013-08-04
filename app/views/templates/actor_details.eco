@@ -79,6 +79,10 @@
             </td>
           </tr>
         </table>
+        <div>
+          <h4><label for="role_description"><%= t('Note')%>:</label></h4>
+          <textarea id="role_description" name="role_description" data-type="text"><%= @role_description %></textarea>
+        </div>
       </div>
      
       <div class="multiCheckboxes clearfix">

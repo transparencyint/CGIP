@@ -20,7 +20,8 @@ module.exports = Model.extend({
     pos: {x: 0, y: 0},
     organizationType: '',
     purpose: [],
-    role: []
+    role: [],
+    role_description: ''
   },
 
   initialize: function(values){
