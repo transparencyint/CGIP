@@ -68,92 +68,44 @@
           top 2px
           background hsl(217,55%,24%)
           transform rotate(45deg)
+  &.moneyMode
+    position relative
+    font-size 12px
+    label
+      display block
+      position relative
+      padding 0 10px 0 30px
+    input
+      display none
+    input:checked + label
+      color white
+    .option
+      position relative
+      height 40px
+      line-height 40px
+      cursor pointer
+      &:not(:last-child)
+        border-bottom 1px solid hsl(213, 55%, 22%)
+        box-shadow 0 1px hsl(215,73%,66%)
       .coin
         position absolute
-        left 14px
-        top 14px
+        left 10px
+        top 13px
         width 13px
         height 13px
         padding 1px
-        background hsl(50,100%,50%)
-        border-radius 100%
-        box-shadow 0 1px hsl(50,100%,90%) inset, 0 1px 3px black
+        background rgba(0,0,0,.08)
+        border-radius 13px
+        box-shadow 0 0 0 1px rgba(0,0,0,.21), 0 1px 1px rgba(0,0,0,.08) inset
         &:after
           content ""
           display block
           width 100%
           height 100%
+          border-radius 100%
+      input:checked ~ .coin
+        background hsl(50,100%,50%)
+        box-shadow 0 1px hsl(50,100%,90%) inset, 0 1px 2px black
+        &:after
           background hsl(50,100%,45%)
-          border-radius 100%
           box-shadow 0 1px 1px hsl(50,100%,40%) inset, 0 1px hsl(50,100%,85%)
-      &[data-mode=pledgedMode].coin
-        opacity 0.5
-  &.moneyMode
-    margin-top -1px
-    position relative
-    background none
-    box-shadow none
-    border none
-    z-index auto
-    &.open 
-      .options
-        z-index 11
-        left 49px
-        opacity 1
-        transform rotateY(0)
-        transition 250ms
-        .option.fold
-          transform rotateX(0)
-          transition 500ms 250ms
-    .options
-      position absolute
-      top 1px
-      left 44px
-      z-index 5
-      opacity 0
-      transform-origin left
-      transform rotateY(-90deg)
-      transition 250ms 500ms
-      perspective 1000px
-      .option
-        position relative
-        height 42px
-        padding 0 21px 0 34px
-        font-size 12px
-        line-height 42px
-        text-shadow none
-        color hsl(0,0%,8%)
-        border-bottom 1px solid hsl(0,0%,81%)
-        cursor pointer
-        &.fold
-          transform-origin top
-          transform rotateX(-180deg)
-          transition 500ms
-          backface-visibility hidden
-          &:after
-            display none
-            content ""
-            width 100%
-            height 100%
-            position absolute
-            left 0
-            top 0
-            border-radius 0 0 3px 3px
-            background red
-            transform rotateX(-180deg)
-        &:first-child
-          border-radius 3px 3px 0 0
-        &:last-child  
-          border-radius 0 0 3px 3px
-          border-bottom none
-        &:hover
-          background hsl(0,0%,87%)
-        &.active:before
-          content ""
-          position absolute
-          left 17px
-          top 17px
-          width 7px
-          height 7px
-          background black
-          border-radius 100%

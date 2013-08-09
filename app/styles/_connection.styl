@@ -21,11 +21,11 @@
       fill rgb(250,223,54)
     .path
       stroke rgb(250,223,54)
-  &.pledgedMode
-    path
-      stroke hsl(60,20%,60%)
-    use
+  &[data-mode=pledgedMode]
+    .arrow
       fill hsl(60,20%,60%)
+    .path
+      stroke hsl(60,20%,60%)
   &.monitoring
     .arrow
       fill hsl(218,54%,64%)
