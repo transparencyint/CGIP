@@ -61,7 +61,7 @@ module.exports = View.extend({
     this.zoom = {
       value: 1,
       sqrt: 1,
-      step: 0.1,
+      step: 0.15,
       min: 0.25,
       max: 1.75
     };
