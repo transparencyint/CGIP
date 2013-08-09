@@ -19,6 +19,7 @@ module.exports = ConnectionView.extend({
 
     this.initializeProperties(options);
 
+    config.on('change:moneyConnectionMode', this.updateConnectionMode, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
 
     if(options.noClick)

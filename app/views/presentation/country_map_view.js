@@ -21,8 +21,7 @@ module.exports = View.extend({
       'click .zoom.in': 'zoomIn',
       'click .zoom.out': 'zoomOut',
       'click .fit.screen': 'fitToScreen',
-      'click .moneyMode .icon': 'showMoneyModal',
-      'click .moneyMode .option': 'chooseMoneyMode',
+      'change .moneyMode input[name=moneyMode]': 'chooseMoneyMode',
       
       // zoom gesture
       'gesturestart': 'pinchStart',
@@ -44,7 +43,7 @@ module.exports = View.extend({
     this.initializeDimensions();
     this.initializeConfig();
 
-		_.bindAll(this, 'scopeElements', 'selected', 'unScopeElements', 'closeMoneyModal', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'panStop', 'pan');
+		_.bindAll(this, 'scopeElements', 'selected', 'unScopeElements', 'appendActor', 'appendActorGroup', 'appendConnection', 'realignOrigin', 'moveTo', 'slideZoom', 'panStop', 'pan');
 
     // disable scope mode
     $(document).on('viewdrag', this.unScopeElements);
@@ -65,9 +64,7 @@ module.exports = View.extend({
   zoomTo: ActorEditor.prototype.zoomTo,
   slideZoom: ActorEditor.prototype.slideZoom,
   fitToScreen: ActorEditor.prototype.fitToScreen,
-  showMoneyModal: ActorEditor.prototype.showMoneyModal,
   chooseMoneyMode: ActorEditor.prototype.chooseMoneyMode,
-  closeMoneyModal: ActorEditor.prototype.closeMoneyModal,
   stopPropagation: ActorEditor.prototype.stopPropagation,
   getBoundingBox: ActorEditor.prototype.getBoundingBox,
   toggleActiveMoneyMode: ActorEditor.prototype.toggleActiveMoneyMode,
