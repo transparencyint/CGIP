@@ -34,6 +34,7 @@ module.exports = View.extend({
 
     this.initializeProperties(options);
     
+    config.on('change:moneyConnectionMode', this.updateConnectionMode, this);
     this.model.on('change:hasCorruptionRisk', this.updateCorruptionRisk, this);
 
     if(options.noClick)
@@ -123,8 +124,6 @@ module.exports = View.extend({
 
     this.svg = this.$el.svg('get');
     this.defs = this.svg.defs();
-    
-    this.$el.addClass(this.model.get('connectionType'));
   
     this.selectSettings = {
       class_: 'selectPath'
@@ -133,7 +132,7 @@ module.exports = View.extend({
     // The thickness of the money connection is calculated
     // depending on the thickest money connection in the map 
     if(this.isMoney){
-      this.$el.addClass(config.get('moneyConnectionMode'));
+      this.updateConnectionMode();
       this.model.calculateLineThickness();
       this.strokeWidth = this.strokeWidth * this.model.thicknessFactor;
     }
@@ -170,6 +169,10 @@ module.exports = View.extend({
       this.update();
     else
       this.$('.corruptionRisk').hide();
+  },
+
+  updateConnectionMode: function(){
+    this.$el.attr('data-mode', config.get('moneyConnectionMode'));
   },
 
   toggleEmptyAmountConnection: function(){
