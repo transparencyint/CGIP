@@ -18,11 +18,8 @@ module.exports = View.extend({
       'dblclick': 'showDetails'
     };
     
-    _events[ this.inputMoveEvent ] = 'updateMetada';
     _events[ this.inputDownEvent ] = 'inputDown';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
-
-    _events[ 'mouseout' ] = 'hideMetadata';
     
     return _events;
   },
@@ -83,17 +80,6 @@ module.exports = View.extend({
   stopPropagation: function(event){
     event.stopPropagation();
   },
-  
-  getRenderData: function(){
-    
-    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.checkMetadataMessage(moneyMode);
-        
-    return { 
-      moneyMode: amount, 
-      connectionType: this.model.get('connectionType')
-    };
-  },
 
   render: function(){
     // Only render it if it is a valid view
@@ -115,7 +101,6 @@ module.exports = View.extend({
   
   afterRender: function(){
     
-    this.metadata = this.$('.metadata');
     this.$el.attr('id', this.model.id);
     
     this.path = "";
@@ -592,56 +577,6 @@ module.exports = View.extend({
     this.editor.$el.append(cfw.render().el);
     
     return false;
-  },
-
-  // The metadata contains the money amount of a money connection and will be displayed when hovering the connection.
-  updateMetada: function(event){
-
-    if(!this.isMoney) return
-    
-    this.metadata.css({
-      left: event.offsetX - 20,
-      top: event.offsetY - 30
-    });
-    
-    // update the amount
-    var moneyMode = config.get('moneyConnectionMode').replace('Mode','');
-    var amount = this.checkMetadataMessage(moneyMode);
-    
-    var metadata = this.$('.metadata');
-    metadata.text(amount);
-    metadata.show();
-
-    clearTimeout(this.metadataTimeout);
-    this.metadataTimeout = _.delay(function(){ metadata.hide(); }, 2000);
-
-  },
-
-  // The amount could be empty so that the metadata message must be modified here
-  // Source for inerting seperator: http://stackoverflow.com/questions/9743038/how-do-i-add-a-thousand-seperator-to-a-number-in-javascript
-  checkMetadataMessage: function(moneyMode){
-    var amount = this.model.get(moneyMode);
-    if(amount < 1)
-      amount = t('unknown amount');
-    else{
-      var sep = ' ';
-      amount += '';
-      x = amount.split('.');
-      x1 = x[0];
-      x2 = x.length > 1 ? '.' + x[1] : '';
-      var rgx = /(\d+)(\d{3})/;
-      while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + sep + '$2');
-      }
-      amount = x1 + x2;
-      amount = '$ ' + amount;
-    }
-
-    return amount;
-  },
-
-  hideMetadata: function(){
-    this.metadata.hide();
   },
   
   // Draws a straight line.

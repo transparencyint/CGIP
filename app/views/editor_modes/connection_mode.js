@@ -82,8 +82,6 @@ ConnectionMode.prototype.viewSelected = function(view){
         to: this.selectedActors[1].id
       });
 
-      newConnection.showMetadataForm = true;
-
       newConnection.save(null, {
         success: function(){
           socket.emit('new_model', newConnection.toJSON());
