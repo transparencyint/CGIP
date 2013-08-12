@@ -1,3 +1,6 @@
+disbursedColor = fundingColor //hsl(52, 95%, 60%)
+pledgedColor = disbursedColor //desaturate(darken(disbursedColor, 21%), 21%)
+
 .workspace .connection
   pointer-events none
   transition opacity 180ms
@@ -18,15 +21,15 @@
     opacity 0.33
   &.money
     .arrow
-      fill rgb(250,223,54)
+      fill disbursedColor
     .path
-      stroke rgb(250,223,54)
+      stroke disbursedColor
   &[data-mode=pledgedMode]
     .arrow
-      fill hsl(60,20%,60%)
+      fill pledgedColor
     .path
-      stroke hsl(60,20%,60%)
-      stroke-dasharray 5
+      stroke pledgedColor
+      stroke-dasharray 8 3
   &.monitoring
     .arrow
       fill hsl(218,54%,64%)
