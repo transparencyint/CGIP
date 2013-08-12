@@ -5,7 +5,7 @@ var Model = require('./model');
 module.exports = Model.extend({
 
   defaults : {
-    moneyConnectionMode: 'disbursedMode',
+    moneyConnectionMode: 'pledgedMode',
     realtime_enabled: true,
     languages: [
       {

@@ -14,7 +14,6 @@ var ConnectionView = require('./connection_view');
 var ConnectionMode = require('./editor_modes/connection_mode');
 var RoleBackgroundView = require('./role_background_view');
 var SettingsView = require('./settings_view');
-var clickCatcher = require('./click_catcher_view');
 var dialog = require('./dialog_view');
 
 module.exports = View.extend({
@@ -33,8 +32,7 @@ module.exports = View.extend({
       'click .zoom .in': 'zoomIn',
       'click .zoom .out': 'zoomOut',
       'click .fit.screen': 'fitToScreen',
-      'click .moneyMode .icon': 'showMoneyModal',
-      'click .moneyMode .option': 'chooseMoneyMode',
+      'change .moneyMode input[name=moneyMode]': 'chooseMoneyMode',
       
       // zoom gesture
       'gesturestart': 'pinchStart',
@@ -131,6 +129,7 @@ module.exports = View.extend({
     this.hideGridLine = _.debounce(this.hideGridLine, 500);
 
     _.bindAll(this, '_setShiftState', 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'closeMoneyModal', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
+    _.bindAll(this, 'unScopeElements', 'addActorGroupFromRemote', 'addActorWithoutPopup', 'checkDrop', 'selected', 'calculateGridLines', 'realignOrigin', 'appendActor', 'createActorAt', 'appendConnection', 'appendActorGroup', 'keyUp', 'slideZoom', 'panStop', 'pan', 'placeActorDouble', 'slideInDouble');
   
     // gridlines
     $(document).on('viewdrag', this.calculateGridLines);
@@ -554,35 +553,17 @@ module.exports = View.extend({
     this.mode = null;
     this.unselect();
   },
-
-  showMoneyModal: function(event){
-    this.$('.moneyMode').addClass('open');
-    
-    // wherever you click around the modal
-    // will close the modal (also the button)
-    new clickCatcher({ callback: this.closeMoneyModal, holder: this.$el });
-  },
-  
-  closeMoneyModal: function(){
-    this.$('.moneyMode').removeClass('open');
-  },
   
   chooseMoneyMode: function(event){
-    event.stopPropagation();
-    var mode = $(event.currentTarget).data('mode');
+    var mode = $('.moneyMode input[name=moneyMode]:checked').val();
     
     config.set({moneyConnectionMode: mode});
   },
 
   toggleActiveMoneyMode: function(){
     var mode = config.get('moneyConnectionMode');
-    var option = this.$('.option[data-mode='+ mode +']');
     
-    // change point color
-    option.parent().siblings('.point').attr('data-mode', mode);
-    
-    // highlight current option
-    option.addClass('active').siblings('.active').removeClass('active');
+    $('.moneyMode input[value='+ mode +']').prop('checked', true);
   },
 
   keyUp: function(event){
