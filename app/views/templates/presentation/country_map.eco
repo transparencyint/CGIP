@@ -12,14 +12,16 @@
       </div>
       <div class="zoom out icon control"></div>
     </div>
-    <div class="view controls moneyMode hasModal">
-      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('Money') %>">
+    <div class="view controls control moneyMode">
+      <div class="option">
+        <input type="radio" name="moneyMode" value="disbursedMode" id="viewDisbursedMode">
+        <label for="viewDisbursedMode"><%= t('Disbursed') %></label>
         <div class="coin"></div>
-        <div class="corner"></div>
       </div>
-      <div class="options">
-        <div class="modal style option active" data-mode="disbursedMode"><%= t('Disbursed') %></div>
-        <div class="modal style option fold" data-mode="pledgedMode"><%= t('Pledged') %></div>
+      <div class="option">
+        <input type="radio" name="moneyMode" value="pledgedMode" id="viewPledgedMode" checked>
+        <label for="viewPledgedMode"><%= t('Pledged') %></label>
+        <div class="coin"></div>
       </div>
     </div>
   </div>
