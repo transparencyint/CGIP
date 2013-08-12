@@ -1,4 +1,1 @@
-<% if @connectionType is 'money': %>
-	<div class="metadata"><%= @disbursed %></div>
-<% end %>
 <div class="corruptionRisk"></div>

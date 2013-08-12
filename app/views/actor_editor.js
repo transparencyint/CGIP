@@ -520,9 +520,6 @@ module.exports = View.extend({
 
     connView.render();  
     this.workspace.append(connView.el);
-
-    if(connection.showMetadataForm && connView.showMetadataForm)
-      connView.showMetadataForm();
   },
 
   toggleMode: function(event){

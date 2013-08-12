@@ -44,19 +44,17 @@ module.exports = ConnectionView.extend({
       'dblclick': 'showDetails'
     };
     
-    _events[ this.inputMoveEvent ] = 'updateMetada';
     _events[ this.inputDownEvent ] = 'inputDown';
     _events[ this.inputUpEvent ] = 'cancelLongPress';
 
     return _events;
   },
 
-  updateMetada: ConnectionView.prototype.updateMetada,
   select: View.prototype.select,
   inputDown: ConnectionView.prototype.inputDown,
   inScope: ConnectionView.prototype.inScope,
 
-  showDetails: function(){
+  showDetails: function(event){
     
     var mousePosition = {
       left: this.normalizedX(event),
