@@ -1,3 +1,8 @@
+fundingColor = hsl(41, 100%, 64%)
+coordinationColor = hsl(35, 20%, 50%)
+implementationColor = hsl(88, 43%, 64%)
+monitoringColor = hsl(212, 45%, 76%)
+
 .roles
   margin-top 10px
   & > div
@@ -8,30 +13,25 @@
     float left
 svg   
   .funding
-    background #ffc345
-    fill #ffc345
-    stroke #ffc345 
+    background fundingColor
+    fill fundingColor
+    stroke fundingColor 
   .coordination
-    background #a5bfdd
-    fill #a5bfdd
-    stroke #a5bfdd
+    background coordinationColor
+    fill coordinationColor
+    stroke coordinationColor
   .implementation
-    background #c9dfaf
-    fill #c9dfaf
-    stroke #c9dfaf
+    background implementationColor
+    fill implementationColor
+    stroke implementationColor
   .monitoring
-    background #d3cabd
-    fill #d3cabd
-    stroke #d3cabd
+    background monitoringColor
+    fill monitoringColor
+    stroke monitoringColor
   .stuff
     background gray
     fill gray
     stroke gray
-    
-fundingColor = #ffc345
-coordinationColor = #a5bfdd
-implementationColor = #c9dfaf
-monitoringColor = #d3cabd
 
 .actor, .actor-group
   &[data-role='funding'] 
