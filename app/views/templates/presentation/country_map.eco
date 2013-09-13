@@ -2,17 +2,17 @@
 
 <div class="sidebar">
   <div class="inner">
-    <div class="view controls vertical">
+    <div class="light view controls vertical">
       <div class="fit screen icon control"></div>
     </div>
-    <div class="view controls vertical">
+    <div class="light view controls vertical">
       <div class="zoom in icon control"></div>
       <div class="range control">
         <div class="bar"></div>
       </div>
-      <div class="zoom out icon control"></div>
+      <div class="ligth zoom out icon control"></div>
     </div>
-    <div class="view controls control moneyMode">
+    <div class="light view controls control moneyMode">
       <div class="option">
         <input type="radio" name="moneyMode" value="disbursedMode" id="viewDisbursedMode">
         <label for="viewDisbursedMode"><%= t('Disbursed') %></label>

@@ -38,6 +38,13 @@
     border-left 2px dotted rgba(0,0,0,.13)
     border-right 1px solid rgba(255,255,255,.08)
     position fixed
+  &.hide-coordination .actor[data-role~="coordination"],
+  &.hide-monitoring .actor[data-role~="monitoring"],
+  &.hide-funding .actor[data-role~="funding"],
+  &.hide-implementation .actor[data-role~="implementation"],
+  &.hide-moneyConnections .workspace .connection.money,
+  &.hide-monitoringConnections .workspace .connection.monitoring
+      display none
 
 .topBar
   position absolute

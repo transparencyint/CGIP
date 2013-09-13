@@ -7,6 +7,7 @@ var PresentationActorView = require('./presentation_actor_view');
 var PresentationActorGroupView = require('./presentation_actor_group_view');
 var PresentationRoleBackgroundView = require('./presentation_role_background_view');
 var SettingsView = require('./presentation_settings_view');
+var LegendView = require('../legend_view');
 
 module.exports = View.extend({
   
@@ -144,6 +145,30 @@ module.exports = View.extend({
     this.moveTo(0, 0);
   },
 
+  getAvailableTypes: function(){
+    var types = {};
+
+    types.actor = [];
+    this.actors.each(function(actor){
+      if(actor.get('hasCorruptionRisk'))
+        types.corruptionRisk = true;
+
+      types.actor = types.actor.concat( actor.get('role') );
+    });
+    types.actor = _.uniq(types.actor);
+
+    types.connection = [];
+    this.connections.each(function(connection){
+      if(connection.get('hasCorruptionRisk'))
+        types.corruptionRisk = true;
+
+      types.connection = types.connection.concat( connection.get('connectionType') );
+    });
+    types.connection = _.uniq(types.connection);
+
+    return types;
+  },
+
   render: function(){
     this.$el.html( this.template() );
 
@@ -164,6 +189,12 @@ module.exports = View.extend({
 
     this.settings = new SettingsView({ editor: this });
     this.$('.topBar').append(this.settings.render().el);
+    
+    this.legend = new LegendView({ 
+      holder: this.$el,
+      available: this.getAvailableTypes()
+    });
+    this.$el.append(this.legend.render().el);
 
     this.afterRender();
 

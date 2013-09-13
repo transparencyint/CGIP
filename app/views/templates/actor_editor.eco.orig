@@ -48,10 +48,15 @@
       </div>
       <div class="out icon control"></div>
     </div>
+<<<<<<< Updated upstream
     <div class="view controls control moneyMode">
       <div class="option">
         <input type="radio" name="moneyMode" value="disbursedMode" id="viewDisbursedMode">
         <label for="viewDisbursedMode"><%= t('Disbursed') %></label>
+=======
+    <div class="view light controls moneyMode hasModal">
+      <div class="point icon view controls control" data-mode="disbursedMode" title="<%= t('Money') %>">
+>>>>>>> Stashed changes
         <div class="coin"></div>
       </div>
       <div class="option">
