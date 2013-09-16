@@ -6,7 +6,7 @@ var ConnectionView = require('views/connection_view');
 
 module.exports = ConnectionView.extend({
 
-  template: require('../templates/presentation/presentation_connection'),
+  template: require('../templates/connection'),
 
   tagName : 'div',
   className : 'connection',
