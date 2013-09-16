@@ -143,6 +143,9 @@ module.exports = View.extend({
   realignOrigin: function(){
     this.origin.left = this.$el.width()/2;
     this.moveTo(0, 0);
+
+    // resize for printing purposes
+    $('body').width($(window).width());
   },
 
   getAvailableTypes: function(){
