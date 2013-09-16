@@ -20,7 +20,6 @@ module.exports = View.extend({
   },
 
   getRenderData: function() {
-    console.log(this.options.available);
     return {
       type: this.options.available
     };
