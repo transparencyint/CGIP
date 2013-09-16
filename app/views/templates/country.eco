@@ -2,7 +2,7 @@
   <div class="point"></div>
   <div class="label">
     <a href="/show/<%= @abbreviation %>">
-      <img class="flag" src="images/flags/<%= @abbreviation %>.svg">
+      <img class="flag" src="images/flags/<%= @abbreviation %>.svg" width="50" height="38">
       <span><%= @name %></span>
     </a>
     <div class="arrow"></div>
