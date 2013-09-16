@@ -702,8 +702,8 @@ module.exports = View.extend({
   
   moveTo: function(x, y, silent){
     // dont let the user pan above y = 0
-    if(y >= 0)
-      y = 0;
+    // if(y >= 0)
+    //   y = 0;
     
     // snap to center
     if(x !== 0 && Math.abs(x) < 10)
