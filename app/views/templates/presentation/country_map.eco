@@ -1,4 +1,6 @@
-<div class="topBar top tool controls"></div>
+<div class="topBar top tool controls">
+  <time><%= new Date().toLocaleDateString() %></time>
+</div>
 
 <div class="sidebar">
   <div class="inner">
