@@ -49,16 +49,15 @@
         border-radius 0 2px 2px 0
   &.selected .animationHolder
     box-shadow 0 0 0 5px hsl(205,100%,55%), 0 1px 5px 1px rgba(0,0,0,.55), 0 1px #fbfbfb inset, 0 -5px #f0f0f0 inset, 0 0 0 5px #f9f9f9 inset
-  &.hasCorruptionRisk:before
-    content ""
+  .actor-risk-icon
     position absolute
     z-index 4
     right -10px
     top -8px
     width 25px
-    height 25px
-    background url(../images/risk.png)
-    background-size cover
+    display none
+  &.hasCorruptionRisk .actor-risk-icon
+    display block
   svg
     display none
   &.locked

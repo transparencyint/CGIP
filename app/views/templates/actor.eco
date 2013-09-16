@@ -9,4 +9,7 @@
       	<% end %>
     <% end %>
   </div>
+  <% if @hasCorruptionRisk: %>
+  <img class="actor-risk-icon" src="/images/risk.png">
+  <% end %>
 </div>
