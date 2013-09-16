@@ -12,7 +12,7 @@
     <div class="state visible" data-type="<%= type %>"></div>
   </div>
   <% end %>
-  <% if @type.connection.money: %>
+  <% if _.contains(@type.connection, 'money'): %>
   <div class="row combo">
     <div class="first">
       <div class="label">
@@ -48,7 +48,7 @@
     </div>
   </div>
   <% end %>
-  <% if @type.connection.monitoring: %>
+  <% if _.contains(@type.connection, 'monitoring'): %>
   <div class="row">
     <div class="label">
       <svg class="connection monitoring" data-mode="disbursedMode" version="1.1" width="24" height="16">
