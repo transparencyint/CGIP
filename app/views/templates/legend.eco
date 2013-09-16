@@ -6,7 +6,7 @@
   <% for type in @type.actor: %>
   <div class="row">
     <div class="label">
-      <span class="preview <%= type + 'Background' %>"></span>
+      <span class="preview <%= type + 'Border' %>"></span>
       <span class="name"><%= t(type[0].toLocaleUpperCase() + type.substr(1)) %></span>
     </div>
     <div class="state visible" data-type="<%= type %>"></div>
